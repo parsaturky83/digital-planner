@@ -668,6 +668,31 @@ body[data-theme="haker"] .srv-note.warn,body[data-theme="solo"] .srv-note.warn,b
 .av-mini svg{width:30px;height:30px}
 .msg .av-mini{margin-inline-end:6px}
 .og-card{border:1px solid var(--acc)}
+
+/* ===== v10.4.5 — FX layer (light fountain + spectacle) + group polish ===== */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.fx-flash{position:absolute;inset:0;background:#fff;opacity:0}
+.fx-shock{position:absolute;border-radius:50%;border:3px solid rgba(255,255,255,.9);box-shadow:0 0 30px rgba(255,255,255,.7),inset 0 0 30px rgba(255,255,255,.4);opacity:0;pointer-events:none}
+.fx-crater{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.85),rgba(239,68,68,.5) 45%,rgba(239,68,68,0) 70%);opacity:0;pointer-events:none}
+.fx-wash{position:absolute;inset:0;opacity:0;pointer-events:none}
+.fx-streak{position:absolute;height:3px;border-radius:3px;background:linear-gradient(270deg,transparent,#fff,#fde68a,#f97316);box-shadow:0 0 12px #fbbf24,0 0 30px #f97316;opacity:0;pointer-events:none;transform-origin:left center}
+.fx-mx{position:absolute;inset:0;width:100%;height:100%}
+.fx-glow{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(251,191,36,.55) 35%,rgba(251,191,36,0) 70%);pointer-events:none;z-index:4;opacity:0}
+.fx-rays{position:absolute;left:50%;top:50%;width:220px;height:220px;margin:-110px 0 0 -110px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.55) 0deg 6deg,transparent 6deg 18deg);pointer-events:none;z-index:4;opacity:0;-webkit-mask:radial-gradient(circle,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 70%);mask:radial-gradient(circle,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 70%)}
+/* Group sections: framed, organized, graphical (v10.4.5) */
+.gsec{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:12px;margin:12px 0;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.gsec-h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;padding:8px 10px;margin:-12px -12px 10px;border-radius:14px 14px 0 0;background:linear-gradient(135deg,var(--accSoft),transparent);border-bottom:1px solid var(--line)}
+.gsec-h .gi{font-size:18px}
+.ghead{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:linear-gradient(135deg,var(--acc),var(--accSoft));border:1px solid var(--acc);margin-bottom:10px}
+.ghead .gav{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;background:rgba(255,255,255,.25);flex:none}
+.ghead b{font-size:17px}
+.gmember{border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.gmember .mav{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:18px;background:var(--accSoft);flex:none}
+.grole-chip{display:inline-block;padding:2px 8px;border-radius:99px;background:var(--accSoft);border:1px solid var(--acc);font-size:11px;font-weight:700;margin-inline-start:6px}
+.og-card h3{padding:8px 10px;margin:14px 0 8px;border-radius:10px;background:linear-gradient(135deg,var(--accSoft),transparent);border-inline-start:3px solid var(--acc)}
+.og-card .listrow{box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.og-card .vote-opt{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px}
+.og-card .task{border:1px solid var(--line);border-radius:12px}
 .vote-opt{display:flex;align-items:center;gap:8px;margin:6px 0}
 .vote-bar{flex:1;height:10px;border-radius:99px;background:rgba(0,0,0,.12);overflow:hidden}
 .vote-bar i{display:block;height:100%;background:var(--acc)}
@@ -1543,6 +1568,9 @@ var GFX={
     var palette=(Object.prototype.toString.call(col)==="[object Array]")?col:[color];
     try{ el.style.borderColor=color; el.style.filter="drop-shadow(0 0 10px "+color+"55)"; }catch(e){}
     if(this._reduce()) return;
+    /* v10.4.5: light fountain on EVERY fresh power card + rich spectacle for signature powers.
+       Sender + receiver both render the card via drawGroupChat, so both see it. */
+    try{ if(typeof PROFX!=="undefined"){ PROFX.fountain(el,PROFX.fountainColors(perm)); PROFX.spectacle(perm,el); } }catch(e){}
     var gs=this._gsap();
     var isClaim=false; try{ isClaim=el.hasAttribute("data-pw-claim"); }catch(e){}
     if(perm==="celebrate_event"||perm==="emergency_landing"){ this._celebrate(el); return; }
@@ -2761,7 +2789,7 @@ function drawGroupChat(){
     }
     var _fort=false;
     try{ _fort=PW.fortressActive&&PW.fortressActive(); }catch(e){}
-    var h='<div class="rowflex" style="justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div><b>'+esc(OG.sel.name)+'</b> <span class="on-badge" data-onbadge><span class="dot"></span>'+TR('k2066','متصل')+'</span></div><div class="rowflex"><button class="btn ghost sm" onclick="PW.openSheet()">⚡ '+TR('k2139','قدرت‌های چت')+'</button><button class="btn ghost sm" onclick="openModal(PW.lettersHTML())">✉️ '+TR('k2326','نامه‌های خصوصی من')+'</button></div></div>';
+    var h='<div class="ghead" style="justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div><b>'+esc(OG.sel.name)+'</b> <span class="on-badge" data-onbadge><span class="dot"></span>'+TR('k2066','متصل')+'</span></div><div class="rowflex"><button class="btn ghost sm" onclick="PW.openSheet()">⚡ '+TR('k2139','قدرت‌های چت')+'</button><button class="btn ghost sm" onclick="openModal(PW.lettersHTML())">✉️ '+TR('k2326','نامه‌های خصوصی من')+'</button></div></div>';
     if(_fort) h+='<div class="pw-fortress-banner">🔒 '+TR('k9032','قلعه فعال است — چت فقط برای مدیران باز است')+'</div>';
     h+='<p class="small" style="margin:0 0 10px">'+TR('k2053','سابقه چت هر دو هفته پاک می‌شود؛ پیام‌های قدیمی‌تر از ۱۴ روز حذف می‌شوند')+'.</p>';
     h+=_visible.map(function(m){ return ogMsgHTML(m); }).join("");
@@ -5345,11 +5373,10 @@ function onlineGroupHTML(){
     return '<div class="listrow'+(sel?'':'')+'"><div class="grow"><b>'+esc(g.name)+'</b><div class="small">'+TR('k2024','کد دعوت گروه')+': <b dir="ltr">'+esc(g.invite_code)+'</b> — '+esc(g.myRole||"")+'</div></div><button class="btn ghost sm" onclick="copySubKey(\''+esc(g.invite_code)+'\')">'+TR('k1500','کپی کلید')+'</button>'+(OG.isAdmin()?'<button class="btn sm ghost" onclick="OG.regenInvite(\''+g.id+'\')">'+TR('k2437','کد تازه')+'</button>':'')+'<button class="btn sm" onclick="OG.select(\''+g.id+'\')">'+(sel?TR('k0620','فعال'):TR('k0256','خانه'))+'</button></div>';
   }).join("");
   if(OG.sel){
-    h+='<div style="margin-top:14px;border-top:1px solid var(--acc);padding-top:12px"><h3 style="margin-bottom:8px">'+esc(OG.sel.name)+'</h3>';
-    h+='<div class="small">'+fa(OG.members.length)+' '+TR('k2026','اعضا')+' — '+TR('k2000','آنلاین')+': '+TR('k2022','گروه آنلاین')+'</div>';
+    h+='<div style="margin-top:14px;border-top:1px solid var(--acc);padding-top:12px"><div class="ghead"><div class="gav">👥</div><div><b>'+esc(OG.sel.name)+'</b><div class="small">'+fa(OG.members.length)+' '+TR('k2026','اعضا')+' — '+TR('k2000','آنلاین')+'</div></div></div>';
     if(OG.members.length) h+='<div style="margin-top:8px">'+OG.members.map(function(m){
       var nm=m.nickname||""; var who=m.user_id===SB.uid?TR('k0047','شما'):m.user_id.slice(0,8);
-      return '<div class="listrow"><div class="grow"><b>'+esc(who)+(nm?' «'+esc(nm)+'»':'')+supBadgeHTMLFor(m.user_id)+SB.presenceDot(m.user_id)+'</b>'+((OG.memberBio&&OG.memberBio[m.user_id])?'<div class="small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(OG.memberBio[m.user_id])+'</div>':'')+'<div class="small">'+esc(m.role)+'</div></div>'
+      return '<div class="listrow gmember"><div class="mav">'+esc((who||'?').charAt(0))+'</div><div class="grow"><b>'+esc(who)+(nm?' «'+esc(nm)+'»':'')+supBadgeHTMLFor(m.user_id)+SB.presenceDot(m.user_id)+'</b>'+((OG.memberBio&&OG.memberBio[m.user_id])?'<div class="small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(OG.memberBio[m.user_id])+'</div>':'')+'<div class="small">'+esc(m.role)+'</div></div>'
       +(OG.isAdmin()&&m.user_id!==SB.uid?'<button class="btn ghost sm" onclick="var n=prompt(\''+TR('k2031','گذاشتن لقب')+'\'); if(n!==null) OG.setNickname(\''+m.user_id+'\',n)">'+TR('k2030','لقب')+'</button><button class="btn ghost sm" onclick="OG.setMemberRole(\''+m.user_id+'\',\''+(m.role==="admin"?"member":"admin")+'\')">'+TR('k2032','انتخاب ادمین')+'</button><button class="btn ghost sm" onclick="OG.muteMember(\''+m.user_id+'\')">'+TR('k2034','بی‌صدا کردن')+'</button><button class="btn ghost sm" onclick="if(confirm(\''+TR('k2033','حذف عضو')+'?\'))OG.removeMember(\''+m.user_id+'\')">'+TR('k2033','حذف عضو')+'</button>':'')
       +'</div>';
     }).join("")+'</div>';
@@ -5362,7 +5389,7 @@ function onlineGroupHTML(){
     h+='<div class="field"><label>'+TR('k2038','رأی‌گیری تازه')+'</label><div class="rowflex"><input class="inp grow" id="ogPollQ" placeholder="'+TR('k2039','سؤال رأی‌گیری')+'…"><input class="inp grow" id="ogPollO" placeholder="'+TR('k2040','گزینه‌ها')+' — a, b, c"><button class="btn sm" onclick="var q=$(\'ogPollQ\').value.trim(); var o=$(\'ogPollO\').value.split(\',\').map(function(s){return s.trim();}).filter(Boolean); if(q&&o.length>1) OG.createPoll(q,o);">'+TR('k0393','افزودن')+'</button></div></div>';
     h+=(OG.polls||[]).map(function(p){
       var opts=p.options||[]; var total=(OG.votes||[]).filter(function(v){ return String(v.poll_id)===String(p.id); }).length;
-      return '<div class="card" style="padding:10px 12px;margin:8px 0"><b>'+esc(p.question)+'</b>'+opts.map(function(o,i){
+      return '<div class="card gsec" style="padding:10px 12px;margin:8px 0"><b>'+esc(p.question)+'</b>'+opts.map(function(o,i){
         var c=(OG.votes||[]).filter(function(v){ return String(v.poll_id)===String(p.id)&&v.option_idx===i; }).length;
         var pct=total?Math.round(c/total*100):0; var mine=(OG.votes||[]).some(function(v){ return String(v.poll_id)===String(p.id)&&v.option_idx===i&&v.voter_uid===SB.uid; });
         return '<div class="vote-opt"><button class="btn ghost sm" onclick="OG.vote(\''+p.id+'\','+i+')">'+esc(o)+'</button><div class="vote-bar"><i style="width:'+pct+'%"></i></div><span class="small">'+fa(c)+' ('+fa(pct)+'%)'+(mine?' ✓':'')+'</span></div>';
@@ -5822,7 +5849,7 @@ var CUSTOMMUSIC={
    back to the existing SFX.play(PW.sfxFor(perm)) — never silent. */
 var PROFX={
   _toneOk:false,_toneBusy:false,_synths:null,
-  _fxInst:null,_fxTimer:null,_fxEl:null,
+  _fxInst:null,_fxTimer:null,_fxEl:null,_echoBus:null,
   NOTE_SCALE:["C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C7","D7","E7","F7","G7","A7","B7"],
   SOUND_GROUPS:{
     horn:["war_cry","war_order","summon_all","plant_flag","race_game","parade","patrol","anthem","control_tower"],
@@ -5884,6 +5911,13 @@ var PROFX={
     }catch(e){ PROFX._toneBusy=false; }
   },
   soundFor:function(perm){
+    /* v10.4.5: signature powers get the richer layered sounds (raw Web Audio + echo bus).
+       Sender (PW.use) AND receiver (OG.onMsg wrapper) both call soundFor, so the upgraded
+       sound reaches other members via the server broadcast (the POWER message). */
+    if(perm==="earthquake"){ PROFX._quakeBlast(); return; }
+    if(perm==="meteor_shower"){ PROFX._meteorStrike(); return; }
+    if(perm==="matrix_rain"){ PROFX._cyberGlitch(); return; }
+    if(perm==="fireworks"){ PROFX._fireworkFinale(); return; }
     PROFX.initTone();
     if(!PROFX._toneOk||!PROFX._synths){ try{ SFX.play(PW.sfxFor(perm)); }catch(e){} return; }
     var found=null;
@@ -6138,6 +6172,330 @@ var PROFX={
       base.emitters={position:{x:50,y:50},rate:{quantity:12,delay:0.08},life:{count:2,duration:0.4},size:{width:0,height:0}};
     }
     return base;
+  },
+
+  /* ===== v10.4.5 — SPECTACLE (ported from the ability-effects demo, Parsa 2026-11-10) =====
+     Light fountain (radial glow + rotating rays + confetti) on EVERY ability use;
+     richer full-screen visuals + layered cooler sounds for the 4 signature powers.
+     The sound trigger is the SERVER broadcast (the POWER message inserted by use_power):
+     sender (PW.use) and receiver (OG.onMsg wrapper) both call PROFX.soundFor, so the
+     upgraded sound reaches other members via the server. No new SQL is needed — the
+     existing use_power + broadcast already carry the perm; the receiver maps perm->sound.
+     Mute is respected: the layered primitives return early when SFX is muted. */
+  _fxBus:function(){
+    try{
+      if(typeof SFX==="undefined"||!SFX.ctx) return null;
+      if(PROFX._echoBus) return PROFX._echoBus;
+      var ctx=SFX.ctx;
+      var dry=ctx.createGain(); dry.gain.value=1; dry.connect(ctx.destination);
+      var dly=ctx.createDelay(0.6); dly.delayTime.value=0.17;
+      var fb=ctx.createGain(); fb.gain.value=0.34;
+      var wet=ctx.createGain(); wet.gain.value=0.35;
+      dly.connect(fb); fb.connect(dly); dly.connect(wet); wet.connect(ctx.destination);
+      PROFX._echoBus={dry:dry,dly:dly};
+      return PROFX._echoBus;
+    }catch(e){ return null; }
+  },
+  _fxOut:function(wetAmt){
+    var ctx=SFX.ctx, bus=PROFX._fxBus();
+    var g=ctx.createGain(); g.gain.value=1;
+    g.connect(bus?bus.dry:ctx.destination);
+    if(bus && wetAmt>0){ var w=ctx.createGain(); w.gain.value=wetAmt; g.connect(w); w.connect(bus.dly); }
+    return g;
+  },
+  _fxNoise:function(dur){
+    var ctx=SFX.ctx, len=Math.max(1,Math.floor(ctx.sampleRate*dur));
+    var buf=ctx.createBuffer(1,len,ctx.sampleRate), d=buf.getChannelData(0);
+    for(var i=0;i<len;i++) d[i]=Math.random()*2-1;
+    return buf;
+  },
+  _fxTone:function(freq,dur,type,vol,slideTo,delay,out){
+    try{
+      if(typeof SFX!=="undefined"&&typeof SFX.on==="function"&&!SFX.on()) return;
+      var ctx=SFX.ctx; if(!ctx) return;
+      if(ctx.state==="suspended") ctx.resume();
+      var t0=ctx.currentTime+(delay||0);
+      var o=ctx.createOscillator(), g=ctx.createGain();
+      o.type=type||"sine"; o.frequency.setValueAtTime(freq,t0);
+      if(slideTo) o.frequency.exponentialRampToValueAtTime(Math.max(1,slideTo),t0+dur);
+      g.gain.setValueAtTime(0.0001,t0);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,(vol||0.2)*SFX.vol()),t0+0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+      o.connect(g); g.connect(out||ctx.destination);
+      o.start(t0); o.stop(t0+dur+0.05);
+    }catch(e){}
+  },
+  _fxNoiseHit:function(dur,filterType,freq,q,vol,delay,out,sweepTo){
+    try{
+      if(typeof SFX!=="undefined"&&typeof SFX.on==="function"&&!SFX.on()) return;
+      var ctx=SFX.ctx; if(!ctx) return;
+      if(ctx.state==="suspended") ctx.resume();
+      var t0=ctx.currentTime+(delay||0);
+      var src=ctx.createBufferSource(); src.buffer=PROFX._fxNoise(dur+0.05);
+      var f=ctx.createBiquadFilter(); f.type=filterType||"bandpass";
+      f.frequency.setValueAtTime(freq||1000,t0); if(q) f.Q.value=q;
+      if(sweepTo) f.frequency.exponentialRampToValueAtTime(Math.max(10,sweepTo),t0+dur);
+      var g=ctx.createGain();
+      g.gain.setValueAtTime(0.0001,t0);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,(vol||0.4)*SFX.vol()),t0+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+      src.connect(f); f.connect(g); g.connect(out||ctx.destination);
+      src.start(t0); src.stop(t0+dur+0.05);
+    }catch(e){}
+  },
+  _quakeBlast:function(){
+    try{
+      if(typeof SFX==="undefined") return;
+      SFX.init(); if(!SFX.ctx) return;
+      var out=PROFX._fxOut(0.5);
+      PROFX._fxNoiseHit(0.12,"bandpass",2400,0.7,1.0,0,out);
+      PROFX._fxNoiseHit(0.10,"highpass",3000,null,0.5,0,out);
+      PROFX._fxTone(150,0.35,"sine",0.7,40,0,out);
+      PROFX._fxTone(60,1.0,"sine",0.8,28,0.05,out);
+      PROFX._fxNoiseHit(1.3,"lowpass",140,null,0.5,0.08,out);
+      var i; for(i=0;i<6;i++) PROFX._fxNoiseHit(0.03,"bandpass",900+Math.random()*1600,1.5,0.25,0.35+Math.random()*0.9,out);
+    }catch(e){}
+  },
+  _meteorStrike:function(){
+    try{
+      if(typeof SFX==="undefined") return;
+      SFX.init(); if(!SFX.ctx) return;
+      var out=PROFX._fxOut(0.55);
+      PROFX._fxNoiseHit(0.8,"bandpass",400,1.0,0.35,0,out,3200);
+      PROFX._fxNoiseHit(0.35,"bandpass",2600,1.2,0.5,0.75,out,220);
+      PROFX._fxTone(75,1.1,"sine",0.95,24,1.05,out);
+      PROFX._fxNoiseHit(0.8,"lowpass",260,null,0.7,1.05,out);
+      PROFX._fxNoiseHit(1.6,"lowpass",110,null,0.45,1.15,out);
+      var i; for(i=0;i<7;i++) PROFX._fxNoiseHit(0.03,"bandpass",700+Math.random()*1800,1.5,0.28,1.25+Math.random()*1.0,out);
+    }catch(e){}
+  },
+  _cyberGlitch:function(){
+    try{
+      if(typeof SFX==="undefined") return;
+      SFX.init(); if(!SFX.ctx) return;
+      var out=PROFX._fxOut(0.4);
+      var notes=[1200,1800,900,2400,1500,2100,700,3000], i;
+      for(i=0;i<8;i++){
+        PROFX._fxTone(notes[i%notes.length],0.05,"square",0.16,null,i*0.09,out);
+        if(i%3===0) PROFX._fxTone(notes[(i+3)%notes.length],0.04,"triangle",0.12,null,i*0.09+0.04,out);
+      }
+      PROFX._fxTone(200,0.6,"sawtooth",0.18,2400,0.1,out);
+      PROFX._fxTone(55,1.4,"sawtooth",0.12,55,0,out);
+      PROFX._fxTone(110,1.2,"square",0.05,110,0.15,out);
+    }catch(e){}
+  },
+  _fireworkFinale:function(){
+    try{
+      if(typeof SFX==="undefined") return;
+      SFX.init(); if(!SFX.ctx) return;
+      var out=PROFX._fxOut(0.55);
+      var i, j;
+      for(i=0;i<4;i++){
+        var d=i*0.26;
+        PROFX._fxNoiseHit(0.18,"bandpass",1400+Math.random()*800,0.8,0.7,d,out);
+        PROFX._fxTone(500+Math.random()*300,0.22,"sine",0.35,900,d,out);
+      }
+      for(j=0;j<24;j++) PROFX._fxNoiseHit(0.02,"highpass",3500,1,0.14,0.3+Math.random()*1.0,out);
+      PROFX._fxTone(70,1.0,"sine",0.9,30,1.15,out);
+      PROFX._fxNoiseHit(0.7,"lowpass",300,null,0.6,1.15,out);
+      PROFX._fxNoiseHit(0.5,"bandpass",900,0.8,0.4,1.15,out);
+    }catch(e){}
+  },
+  _fxLayer:function(){
+    var l=document.getElementById("fx");
+    if(!l){ l=document.createElement("div"); l.id="fx"; document.body.appendChild(l); }
+    return l;
+  },
+  _fxFlash:function(color,peak,dur){
+    try{
+      var l=PROFX._fxLayer();
+      var f=document.createElement("div"); f.className="fx-flash";
+      if(color) f.style.background=color;
+      l.appendChild(f);
+      var gs=(typeof window.gsap!=="undefined")?window.gsap:null;
+      if(gs){ gs.fromTo(f,{opacity:0},{opacity:peak||0.7,duration:0.07,onComplete:function(){ gs.to(f,{opacity:0,duration:dur||0.5,onComplete:function(){ try{f.remove();}catch(e){} }}); }}); }
+      else { setTimeout(function(){ try{f.remove();}catch(e){} },600); }
+    }catch(e){}
+  },
+  _fxShock:function(x,y,color,maxR){
+    try{
+      var l=PROFX._fxLayer();
+      var r=document.createElement("div"); r.className="fx-shock";
+      var size=20, R=maxR||Math.max(window.innerWidth,window.innerHeight)*0.45;
+      r.style.width=size+"px"; r.style.height=size+"px";
+      r.style.left=(x-size/2)+"px"; r.style.top=(y-size/2)+"px";
+      if(color) r.style.borderColor=color;
+      l.appendChild(r);
+      var gs=(typeof window.gsap!=="undefined")?window.gsap:null;
+      if(gs){ gs.fromTo(r,{width:size,height:size,left:x-size/2,top:y-size/2,opacity:0.95},{width:R*2,height:R*2,left:x-R,top:y-R,opacity:0,duration:0.9,ease:"power2.out",onComplete:function(){ try{r.remove();}catch(e){} }}); }
+      else { setTimeout(function(){ try{r.remove();}catch(e){} },900); }
+    }catch(e){}
+  },
+  _fxCrater:function(x,y,color,size){
+    try{
+      var l=PROFX._fxLayer();
+      var c=document.createElement("div"); c.className="fx-crater";
+      var s=size||240;
+      c.style.width=s+"px"; c.style.height=s+"px";
+      c.style.left=(x-s/2)+"px"; c.style.top=(y-s/2)+"px";
+      if(color) c.style.background="radial-gradient(circle,rgba(251,191,36,.9),"+color+"66 45%,transparent 70%)";
+      l.appendChild(c);
+      var gs=(typeof window.gsap!=="undefined")?window.gsap:null;
+      if(gs){ gs.fromTo(c,{opacity:0,scale:0.5},{opacity:0.9,scale:1,duration:0.25,ease:"power2.out",onComplete:function(){ gs.to(c,{opacity:0,duration:1.4,ease:"power1.in",onComplete:function(){ try{c.remove();}catch(e){} }}); }}); }
+      else { setTimeout(function(){ try{c.remove();}catch(e){} },1600); }
+    }catch(e){}
+  },
+  _fxWash:function(color,peak,dur){
+    try{
+      var l=PROFX._fxLayer();
+      var w=document.createElement("div"); w.className="fx-wash";
+      w.style.background=color||"rgba(34,197,94,0.2)";
+      l.appendChild(w);
+      var gs=(typeof window.gsap!=="undefined")?window.gsap:null;
+      if(gs){ gs.fromTo(w,{opacity:0},{opacity:peak||0.8,duration:0.4,onComplete:function(){ gs.to(w,{opacity:0,duration:dur||1.5,onComplete:function(){ try{w.remove();}catch(e){} }}); }}); }
+      else { setTimeout(function(){ try{w.remove();}catch(e){} },2000); }
+    }catch(e){}
+  },
+  _fxStreaks:function(n){
+    try{
+      var l=PROFX._fxLayer();
+      for(var i=0;i<n;i++){
+        (function(i){
+          var s=document.createElement("div"); s.className="fx-streak";
+          var w=90+Math.random()*130;
+          s.style.width=w+"px";
+          s.style.left=(window.innerWidth*(0.25+Math.random()*0.75))+"px";
+          s.style.top=(-20+Math.random()*window.innerHeight*0.25)+"px";
+          l.appendChild(s);
+          var gs=(typeof window.gsap!=="undefined")?window.gsap:null, delay=i*0.13;
+          if(gs){
+            gs.fromTo(s,{opacity:0,x:0,y:0,rotation:38},{opacity:1,x:-340,y:280,duration:0.75,delay:delay,ease:"power2.in",onComplete:function(){
+              gs.to(s,{opacity:0,duration:0.15,onComplete:function(){ try{s.remove();}catch(e){} }});
+            }});
+          } else { setTimeout(function(){ try{s.remove();}catch(e){} },900); }
+        })(i);
+      }
+    }catch(e){}
+  },
+  _fxMatrixRain:function(durMs){
+    try{
+      var l=PROFX._fxLayer();
+      var cv=document.createElement("canvas"); cv.className="fx-mx";
+      cv.width=window.innerWidth; cv.height=window.innerHeight;
+      l.appendChild(cv);
+      var c2=cv.getContext("2d");
+      var cols=Math.floor(cv.width/18), drops=[], chars="01アイウエオカキクケコサシスセソ0123456789", i;
+      for(i=0;i<cols;i++) drops.push(Math.floor(Math.random()*(cv.height/18)));
+      var start=Date.now(), dur=durMs||2800;
+      function draw(){
+        c2.globalCompositeOperation="destination-out";
+        c2.fillStyle="rgba(0,0,0,0.15)"; c2.fillRect(0,0,cv.width,cv.height);
+        c2.globalCompositeOperation="source-over";
+        c2.font="16px monospace";
+        for(var k=0;k<cols;k++){
+          var ch=chars[Math.floor(Math.random()*chars.length)];
+          c2.fillStyle=Math.random()<0.06?"#bbf7d0":"#22c55e";
+          c2.fillText(ch,k*18,drops[k]*18);
+          if(drops[k]*18>cv.height && Math.random()>0.975) drops[k]=0;
+          drops[k]++;
+        }
+        if(Date.now()-start<dur){ requestAnimationFrame(draw); }
+        else {
+          try{
+            var gs=(typeof window.gsap!=="undefined")?window.gsap:null;
+            if(gs){ gs.to(cv,{opacity:0,duration:0.5,onComplete:function(){ try{cv.remove();}catch(e){} }}); }
+            else { cv.remove(); }
+          }catch(e){}
+        }
+      }
+      requestAnimationFrame(draw);
+    }catch(e){}
+  },
+  _fxFireworkShow:function(){
+    var cols=[["#f59e0b","#fde047","#ef4444"],["#22c55e","#4ade80","#bbf7d0"],["#ec4899","#a855f7","#f472b6"],["#38bdf8","#22d3ee","#a5f3fc"],["#f97316","#fbbf24","#fde68a"]];
+    for(var i=0;i<5;i++){
+      (function(i){
+        setTimeout(function(){
+          try{
+            var o={x:0.15+Math.random()*0.7, y:0.12+Math.random()*0.35};
+            confetti({particleCount:70,spread:100,startVelocity:38,gravity:0.9,ticks:240,origin:o,disableForReducedMotion:true,colors:cols[i%cols.length],shapes:["star","circle"],scalar:1.1});
+            confetti({particleCount:30,spread:60,startVelocity:20,gravity:0.7,ticks:200,origin:o,disableForReducedMotion:true,colors:["#ffffff","#fde68a"],scalar:0.8});
+          }catch(e){}
+        }, i*260);
+      })(i);
+    }
+    setTimeout(function(){
+      try{
+        confetti({particleCount:160,spread:120,startVelocity:48,gravity:0.85,ticks:280,origin:{x:0.5,y:0.3},disableForReducedMotion:true,colors:["#f59e0b","#ef4444","#22c55e","#3b82f6","#a855f7","#ec4899"],shapes:["star","circle"],scalar:1.2});
+        PROFX._fxFlash("#fff",0.55,0.6);
+      }catch(e){}
+    }, 5*260+150);
+  },
+  _fxShakeChat:function(){
+    try{
+      var gs=(typeof window.gsap!=="undefined")?window.gsap:null;
+      var chat=document.getElementById("gChatBox")||document.getElementById("app");
+      if(!gs||!chat) return;
+      gs.killTweensOf(chat);
+      var tl=gs.timeline();
+      for(var i=0;i<10;i++) tl.to(chat,{x:(Math.random()*14-7),y:(Math.random()*10-5),duration:0.06,ease:"none"});
+      tl.to(chat,{x:0,y:0,duration:0.15,ease:"power2.out"});
+    }catch(e){}
+  },
+  fountain:function(el,colors){
+    try{
+      if(!el) return;
+      el.style.overflow="visible";
+      var glow=document.createElement("div"); glow.className="fx-glow"; el.appendChild(glow);
+      var rays=document.createElement("div"); rays.className="fx-rays"; el.appendChild(rays);
+      var gs=(typeof window.gsap!=="undefined")?window.gsap:null;
+      if(gs){
+        gs.fromTo(glow,{scale:.3,opacity:.95},{scale:2.4,opacity:0,duration:.9,ease:"power2.out",onComplete:function(){try{glow.remove();}catch(e){}}});
+        gs.fromTo(rays,{scale:.4,opacity:.7,rotation:0},{scale:1.8,opacity:0,rotation:70,duration:1.1,ease:"power2.out",onComplete:function(){try{rays.remove();}catch(e){}}});
+      } else { setTimeout(function(){try{glow.remove();rays.remove();}catch(e){}},1000); }
+      if(window.confetti){
+        var o=(typeof GFX!=="undefined"&&GFX.originOf)?GFX.originOf(el,0.4):{x:0.5,y:0.4};
+        var base={particleCount:45,spread:70,startVelocity:42,gravity:.9,ticks:200,origin:o,disableForReducedMotion:true,colors:colors};
+        confetti(base);
+        setTimeout(function(){ try{ confetti({particleCount:30,spread:90,startVelocity:35,gravity:.9,ticks:200,origin:o,disableForReducedMotion:true,colors:colors}); }catch(e){} },160);
+      }
+    }catch(e){}
+  },
+  fountainColors:function(perm){
+    var map={meteor_shower:["#ffffff","#fde68a","#a78bfa","#f59e0b"],earthquake:["#ffffff","#fde68a","#ef4444","#f97316"],matrix_rain:["#ffffff","#bbf7d0","#22c55e","#4ade80"],fireworks:["#ffffff","#fde68a","#f59e0b","#ec4899","#22c55e"]};
+    if(map[perm]) return map[perm];
+    try{ var f=(typeof GFX!=="undefined"&&GFX.FX)?GFX.FX[perm]:null; if(f){ var c=f[2]; if(typeof c==="string") return ["#ffffff",c]; if(c&&c.length) return ["#ffffff"].concat(c.slice(0,3)); } }catch(e){}
+    return ["#ffffff","#fde68a","#f59e0b"];
+  },
+  spectacle:function(perm,el){
+    try{
+      if(!el) return;
+      var r=el.getBoundingClientRect();
+      var cx=r.left+r.width/2, cy=r.top+r.height/2;
+      if(perm==="earthquake"){
+        PROFX._fxShakeChat();
+        PROFX._fxShock(cx,cy,"rgba(255,255,255,.95)");
+        setTimeout(function(){ PROFX._fxShock(cx,cy,"rgba(239,68,68,.8)",Math.max(window.innerWidth,window.innerHeight)*0.35); },140);
+        try{ if(window.confetti) confetti({particleCount:60,spread:90,startVelocity:26,gravity:1.1,ticks:220,origin:GFX.originOf(el,0.6),disableForReducedMotion:true,colors:["#a8a29e","#78716c","#ef4444","#f59e0b"],shapes:["circle","square"],scalar:0.9}); }catch(e){}
+      } else if(perm==="meteor_shower"){
+        PROFX._fxStreaks(6);
+        setTimeout(function(){
+          PROFX._fxFlash("#fff",0.75,0.6);
+          PROFX._fxCrater(cx,cy,"#f59e0b",260);
+          PROFX._fxShock(cx,cy,"rgba(253,230,138,.95)");
+          try{ if(window.confetti) confetti({particleCount:90,spread:100,startVelocity:40,gravity:1.0,ticks:240,origin:GFX.originOf(el,0.5),disableForReducedMotion:true,colors:["#f59e0b","#f97316","#ef4444","#fde68a","#a78bfa"],shapes:["circle","square","star"],scalar:1.0}); }catch(e){}
+        },950);
+      } else if(perm==="matrix_rain"){
+        PROFX._fxMatrixRain(2800);
+        PROFX._fxWash("rgba(34,197,94,0.20)",0.9,2.6);
+        try{ if(window.confetti) confetti({particleCount:50,spread:70,startVelocity:18,gravity:0.7,ticks:280,origin:{x:0.5,y:0.05},disableForReducedMotion:true,colors:["#22c55e","#4ade80","#bbf7d0"],shapes:[GFX.glyphShape("0"),GFX.glyphShape("1")]}); }catch(e){}
+      } else if(perm==="fireworks"){
+        PROFX._fxFireworkShow();
+      }
+      /* Other 96 abilities: the light fountain (above) + the existing PROFX.burst
+         (tsParticles, kind-based) + GFX.play motion already cover them; no extra
+         full-screen spectacle, to avoid visual noise on every power. */
+    }catch(e){}
   }
 };
 
