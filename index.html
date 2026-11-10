@@ -283,6 +283,8 @@ input[type=range].rng{ width:100%; accent-color:var(--acc); }
 
 /* چت پیش‌ساخت */
 .chatbox{ display:flex; flex-direction:column; gap:10px; min-height:220px; }
+/* v10.4.10 — group chat takes most of the screen (was a tiny box). */
+#gChatBox{ min-height:55vh; max-height:calc(100vh - 250px); overflow-y:auto; }
 .msg{ max-width:82%; padding:10px 14px; border-radius:16px; font-size:14px; }
 .msg.them{ background:var(--surface2); border:1px solid var(--line); align-self:flex-start; border-bottom-right-radius:4px; }
 .msg.me{ background:var(--acc); color:#fff; align-self:flex-end; border-bottom-left-radius:4px; }
@@ -335,8 +337,12 @@ input[type=range].rng{ width:100%; accent-color:var(--acc); }
 .stat-num{ font-size:27px; font-weight:800; color:var(--acc); line-height:1.3; }
 .small{ font-size:12.5px; color:var(--ink2); }
 .empty{ text-align:center; color:var(--ink2); padding:26px 10px; font-size:14px; }
-.listrow{ display:flex; align-items:center; gap:12px; padding:12px 13px; border:1px solid var(--line); border-radius:12px; background:var(--surface); margin-bottom:9px; }
-.listrow .grow{ min-width:0; }
+.listrow{ display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:12px 13px; border:1px solid var(--line); border-radius:12px; background:var(--surface); margin-bottom:9px; }
+.listrow .grow{ flex:1 1 180px; min-width:180px; }
+/* v10.4.10 — Latin tokens (username/role/invite code) never break per
+   character: they stay on one line and ellipsis-truncate if the row is
+   truly too narrow, instead of stacking one letter per line. */
+.latintok{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; display:inline-block; vertical-align:bottom; }
 .listrow .btn{ flex-shrink:0; }
 #permOverlay .listrow .btn{ max-width:46%; white-space:normal; text-align:center; line-height:1.5; }
 @media (max-width:400px){ #permOverlay .listrow{ flex-wrap:wrap; } #permOverlay .listrow .grow{ flex:1 1 100%; } #permOverlay .listrow .btn{ flex:1 1 100%; max-width:100%; justify-content:center; } }
@@ -1630,6 +1636,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
 .map-stale{ filter:grayscale(1); opacity:.65; }
 .map-pin{ width:18px; height:18px; border-radius:50%; background:var(--acc); border:2px solid #fff; box-shadow:0 0 0 2px var(--acc); }
 .map-pin.me{ background:var(--acc2); box-shadow:0 0 0 2px var(--acc2); }
+.map-pin.stale{ background:#9a9a9a; box-shadow:0 0 0 2px #9a9a9a; }
+.map-label.stale{ opacity:.75; }
 .map-divicon{ background:transparent; border:none; }
 .map-label{ font-size:11px; font-weight:700; line-height:1.4; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:2px 6px; }
 .map-live-badge{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; border:1px solid var(--line); border-radius:999px; padding:4px 10px; }
@@ -3575,27 +3583,14 @@ function openMembers(gid){
      flow, never a dump. */
   var body='<h3 style="margin-bottom:6px">' + TR('k1126','اعضای «')+esc(name)+'»</h3>';
   body+='<h3 style="margin:12px 0 6px">'+TR('k2758','اعضای کنونی گروه')+'</h3><div id="omMembers"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div>';
-  body+='<h3 style="margin:14px 0 6px">'+TR('k2756','افزودن با نام کاربری')+'</h3><p class="small">'+TR('k2757','نام کاربری دست‌کم ۳ نویسه است')+'.</p><div class="rowflex"><input class="inp grow" id="omUser" dir="ltr" placeholder="username"><button class="btn sm" onclick="doMemberSearch(\''+esc(String(gid))+'\')">'+TR('k2724','جست‌وجو')+'</button></div><div id="omResults" style="margin-top:10px"></div>';
+  body+='<h3 style="margin:14px 0 6px">'+TR('k2756','افزودن با نام کاربری')+'</h3><p class="small">'+TR('k2757','نام کاربری دست‌کم ۳ نویسه است')+'.</p><p class="small">'+TR('k2825','نام کاربری کامل را بنویسید؛ فقط تطابق دقیق نشان داده می‌شود، نه فهرست')+'.</p><div class="rowflex"><input class="inp grow" id="omUser" dir="ltr" placeholder="username"><button class="btn sm" onclick="doMemberSearch(\''+esc(String(gid))+'\')">'+TR('k2724','جست‌وجو')+'</button></div><div id="omResults" style="margin-top:10px"></div>';
   if(og&&og.invite_code){
     body+='<h3 style="margin:14px 0 6px">'+TR('k2759','ارسال کد دعوت')+'</h3><div class="rowflex"><span class="subkey">'+keyCodeHTML(og.invite_code)+'</span><button class="btn ghost sm" onclick="copyText(\''+esc(og.invite_code)+'\')">'+TR('k1500','کپی کلید')+'</button></div>';
   }
-  if(ownerMode){
-    var pool=(S.people||[]);
-    body+='<h3 style="margin:14px 0 6px">'+TR('k1128','هرکدام از افراد ثبت‌شده را به این گروه اضافه یا از آن حذف کنید')+'</h3>';
-    if(!pool.length) body+='<p class="small">'+TR('k1130','هنوز فردی ثبت نشده است؛ اول از «پنل مالک» یا «پنل مشاور» افراد را با نام واقعی‌شان ثبت کنید')+'.</p>';
-    body+=pool.map(function(p){
-      var un=p.username||"";
-      return '<div class="listrow"><div class="avatar" style="width:36px;height:36px;font-size:13px">'+esc(p.name.charAt(0))+'</div><div class="grow"><b>'+esc(p.name)+'</b>'+(un?' <span dir="ltr">@'+esc(un)+'</span>':'')+'<div class="small">'+esc(p.role)+(p.field?" — "+esc(p.field):"")+'</div></div>'+(un?'<button class="btn sm" onclick="inviteUserToGroup(\''+esc(un)+'\',\''+esc(String(gid))+'\')">'+TR('k1131','افزودن به گروه')+'</button>':'<span class="small">'+TR('k2733','نام کاربری برای همه به‌جز مالک الزامی است')+'</span>')+'</div>';
-    }).join("");
-  } else if(adminMode && !ownerMode){
-    var own=(S.people||[]).filter(function(p){return p.advisorId===adminWho;});
-    body+='<h3 style="margin:14px 0 6px">'+TR('k1127','فقط دانش‌آموزان زیر نظر خودتان را می‌توانید به گروه اضافه کنید؛ افراد دیگران اینجا نمایش داده نمی‌شوند')+'</h3>';
-    if(!own.length) body+='<p class="small">'+TR('k1129','هنوز دانش‌آموزی زیر نظر شما نیست؛ اول از پنل مشاور دانش‌آموز ثبت کنید یا اختصاص بدهید')+'.</p>';
-    body+=own.map(function(p){
-      var un=p.username||"";
-      return '<div class="listrow"><div class="avatar" style="width:36px;height:36px;font-size:13px">'+esc(p.name.charAt(0))+'</div><div class="grow"><b>'+esc(p.name)+'</b>'+(un?' <span dir="ltr">@'+esc(un)+'</span>':'')+'</div>'+(un?'<button class="btn sm" onclick="inviteUserToGroup(\''+esc(un)+'\',\''+esc(String(gid))+'\')">'+TR('k1131','افزودن به گروه')+'</button>':'')+'</div>';
-    }).join("");
-  }
+  /* v10.4.10 PRIVACY (Parsa 20:24): NO list of people to pick from —
+     not even the owner's own registered people. A member is added ONLY
+     by typing the FULL exact username (search above) or by the invite
+     code. The owner-pool and advisor-pool lists are REMOVED. */
   body+='<div class="rowflex" style="margin-top:10px"><button class="btn ghost grow" style="justify-content:center" onclick="closeModal()">' + TR('k0363','بستن') + '</button></div>';
   openModal(body);
   loadOpenMembers(gid);
@@ -3642,6 +3637,11 @@ function doMemberSearch(gid){
       if(!box) return false;
       if(res.error){ box.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; return false; }
       var rows=Array.isArray(res.data)?res.data:[];
+      /* v10.4.10 — exact match ONLY, one row max: the server returns exact
+         matches only, but a username can arrive twice (person + account
+         rows), so dedupe and never render more than the one exact row. */
+      rows=rows.filter(function(r){ return String(r.username||"").toLowerCase()===q.toLowerCase(); });
+      var _seenU={}; rows=rows.filter(function(r){ var _k=String(r.username||"").toLowerCase(); if(!_k||_seenU[_k]) return false; _seenU[_k]=true; return true; });
       if(!rows.length){ box.innerHTML='<p class="small">'+TR('k2725','کاربر پیدا نشد')+'.</p>'; return false; }
       box.innerHTML=rows.map(function(r){
         return '<div class="listrow"><div class="grow"><b>'+esc(r.display_name||r.username)+'</b> <span dir="ltr">@'+esc(r.username||"")+'</span></div><button class="btn sm" onclick="inviteUserToGroup(\''+esc(String(r.username||""))+'\',\''+esc(String(gid))+'\')"> '+TR('k2726','دعوت به گروه')+'</button></div>';
@@ -4190,8 +4190,9 @@ function renderHomeOnly(){ if(curView==="home") go("home"); }
    4. Usernames: every person except the owner has an English username,
       assigned by the owner at registration; search + group-owner invite. */
 Object.assign(I18N_EN,{"k2700":"Groups map","k2701":"Add to Home","k2703":"Removed from Home","k2704":"Section added to Home","k2705":"Section removed from Home","k2706":"Real map — live member positions from the server","k2707":"Offline — no map tiles; positions are plotted from real GPS on a relative grid","k2708":"Location not shared","k2709":"You","k2710":"Refresh map","k2711":"Share my location","k2712":"No groups yet","k2713":"Create or join a group first to see the map","k2714":"Distance from","k2715":"Live voice chat with the group","k2716":"Members’ exact positions on the real map","k2717":"Username (English)","k2718":"Enter the English username","k2719":"Username must start with an English letter and contain only letters, digits and _ (3–30 characters)","k2720":"Username is taken","k2721":"No username","k2722":"Set username","k2723":"Search by username","k2724":"Search","k2725":"No user found","k2726":"Invite to group","k2727":"Invited to the group","k2728":"Not invited yet; this person has no online account — send them the invite link","k2729":"Invite code","k2730":"Groups","k2731":"Role","k2733":"A username is required for everyone except the owner","k2734":"Could not register on the server; the username is taken","k2735":"Members","k2736":"Exact location","k2737":"m","k2738":"km","k2739":"Home layout","k2740":"Home layout test","k2741":"Username search (test)","k2742":"Invite by username (test)","k2743":"Username uniqueness (test)","k2744":"Map live location (test)","k2745":"Remove test member from group","k2746":"Restore Home layout","k2747":"Super users must also have a username"});
+Object.assign(I18N_EN,{"k2810":"Online groups test","k2811":"This test checks every group capability with test data; all test data is deleted afterwards.","k2812":"Edit group (test)","k2813":"Join by invite code (test)","k2814":"Join with wrong code (test)","k2815":"Set role (test)","k2816":"Group message (test)","k2817":"Poll (test)","k2818":"Group announcement (test)","k2819":"Group task (test)","k2820":"Group event (test)","k2821":"Map group","k2822":"Choose a group to view on the map","k2823":"Stale location","k2824":"Owner signature invalid; sync from the owner panel","k2825":"Type the full username; only an exact match is shown, never a list","k2826":"My live location","k2827":"Live location stopped","k2828":"Owner location sharing","k2829":"Group test"});
 Object.assign(I18N_EN,{"k2750":"Log in online first to use online chat","k2751":"The map needs the internet; locations are not fresh","k2752":"Live — locations from the server","k2753":"Locations are stale — offline","k2754":"Not connected to the server; locations could not be loaded","k2755":"Last updated","k2756":"Add by username","k2757":"Username must be at least 3 characters","k2758":"Current group members","k2759":"Share the invite code","k2760":"Create or select an online group first","k2761":"Owner location sharing needs a new server function","k2762":"Server stats","k2763":"Stats could not be loaded from the server","k2764":"Refresh stats","k2765":"All groups (owner)","k2766":"Edit group","k2767":"Group name","k2768":"Save changes","k2771":"Accounts","k2772":"Registered people","k2773":"Keys","k2774":"Active keys","k2775":"Revoked keys","k2776":"Super keys","k2777":"Groups","k2778":"Members","k2779":"Messages","k2780":"Points","k2781":"Super users","k2782":"By group","k2783":"Nobody has shared a location yet","k2784":"Map","k2785":"View chat","k2786":"View advisor chats","k2787":"View polls","k2788":"Set points","k2789":"Points","k2790":"Owner read of group tasks/events is not on the server yet","k2791":"Owner supervision","k2792":"Delete message","k2793":"Close poll","k2794":"Delete poll","k2795":"Points saved","k2796":"Poll closed","k2797":"Poll deleted","k2798":"Message deleted","k2799":"Group updated","k2800":"The owner can change everything here","k2801":"Personal data stays private; only counts sync to the server"});
-var APP_VERSION="10.4.9";
+var APP_VERSION="10.4.10";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -4239,7 +4240,10 @@ function groupMapMarkersFor(group, members, locations){
     seen[key]=true;
     var loc=(m.uid&&byUid[String(m.uid)])||byName[String(m.name||"").toLowerCase()]||null;
     if(loc&&isFinite(+loc.lat)&&isFinite(+loc.lng)){
-      markers.push({uid:m.uid||"",name:m.name,username:m.username||"",lat:+loc.lat,lng:+loc.lng,isViewer:!!m.isViewer,updatedAt:loc.updated_at||""});
+      /* v10.4.10 LIVE: a position older than 5 minutes is STALE — it is
+         shown greyed with a stale tag, never presented as live. */
+      var _ageMin=loc.updated_at?(Date.now()-new Date(loc.updated_at).getTime())/60000:0;
+      markers.push({uid:m.uid||"",name:m.name,username:m.username||"",lat:+loc.lat,lng:+loc.lng,isViewer:!!m.isViewer,updatedAt:loc.updated_at||"",stale:_ageMin>5});
     }else{
       unlocated.push({uid:m.uid||"",name:m.name,username:m.username||"",isViewer:!!m.isViewer});
     }
@@ -4269,6 +4273,7 @@ function groupMapMarkersFor(group, members, locations){
    GPS coords, including the viewer ("شما"). No schematic positions here. */
 function groupMapLeafletLabel(mk){
   var label=esc(mk.name)+(mk.username?' <span class="uname">@'+esc(mk.username)+'</span>':'')+(mk.isViewer?' <span class="gmap-me">('+TR('k2709','شما')+')</span>':'');
+  if(mk.stale) label+=' <span class="stale-tag">('+TR('k2823','مکان قدیمی است')+')</span>';
   return label+'<br><span dir="ltr">'+mk.lat.toFixed(5)+', '+mk.lng.toFixed(5)+'</span>';
 }
 function groupMapGroups(){
@@ -4350,14 +4355,26 @@ function groupMapLoad(groupId){
     return OG.mapLocations[gid];
   }
   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(gid)){ state('nogroup'); return Promise.resolve((OG.mapLocations||{})[gid]||[]); }
+  /* v10.4.10 — offline at entry: the server was already known-unreachable
+     (SB.serverOk false) when the feed was requested. Say "needs internet",
+     not "not connected": the cached markers are shown greyed, never as
+     live. A feed failure mid-call (server reachable) stays 'error'. */
+  if(SB.serverOk===false){ state('offline'); return Promise.resolve((OG.mapLocations||{})[gid]||[]); }
   if(ownerMode){
     return ownerSig().then(function(sig){
       if(!sig){ state('unauth'); return (OG.mapLocations||{})[gid]||[]; }
-      return sbRpc("owner_list_group_locations",{p_group_id:gid,p_sig:sig}).then(function(res){
-        if(res.error||!Array.isArray(res.data)){ state('error'); return (OG.mapLocations||{})[gid]||[]; }
-        var rows=store(res.data);
-        state(rows.length?'ok':'empty');
-        return rows;
+      /* v10.4.10 — tell "sig invalid" from "no locations": the feed RPC
+         returns [] for both, so check the sig first (owner_sig_ok is
+         granted to anon since v10.4.10). A call error (old server without
+         the grant) falls through to the feed call itself. */
+      return sbRpc("owner_sig_ok",{p_sig:sig}).then(function(okRes){
+        if(okRes.data===false){ state('sigbad'); return (OG.mapLocations||{})[gid]||[]; }
+        return sbRpc("owner_list_group_locations",{p_group_id:gid,p_sig:sig}).then(function(res){
+          if(res.error||!Array.isArray(res.data)){ state('error'); return (OG.mapLocations||{})[gid]||[]; }
+          var rows=store(res.data);
+          state(rows.length?'ok':'empty');
+          return rows;
+        });
       });
     }).catch(function(){ state('error'); return (OG.mapLocations||{})[gid]||[]; });
   }
@@ -4369,6 +4386,7 @@ function groupMapLoad(groupId){
     return rows;
   }).catch(function(){ state('error'); return (OG.mapLocations||{})[gid]||[]; });
 }
+
 function groupMapLoadAll(){
   var gs=groupMapGroups();
   if(!gs.length) return Promise.resolve([]);
@@ -4384,54 +4402,85 @@ function groupMapDestroyAll(){
   OG._leafletMaps={};
 }
 function groupMapFeedState(gid){ return (OG._mapFeedState||{})[String(gid)]||'empty'; }
+/* v10.4.10 — ONE source of truth for the map connection state: the
+   SELECTED group's feed state. The top pill and the group card badge
+   both render the same state, so they can never contradict each other. */
+function groupMapStateText(st){
+  switch(st){
+    case 'ok': return {off:false, text:TR('k2752','زنده — موقعیت‌ها از سرور')};
+    case 'empty': return {off:false, text:TR('k2752','زنده — موقعیت‌ها از سرور')};
+    case 'sigbad': return {off:true, text:TR('k2824','امضای مالک معتبر نیست؛ از پنل مالک همگام‌سازی کنید')};
+    case 'offline': return {off:true, text:TR('k2751','نقشه به اینترنت نیاز دارد؛ موقعیت‌ها به‌روز نیستند')};
+    default: return {off:true, text:TR('k2754','به سرور متصل نیست؛ موقعیت‌ها بارگذاری نشدند')};
+  }
+}
+function groupMapSelectedGroup(){
+  var gs=groupMapGroups();
+  if(!gs.length) return null;
+  var sel=OG._mapSelectedGroup?gs.filter(function(g){ return String(g.id)===String(OG._mapSelectedGroup); })[0]:null;
+  if(sel) return sel;
+  /* Default: the group currently open in the group section, else the first group. */
+  if(OG.sel){ var cur=gs.filter(function(g){ return String(g.id)===String(OG.sel.id); })[0]; if(cur){ OG._mapSelectedGroup=String(cur.id); return cur; } }
+  OG._mapSelectedGroup=String(gs[0].id);
+  return gs[0];
+}
+function groupMapSelectGroup(gid){
+  OG._mapSelectedGroup=String(gid||"");
+  try{ groupMapDestroyAll(); }catch(e){}
+  groupMapRenderSelected();
+}
 function groupMapPaintState(){
   groupMapOGInit();
-  var live=!!SB.serverOk;
+  var g=groupMapSelectedGroup();
+  var st=g?groupMapFeedState(g.id):'empty';
+  var info=groupMapStateText(st);
   var hs=$("mapLiveState");
-  if(hs){ hs.classList.toggle("off",!live); hs.innerHTML='<span class="dot"></span>'+(live?TR('k2752','زنده — موقعیت‌ها از سرور'):TR('k2751','نقشه به اینترنت نیاز دارد؛ موقعیت‌ها به‌روز نیستند')); }
+  if(hs){ hs.classList.toggle("off",info.off); hs.innerHTML='<span class="dot"></span>'+info.text; }
   var up=$("mapUpdated");
   if(up){ up.textContent=OG._mapLastFetch?TR('k2755','آخرین به‌روزرسانی')+': '+new Date(OG._mapLastFetch).toLocaleTimeString("fa-IR",{hour:"2-digit",minute:"2-digit",second:"2-digit"}):''; }
   var tw=$("mapTilesWarn");
   if(tw){ tw.style.display=(OG._tilesOk===false)?'block':'none'; }
   Object.keys(OG._leafletMaps||{}).forEach(function(gid){
     var badge=$("mapLive-"+gid); if(!badge) return;
-    var st=groupMapFeedState(gid);
-    var stale=!live||st==='error'||st==='unauth'||st==='nogroup';
-    badge.classList.toggle("off",stale);
-    badge.innerHTML='<span class="dot"></span>'+(stale?(st==='error'||st==='unauth'||st==='nogroup'?TR('k2754','به سرور متصل نیست؛ موقعیت‌ها بارگذاری نشدند'):TR('k2753','موقعیت‌ها قدیمی‌اند — آفلاین')):TR('k2752','زنده — موقعیت‌ها از سرور'));
-    /* v10.4.9 — keep the map greying in sync with connectivity: the stale
-       class is set at render time and would otherwise stay greyed after
-       the server comes back. */
-    var rm=document.getElementById("rmap-"+gid); if(rm) rm.classList.toggle("map-stale",stale);
+    var gst=groupMapFeedState(gid);
+    var ginfo=groupMapStateText(gst);
+    badge.classList.toggle("off",ginfo.off);
+    badge.innerHTML='<span class="dot"></span>'+ginfo.text;
+    var rm=document.getElementById("rmap-"+gid); if(rm) rm.classList.toggle("map-stale",ginfo.off);
   });
 }
+
 function groupMapGroupHTML(g){
   groupMapOGInit();
   var res=groupMapMarkersFor(g, groupMapMembersFor(g), (OG.mapLocations||{})[String(g.id)]||[]);
   var st=groupMapFeedState(g.id);
-  var stale=!SB.serverOk||st==='error'||st==='unauth'||st==='nogroup';
+  var info=groupMapStateText(st);
   var h='<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("groupmap")+'</span>'+esc(g.name)+'</h3>';
-  h+='<div style="margin-bottom:8px"><span id="mapLive-'+esc(String(g.id))+'" class="map-live-badge'+(stale?' off':'')+'"><span class="dot"></span>'+(stale?TR('k2754','به سرور متصل نیست؛ موقعیت‌ها بارگذاری نشدند'):TR('k2752','زنده — موقعیت‌ها از سرور'))+'</span></div>';
-  if(st==='error'||st==='unauth'){
+  h+='<div style="margin-bottom:8px"><span id="mapLive-'+esc(String(g.id))+'" class="map-live-badge'+(info.off?' off':'')+'"><span class="dot"></span>'+info.text+'</span></div>';
+  if(st==='sigbad'){
+    h+='<p class="small">'+TR('k2824','امضای مالک معتبر نیست؛ از پنل مالک همگام‌سازی کنید')+'.</p><div class="rowflex"><button class="btn sm" onclick="SB.syncOwnerSecret()">'+TR('k2559','همگام‌سازی رمز مالک با سرور')+'</button><button class="btn ghost sm" onclick="groupMapRefresh()">'+TR('k2710','تازه‌سازی نقشه')+'</button></div>';
+  } else if(st==='error'||st==='unauth'){
     h+='<p class="small">'+TR('k2754','به سرور متصل نیست؛ موقعیت‌ها بارگذاری نشدند')+'.</p><div class="rowflex"><button class="btn sm" onclick="groupMapRefresh()">'+TR('k2710','تازه‌سازی نقشه')+'</button></div>';
   } else if(st==='nogroup'){
     h+='<p class="small">'+TR('k2754','به سرور متصل نیست؛ موقعیت‌ها بارگذاری نشدند')+'.</p>';
   }
-  h+='<div class="realmap'+(stale?' map-stale':'')+'" id="rmap-'+esc(String(g.id))+'"></div>';
+  h+='<div class="realmap'+(info.off?' map-stale':'')+'" id="rmap-'+esc(String(g.id))+'"></div>';
   if(st==='empty'||(st==='ok'&&!res.markers.length)) h+='<p class="small" style="margin-top:8px">'+TR('k2783','هنوز کسی مکان به اشتراک نگذاشته است')+'.</p>';
   if(res.unlocated.length){
     h+='<h3 style="margin:12px 0 6px">'+TR('k2708','مکان به اشتراک گذاشته نشده')+'</h3>'
       +res.unlocated.map(function(u){
-        return '<div class="listrow"><div class="grow"><b>'+esc(u.name)+'</b>'+(u.username?' <span dir="ltr">@'+esc(u.username)+'</span>':'')+(u.isViewer?' <span class="gmap-me">('+TR('k2709','شما')+')</span>':'')+'</div><span class="small">'+TR('k2708','مکان به اشتراک گذاشته نشده')+'</span></div>';
+        return '<div class="listrow"><div class="grow"><b class="latintok">'+esc(u.name)+'</b>'+(u.username?' <span dir="ltr" class="latintok">@'+esc(u.username)+'</span>':'')+(u.isViewer?' <span class="gmap-me">('+TR('k2709','شما')+')</span>':'')+'</div><span class="small">'+TR('k2708','مکان به اشتراک گذاشته نشده')+'</span></div>';
       }).join("");
   }
   h+='</div>';
   return h;
 }
+
 function groupMapAddMarker(entry, mk){
-  var icon=L.divIcon({className:'map-divicon',html:'<div class="map-pin'+(mk.isViewer?' me':'')+'"></div>',iconSize:[18,18],iconAnchor:[9,9]});
+  var icon=L.divIcon({className:'map-divicon',html:'<div class="map-pin'+(mk.isViewer?' me':'')+(mk.stale?' stale':'')+'"></div>',iconSize:[18,18],iconAnchor:[9,9]});
   var m=L.marker([mk.lat,mk.lng],{icon:icon});
-  m.bindTooltip(groupMapLeafletLabel(mk),{permanent:true,direction:'top',offset:[0,-12],className:'map-label'});
+  m.bindTooltip(groupMapLeafletLabel(mk),{permanent:true,direction:'top',offset:[0,-12],className:'map-label'+(mk.stale?' stale':'')});
+  m._stale=!!mk.stale;
   m.bindPopup(groupMapLeafletLabel(mk)+(mk.updatedAt?'<br><span class="small">'+esc(mk.updatedAt)+'</span>':''));
   m.addTo(entry.map);
   return m;
@@ -4465,7 +4514,11 @@ function groupMapRefreshMarkers(){
     var seen={};
     res.markers.forEach(function(mk){
       var key=String(mk.uid||mk.name); seen[key]=true;
-      if(entry.markers[key]){ entry.markers[key].setLatLng([mk.lat,mk.lng]); entry.markers[key].setTooltipContent(groupMapLeafletLabel(mk)); }
+      if(entry.markers[key]){
+        entry.markers[key].setLatLng([mk.lat,mk.lng]);
+        entry.markers[key].setTooltipContent(groupMapLeafletLabel(mk));
+        if(!!entry.markers[key]._stale!==!!mk.stale){ try{ entry.map.removeLayer(entry.markers[key]); }catch(e){} entry.markers[key]=groupMapAddMarker(entry,mk); }
+      }
       else { entry.markers[key]=groupMapAddMarker(entry,mk); }
     });
     Object.keys(entry.markers).forEach(function(key){ if(!seen[key]){ try{ entry.map.removeLayer(entry.markers[key]); }catch(e){} delete entry.markers[key]; } });
@@ -4476,34 +4529,51 @@ function renderGroupMap(v){
   groupMapOGInit();
   try{ if(OG._mapPoll){ clearInterval(OG._mapPoll); OG._mapPoll=null; } }catch(e){}
   try{ groupMapDestroyAll(); }catch(e){}
-  var h=vhead(TR('k2700','نقشه گروه‌ها'), TR('k2784','نقشه')+" — "+TR('k2752','زنده — موقعیت‌ها از سرور')+".", '<button class="btn ghost sm" onclick="groupMapRefresh()">'+TR('k2710','تازه‌سازی نقشه')+'</button>');
-  h+='<div class="card"><div class="rowflex" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><span id="mapLiveState" class="map-live-badge'+(SB.serverOk?'':' off')+'"><span class="dot"></span>'+(SB.serverOk?TR('k2752','زنده — موقعیت‌ها از سرور'):TR('k2751','نقشه به اینترنت نیاز دارد؛ موقعیت‌ها به‌روز نیستند'))+'</span><span id="mapUpdated" class="small"></span></div>'
-    +'<p class="small" id="mapTilesWarn" style="display:none;margin-top:8px">'+TR('k2751','نقشه به اینترنت نیاز دارد؛ موقعیت‌ها به‌روز نیستند')+'.</p>'
-    +'<div class="rowflex" style="margin-top:10px"><button class="btn sm" onclick="OG.shareMyLocation()">'+TR('k2711','اشتراک مکان من')+'</button><button class="btn ghost sm" onclick="openUserSearch()">'+TR('k2723','جست‌وجوی نام کاربری')+'</button><button class="btn ghost sm" onclick="groupMapRefresh()">'+TR('k2710','تازه‌سازی نقشه')+'</button></div></div>';
   var gs=groupMapGroups();
+  var selG=groupMapSelectedGroup();
+  var h=vhead(TR('k2700','نقشه گروه‌ها'), TR('k2784','نقشه')+" — "+TR('k2752','زنده — موقعیت‌ها از سرور')+".", '<button class="btn ghost sm" onclick="groupMapRefresh()">'+TR('k2710','تازه‌سازی نقشه')+'</button>');
+  h+='<div class="card"><div class="rowflex" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><span id="mapLiveState" class="map-live-badge off"><span class="dot"></span>'+TR('k2754','به سرور متصل نیست؛ موقعیت‌ها بارگذاری نشدند')+'</span><span id="mapUpdated" class="small"></span></div>'
+    +'<p class="small" id="mapTilesWarn" style="display:none;margin-top:8px">'+TR('k2751','نقشه به اینترنت نیاز دارد؛ موقعیت‌ها به‌روز نیستند')+'.</p>'
+    /* v10.4.10 — group selector: the map shows the SELECTED group only. */
+    +'<div class="field" style="margin-top:10px"><label>'+TR('k2821','گروه نقشه')+'</label><select class="inp" id="mapGroupSel" onchange="groupMapSelectGroup(this.value)">'+gs.map(function(g){ return '<option value="'+esc(String(g.id))+'"'+(selG&&String(selG.id)===String(g.id)?' selected':'')+'>'+esc(g.name||g.id)+'</option>'; }).join("")+'</select><p class="small">'+TR('k2822','گروهی را برای دیدن روی نقشه انتخاب کنید')+'.</p></div>'
+    +'<div class="rowflex" style="margin-top:10px"><button class="btn sm" onclick="OG.shareMyLocation()">'+TR('k2711','اشتراک مکان من')+'</button><button class="btn ghost sm" onclick="openUserSearch()">'+TR('k2723','جست‌وجوی نام کاربری')+'</button><button class="btn ghost sm" onclick="groupMapRefresh()">'+TR('k2710','تازه‌سازی نقشه')+'</button></div></div>';
+  h+='<div id="mapGroupCard"></div>';
   if(!gs.length){
     h+='<div class="card" style="margin-top:14px"><p class="small">'+TR('k2713','برای دیدن نقشه، اول گروه بسازید یا به گروهی بپیوندید')+'.</p></div>';
-  }else{
-    gs.forEach(function(g){ h+=groupMapGroupHTML(g); });
   }
   v.innerHTML=h;
   /* Fetch on open (groups first for the owner, then the live feed), init
-     the real maps, then poll the feed every 30s while the map stays open
-     and update the markers in place. */
-  var beforeN=gs.length;
+     the real map, then poll the feed every 20s while the map stays open
+     and update the markers in place (LIVE location). */
   var afterGroups=(SB.groupOnline()?OG.loadMine().catch(function(){ return null; }):Promise.resolve(null));
-  afterGroups.then(function(){ return groupMapLoadAll(); }).then(function(){
+  afterGroups.then(function(){
     if(curView!=="groupmap") return;
     var now=groupMapGroups();
-    if(now.length!==beforeN){ go("groupmap"); return; }
-    now.forEach(function(g){ groupMapInitOne(g); });
-    groupMapPaintState();
+    if(!now.length) return;
+    var selEl=$("mapGroupSel");
+    if(selEl){ var sg2=groupMapSelectedGroup(); selEl.innerHTML=now.map(function(g){ return '<option value="'+esc(String(g.id))+'"'+(sg2&&String(sg2.id)===String(g.id)?' selected':'')+'>'+esc(g.name||g.id)+'</option>'; }).join(""); }
+    groupMapRenderSelected();
   }).catch(function(){});
   OG._mapPoll=setInterval(function(){
     if(curView!=="groupmap"){ try{ clearInterval(OG._mapPoll); }catch(e){} OG._mapPoll=null; return; }
-    groupMapLoadAll().then(function(){ if(curView==="groupmap") groupMapRefreshMarkers(); }).catch(function(){});
-  },30000);
+    var g=groupMapSelectedGroup(); if(!g) return;
+    groupMapLoad(g.id).then(function(){ if(curView==="groupmap") groupMapRefreshMarkers(); }).catch(function(){});
+  },20000);
 }
+function groupMapRenderSelected(){
+  groupMapOGInit();
+  var card=$("mapGroupCard"); if(!card) return;
+  var g=groupMapSelectedGroup();
+  if(!g){ card.innerHTML=""; groupMapPaintState(); return; }
+  try{ groupMapDestroyAll(); }catch(e){}
+  card.innerHTML=groupMapGroupHTML(g);
+  groupMapLoad(g.id).then(function(){
+    if(curView!=="groupmap") return;
+    groupMapInitOne(g);
+    groupMapPaintState();
+  }).catch(function(){ groupMapPaintState(); });
+}
+
 /* ---------- Usernames: owner assignment, search, invite ---------- */
 function setPersonUsername(id){
   var p=(S.people||[]).filter(function(x){ return String(x.id)===String(id); })[0];
@@ -4530,7 +4600,7 @@ function doSetPersonUsername(id){
 }
 function openUserSearch(){
   openModal('<h3 style="margin-bottom:12px">'+TR('k2723','جست‌وجوی نام کاربری')+'</h3>'
-    +'<div class="field"><label>'+TR('k2717','نام کاربری (انگلیسی)')+'</label><input class="inp" id="usQuery" dir="ltr" placeholder="username"></div>'
+    +'<div class="field"><label>'+TR('k2717','نام کاربری (انگلیسی)')+'</label><input class="inp" id="usQuery" dir="ltr" placeholder="username"></div><p class="small">'+TR('k2825','نام کاربری کامل را بنویسید؛ فقط تطابق دقیق نشان داده می‌شود، نه فهرست')+'.</p>'
     +'<div class="rowflex"><button class="btn grow" style="justify-content:center" onclick="doUserSearch()">'+TR('k2724','جست‌وجو')+'</button><button class="btn ghost" onclick="closeModal()">'+TR('k0338','انصراف')+'</button></div>'
     +'<div id="usResults" style="margin-top:10px"></div>');
 }
@@ -4542,6 +4612,11 @@ function doUserSearch(){
       var box=$("usResults"); if(!box) return false;
       if(res.error){ box.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; return false; }
       var rows=Array.isArray(res.data)?res.data:[];
+      /* v10.4.10 — exact match ONLY, one row max: the server returns exact
+         matches only, but a username can arrive twice (person + account
+         rows), so dedupe and never render more than the one exact row. */
+      rows=rows.filter(function(r){ return String(r.username||"").toLowerCase()===q.toLowerCase(); });
+      var _seenU={}; rows=rows.filter(function(r){ var _k=String(r.username||"").toLowerCase(); if(!_k||_seenU[_k]) return false; _seenU[_k]=true; return true; });
       if(!rows.length){ box.innerHTML='<p class="small">'+TR('k2725','کاربر پیدا نشد')+'.</p>'; return false; }
       /* Groups the caller owns (group owner may invite from the profile). */
       var myGroups=(OG.list||[]).filter(function(g){ return ownerMode||String(g.created_by||"")===String((typeof SB!=="undefined"&&SB.uid)||"")||g.myRole==="admin"; });
@@ -5299,7 +5374,7 @@ function renderOwnerPanel(v){
      the real server operations and reports pass/fail. Create operations use
      a clearly-marked test key / test person that is revoked / deleted
      immediately, so no test data is left behind. */
-  h+='<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("health")+'</span>' + TR('k2544','بررسی سلامت سرور') + '</h3><p class="small">' + TR('k2549','این بررسی عملیات واقعی سرور را فراخوانی می‌کند؛ کلید و فرد آزمایشی بلافاصله پس از ساخت باطل و حذف می‌شوند و چیزی از آن‌ها باقی نمی‌ماند') + '.</p><div class="rowflex"><button class="btn" onclick="SB.runDiagnostics()">'+TR('k2544','بررسی سلامت سرور')+'</button><button class="btn ghost" onclick="SB.syncOwnerSecret()">'+TR('k2559','همگام‌سازی رمز مالک با سرور')+'</button></div><div id="diagResults" style="margin-top:10px"></div><div class="rowflex" style="margin-top:10px"><button class="btn" onclick="SB.runOnlineFeaturesTest()">'+TR('k2569','تست ویژگی‌های آنلاین')+'</button></div><p class="small">'+TR('k2570','این تست همهٔ ویژگی‌های آنلاین را با دادهٔ آزمایشی بررسی می‌کند؛ همهٔ داده‌های آزمایشی پس از تست پاک می‌شوند.')+'</p><div id="onlineTestResults" style="margin-top:10px"></div></div>';
+  h+='<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("health")+'</span>' + TR('k2544','بررسی سلامت سرور') + '</h3><p class="small">' + TR('k2549','این بررسی عملیات واقعی سرور را فراخوانی می‌کند؛ کلید و فرد آزمایشی بلافاصله پس از ساخت باطل و حذف می‌شوند و چیزی از آن‌ها باقی نمی‌ماند') + '.</p><div class="rowflex"><button class="btn" onclick="SB.runDiagnostics()">'+TR('k2544','بررسی سلامت سرور')+'</button><button class="btn ghost" onclick="SB.syncOwnerSecret()">'+TR('k2559','همگام‌سازی رمز مالک با سرور')+'</button></div><div id="diagResults" style="margin-top:10px"></div><div class="rowflex" style="margin-top:10px"><button class="btn" onclick="SB.runOnlineFeaturesTest()">'+TR('k2569','تست ویژگی‌های آنلاین')+'</button></div><p class="small">'+TR('k2570','این تست همهٔ ویژگی‌های آنلاین را با دادهٔ آزمایشی بررسی می‌کند؛ همهٔ داده‌های آزمایشی پس از تست پاک می‌شوند.')+'</p><div id="onlineTestResults" style="margin-top:10px"></div><div class="rowflex" style="margin-top:10px"><button class="btn" onclick="SB.runGroupsOnlineTest()">'+TR('k2810','تست آنلاین گروه‌ها')+'</button></div><p class="small">'+TR('k2811','این تست همهٔ قابلیت‌های گروه را با دادهٔ آزمایشی بررسی می‌کند؛ همهٔ داده‌های آزمایشی پس از تست پاک می‌شوند.')+'</p><div id="groupsTestResults" style="margin-top:10px"></div></div>';
   /* آمار کلی — v10.4.9: server-computed via owner_stats (the old local
      counts are gone; a failed call shows "stats not loaded", never stale
      local numbers presented as server stats). */
@@ -6412,6 +6487,270 @@ SB.runOnlineFeaturesTest=function(){
     return false;
   });
 };
+/* v10.4.10 — "Online groups test" (Parsa: upgrade every group
+   capability + add an online test for groups). Runs EVERY group
+   capability against the REAL server with test data and shows one row
+   per capability (ok / fail / skip with the reason), then cleans up
+   all test data and ends with a "no test data left" row. */
+SB.runGroupsOnlineTest=function(){
+  var box=$("groupsTestResults");
+  if(box) box.innerHTML='<p class="small">'+TR('k2545','در حال بررسی…')+'</p>';
+  var rows=[];
+  function render(){
+    var liveBox=$("groupsTestResults");
+    if(!liveBox) return;
+    liveBox.innerHTML=rows.map(function(r){
+      var col=r.st==='ok'?'#16a34a':(r.st==='skip'?'#b45309':'#dc2626');
+      var mark=r.st==='ok'?('✓ '+TR('k2546','سالم')):(r.st==='skip'?('— '+TR('k2571','تست نشد')):('✗ '+TR('k2547','ناموفق')));
+      return '<div class="listrow"><div class="grow"><b>'+esc(r.label)+'</b>'+(r.detail?'<div class="small">'+esc(r.detail)+'</div>':'')+'</div><span style="white-space:nowrap;color:'+col+'">'+mark+'</span></div>';
+    }).join("");
+  }
+  function row(label,st,detail){ rows.push({label:label,st:st,detail:detail||""}); render(); }
+  if(!SB.client){ row(TR('k2548','سلامت سرور'),'fail',TR('k2542','سرور در دسترس نیست')); return Promise.resolve(false); }
+  return ownerSig().then(function(sig){
+    if(!sig){ row(TR('k2548','سلامت سرور'),'fail',TR('k2422','سرور در دسترس نیست')); return false; }
+    var ts=Date.now();
+    var groupName='TEST-GROUP-'+ts;
+    var groupId=null, inviteCode=null, groupCreated=false;
+    var personId='gtest-person-'+ts;
+    var testUsername='gt'+String(ts).slice(-8);
+    var personCreated=false, inviteVerified=false;
+    var msgText='TEST-MSG-'+ts;
+    var pollId=null;
+    function step(label, fn){
+      return Promise.resolve().then(fn).then(function(r){
+        if(r&&r.st){ row(label,r.st,r.detail||""); }
+        else row(label, r?'ok':'fail', "");
+        return r;
+      }).catch(function(e){
+        row(label,'fail',String(e&&e.message||e));
+        return {st:'fail'};
+      });
+    }
+    var steps=[
+      [TR('k2583','ساختن گروه آزمایشی'), function(){
+        return sbRpc("create_group",{p_name:groupName,p_theme:"default",p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var g=(res.data&&res.data[0])||null;
+          if(g&&g.id){ groupId=g.id; inviteCode=g.invite_code; groupCreated=true; return {st:'ok', detail:String(g.invite_code||"")}; }
+          return {st:'fail', detail:"create_group returned no group"};
+        });
+      }],
+      [TR('k2584','فهرست گروه‌ها'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("group_list",{p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var found=(res.data||[]).some(function(g){ return String(g.id)===String(groupId); });
+          return found?{st:'ok', detail:groupName}:{st:'fail', detail:"not in group_list"};
+        });
+      }],
+      [TR('k2812','ویرایش گروه (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("group_update",{p_group_id:groupId,p_name:groupName+"-EDITED",p_theme:"zomorod",p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          if(res.data!==true) return {st:'fail', detail:"group_update=false"};
+          return sbRpc("group_list",{p_sig:sig}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var g=(res2.data||[]).filter(function(x){ return String(x.id)===String(groupId); })[0];
+            return (g&&g.name===groupName+"-EDITED"&&g.theme==="zomorod")?{st:'ok', detail:groupName+"-EDITED"}:{st:'fail', detail:"edit not reflected in group_list"};
+          });
+        });
+      }],
+      [TR('k2813','پیوستن با کد دعوت (تست)'), function(){
+        if(!groupCreated||!inviteCode) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("join_group",{p_code:inviteCode,p_nickname:"TEST-OWNER",p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var row=(res.data&&res.data[0])||null;
+          if(!row||row.role==='pending') return {st:'fail', detail:"join_group did not join: "+((row&&row.role)||"no row")};
+          return sbRpc("owner_list_group_members",{p_group_id:groupId,p_sig:sig}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var found=(res2.data||[]).some(function(m){ return String(m.user_id)==="owner"; });
+            return found?{st:'ok', detail:inviteCode+" -> owner"}:{st:'fail', detail:"owner not in member list after join"};
+          });
+        });
+      }],
+      [TR('k2814','پیوستن با کد اشتباه (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("join_group",{p_code:"XXXXXX",p_nickname:"TEST-WRONG",p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var rows=Array.isArray(res.data)?res.data:[];
+          return rows.length===0?{st:'ok', detail:"XXXXXX"}:{st:'fail', detail:"wrong code joined a group"};
+        });
+      }],
+      [TR('k2555','ثبت فرد آزمایشی'), function(){
+        return sbRpc("owner_person_save",{p_id:personId,p_name:"TEST-GROUP-DIAG",p_role:"",p_field:"",p_phone:"",p_note:"",p_advisor_id:null,p_username:testUsername,p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          if(res.data===true){ personCreated=true; return {st:'ok', detail:personId}; }
+          return {st:'fail', detail:"owner_person_save=false"};
+        });
+      }],
+      [TR('k2742','دعوت با نام کاربری (تست)'), function(){
+        if(!groupCreated||!personCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("invite_to_group_by_username",{p_group_id:groupId,p_username:testUsername,p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var d=res.data; if(Array.isArray(d)) d=d[0];
+          if(!d||d.ok!==true) return {st:'fail', detail:"invite_to_group_by_username ok=false: "+((d&&d.reason)||"")};
+          return sbRpc("owner_list_group_members",{p_group_id:groupId,p_sig:sig}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var found=(res2.data||[]).some(function(r){ return String(r.username||"").toLowerCase()===testUsername.toLowerCase(); });
+            if(!found) return {st:'fail', detail:"invited username not in owner_list_group_members"};
+            inviteVerified=true; return {st:'ok', detail:testUsername+" -> "+groupName};
+          });
+        });
+      }],
+      [TR('k2815','تعیین نقش (تست)'), function(){
+        if(!inviteVerified) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("set_group_role",{p_group:groupId,p_user:"op:"+personId,p_role:"medic",p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          if(res.data!==true) return {st:'fail', detail:"set_group_role=false"};
+          return sbRpc("owner_list_group_members",{p_group_id:groupId,p_sig:sig}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var m=(res2.data||[]).filter(function(r){ return String(r.username||"").toLowerCase()===testUsername.toLowerCase(); })[0];
+            return (m&&(m.group_role==="medic"||m.role==="medic"))?{st:'ok', detail:"medic"}:{st:'fail', detail:"role not reflected in member list"};
+          });
+        });
+      }],
+      [TR('k2745','حذف عضو آزمایشی از گروه'), function(){
+        if(!inviteVerified) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("group_member_remove",{p_group_id:groupId,p_username:testUsername,p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          if(res.data!==true) return {st:'fail', detail:"group_member_remove=false"};
+          return sbRpc("owner_list_group_members",{p_group_id:groupId,p_sig:sig}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var gone=!(res2.data||[]).some(function(r){ return String(r.username||"").toLowerCase()===testUsername.toLowerCase(); });
+            return gone?{st:'ok'}:{st:'fail', detail:"test member still listed after remove"};
+          });
+        });
+      }],
+      [TR('k2816','پیام گروهی (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("send_group_message",{p_group:groupId,p_text:msgText,p_sender_name:"TEST-OWNER",p_sig:sig,p_avatar:0}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var row=(res.data&&res.data[0])||null;
+          if(!row||!row.id) return {st:'fail', detail:"send_group_message returned no row"};
+          return sbRpc("owner_group_messages",{p_group_id:groupId,p_sig:sig,p_limit:200}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var found=(res2.data||[]).some(function(m){ return String(m.text)===msgText; });
+            return found?{st:'ok', detail:msgText}:{st:'fail', detail:"message not in owner_group_messages"};
+          });
+        });
+      }],
+      [TR('k2817','رأی‌گیری (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("owner_poll_create",{p_group:groupId,p_question:"TEST-POLL-"+ts,p_options:["a","b"],p_sig:sig}).then(function(res){
+          if(res.error||!res.data) return {st:'fail', detail:"owner_poll_create failed: "+(res.error?String(res.error.message||res.error):"no id")};
+          pollId=res.data;
+          return sbRpc("owner_poll_vote",{p_poll_id:pollId,p_option_idx:0,p_sig:sig}).then(function(res2){
+            if(res2.error||res2.data!==true) return {st:'fail', detail:"owner_poll_vote=false"};
+            return sbRpc("owner_poll_close",{p_poll_id:pollId,p_sig:sig}).then(function(res3){
+              if(res3.error||res3.data!==true) return {st:'fail', detail:"owner_poll_close=false"};
+              return sbRpc("owner_poll_delete",{p_poll_id:pollId,p_sig:sig}).then(function(res4){
+                if(res4.error||res4.data!==true) return {st:'fail', detail:"owner_poll_delete=false"};
+                pollId=null; return {st:'ok', detail:"create/vote/close/delete"};
+              });
+            });
+          });
+        });
+      }],
+      [TR('k2744','مکان زنده نقشه (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("share_location_test",{p_group:groupId,p_lat:35.6892,p_lng:51.3890,p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          if(!res.data) return {st:'fail', detail:"share_location_test returned no id"};
+          return groupMapLoad(groupId).then(function(locs){
+            var found=(Array.isArray(locs)?locs:[]).some(function(r){ return Math.abs(+r.lat-35.6892)<0.000001 && Math.abs(+r.lng-51.3890)<0.000001; });
+            if(!found) return {st:'fail', detail:"map data source did not return the test location"};
+            return sbRpc("clear_test_locations",{p_group:groupId,p_sig:sig}).then(function(res2){
+              if(res2.error||res2.data!==true) return {st:'fail', detail:"clear_test_locations failed"};
+              return groupMapLoad(groupId).then(function(locs2){
+                var left=(Array.isArray(locs2)?locs2:[]).some(function(r){ return String(r.user_name||"")==="TEST-LOCATION"; });
+                return left?{st:'fail', detail:"test location still listed after clear"}:{st:'ok', detail:"35.6892, 51.3890"};
+              });
+            });
+          });
+        });
+      }],
+      [TR('k2818','اعلان گروه (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("owner_group_announce",{p_group:groupId,p_text:"TEST-ANN-"+ts,p_sig:sig}).then(function(res){
+          if(res.error||!res.data) return {st:'fail', detail:"owner_group_announce failed: "+(res.error?String(res.error.message||res.error):"no id")};
+          return sbRpc("owner_group_announcements",{p_group_id:groupId,p_sig:sig}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var found=(res2.data||[]).some(function(a){ return String(a.text)==="TEST-ANN-"+ts; });
+            return found?{st:'ok', detail:"TEST-ANN-"+ts}:{st:'fail', detail:"announcement not in owner_group_announcements"};
+          });
+        });
+      }],
+      [TR('k2819','کار گروهی (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("owner_group_task_add",{p_group:groupId,p_title:"TEST-TASK-"+ts,p_assignee_name:"",p_sig:sig}).then(function(res){
+          if(res.error||!res.data) return {st:'fail', detail:"owner_group_task_add failed: "+(res.error?String(res.error.message||res.error):"no id")};
+          var taskId=res.data;
+          return sbRpc("owner_group_task_toggle",{p_task_id:taskId,p_done:true,p_sig:sig}).then(function(res2){
+            if(res2.error||res2.data!==true) return {st:'fail', detail:"owner_group_task_toggle=false"};
+            return sbRpc("owner_group_tasks",{p_group_id:groupId,p_sig:sig}).then(function(res3){
+              if(res3.error) return {st:'fail', detail:String(res3.error.message||res3.error)};
+              var t=(res3.data||[]).filter(function(x){ return String(x.id)===String(taskId); })[0];
+              return (t&&t.done===true)?{st:'ok', detail:"TEST-TASK-"+ts}:{st:'fail', detail:"task not done in owner_group_tasks"};
+            });
+          });
+        });
+      }],
+      [TR('k2820','رویداد گروه (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("owner_group_event_add",{p_group:groupId,p_title:"TEST-EVENT-"+ts,p_event_at:new Date(Date.now()+3600000).toISOString(),p_sig:sig}).then(function(res){
+          if(res.error||!res.data) return {st:'fail', detail:"owner_group_event_add failed: "+(res.error?String(res.error.message||res.error):"no id")};
+          var evId=res.data;
+          return sbRpc("owner_group_events",{p_group_id:groupId,p_sig:sig}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var found=(res2.data||[]).some(function(e){ return String(e.id)===String(evId); });
+            return found?{st:'ok', detail:"TEST-EVENT-"+ts}:{st:'fail', detail:"event not in owner_group_events"};
+          });
+        });
+      }],
+      [TR('k2556','حذف فرد آزمایشی'), function(){
+        if(!personCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("owner_person_delete",{p_id:personId,p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          return res.data===true?{st:'ok'}:{st:'fail', detail:"owner_person_delete=false"};
+        });
+      }],
+      [TR('k2585','حذف گروه آزمایشی'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("group_delete",{p_group_id:groupId,p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          return res.data===true?{st:'ok'}:{st:'fail', detail:"group_delete=false"};
+        });
+      }]
+    ];
+    var chain=Promise.resolve();
+    steps.forEach(function(s){ chain=chain.then(function(){ return step(s[0], s[1]); }); });
+    return chain.then(function(){
+      var clean=[];
+      if(personCreated) clean.push(sbRpc("owner_person_delete",{p_id:personId,p_sig:sig}).catch(function(){ return null; }));
+      if(groupCreated) clean.push(sbRpc("clear_test_locations",{p_group:groupId,p_sig:sig}).catch(function(){ return null; }));
+      if(groupCreated) clean.push(sbRpc("group_delete",{p_group_id:groupId,p_sig:sig}).catch(function(){ return null; }));
+      return Promise.all(clean).then(function(){
+        return Promise.all([
+          sbRpc("owner_person_list",{p_sig:sig}),
+          sbRpc("group_list",{p_sig:sig})
+        ]).then(function(all){
+          var left=[];
+          var people=(all[0]&&all[0].data)||[];
+          var groups=(all[1]&&all[1].data)||[];
+          if(people.some(function(p){ return String(p.id)===personId; })) left.push(personId);
+          if(groups.some(function(g){ return String(g.id)===String(groupId); })) left.push(groupName);
+          if(left.length){ row(TR('k2572','دادهٔ آزمایشی باقی نماند'),'fail',left.join(", ")); return false; }
+          row(TR('k2572','دادهٔ آزمایشی باقی نماند'),'ok',"");
+          return true;
+        });
+      });
+    });
+  }).catch(function(e){
+    row(TR('k2548','سلامت سرور'),'fail',String(e&&e.message||e));
+    return false;
+  });
+};
 /* v10.4.7 — sync / reset the owner secret on the server (Parsa 2026-11-10).
    The server secret must match the signature the app computes from the
    owner's CURRENT password. If it does not match (e.g. it was derived
@@ -6699,7 +7038,7 @@ SB.ownerGroupsHTML=function(){
   var stats={}; try{ (SB.ownerStatsCache&&SB.ownerStatsCache.groups||[]).forEach(function(g){ stats[String(g.id)]=g; }); }catch(e){}
   return gs.map(function(g){
     var st=stats[String(g.id)]||{};
-    return '<div class="listrow" style="flex-wrap:wrap"><div class="grow"><b>'+esc(g.name||"")+'</b><div class="small">'+TR('k2024','کد دعوت گروه')+': <b dir="ltr">'+esc(g.invite_code||"")+'</b>'+(st.members!=null?' — '+fa(st.members)+' '+TR('k2026','اعضا'):'')+(st.messages!=null?' — '+fa(st.messages)+' '+TR('k2779','پیام‌ها'):'')+'</div></div>'
+    return '<div class="listrow" style="flex-wrap:wrap"><div class="grow"><b>'+esc(g.name||"")+'</b><div class="small">'+TR('k2024','کد دعوت گروه')+': <span dir="ltr" class="latintok">'+keyCodeHTML(g.invite_code||"")+'</span>'+(st.members!=null?' — '+fa(st.members)+' '+TR('k2026','اعضا'):'')+(st.messages!=null?' — '+fa(st.messages)+' '+TR('k2779','پیام‌ها'):'')+'</div></div>'
       +'<div class="rowflex" style="flex-wrap:wrap">'
       +'<button class="btn ghost sm" onclick="SB.viewOwnerGroupChat(\''+esc(String(g.id))+'\',\''+esc(g.name||"")+'\')">'+TR('k2785','مشاهده چت')+'</button>'
       +'<button class="btn ghost sm" onclick="SB.viewOwnerGroupPolls(\''+esc(String(g.id))+'\',\''+esc(g.name||"")+'\')">'+TR('k2787','مشاهده رأی‌گیری‌ها')+'</button>'
@@ -6859,6 +7198,11 @@ SB.ownerGroupSearch=function(gid){
       if(!box) return false;
       if(res.error){ box.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; return false; }
       var rows=Array.isArray(res.data)?res.data:[];
+      /* v10.4.10 — exact match ONLY, one row max: the server returns exact
+         matches only, but a username can arrive twice (person + account
+         rows), so dedupe and never render more than the one exact row. */
+      rows=rows.filter(function(r){ return String(r.username||"").toLowerCase()===q.toLowerCase(); });
+      var _seenU={}; rows=rows.filter(function(r){ var _k=String(r.username||"").toLowerCase(); if(!_k||_seenU[_k]) return false; _seenU[_k]=true; return true; });
       if(!rows.length){ box.innerHTML='<p class="small">'+TR('k2725','کاربر پیدا نشد')+'.</p>'; return false; }
       box.innerHTML=rows.map(function(r){
         return '<div class="listrow"><div class="grow"><b>'+esc(r.display_name||r.username)+'</b> <span dir="ltr">@'+esc(r.username||"")+'</span></div><button class="btn sm" onclick="inviteUserToGroup(\''+esc(String(r.username||""))+'\',\''+esc(String(gid))+'\')"> '+TR('k2726','دعوت به گروه')+'</button></div>';
@@ -7060,7 +7404,24 @@ OG.loadMine=function(){
       if(!sig){ OG.list=[]; OG._mineLoaded=false; return []; }
       return sbRpc("group_list",{p_sig:sig}).then(function(res){
         if(res.error||!res.data){ OG.list=[]; OG._mineLoaded=false; return []; }
-        OG.list=(res.data||[]).map(function(r){ return {id:r.id,name:r.name||"",invite_code:r.invite_code||"",created_by:r.created_by||"owner",theme:r.theme||"default",myRole:"admin"}; });
+        var rows=res.data||[];
+        if(!rows.length&&(OG.list||[]).length){
+          /* v10.4.10 — the server returned no groups though we had some:
+             that is either a wiped account or an invalid owner sig. Only
+             the sig case keeps the known groups: the groups still exist
+             on the server, the sig on this device is just stale, and the
+             map/group views must be able to show the sigbad state (with
+             the sync button) instead of a blank list. A valid sig with an
+             empty result means the groups are really gone. */
+          var prev=OG.list;
+          return sbRpc("owner_sig_ok",{p_sig:sig}).then(function(okRes){
+            if(okRes&&okRes.data===false){ OG.list=prev; OG._mineLoaded=false; return OG.list; }
+            OG.list=[]; OG._mineLoaded=true;
+            if(curView==="group") go("group");
+            return OG.list;
+          });
+        }
+        OG.list=rows.map(function(r){ return {id:r.id,name:r.name||"",invite_code:r.invite_code||"",created_by:r.created_by||"owner",theme:r.theme||"default",myRole:"admin"}; });
         OG._mineLoaded=true;
         if(curView==="group") go("group");
         return OG.list;
@@ -7092,7 +7453,11 @@ OG.createOnline=function(name,theme){
 OG.regenInvite=function(gid){
   if(!OG.sel||!OG.isAdmin()) return;
   if(!SB.client){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
-  sbRpc("regenerate_invite_code",{p_group:gid}).then(function(res){
+  /* v10.4.10 — the owner is anon: the RPC now takes the owner sig. */
+  var _regenCall=ownerMode
+    ? ownerSig().then(function(sig){ return sbRpc("regenerate_invite_code",{p_group:gid,p_sig:sig||null}); })
+    : sbRpc("regenerate_invite_code",{p_group:gid});
+  _regenCall.then(function(res){
     if(res.error){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
     var code=res.data; if(Array.isArray(code)) code=code[0];
     if(!code) return;
@@ -7107,7 +7472,10 @@ OG.regenInvite=function(gid){
 OG.joinOnline=function(code){
   if(!SB.groupOnline()){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید') + "."); return Promise.resolve(null); }
   if(!ownerMode&&!SB.keyOk()){ toast(TR('k9028','بدون کلید معتبر نمی‌توانید وارد برنامه شوید؛ کلید را از مالک بگیرید') + "."); return Promise.resolve(null); }
-  return sbRpc("join_group",{p_code:(code||"").trim().toUpperCase(),p_nickname:(S.user.name||"")}).then(function(res){
+  /* v10.4.10 — the owner is anon: join_group needs the owner sig to join
+     as 'owner' (without it the server sees no identity and returns []). */
+  var _jp=ownerMode?ownerSig().then(function(sig){ return {p_code:(code||"").trim().toUpperCase(),p_nickname:(S.user.name||""),p_sig:sig}; }):Promise.resolve({p_code:(code||"").trim().toUpperCase(),p_nickname:(S.user.name||"")});
+  return _jp.then(function(_params){ return sbRpc("join_group",_params); }).then(function(res){
     if(res.error){ toast(esc(res.error.message)); return null; }
     var row=(res.data&&res.data[0])||null; if(!row){ toast(TR('k2083','کد دعوت درست نیست') + "."); return null; }
     toast(TR('k2082','به گروه پیوستید') + ".");
@@ -7132,7 +7500,7 @@ OG.leaveGroup=function(){
 };
 OG.select=function(id){
   var g=OG.list.filter(function(x){ return String(x.id)===String(id); })[0]; if(!g) return;
-  OG.sel=g; OG.msgs=[]; OG.members=[]; OG.polls=[]; OG.tasks=[]; OG.events=[]; OG.ann=[]; OG.study=[]; OG.badges=[]; OG.locations=[];
+  OG.sel=g; try{ OG._mapSelectedGroup=String(g.id); }catch(e){} OG.msgs=[]; OG.members=[]; OG.polls=[]; OG.tasks=[]; OG.events=[]; OG.ann=[]; OG.study=[]; OG.badges=[]; OG.locations=[];
   SB_unsub("og-msgs"); SB_unsub("og-tasks"); SB_unsub("og-polls"); SB_unsub("og-members"); SB_unsub("og-ann"); SB_unsub("og-events");
   OG.loadMembers(); OG.loadMsgs(); OG.loadPolls(); OG.loadTasks(); OG.loadEvents(); OG.loadAnn(); OG.loadStudy(); OG.loadMemberSuper(); OG.loadLocations(); SB.refreshPresence();
   SB_sub("og-msgs",SB.client.channel("og-msgs-"+g.id),{changes:[{event:"INSERT",schema:"public",table:"messages",filter:"group_id=eq."+g.id}],onChange:function(p){ OG.onMsg(p.new); }});
@@ -7242,6 +7610,24 @@ OG.sendGroupMsg=function(t){
       toast(TR('k9031','چت قفل است؛ فقط مدیران می‌توانند پیام بفرستند')+"."); SFX.play("denied"); return;
     }
   }catch(e){}
+  /* v10.4.10 — the owner runs as anon and the messages RLS policies
+     are authenticated-only, so a direct insert raises "new row violates
+     row-level security policy for table messages". The owner sends via
+     the SECURITY DEFINER send_group_message RPC instead. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
+      sbRpc("send_group_message",{p_group:OG.sel.id,p_text:t,p_sender_name:(S.user.name||"owner"),p_sig:sig,p_avatar:(typeof S.user.avatar==="number"?S.user.avatar:0)}).then(function(res){
+        if(res.error||!(res.data&&res.data[0])){ toast(esc(res.error?res.error.message:"")); return; }
+        var row=res.data[0];
+        OG.msgs=OG.msgs||[];
+        OG.msgs.push({id:row.id,sender_uid:row.sender_uid,sender_name:row.sender_name,sender_avatar:row.sender_avatar,text:row.text,created_at:row.created_at});
+        OG.onMsgSent();
+        if(curView==="chat") drawGroupChat();
+      });
+    }).catch(function(){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); });
+    return;
+  }
   SB.client.from("messages").insert({group_id:OG.sel.id,sender_uid:SB.uid,sender_name:S.user.name||"—",sender_avatar:(typeof S.user.avatar==="number"?S.user.avatar:0),text:t}).then(function(res){ if(res.error){ toast(esc(res.error.message)); } else { OG.onMsgSent(); } });
 };
 OG.deleteMsg=function(id){
@@ -7260,18 +7646,65 @@ OG.deleteMsg=function(id){
 };
 OG.setNickname=function(uid,nick){
   if(!OG.isAdmin()){ toast(TR('k2089','شما مدیر این گروه نیستید') + "."); return; }
+  /* v10.4.10 — the owner is anon: direct group_members updates hit RLS. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_set_nickname",{p_group:OG.sel.id,p_user:uid,p_nickname:nick,p_sig:sig}).then(function(res){
+        if(res.error||res.data!==true){ toast(esc(res.error?res.error.message:"")); return; }
+        OG.loadMembers(); toast(TR('k2438','لقب ثبت شد')+".");
+      });
+    }).catch(function(){});
+    return;
+  }
   SB.client.from("group_members").update({nickname:nick}).eq("group_id",OG.sel.id).eq("user_id",uid).then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } OG.loadMembers(); toast(TR('k2438','لقب ثبت شد')+"."); });
 };
 OG.setMemberRole=function(uid,role){
   if(!OG.isAdmin()){ toast(TR('k2089','شما مدیر این گروه نیستید') + "."); return; }
+  /* v10.4.10 — the owner is anon: direct group_members updates hit RLS. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_set_member_admin",{p_group:OG.sel.id,p_user:uid,p_admin:(role==="admin"),p_sig:sig}).then(function(res){
+        if(res.error||res.data!==true){ toast(esc(res.error?res.error.message:"")); return; }
+        OG.loadMembers();
+      });
+    }).catch(function(){});
+    return;
+  }
   SB.client.from("group_members").update({role:role}).eq("group_id",OG.sel.id).eq("user_id",uid).then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } OG.loadMembers(); });
 };
 OG.removeMember=function(uid){
   if(!OG.isAdmin()){ toast(TR('k2089','شما مدیر این گروه نیستید') + "."); return; }
+  /* v10.4.10 — the owner is anon: direct group_members deletes hit RLS. */
+  if(ownerMode){
+    var _m=(OG.members||[]).filter(function(x){ return String(x.user_id)===String(uid); })[0];
+    var _un=_m?_m.username:"";
+    if(!_un){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("group_member_remove",{p_group_id:OG.sel.id,p_username:_un,p_sig:sig}).then(function(res){
+        if(res.error||res.data!==true){ toast(esc(res.error?res.error.message:"")); return; }
+        OG.loadMembers();
+      });
+    }).catch(function(){});
+    return;
+  }
   SB.client.from("group_members").delete().eq("group_id",OG.sel.id).eq("user_id",uid).then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } OG.loadMembers(); });
 };
 OG.muteMember=function(uid){
   if(!OG.isAdmin()){ toast(TR('k2089','شما مدیر این گروه نیستید') + "."); return; }
+  /* v10.4.10 — the owner is anon: direct group_members updates hit RLS. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_member_mute",{p_group:OG.sel.id,p_user:uid,p_minutes:60,p_sig:sig}).then(function(res){
+        if(res.error||res.data!==true){ toast(esc(res.error?res.error.message:"")); return; }
+        OG.loadMembers(); toast(TR('k2034','بی‌صدا کردن') + " — 60 " + TR('k2091','دقیقه') + ".");
+      });
+    }).catch(function(){});
+    return;
+  }
   var until=new Date(Date.now()+60*60*1000).toISOString();
   SB.client.from("group_members").update({muted_until:until}).eq("group_id",OG.sel.id).eq("user_id",uid).then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } OG.loadMembers(); toast(TR('k2034','بی‌صدا کردن') + " — 60 " + TR('k2091','دقیقه') + "."); });
 };
@@ -7325,43 +7758,142 @@ OG.deletePollOwner=function(pollId){
 };
 OG.createPoll=function(q,opts){
   if(!OG.sel||!SB.groupOnline()) return;
+  /* v10.4.10 — the owner is anon: direct polls inserts hit RLS. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_poll_create",{p_group:OG.sel.id,p_question:q,p_options:opts,p_sig:sig}).then(function(res){
+        if(res.error||!res.data){ toast(esc(res.error?res.error.message:"")); return; }
+        OG.loadPolls();
+      });
+    }).catch(function(){});
+    return;
+  }
   SB.client.from("polls").insert({group_id:OG.sel.id,question:q,options:opts,created_by:SB.uid}).then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } OG.loadPolls(); });
 };
 OG.vote=function(pollId,idx){
   if(!SB.groupOnline()) return;
+  /* v10.4.10 — the owner is anon: direct votes upserts hit RLS. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_poll_vote",{p_poll_id:pollId,p_option_idx:idx,p_sig:sig}).then(function(res){
+        if(res.error||res.data!==true){ toast(esc(res.error?res.error.message:"")); return; }
+        toast(TR('k2042','رأی شما ثبت شد') + "."); OG.onVoteCast(); OG.loadPolls();
+      });
+    }).catch(function(){});
+    return;
+  }
   SB.client.from("votes").upsert({poll_id:pollId,voter_uid:SB.uid,option_idx:idx},{onConflict:"poll_id,voter_uid"}).then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } toast(TR('k2042','رأی شما ثبت شد') + "."); OG.onVoteCast(); OG.loadPolls(); });
 };
 OG.loadTasks=function(){
   if(!OG.sel) return;
-  if(ownerMode){ SB._ownerTasksBlocked=true; return; }
+  /* v10.4.10 — the owner reads group tasks via the owner RPC (was blocked). */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_group_tasks",{p_group_id:OG.sel.id,p_sig:sig}).then(function(res){
+        if(res.error||!res.data) return;
+        OG.tasks=res.data||[];
+        if(curView==="group") go("group");
+      });
+    }).catch(function(){});
+    return;
+  }
   if(!SB.groupOnline()) return;
   SB.client.from("group_tasks").select("id,title,assignee_name,assignee_uid,deadline,done,done_at,kind,created_by").eq("group_id",OG.sel.id).order("created_at",{ascending:true}).then(function(res){ if(!res.error){ OG.tasks=res.data||[]; if(curView==="group") go("group"); } });
 };
 OG.addTaskOnline=function(title,who,deadline){
   if(!OG.sel||!SB.groupOnline()) return;
+  /* v10.4.10 — the owner is anon: direct group_tasks inserts hit RLS. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_group_task_add",{p_group:OG.sel.id,p_title:title,p_assignee_name:who||"",p_sig:sig}).then(function(res){
+        if(res.error||!res.data){ toast(esc(res.error?res.error.message:"")); return; }
+        OG.loadTasks();
+      });
+    }).catch(function(){});
+    return;
+  }
   SB.client.from("group_tasks").insert({group_id:OG.sel.id,title:title,assignee_name:who||"",deadline:deadline||null,created_by:SB.uid}).then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } OG.loadTasks(); });
 };
 OG.toggleTaskOnline=function(id,done){
+  /* v10.4.10 — the owner is anon: direct group_tasks updates hit RLS. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_group_task_toggle",{p_task_id:id,p_done:done,p_sig:sig}).then(function(res){
+        if(res.error||res.data!==true){ toast(esc(res.error?res.error.message:"")); return; }
+        OG.loadTasks(); if(done){ var t=(OG.tasks||[]).filter(function(x){ return String(x.id)===String(id); })[0]; OG.onTaskDone(t||{id:id}); }
+      });
+    }).catch(function(){});
+    return;
+  }
   SB.client.from("group_tasks").update({done:done,done_at:done?new Date().toISOString():null}).eq("id",id).then(function(res){ if(!res.error){ OG.loadTasks(); if(done){ var t=(OG.tasks||[]).filter(function(x){ return String(x.id)===String(id); })[0]; OG.onTaskDone(t||{id:id}); } } else { toast(esc(res.error.message)); } });
 };
 OG.loadEvents=function(){
   if(!OG.sel) return;
-  if(ownerMode){ SB._ownerTasksBlocked=true; return; }
+  /* v10.4.10 — the owner reads group events via the owner RPC (was blocked). */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_group_events",{p_group_id:OG.sel.id,p_sig:sig}).then(function(res){
+        if(res.error||!res.data) return;
+        OG.events=res.data||[];
+        if(curView==="group") go("group");
+      });
+    }).catch(function(){});
+    return;
+  }
   if(!SB.groupOnline()) return;
   SB.client.from("group_events").select("id,title,event_at,created_by").eq("group_id",OG.sel.id).order("event_at",{ascending:true}).then(function(res){ if(!res.error){ OG.events=res.data||[]; } });
 };
 OG.addEventOnline=function(title,when){
   if(!OG.sel||!SB.groupOnline()) return;
+  /* v10.4.10 — the owner is anon: direct group_events inserts hit RLS. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_group_event_add",{p_group:OG.sel.id,p_title:title,p_event_at:when,p_sig:sig}).then(function(res){
+        if(res.error||!res.data){ toast(esc(res.error?res.error.message:"")); return; }
+        OG.loadEvents(); if(curView==="group") go("group");
+      });
+    }).catch(function(){});
+    return;
+  }
   SB.client.from("group_events").insert({group_id:OG.sel.id,title:title,event_at:when,created_by:SB.uid}).then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } OG.loadEvents(); if(curView==="group") go("group"); });
 };
 OG.loadAnn=function(){
   if(!OG.sel) return;
-  if(ownerMode){ SB._ownerTasksBlocked=true; return; }
+  /* v10.4.10 — the owner reads group announcements via the owner RPC (was blocked). */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_group_announcements",{p_group_id:OG.sel.id,p_sig:sig}).then(function(res){
+        if(res.error||!res.data) return;
+        OG.ann=res.data||[];
+        if(curView==="group") go("group");
+      });
+    }).catch(function(){});
+    return;
+  }
   if(!SB.groupOnline()) return;
   SB.client.from("announcements").select("id,text,created_by,created_at").eq("group_id",OG.sel.id).order("created_at",{ascending:false}).limit(5).then(function(res){ if(!res.error){ OG.ann=res.data||[]; if(curView==="group") go("group"); } });
 };
 OG.postAnn=function(text){
   if(!OG.sel||!OG.isAdmin()){ toast(TR('k2089','شما مدیر این گروه نیستید') + "."); return; }
+  /* v10.4.10 — the owner is anon: direct announcements inserts hit RLS. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_group_announce",{p_group:OG.sel.id,p_text:text,p_sig:sig}).then(function(res){
+        if(res.error||!res.data){ toast(esc(res.error?res.error.message:"")); return; }
+        OG.loadAnn();
+      });
+    }).catch(function(){});
+    return;
+  }
   SB.client.from("announcements").insert({group_id:OG.sel.id,text:text,created_by:SB.uid}).then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } OG.loadAnn(); });
 };
 OG.setGroupTheme=function(theme){
@@ -7380,18 +7912,40 @@ OG.setGroupTheme=function(theme){
 };
 OG.loadStudy=function(){
   if(!OG.sel) return;
-  if(ownerMode){ SB._ownerTasksBlocked=true; return; }
+  /* v10.4.10 — the owner reads study sessions via the owner RPC (was blocked). */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_study_sessions",{p_group_id:OG.sel.id,p_sig:sig}).then(function(res){
+        if(res.error||!res.data) return;
+        OG.study=res.data||[];
+        if(curView==="group") go("group");
+      });
+    }).catch(function(){});
+    return;
+  }
   if(!SB.groupOnline()) return;
   SB.client.from("study_sessions").select("id,user_uid,user_name,duration_min,status,started_at").eq("group_id",OG.sel.id).order("started_at",{ascending:false}).limit(50).then(function(res){ if(!res.error){ OG.study=res.data||[]; OG.loadBadges(); } });
 };
 OG.loadBadges=function(){
   if(!OG.sel) return;
-  if(ownerMode){ SB._ownerTasksBlocked=true; return; }
+  if(ownerMode){ return; }
   if(!SB.groupOnline()) return;
   SB.client.from("badges").select("id,user_uid,badge,awarded_at").eq("group_id",OG.sel.id).order("awarded_at",{ascending:false}).limit(50).then(function(res){ if(!res.error){ OG.badges=res.data||[]; if(curView==="group") go("group"); } });
 };
 OG.startFocus=function(min){
   if(!OG.sel||!SB.groupOnline()) return;
+  /* v10.4.10 — the owner is anon: direct study_sessions inserts hit RLS. */
+  if(ownerMode){
+    ownerSig().then(function(sig){
+      if(!sig) return;
+      sbRpc("owner_study_start",{p_group:OG.sel.id,p_duration_min:min,p_sig:sig}).then(function(res){
+        if(res.error||!res.data){ toast(esc(res.error?res.error.message:"")); return; }
+        OG.loadStudy(); toast(TR('k2046','شروع تمرکز گروهی') + " — "+fa(min)+" "+TR('k2091','دقیقه')+".");
+      });
+    }).catch(function(){});
+    return;
+  }
   SB.client.from("study_sessions").insert({group_id:OG.sel.id,user_uid:SB.uid,user_name:S.user.name||"—",duration_min:min,status:"active"}).then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } OG.loadStudy(); toast(TR('k2046','شروع تمرکز گروهی') + " — "+fa(min)+" "+TR('k2091','دقیقه')+"."); });
 };
 OG.finishFocus=function(id){
@@ -7532,13 +8086,13 @@ function onlineGroupHTML(){
   if(!OG.list.length){ h+='<p class="small">'+TR('k1105','هنوز گروهی نساخته‌اید')+'.</p></div>'; return h; }
   h+='<h3 style="margin:14px 0 8px">'+TR('k2102','گروه آنلاین شما')+'</h3>'+OG.list.map(function(g){
     var sel=OG.sel&&String(OG.sel.id)===String(g.id);
-    return '<div class="listrow'+(sel?'':'')+'"><div class="grow"><b>'+esc(g.name)+'</b><div class="small">'+TR('k2024','کد دعوت گروه')+': <b dir="ltr">'+esc(g.invite_code)+'</b> — '+esc(g.myRole||"")+'</div></div><button class="btn ghost sm" onclick="copySubKey(\''+esc(g.invite_code)+'\')">'+TR('k1500','کپی کلید')+'</button>' +(OG.isAdmin()?'<button class="btn sm ghost" onclick="OG.regenInvite(\''+g.id+'\')">'+TR('k2437','کد تازه')+'</button>':'')+(ownerMode?'<button class="btn ghost sm" onclick="SB.editOwnerGroup(\''+g.id+'\',\''+esc(g.name||"")+'\',\''+esc(g.theme||"default")+'\')">'+TR('k2766','ویرایش گروه')+'</button><button class="btn ghost sm" style="color:#b3352c;border-color:#b3352c" onclick="SB.deleteOwnerGroup(\''+g.id+'\',\''+esc(g.name||"")+'\')">'+TR('k0303','حذف')+'</button>':'')+'<button class="btn sm" onclick="OG.select(\''+g.id+'\')">'+(sel?TR('k0620','فعال'):TR('k0256','خانه'))+'</button></div>';
+    return '<div class="listrow'+(sel?'':'')+'"><div class="grow"><b>'+esc(g.name)+'</b><div class="small">'+TR('k2024','کد دعوت گروه')+': <span dir="ltr" class="latintok">'+keyCodeHTML(g.invite_code)+'</span> — '+esc(g.myRole||"")+'</div></div><button class="btn ghost sm" onclick="copySubKey(\''+esc(g.invite_code)+'\')">'+TR('k1500','کپی کلید')+'</button>' +(OG.isAdmin()?'<button class="btn sm ghost" onclick="OG.regenInvite(\''+g.id+'\')">'+TR('k2437','کد تازه')+'</button>':'')+(ownerMode?'<button class="btn ghost sm" onclick="SB.editOwnerGroup(\''+g.id+'\',\''+esc(g.name||"")+'\',\''+esc(g.theme||"default")+'\')">'+TR('k2766','ویرایش گروه')+'</button><button class="btn ghost sm" style="color:#b3352c;border-color:#b3352c" onclick="SB.deleteOwnerGroup(\''+g.id+'\',\''+esc(g.name||"")+'\')">'+TR('k0303','حذف')+'</button>':'')+'<button class="btn sm" onclick="OG.select(\''+g.id+'\')">'+(sel?TR('k0620','فعال'):TR('k0256','خانه'))+'</button></div>';
   }).join("");
   if(OG.sel){
     h+='<div style="margin-top:14px;border-top:1px solid var(--acc);padding-top:12px"><div class="ghead"><div class="gav">👥</div><div><b>'+esc(OG.sel.name)+'</b><div class="small">'+fa(OG.members.length)+' '+TR('k2026','اعضا')+' — '+TR('k2000','آنلاین')+'</div></div></div>';
     if(OG.members.length) h+='<div style="margin-top:8px">'+OG.members.map(function(m){
       var nm=m.nickname||""; var who=m.user_id===SB.uid?TR('k0047','شما'):m.user_id.slice(0,8);
-      return '<div class="listrow gmember"><div class="mav">'+esc((who||'?').charAt(0))+'</div><div class="grow"><b>'+esc(who)+(nm?' «'+esc(nm)+'»':'')+supBadgeHTMLFor(m.user_id)+SB.presenceDot(m.user_id)+'</b>'+((OG.memberBio&&OG.memberBio[m.user_id])?'<div class="small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(OG.memberBio[m.user_id])+'</div>':'')+'<div class="small">'+esc(m.role)+'</div></div>'
+      return '<div class="listrow gmember"><div class="mav">'+esc((who||'?').charAt(0))+'</div><div class="grow"><b class="latintok">'+esc(who)+(nm?' «'+esc(nm)+'»':'')+supBadgeHTMLFor(m.user_id)+SB.presenceDot(m.user_id)+'</b>'+((OG.memberBio&&OG.memberBio[m.user_id])?'<div class="small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(OG.memberBio[m.user_id])+'</div>':'')+'<div class="small latintok">'+esc(m.role)+'</div></div>'
       +(OG.isAdmin()&&m.user_id!==SB.uid?'<button class="btn ghost sm" onclick="var n=prompt(\''+TR('k2031','گذاشتن لقب')+'\'); if(n!==null) OG.setNickname(\''+m.user_id+'\',n)">'+TR('k2030','لقب')+'</button><button class="btn ghost sm" onclick="OG.setMemberRole(\''+m.user_id+'\',\''+(m.role==="admin"?"member":"admin")+'\')">'+TR('k2032','انتخاب ادمین')+'</button><button class="btn ghost sm" onclick="OG.muteMember(\''+m.user_id+'\')">'+TR('k2034','بی‌صدا کردن')+'</button><button class="btn ghost sm" onclick="if(confirm(\''+TR('k2033','حذف عضو')+'?\'))OG.removeMember(\''+m.user_id+'\')">'+TR('k2033','حذف عضو')+'</button>':'')
       +'</div>';
     }).join("")+'</div>';
@@ -9165,7 +9719,18 @@ OG.sendLocation=function(){
   try{ label=prompt(TR('k2498','برچسب مکان (اختیاری)')+"")||""; }catch(e){}
   navigator.geolocation.getCurrentPosition(function(pos){
     var lat=pos.coords.latitude, lng=pos.coords.longitude;
-    sbRpc("share_location",{p_group:OG.sel.id,p_lat:lat,p_lng:lng,p_label:label||null,p_live:false}).then(function(res){
+    /* v10.4.10 — the owner is anon: share_location (auth.uid) returns
+       null for the owner, so the owner shares via share_location_owner. */
+    var shareCall=ownerMode
+      ? ownerSig().then(function(sig){
+          if(!sig) return {error:{message:"no-sig"}};
+          return sbRpc("share_location_owner",{p_group:String(OG.sel.id),p_lat:lat,p_lng:lng,p_label:label||null,p_live:false,p_name:(S.user.name||"owner"),p_sig:sig}).then(function(res){
+            if(res.error||!res.data) return {error:{message:"share-failed"}};
+            return res;
+          });
+        })
+      : sbRpc("share_location",{p_group:OG.sel.id,p_lat:lat,p_lng:lng,p_label:label||null,p_live:false});
+    shareCall.then(function(res){
       if(res.error){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
       var link="https://maps.google.com/?q="+lat+","+lng;
       try{ OG.sendGroupMsg("📍 "+(label?label+" — ":"")+link); }catch(e){}
@@ -9196,6 +9761,17 @@ OG.startLiveLocation=function(){
     var now=Date.now();
     if(OG._locLastPush&&now-OG._locLastPush<25000) return Promise.resolve(true);
     OG._locLastPush=now;
+    /* v10.4.10 — the owner is anon: share_location (auth.uid) returns
+       null for the owner, so the owner pushes via share_location_owner. */
+    if(ownerMode){
+      return ownerSig().then(function(sig){
+        if(!sig) return {error:{message:"no-sig"}};
+        return sbRpc("share_location_owner",{p_group:gid,p_lat:lat,p_lng:lng,p_label:null,p_live:true,p_name:(S.user.name||"owner"),p_sig:sig}).then(function(res){
+          if(res.error||!res.data) return {error:{message:"share-failed"}};
+          return res;
+        });
+      });
+    }
     return sbRpc("share_location",{p_group:gid,p_lat:lat,p_lng:lng,p_label:null,p_live:true});
   };
   OG._locLastPush=0; OG._liveGroupId=gid; OG._locStarted=false;
@@ -9227,7 +9803,10 @@ OG.stopLiveLocation=function(silent){
    success. After a successful share the map re-fetches and the marker
    appears. */
 OG.shareMyLocation=function(gid){
-  var g=(typeof OG!=="undefined"&&(OG.list||[])).filter(function(x){ return String(x.id)===String(gid||(OG.sel?OG.sel.id:"")); })[0]||OG.sel;
+  /* v10.4.10 — on the map page the group comes from the map selector
+     (OG.sel is not set there); elsewhere it is the open group. */
+  var mapGid=(typeof groupMapSelectedGroup==="function"&&curView==="groupmap")?((groupMapSelectedGroup()||{}).id||null):null;
+  var g=(typeof OG!=="undefined"&&(OG.list||[])).filter(function(x){ return String(x.id)===String(gid||mapGid||(OG.sel?OG.sel.id:"")); })[0]||OG.sel;
   if(!g){ toast(TR('k2760','اول یک گروه آنلاین بسازید یا انتخاب کنید')+"."); return; }
   if(!SB.groupOnline()){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
   if(typeof navigator==="undefined"||!navigator.geolocation){ toast(TR('k2486','مکان در دسترس نیست؛ دوباره تلاش کنید')+"."); return; }
