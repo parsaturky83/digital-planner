@@ -631,6 +631,10 @@ body[data-theme="haker"] .srv-note.warn,body[data-theme="solo"] .srv-note.warn,b
 .permWrap{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.55)}
 .permWrap.open{display:flex}
 .permCard{width:min(480px,100%);max-height:88vh;overflow:auto;background-color:var(--bg);border:1px solid var(--acc);border-radius:18px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+#permOverlay{overflow-y:auto}
+#permOverlay .card{max-height:92vh;max-height:92dvh;overflow-y:auto;overscroll-behavior:contain;margin:auto;position:relative}
+.permContinue{position:sticky;bottom:0;width:100%;justify-content:center;margin-top:12px;z-index:2;box-shadow:0 -8px 16px rgba(0,0,0,.20)}
+.permX{position:absolute;top:10px;inset-inline-end:10px;width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font-size:15px;font-weight:700;cursor:pointer;z-index:3}
 .permRow{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--acc);border-radius:14px;margin:10px 0;background:var(--accSoft)}
 .permRow .pic{font-size:22px;line-height:1}
 .permRow b{display:block;margin-bottom:2px}
@@ -4386,9 +4390,10 @@ var RENDER={ home:renderHome, today:renderToday, week:renderWeek, calendar:rende
 })();
 </script>
 <!-- ================= دسترسی‌ها (اولین اجرا) + ورق قدرت‌ها ================= -->
-<div id="permOverlay" style="display:none;position:fixed;inset:0;z-index:180;background:rgba(0,0,0,.72);align-items:center;justify-content:center;padding:20px">
+<div id="permOverlay" style="display:none;position:fixed;inset:0;z-index:180;background:rgba(0,0,0,.72);align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto">
   <div class="card" style="max-width:480px;width:100%">
-    <h3 style="margin-bottom:8px" data-i18n="k2115">دسترسی‌های برنامه</h3>
+    <button class="permX" onclick="PERM.close()">✕</button>
+    <h3 style="margin-bottom:8px;padding-inline-end:34px" data-i18n="k2115">دسترسی‌های برنامه</h3>
     <p class="small" data-i18n="k2116">برای اینکه بخش‌های آنلاین درست کار کنند، این دسترسی‌ها لازم‌اند. هر کدام را که ندهید، همان بخش خاموش می‌ماند؛ بقیه برنامه کار می‌کند.</p>
     <div class="listrow"><div class="grow"><b data-i18n="k2294">میکروفون</b><div class="small" data-i18n="k2295">برای واکی‌تاکی و تماس صوتی</div></div><button class="btn sm" id="permMicBtn" onclick="PERM.askMic()" data-i18n="k2300">فعال‌کردن</button></div>
     <div class="listrow"><div class="grow"><b data-i18n="k2296">اعلان‌ها</b><div class="small" data-i18n="k2297">برای باخبر شدن از پیام‌ها و قدرت‌ها، حتی وقتی برنامه باز نیست</div></div><button class="btn sm" id="permNotifBtn" onclick="PERM.askNotif()" data-i18n="k2300">فعال‌کردن</button></div>
@@ -4396,6 +4401,7 @@ var RENDER={ home:renderHome, today:renderToday, week:renderWeek, calendar:rende
     <div class="listrow"><div class="grow"><b data-i18n="k2469">دسترسی به تقویم و ساعت</b><div class="small" data-i18n="k2470">با این دسترسی، آلارم‌ها و یادآوری‌ها می‌توانند از تقویم و ساعت دستگاه استفاده کنند. بدون آن هم برنامه کامل کار می‌کند.</div></div><button class="btn sm" id="permCalBtn" onclick="PERM.askCal()" data-i18n="k2471">اجازه می‌دهم</button></div>
     <div class="listrow"><div class="grow"><b data-i18n="k2491">دسترسی به مکان</b><div class="small" data-i18n="k2492">با این دسترسی می‌توانید مکان خود را برای گروه بفرستید و مکان زنده را با اعضای گروه به اشتراک بگذارید؛ فقط وقتی خودتان بخواهید. بدون آن هم برنامه کامل کار می‌کند.</div></div><button class="btn sm" id="permLocBtn" onclick="PERM.askLoc()" data-i18n="k2471">اجازه می‌دهم</button></div>
     <button class="btn ghost" style="width:100%;justify-content:center;margin-top:12px" onclick="PERM.close()" data-i18n="k2301">بعداً</button>
+    <button class="btn permContinue" id="permContinueBtn" onclick="PERM.close()" data-i18n="k0083">ادامه</button>
   </div>
 </div>
 <div id="pwSheet" style="display:none;position:fixed;inset:0;z-index:170;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:16px"></div>
@@ -6146,11 +6152,31 @@ SB.flushPointsQueue=function(){
    screen off/locked (needs the APK foreground service + wake lock). */
 var PERM={done:false,
  maybeShow:function(){
+   if(PERM.done) return;
    try{ if(localStorage.getItem("go-perm-done")==="1"){ PERM.done=true; return; } }catch(e){}
    var ov=$("permOverlay"); if(!ov) return;
-    ov.style.display="flex";
     PERM.refreshStates();
     PERM.refreshCalLoc();
+    if(PERM.allGranted()){ PERM.done=true; ov.style.display="none"; return; }
+    ov.style.display="flex";
+  },
+  allGranted:function(){
+   try{
+     var B=window.GhostOpsBridge;
+     var mic=!!S.permMic;
+     var notif=!!S.permNotif;
+     if(!notif){
+       if(B&&B.isNotificationGranted){ try{ notif=!!B.isNotificationGranted(); }catch(e){} }
+       else if(("Notification" in window)&&Notification.permission==="granted") notif=true;
+     }
+     var bg=!!S.permBg;
+     if(!bg&&B&&B.isBackgroundServiceRunning){ try{ bg=!!B.isBackgroundServiceRunning(); }catch(e){} }
+     var cal=!!S.permCal;
+     if(!cal&&B&&B.isCalendarGranted){ try{ cal=!!B.isCalendarGranted(); }catch(e){} }
+     var loc=!!S.permLoc;
+     if(!loc&&B&&B.isLocationGranted){ try{ loc=!!B.isLocationGranted(); }catch(e){} }
+     return mic&&notif&&bg&&cal&&loc;
+   }catch(e){ return false; }
   },
   refreshCalLoc:function(){
     try{
@@ -6165,7 +6191,7 @@ var PERM={done:false,
       if(B&&B.requestCalendarPermission){
         window.__goCalResult=function(granted){
           try{
-            if(granted){ S.permCal=true; var cb=$("permCalBtn"); if(cb) cb.textContent="✓ "+TR('k2473','دسترسی به تقویم فعال شد'); toast(TR('k2473','دسترسی به تقویم فعال شد')+"."); }
+            if(granted){ S.permCal=true; save(); var cb=$("permCalBtn"); if(cb) cb.textContent="✓ "+TR('k2473','دسترسی به تقویم فعال شد'); toast(TR('k2473','دسترسی به تقویم فعال شد')+"."); }
             else toast(TR('k2474','دسترسی به تقویم داده نشد؛ آلارم‌ها با زمان‌سنج داخلی کار می‌کنند')+".");
           }catch(e){}
         };
@@ -6182,7 +6208,7 @@ var PERM={done:false,
       if(B&&B.requestLocationPermission){
         window.__goLocResult=function(granted){
           try{
-            if(granted){ S.permLoc=true; var lb=$("permLocBtn"); if(lb) lb.textContent="✓ "+TR('k2493','دسترسی به مکان فعال شد'); toast(TR('k2493','دسترسی به مکان فعال شد')+"."); }
+            if(granted){ S.permLoc=true; save(); var lb=$("permLocBtn"); if(lb) lb.textContent="✓ "+TR('k2493','دسترسی به مکان فعال شد'); toast(TR('k2493','دسترسی به مکان فعال شد')+"."); }
             else toast(TR('k2494','دسترسی به مکان داده نشد؛ ارسال مکان خاموش می‌ماند')+".");
           }catch(e){}
         };
