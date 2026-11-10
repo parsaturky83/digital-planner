@@ -1693,6 +1693,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
       <h1 data-i18n="k0070">به GhostOps خوش آمدید</h1>
       <p class="lead"><span data-i18n="k0072">دفتر برنامه‌ریزی کاغذی، این بار روی گوشی شما</span> — <span data-i18n="k0071">با تقویم، آلارم و پشتیبان. اول بگویید این دفتر متعلق به کیست</span><span class="qm">؟</span></p>
       <div class="field"><label for="obName" data-i18n="k0074">نام شما</label><input class="inp" id="obName" placeholder="مثلاً: سارا محمدی" autocomplete="name" / data-i18n-ph="k0073"></div>
+      <div class="field"><label for="obUser" data-i18n="k2870">نام کاربری (انگلیسی)</label><input class="inp" id="obUser" dir="ltr" placeholder="username" autocomplete="username"></div>
+      <div class="field"><label for="obEmail" data-i18n="k2854">ایمیل</label><input class="inp" id="obEmail" type="email" dir="ltr" placeholder="you@example.com" autocomplete="email"><div class="hint small" data-i18n="k2871">نام کاربری و ایمیلی را بنویسید که مالک برای شما ثبت کرده است؛ بدون ثبت مالک، ورود به گروه‌های آنلاین ممکن نیست.</div></div>
       <div class="field"><label for="obPass" data-i18n="k0048">رمز عبور دفتر <span class="hint" data-i18n="k0075">(فقط روی همین دستگاه می‌ماند)</span></label><input class="inp" id="obPass" type="password" placeholder="یک رمز برای قفل دفتر انتخاب کنید" / data-i18n-ph="k0076"></div>
       <div class="field"><label for="obSec" data-i18n="k0077">سؤال امنیتی برای بازیابی رمز</label>
         <select class="inp" id="obSec"><option><span data-i18n="k0078">نام اولین مدرسه‌تان چه بود</span><span class="qm">؟</span></option><option><span data-i18n="k0080">نام شهر تولدتان</span><span class="qm">؟</span></option><option><span data-i18n="k0079">نام حیوان خانگی‌تان</span><span class="qm">؟</span></option></select></div>
@@ -2153,7 +2155,7 @@ var S={
   owner:{passHash:"",user:"",secQ:"",secHash:""}, admins:[], adminPins:{}, supporterName:TR('k0143','پشتیبان'),
   auditLog:[], announce:null, pomoLog:{}, weekScore:0, weekWin:"", fontSize:"normal", lastBackup:"",
   weekDecisions:{}, supporterNotes:[""], challenge:"", strategy:"",
-  calCursor:null, calSel:null, theme:"zomorod", mode:"light", plans:[], subKeys:[], mySub:null, mySuper:null, superKeys:[], onlineLastSeen:{}, loggedIn:false, keyGateShown:false, permMic:false, permNotif:false, permBg:false, permCal:false, permLoc:false, permStorage:false, ghostMode:false, ghostUntil:0, onlineStats:null, sfxMute:false, sfxVol:0.6, avUnlockSeen:[], homeLayout:null, subSales:{telegramOn:false,telegramId:"",gatewayOn:false,gatewayName:"",merchantId:"",payLink:""}
+  calCursor:null, calSel:null, theme:"zomorod", mode:"light", plans:[], subKeys:[], mySub:null, mySuper:null, superKeys:[], onlineLastSeen:{}, loggedIn:false, keyGateShown:false, permMic:false, permNotif:false, permBg:false, permCal:false, permLoc:false, permStorage:false, ghostMode:false, ghostUntil:0, onlineStats:null, sfxMute:false, sfxVol:0.6, avUnlockSeen:[], homeLayout:null, subSales:{telegramOn:true,telegramId:"Albakorov",gatewayOn:false,gatewayName:"",merchantId:"",payLink:""}
 };
 var uid=1; function nid(){ return uid++; }
 /* ذخیره‌سازی روی دستگاه: همه داده‌های دفتر در حافظه همین مرورگر/گوشی می‌ماند و با بستن و باز کردن صفحه از بین نمی‌رود */
@@ -2601,13 +2603,40 @@ async function obDone(){
   var pass=$("obPass").value, secA=$("obSecA").value.trim();
   if(pass.length<4){ toast(TR('k0245','رمز عبور باید دست‌کم ۴ نویسه باشد؛ در گام اول یک رمز انتخاب کنید') + "."); obNext(1); return; }
   if(!secA){ toast(TR('k0246','پاسخ سؤال امنیتی را در گام اول بنویسید تا بازیابی رمز ممکن باشد') + "."); obNext(1); return; }
-  S.account={passHash:await hashNew(pass),secQ:$("obSec").value,secHash:await hashNew(secA.toLowerCase()),pin:""};
+  /* v10.4.11 — ENTRY IS SERVER-VERIFIED (Parsa 22:13): a TYPED username +
+     email must be owner-registered on the server. When the server is
+     reachable the check runs here and an unregistered pair is REJECTED
+     (no local account is created on a typed name alone). When nothing is
+     typed, or the server cannot be reached, the account is created
+     locally with pendingServerCheck and the check re-runs on first online
+     entry; group access still needs the server credential verification. */
+  var obU=(($("obUser")||{}).value||"").trim();
+  var obE=(($("obEmail")||{}).value||"").trim();
+  var obVerified=false, obPending=false;
+  if((obU&&!obE)||(!obU&&obE)){ toast(TR('k2838','نام کاربری و ایمیل را بنویسید؛ این‌ها را مالک برای شما ثبت کرده است') + "."); obNext(1); return; }
+  if(obU&&obE){
+    if(!isLatinUsername(obU)||obU.length<3||obU.length>30){ toast(TR('k2420','نام کاربری باید فقط با حروف و عددهای انگلیسی باشد (بدون فاصله و بدون حروف فارسی)')+"."); obNext(1); return; }
+    if(obE.indexOf("@")<1){ toast(TR('k2324','ایمیل یا رمز درست نیست')+"."); obNext(1); return; }
+    if(typeof SB!=="undefined"&&SB.client){
+      try{
+        var vr=await sbRpc("check_person_registered",{p_username:obU,p_email:obE});
+        if(!vr.error){
+          if(vr.data===true){ obVerified=true; }
+          else { toast(TR('k2831','این نام کاربری/ایمیل ثبت نشده است؛ از مالک بخواهید شما را ثبت کند') + "."); obNext(1); return; }
+        } else { obPending=true; }
+      }catch(e){ obPending=true; }
+    } else { obPending=true; }
+  } else { obPending=true; }
+  S.account={passHash:await hashNew(pass),secQ:$("obSec").value,secHash:await hashNew(secA.toLowerCase()),pin:"",serverVerified:obVerified,pendingServerCheck:obPending};
   seedData();
+  if(obU) S.user.username=obU;
+  if(obE) S.user.email=obE;
   S.onboarded=true; save();
   if(!S.mySub){ showKeyPaneInOnboarding(); return; }
   enterApp();
   toast(TR('k0248','دفتر شما ساخته شد') + " — " + TR('k0247','خوش آمدید،') + " "+S.user.name);
 }
+
 function showLoginPane(){
   try{ hideBootSplash(); }catch(e){}
   ["obp1","obp2","obp3","obpR"].forEach(function(i){ var el=$(i); if(el) el.classList.remove("active"); });
@@ -2711,6 +2740,10 @@ function go(id){
   if(id==="admin") id="ownerpanel"; /* مسیر قدیمی «مدیریت افراد» حذف شده است؛ هر ارجاع قدیمی مستقیم به پنل مالک می‌رود */
   if(adminMode && !ownerMode && id!=="adminpanel" && id!=="themes"){ id="adminpanel"; } /* گیت نقش مشاور: هر ناوبری به بخش‌های صاحب دفتر — از منو، ناوبری پایین، جست‌وجوی فرمانی یا هر دکمه‌ای — به پنل مشاور برمی‌گردد؛ داده خصوصی صاحب دفتر با ناوبری عمومی دور زده نمی‌شود */
   curView=id; typeEl($("tbTitle"),TITLES[id]||"",45);
+  /* v10.4.11 — entering the group view ALWAYS refreshes from the server
+     (OG.loadMine is in-flight guarded + change-guarded, so this cannot
+     re-render in a loop). */
+  if(id==="group"){ try{ if(typeof OG!=="undefined"&&OG.loadMine) OG.loadMine(); }catch(e){} }
   if(id!=="groupmap"){ try{ if(typeof OG!=="undefined"&&OG._mapPoll){ clearInterval(OG._mapPoll); OG._mapPoll=null; } }catch(e){} try{ if(typeof groupMapDestroyAll==="function") groupMapDestroyAll(); }catch(e){} }
   document.querySelectorAll("[data-nav]").forEach(function(b){ b.classList.toggle("active",b.getAttribute("data-nav")===id); });
   document.querySelectorAll("[data-bn]").forEach(function(b){ b.classList.toggle("active",b.getAttribute("data-bn")===id); });
@@ -3558,16 +3591,54 @@ function renderFeatures(v){
 }
 function filterFeats(q){ document.querySelectorAll("[data-feat]").forEach(function(el){ el.style.display=el.getAttribute("data-feat").indexOf(q)>-1?"":"none"; }); }
 
+/* v10.4.11 — «گروه‌های من» merges the SERVER groups (OG.list) with the
+   local offline groups (S.groups): the screen never shows «no groups»
+   while the server has them. Server groups show their invite code and an
+   online pill; offline-created groups pending sync show a pending pill. */
+function myGroupsCardHTML(){
+  var out=[];
+  var seen={};
+  (S.groups||[]).forEach(function(g){
+    if(!g) return; seen[String(g.id)]=true;
+    out.push('<div class="listrow"><div class="grow"><b>'+esc(g.name)+'</b><div class="small">'+fa((g.members||[]).length)+' ' + TR('k1104','عضو') + ' — '+esc((g.members||[]).join("، ")||TR('k1103','بدون عضو'))+(g.pendingSync?' — '+TR('k2840','در انتظار همگام‌سازی با سرور'):'')+'</div></div><button class="btn ghost sm" onclick="addMemberTo('+g.id+')">+ ' + TR('k1104','عضو') + '</button></div>');
+  });
+  (OG.list||[]).forEach(function(g){
+    if(!g||seen[String(g.id)]) return; seen[String(g.id)]=true;
+    out.push('<div class="listrow"><div class="grow"><b>'+esc(g.name)+'</b><div class="small">'+TR('k2000','آنلاین')+' — '+TR('k2024','کد دعوت گروه')+': <span dir="ltr" class="latintok">'+keyCodeHTML(g.invite_code)+'</span>'+(g.members_count?(' — '+fa(g.members_count)+' '+TR('k1104','عضو')):'')+'</div></div><button class="btn sm" onclick="OG.select(\''+g.id+'\')">'+TR('k0620','فعال')+'</button></div>');
+  });
+  if(!out.length){
+    if(typeof OG!=="undefined"&&OG._mineLoading) return '<p class="small">'+TR('k2841','در حال بارگذاری گروه‌ها…')+'.</p>';
+    if(typeof OG!=="undefined"&&OG._mineError) return '<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p><button class="btn ghost sm" onclick="OG.loadMine()">'+TR('k2842','تلاش دوباره')+'</button>';
+    return '<p class="small">' + TR('k1105','هنوز گروهی نساخته‌اید') + '.</p>';
+  }
+  return out.join("");
+}
+/* v10.4.11 — server sign-in card shown when the user has no Auth session:
+   groups/chat/map need the server account (username + password the owner
+   registered), not a locally typed name. */
+function serverCredCardHTML(){
+  return '<div class="card" style="margin-top:12px;border-color:var(--acc2)"><h3 style="margin-bottom:8px">'+TR('k2844','ورود به حساب سرور')+'</h3><p class="small">'+TR('k2845','برای دیدن گروه‌ها، چت و مکان، با نام کاربری و رمزی که مالک برای شما ثبت کرده وارد شوید')+'.</p><div class="field"><label>'+TR('k2870','نام کاربری (انگلیسی)')+'</label><input class="inp" id="ogCredUser" dir="ltr" autocomplete="username" value="'+esc((S.user&&S.user.username)||"")+'"></div><div class="field"><label>'+TR('k2846','رمز سرور')+'</label><input class="inp" id="ogCredPass" type="password" dir="ltr" autocomplete="current-password"></div><button class="btn sm" onclick="SB.verifyServerCredentialsFromCard()">'+TR('k2844','ورود به حساب سرور')+'</button></div>';
+}
+
 /* ================= گروه و تیم — نسخه آفلاین کامل ================= */
 function renderGroup(v){
   var h=vhead(TR('k0273','برنامه‌ریزی گروهی و تیمی'),TR('k1098','نسخه آفلاین کامل: گروه بسازید، اعضا را از فهرست افراد اضافه کنید، برنامه مشترک و کارهای گروهی را همین‌جا روی دستگاه مدیریت کنید') + ".");
   h+='<div class="grid g2"><div class="card"><h3 style="margin-bottom:10px">' + TR('k1102','گروه تازه') + '</h3><div class="field"><label>' + TR('k1101','نام گروه') + '</label><input class="inp" id="grpName" placeholder="' + TR('k1100','مثلاً: گروه مطالعه زیست، تیم پروژه، خانواده') + '"></div><button class="btn" onclick="addGroup()">' + TR('k1099','ساخت گروه') + '</button>'
-    +'<h3 style="margin:18px 0 8px">' + TR('k1106','گروه‌های من') + '</h3>'+(S.groups.length?S.groups.map(function(g){ return '<div class="listrow"><div class="grow"><b>'+esc(g.name)+'</b><div class="small">'+fa(g.members.length)+' ' + TR('k1104','عضو') + ' — '+esc(g.members.join("، ")||TR('k1103','بدون عضو'))+'</div></div><button class="btn ghost sm" onclick="addMemberTo('+g.id+')">+ ' + TR('k1104','عضو') + '</button></div>'; }).join(""):'<p class="small">' + TR('k1105','هنوز گروهی نساخته‌اید') + '.</p>')+'</div>'
+    +myGroupsCardHTML()
+    +'<div class="card">'
+    +'<div class="rowflex" style="justify-content:space-between"><h3 style="margin:0">'+TR('k1106','گروه‌های من')+'</h3><button class="btn ghost sm" onclick="go(\'creategroup\')">+ '+TR('k0263','گروه تازه')+'</button></div><div style="height:8px"></div>'
+    +((OG.list||[]).map(function(g){
+      var mem=(g.members||[]).join('، ');
+      var pend=(S.groups||[]).some(function(x){ return x.name===g.name&&x.pendingSync; });
+      return '<div class="listrow"><div class="grow"><b>'+esc(g.name)+'</b><div class="small">'+esc(g.invite_code||'')+(pend?' — '+TR('k2840','در انتظار همگام‌سازی'):'')+'</div><div class="small">'+esc(mem)+'</div></div><button class="btn ghost sm" onclick="OG.select(\''+g.id+'\')">+ '+TR('k1104','عضو')+'</button></div>';
+    }).join(''))
+    +'</div>'
+
     +'<div class="card"><h3 style="margin-bottom:10px">' + TR('k1107','برنامه و کارهای مشترک گروه') + '</h3><div class="field"><label>' + TR('k1113','کار گروهی تازه') + '</label><input class="inp" id="gtName" placeholder="' + TR('k1109','مثلاً: آماده‌سازی ارائه گروهی') + '"></div><div class="field"><label>' + TR('k1112','واگذاری به') + '</label><input class="inp" id="gtWho" placeholder="' + TR('k1110','نام عضو گروه') + '"></div><button class="btn" onclick="addGroupTask()">' + TR('k1108','ثبت کار گروهی') + '</button><div style="margin-top:14px">'+(S.groupTasks.length?S.groupTasks.map(function(t){ return '<div class="task'+(t.done?" done":"")+'"><button class="tog'+(t.done?" on":"")+'" onclick="toggleGroupTask('+t.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M4 12.5l5 5L20 6.5"/></svg></button><div class="tt"><div class="name">'+esc(t.name)+'</div><div class="meta"><span>' + TR('k1111','واگذار به') + ': '+esc(t.who||"—")+'</span></div></div></div>'; }).join(""):'<p class="small">' + TR('k1114','کار گروهی ثبت نشده است') + '.</p>')+'</div>'
     +'<h3 style="margin:16px 0 8px">' + TR('k1118','رأی‌گیری گروهی') + '</h3><p class="small">'+esc(S.pollQ||TR('k1123','موضوع رأی‌گیری این هفته: بهترین ساعت جلسه گروه') + (LANG==="en"?"?":"؟"))+'</p><div class="rowflex"><button class="btn ghost sm" onclick="vote(0)">' + TR('k1120','ساعت ۹ صبح') + ' — '+fa((S.poll||[0,0])[0])+' ' + TR('k1117','رأی') + '</button><button class="btn ghost sm" onclick="vote(1)">' + TR('k1119','ساعت ۱۷ عصر') + ' — '+fa((S.poll||[0,0])[1])+' ' + TR('k1117','رأی') + '</button></div><div class="field" style="margin-top:14px"><label>' + TR('k1122','موضوع تازه رأی‌گیری درباره ساعت جلسه') + '</label><div class="rowflex"><input class="inp grow" id="pollQInp" placeholder="' + TR('k1121','موضوع تازه') + ' — ' + TR('k1115','با ثبت، شمارش رأی‌ها از صفر شروع می‌شود') + '"><button class="btn sm" onclick="setPollQ()">' + TR('k1116','ثبت موضوع') + '</button></div></div></div></div>';
   v.innerHTML=h+onlineGroupHTML();
 }
-function addGroup(){ var n=$("grpName").value.trim(); if(!n){ toast(TR('k1124','نام گروه را بنویسید') + "."); return; } S.groups.push({id:nid(),name:n,members:[]}); go("group"); }
+function addGroup(){ var n=$("grpName").value.trim(); if(!n){ toast(TR('k1124','نام گروه را بنویسید') + "."); return; } S.groups.push({id:nid(),name:n,members:[],pendingSync:true}); /* v10.4.11 — offline-created groups sync to the server when online. */ try{ SB.flushPendingGroups(); }catch(e){} go("group"); }
 function addMemberTo(gid){ openMembers(gid); }
 function openMembers(gid){
   var g=S.groups.filter(function(x){return x.id===gid;})[0];
@@ -3664,7 +3735,14 @@ function renderChat(v){
   var h=vhead(TR('k1138','چت گروهی و پشتیبان'),TR('k1137','چت گروهی فقط آنلاین است؛ پیام‌ها روی سرور ذخیره می‌شوند و برای دیدنشان باید وارد حساب آنلاین شد') + ".");
   h+=onlineChatBar();
   h+='<div class="card"><div class="rowflex" style="justify-content:space-between;margin-bottom:10px"><h3>' + TR('k1141','گفت‌وگوی گروهی') + '</h3></div><div class="chatbox" id="gChatBox"></div><div class="rowflex" style="margin-top:12px"><input class="inp grow" id="gChatInp" placeholder="' + TR('k1140','پیام به گروه') + '…" onkeydown="if(event.key===\'Enter\')sendGroupChat()"><button class="btn ghost" onclick="EMOJI.openPicker(\'gChatInp\')" aria-label="emoji">🙂</button><button class="btn" onclick="sendGroupChat()">'+TR('k0544','ارسال')+'</button><button class="btn ghost" onclick="OG.sendLocation()" aria-label="'+TR('k2479','ارسال مکان')+'">📍</button></div></div>';
-  v.innerHTML=h; drawGroupChat();
+  v.innerHTML=h;
+  /* v10.4.11 — messages PERSIST on the server for a week: entering the
+     chat ALWAYS re-reads them from the server (never only local state). */
+  if(typeof OG!=="undefined"&&OG.sel&&typeof SB!=="undefined"&&SB.groupOnline()){
+    OG._msgsLoading=true;
+    try{ var _lp=OG.loadMsgs(); if(_lp&&_lp.then){ _lp.then(function(){ OG._msgsLoading=false; if(curView==="chat") drawGroupChat(); },function(){ OG._msgsLoading=false; if(curView==="chat") drawGroupChat(); }); } }catch(e){ OG._msgsLoading=false; }
+  }
+  drawGroupChat();
 }
 function drawGroupChat(){
   var box=$("gChatBox"); if(!box) return;
@@ -3693,7 +3771,8 @@ function drawGroupChat(){
     try{ _fort=PW.fortressActive&&PW.fortressActive(); }catch(e){}
     var h='<div class="ghead" style="justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div><b>'+esc(OG.sel.name)+'</b> <span class="on-badge" data-onbadge><span class="dot"></span>'+TR('k2066','متصل')+'</span></div><div class="rowflex"><button class="btn ghost sm" onclick="PW.openSheet()">⚡ '+TR('k2139','قدرت‌های چت')+'</button><button class="btn ghost sm" onclick="openModal(PW.lettersHTML())">✉️ '+TR('k2326','نامه‌های خصوصی من')+'</button></div></div>';
     if(_fort) h+='<div class="pw-fortress-banner">🔒 '+TR('k9032','قلعه فعال است — چت فقط برای مدیران باز است')+'</div>';
-    h+='<p class="small" style="margin:0 0 10px">'+TR('k2053','سابقه چت هر دو هفته پاک می‌شود؛ پیام‌های قدیمی‌تر از ۱۴ روز حذف می‌شوند')+'.</p>';
+    h+='<p class="small" style="margin:0 0 10px">'+TR('k2830','سابقه چت گروهی هر هفته پاک می‌شود؛ پیام‌های قدیمی‌تر از ۷ روز حذف می‌شوند')+'.</p>';
+    if(OG._msgsLoading&&!_visible.length) h+='<p class="small">'+TR('k2843','در حال بارگذاری پیام‌ها…')+'.</p>';
     h+=_visible.map(function(m){ return ogMsgHTML(m); }).join("");
     try{ var _inp=$("gChatInp"); if(_inp) _inp.disabled=_fort&&!(OG.isAdmin&&OG.isAdmin()); }catch(e){}
     box.innerHTML=h; box.scrollTop=box.scrollHeight;
@@ -4192,7 +4271,8 @@ function renderHomeOnly(){ if(curView==="home") go("home"); }
 Object.assign(I18N_EN,{"k2700":"Groups map","k2701":"Add to Home","k2703":"Removed from Home","k2704":"Section added to Home","k2705":"Section removed from Home","k2706":"Real map — live member positions from the server","k2707":"Offline — no map tiles; positions are plotted from real GPS on a relative grid","k2708":"Location not shared","k2709":"You","k2710":"Refresh map","k2711":"Share my location","k2712":"No groups yet","k2713":"Create or join a group first to see the map","k2714":"Distance from","k2715":"Live voice chat with the group","k2716":"Members’ exact positions on the real map","k2717":"Username (English)","k2718":"Enter the English username","k2719":"Username must start with an English letter and contain only letters, digits and _ (3–30 characters)","k2720":"Username is taken","k2721":"No username","k2722":"Set username","k2723":"Search by username","k2724":"Search","k2725":"No user found","k2726":"Invite to group","k2727":"Invited to the group","k2728":"Not invited yet; this person has no online account — send them the invite link","k2729":"Invite code","k2730":"Groups","k2731":"Role","k2733":"A username is required for everyone except the owner","k2734":"Could not register on the server; the username is taken","k2735":"Members","k2736":"Exact location","k2737":"m","k2738":"km","k2739":"Home layout","k2740":"Home layout test","k2741":"Username search (test)","k2742":"Invite by username (test)","k2743":"Username uniqueness (test)","k2744":"Map live location (test)","k2745":"Remove test member from group","k2746":"Restore Home layout","k2747":"Super users must also have a username"});
 Object.assign(I18N_EN,{"k2810":"Online groups test","k2811":"This test checks every group capability with test data; all test data is deleted afterwards.","k2812":"Edit group (test)","k2813":"Join by invite code (test)","k2814":"Join with wrong code (test)","k2815":"Set role (test)","k2816":"Group message (test)","k2817":"Poll (test)","k2818":"Group announcement (test)","k2819":"Group task (test)","k2820":"Group event (test)","k2821":"Map group","k2822":"Choose a group to view on the map","k2823":"Stale location","k2824":"Owner signature invalid; sync from the owner panel","k2825":"Type the full username; only an exact match is shown, never a list","k2826":"My live location","k2827":"Live location stopped","k2828":"Owner location sharing","k2829":"Group test"});
 Object.assign(I18N_EN,{"k2750":"Log in online first to use online chat","k2751":"The map needs the internet; locations are not fresh","k2752":"Live — locations from the server","k2753":"Locations are stale — offline","k2754":"Not connected to the server; locations could not be loaded","k2755":"Last updated","k2756":"Add by username","k2757":"Username must be at least 3 characters","k2758":"Current group members","k2759":"Share the invite code","k2760":"Create or select an online group first","k2761":"Owner location sharing needs a new server function","k2762":"Server stats","k2763":"Stats could not be loaded from the server","k2764":"Refresh stats","k2765":"All groups (owner)","k2766":"Edit group","k2767":"Group name","k2768":"Save changes","k2771":"Accounts","k2772":"Registered people","k2773":"Keys","k2774":"Active keys","k2775":"Revoked keys","k2776":"Super keys","k2777":"Groups","k2778":"Members","k2779":"Messages","k2780":"Points","k2781":"Super users","k2782":"By group","k2783":"Nobody has shared a location yet","k2784":"Map","k2785":"View chat","k2786":"View advisor chats","k2787":"View polls","k2788":"Set points","k2789":"Points","k2790":"Owner read of group tasks/events is not on the server yet","k2791":"Owner supervision","k2792":"Delete message","k2793":"Close poll","k2794":"Delete poll","k2795":"Points saved","k2796":"Poll closed","k2797":"Poll deleted","k2798":"Message deleted","k2799":"Group updated","k2800":"The owner can change everything here","k2801":"Personal data stays private; only counts sync to the server"});
-var APP_VERSION="10.4.10";
+Object.assign(I18N_EN,{"k2830": "Group chat history is cleaned every week; messages older than 7 days are deleted", "k2831": "This username/email is not registered; ask the owner to register you", "k2832": "This key is bound to a different username", "k2833": "Pick your role in this group only once; afterwards only the owner can change it", "k2834": "Your role was already picked; only the owner can change it", "k2835": "Your role was saved", "k2836": "You have reached your role's group limit", "k2837": "To create an online group, first sign in to the server account; get the server username and password from the owner", "k2838": "Enter your username and email; the owner registered them for you", "k2839": "The group could not be created on the server; if you reached your role's group limit, ask the owner", "k2840": "waiting to sync to the server", "k2841": "Loading groups\u2026", "k2842": "Retry", "k2843": "Loading messages\u2026", "k2844": "Sign in to the server account", "k2845": "To see groups, chat and locations, sign in with the username and password the owner registered for you", "k2846": "Server password", "k2848": "Owner sign-in needs server verification; check the internet and try again", "k2849": "The server username or password is wrong", "k2850": "Username this key is bound to (optional; empty means the key is not bound to any username)", "k2851": "Credentials", "k2852": "Usernames, emails and passwords on the server", "k2853": "The owner registers each person's username, email, password and recovery question on the server; group entry is only possible with these credentials", "k2854": "Email", "k2855": "Not linked to a person", "k2856": "Register credentials", "k2857": "No credentials registered yet", "k2858": "has a password", "k2859": "no password", "k2860": "has recovery", "k2861": "no recovery", "k2862": "New password", "k2863": "Saving the credentials on the server failed; the username or email is already used", "k2864": "Credentials registered", "k2865": "New password for", "k2866": "New password saved", "k2867": "Credentials", "k2868": "will be deleted. They will no longer be able to sign in with this username", "k2869": "Credentials deleted", "k2870": "Username (English)", "k2871": "Enter the username and email the owner registered for you; without the owner's registration, online groups are not accessible"});
+var APP_VERSION="10.4.11";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -4277,8 +4357,11 @@ function groupMapLeafletLabel(mk){
   return label+'<br><span dir="ltr">'+mk.lat.toFixed(5)+', '+mk.lng.toFixed(5)+'</span>';
 }
 function groupMapGroups(){
+  /* v10.4.11 — the map selector lists ONLY the member's own SERVER groups
+     (OG.list, from my_groups()/group_list). Local offline groups have no
+     server locations and must never appear in the server-location selector. */
   var out=[], seen={};
-  ((OG.list||[]).concat(S.groups||[])).forEach(function(g){
+  ((OG.list||[])).forEach(function(g){
     if(!g||g.id==null) return;
     var k=String(g.id); if(seen[k]) return; seen[k]=true;
     out.push({id:g.id,name:g.name||"",invite_code:g.invite_code||"",created_by:g.created_by||"",myRole:g.myRole||""});
@@ -4379,7 +4462,8 @@ function groupMapLoad(groupId){
     }).catch(function(){ state('error'); return (OG.mapLocations||{})[gid]||[]; });
   }
   if(!SB.online){ state('unauth'); return Promise.resolve((OG.mapLocations||{})[gid]||[]); }
-  return sbRpc("list_group_locations",{p_group:gid}).then(function(res){
+  /* v10.4.11 — member-scoped feed: only this member's own groups' locations. */
+  return sbRpc("my_group_locations",{p_group_id:gid}).then(function(res){
     if(res.error||!Array.isArray(res.data)){ state('error'); return (OG.mapLocations||{})[gid]||[]; }
     var rows=store(res.data);
     state(rows.length?'ok':'empty');
@@ -4620,7 +4704,7 @@ function doUserSearch(){
       if(!rows.length){ box.innerHTML='<p class="small">'+TR('k2725','کاربر پیدا نشد')+'.</p>'; return false; }
       /* Groups the caller owns (group owner may invite from the profile). */
       var myGroups=(OG.list||[]).filter(function(g){ return ownerMode||String(g.created_by||"")===String((typeof SB!=="undefined"&&SB.uid)||"")||g.myRole==="admin"; });
-      var gs=(ownerMode?(S.groups||[]):[]).concat(myGroups);
+      var gs=myGroups; /* v10.4.11 — invite only into server groups (OG.list); a local group has no server id. */
       var seenG={}; var gopts="";
       gs.forEach(function(g){ var k=String(g.id); if(seenG[k]) return; seenG[k]=true; gopts+='<option value="'+esc(k)+'">'+esc(g.name||k)+'</option>'; });
       box.innerHTML=rows.map(function(r){
@@ -4829,15 +4913,15 @@ async function doOwnerLogin(){
         try{ S.ownerSecret=await sha256hex("ghostops-owner-secret:"+pw); save(); }catch(e){}
         ownerEnter(); return;
       }
+      if(!res.error){ toast(TR('k1410','نام کاربری یا رمز مالک درست نیست') + "."); return; }
     }catch(e){}
   }
-  if(S.owner && u===want && await verifyHash("owner:"+pw,S.owner.passHash)){
-    if(String(S.owner.passHash||"").indexOf("sha256:")!==0){ try{ S.owner.passHash=await hashNew("owner:"+pw); save(); }catch(e){} }
-    try{ S.ownerSecret=await sha256hex("ghostops-owner-secret:"+pw); save(); }catch(e){}
-    ownerEnter();
-  }
-  else toast(TR('k1410','نام کاربری یا رمز مالک درست نیست') + ".");
+  /* v10.4.11 — NO local fallback for owner PANEL entry (Parsa 22:13):
+     owner commands run on the server. Server verify or fail with a
+     server error. The local diary lock (tryLogin) is untouched. */
+  toast(TR('k2848','ورود مالک فقط با تأیید سرور ممکن است؛ اینترنت را بررسی کنید و دوباره تلاش کنید') + ".");
 }
+
 function ownerLogout(){ ownerMode=false; syncOwnerUI(); if(curView==="ownerpanel"||curView==="admin") go("ownerpanel"); toast(TR('k1411','از حالت مالک خارج شدید؛ پنل مالک دوباره قفل شد') + "."); }
 function openOwnerPass(){
   openModal('<h3 style="margin-bottom:12px">' + TR('k1412','تغییر رمز مالک') + '</h3>'
@@ -5032,7 +5116,7 @@ async function doAdminLogin(){
   }
   if(!ok&&S.adminPins&&hashStr("admin:"+pin)===S.adminPins[pid]){ ok=true; verifiedHash=S.adminPins[pid]; }
   if(!ok){ try{ var h2=await hashNew("admin:"+pin); if(S.adminPins&&h2===S.adminPins[pid]){ ok=true; verifiedHash=h2; } }catch(e){} }
-  if(ok){ adminWho=pid; adminMode=true; try{ SB._advPinHash=verifiedHash||(S.adminPins&&S.adminPins[pid])||null; }catch(e){} pushAudit(TR('k0121','ورود مشاور') + ": "+adminName()); save(); adminEnter(); }
+  if(ok){ adminWho=pid; adminMode=true; try{ SB._advPinHash=verifiedHash||(S.adminPins&&S.adminPins[pid])||null; }catch(e){} pushAudit(TR('k0121','ورود مشاور') + ": "+adminName()); save(); adminEnter(); /* v10.4.11 — an advisor ALSO needs a server Auth session for groups/chat/map: offer the server credential sign-in (username = the advisor's registered username). */ try{ SB.promptServerCredentialsForPerson(pid); }catch(e){} }
   else toast(TR('k1460','پین مشاور درست نیست') + ".");
 }
 function adminEnter(){
@@ -5159,11 +5243,13 @@ function createSubKey(){
   var p=planById(planId);
   if(!p){ toast(TR('k1492','اول یک طرح اشتراک بسازید') + "."); return; }
   var role=($("skRole")?$("skRole").value:"")||"";
+  var skU=(($("skUser")||{}).value||"").trim();
+  if(skU&&(!isLatinUsername(skU)||skU.length<3||skU.length>30)){ toast(TR('k2719','نام کاربری باید با حرف انگلیسی شروع شود و فقط حرف و عدد و _ داشته باشد (۳ تا ۳۰ نویسه)') + "."); return; }
   /* Owner commands run DIRECTLY on the server (Parsa 2026-11-10): a key is
      only created once the server confirms it. If the server is unreachable
      or rejects the key, no key is created locally and no success is shown. */
   if(typeof SB==="undefined"||!SB.client){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); SFX.play("denied"); return; }
-  var k={id:nid(),key:genSubKey(),buyer:buyer,planId:p.id,planName:p.name,price:p.price,days:p.days,role:role,status:"unused",created:faDate(new Date()),activatedAt:null,expiresAt:null,synced:false};
+  var k={id:nid(),key:genSubKey(),buyer:buyer,planId:p.id,planName:p.name,price:p.price,days:p.days,role:role,username:skU||null,status:"unused",created:faDate(new Date()),activatedAt:null,expiresAt:null,synced:false};
   SB.createKeyOnline(k).then(function(res){
     if(res&&res.data===true){
       if(!S.subKeys) S.subKeys=[];
@@ -5225,7 +5311,7 @@ function tgLink(id){
   return "https://t.me/"+v;
 }
 function subSales(){
-  if(!S.subSales) S.subSales={telegramOn:false,telegramId:"",gatewayOn:false,gatewayName:"",merchantId:"",payLink:""};
+  if(!S.subSales) S.subSales={telegramOn:true,telegramId:"Albakorov",gatewayOn:false,gatewayName:"",merchantId:"",payLink:""};
   return S.subSales;
 }
 function saveSubSales(){
@@ -5252,12 +5338,13 @@ function subBuyHTML(){
     return '<p class="small">' + TR('k1517','هنوز طرح اشتراکی تعریف نشده است؛ مالک برنامه طرح‌ها را از پنل مالک می‌سازد') + '.</p>';
   }
   var h='<div class="grid g2" style="margin:10px 0">'+S.plans.map(function(p){ return '<div class="card" style="padding:12px 14px"><b>'+esc(p.name)+'</b><div class="small" style="margin-top:2px">'+fa(p.price)+' ' + TR('k1518','تومان') + ' — '+fa(p.days)+' ' + TR('k0329','روز') + '</div></div>'; }).join("")+'</div>';
+  var tgId=(ss.telegramId||"").trim()||"Albakorov";
   var methods="";
-  if(ss.telegramOn && ss.telegramId){
-    methods+='<a class="btn" href="'+esc(tgLink(ss.telegramId))+'" target="_blank" rel="noopener" style="text-decoration:none">'+icSvg("telegram")+' ' + TR('k1519','خرید از طریق تلگرام') + ' — ' + TR('k1520','پیام به مالک') + '</a> ';
+  if(ss.telegramOn && tgId){
+    methods+='<a class="btn" href="'+esc(tgLink(tgId))+'" target="_blank" rel="noopener" style="text-decoration:none">'+icSvg("telegram")+' ' + TR('k1519','خرید از طریق تلگرام') + ' @' + esc(tgId) + '</a> ';
   }
   if(methods) h+='<div class="rowflex" style="flex-wrap:wrap">'+methods+'</div><p class="small" style="margin-top:8px">' + TR('k1524','پس از تأیید خرید توسط مالک، کلید ورود برایتان فرستاده می‌شود؛ کلید را همین‌جا پایین وارد کنید تا اشتراک فعال شود. پرداخت در این نسخه به‌صورت خودکار تأیید نمی‌شود') + ' — ' + TR('k1523','صدور کلید پس از تأیید مالک انجام می‌شود') + '.</p>';
-  else h+='<p class="small">' + TR('k1525','برای خرید اشتراک با مالک برنامه در تماس باشید؛ مالک پس از تأیید خرید، کلید ورود را برایتان می‌فرستد') + '.</p>';
+  else h+='<p class="small">' + TR('k1525','برای خرید اشتراک با مالک برنامه در تماس باشید؛ مالک پس از تأیید خرید، کلید ورود را برایتان می‌فرستد') + ' — ' + TR('k1519','خرید از طریق تلگرام') + ' @' + esc(tgId) + '.</p>';
   return h;
 }
 function subStatusHTML(){
@@ -5266,8 +5353,11 @@ function subStatusHTML(){
   return '<div class="listrow"><div class="grow"><b>' + TR('k1481','طرح «')+esc(S.mySub.planName)+'»</b><div class="small">' + (LANG==='en'?'From':TR('k0299','از')) + ' '+esc(S.mySub.start)+' ' + TR('k1209','تا') + ' '+esc(S.mySub.expires)+' — '+(left>0?fa(left)+' ' + TR('k0402','روز مانده'):TR('k1529','منقضی شده است'))+'</div></div><span class="pill '+(left>0?'':' gray')+'">'+(left>0?TR('k0620','فعال'):TR('k1528','منقضی'))+'</span></div><button class="btn ghost sm" onclick="openSubActivate()">' + TR('k1527','فعال‌سازی با کلید تازه') + '</button>';
 }
 function showServerAccountPrompt(){
-  openModal('<h3 style="margin-bottom:8px">🎉 '+TR('k2431','حساب آنلاین بسازید')+'</h3><p class="small">'+TR('k2432','اشتراک فعال شد. برای گروه‌ها، چت گروهی و واکی‌تاکی باید یک حساب آنلاین (ایمیل و رمز) بسازید؛ دفتر آفلاین بدون آن هم کار می‌کند')+'.</p><div class="rowflex" style="margin-top:10px"><button class="btn grow" style="justify-content:center" onclick="window._goSettingsAfterEnter=true;closeModal();go(\'settings\')">'+TR('k2433','ساختن حساب آنلاین')+'</button><button class="btn ghost" onclick="closeModal()">'+TR('k2301','بعداً')+'</button></div>');
+  /* v10.4.11 — after key activation the user must complete SERVER
+     credential verification to get an Auth session (groups/chat/map). */
+  try{ openServerCredentialModal((S.user&&S.user.username)||"",null); }catch(e){}
 }
+
 function openSubActivate(){
   try{
     var _before=JSON.stringify(S.mySub||null);
@@ -5300,20 +5390,51 @@ function activateSubKey(val){
     if(row.status==="not_found"){ toast(TR('k1536','این کلید پیدا نشد؛ کلید را دقیق وارد کنید') + "."); return; }
     if(row.status==="revoked"){ toast(TR('k1537','این کلید باطل شده است') + "."); return; }
     if(row.status==="expired"){ toast(TR('k1539','اعتبار این کلید تمام شده است') + "."); return; }
-    var exp2=row.expires_at?row.expires_at.slice(0,10):null;
-    S.mySub={keyId:null,key:k,planId:null,planName:row.plan_name||"",price:0,days:row.days||0,role:row.role||"",start:todayKey(),expires:exp2,status:"active"};
-    if(row.role==="super"){
-      S.mySuper={key:k,expires:exp2,status:"active"};
-      if(!S.mySub.planName) S.mySub.planName=TR('k2230','ابر کاربر');
+    /* v10.4.11 — a key BOUND to a username only admits that username.
+       The proof is the bound user's SERVER password, not the stale local
+       username on this device (a shared device may still show the previous
+       user's name): when the local user differs from the bound one, open
+       the credential modal pre-filled with the BOUND username and complete
+       the activation only after the server verifies that exact username
+       (onOk receives the verified identity d). */
+    var bound=row.bound_username||null;
+    if(bound){
+      var myU=(S.user&&S.user.username)||(SB.profile&&SB.profile.username)||"";
+      if(myU&&String(myU).toLowerCase()===String(bound).toLowerCase()){
+        finishKeyActivation(k,row);
+        return;
+      }
+      S._pendingKey={key:k,row:row,bound:bound};
+      openServerCredentialModal(bound,function(d){
+        var pk=S._pendingKey; S._pendingKey=null;
+        if(!pk) return;
+        var verifiedU=(d&&d.username)||(S.user&&S.user.username)||"";
+        if(String(verifiedU).toLowerCase()!==String(pk.bound).toLowerCase()){
+          toast(TR('k2832','این کلید به نام کاربری دیگری بسته شده است') + ".");
+          return;
+        }
+        finishKeyActivation(pk.key,pk.row);
+      });
+      return;
     }
-    save(); closeModal();
-    if(row.role==="super"){ toast("👑 "+TR('k2446','کلید ابر کاربر فعال شد')+" — "+TR('k2426','خوش آمدید، ابر کاربر — همه آواتارها و قدرت‌های چت برای شما نامحدود است')+"."); }
-    else if(LANG==="en"){ toast('Subscription "'+S.mySub.planName+'" activated'+(exp2?' — valid until '+exp2:'')+'.'); }
-    else { toast(TR('k1543','اشتراک «')+S.mySub.planName+TR('k1542','» فعال شد')+(exp2?(" — "+TR('k1209','تا')+" "+exp2+" "+TR('k1544','معتبر است')):"")+"."); }
-    if(!SB.online){ try{ showServerAccountPrompt(); }catch(e){} }
-    if($("app") && $("app").style.display==="block") go(curView);
+    finishKeyActivation(k,row);
   });
 }
+function finishKeyActivation(k,row){
+  var exp2=row.expires_at?row.expires_at.slice(0,10):null;
+  S.mySub={keyId:null,key:k,planId:null,planName:row.plan_name||"",price:0,days:row.days||0,role:row.role||"",start:todayKey(),expires:exp2,status:"active"};
+  if(row.role==="super"){
+    S.mySuper={key:k,expires:exp2,status:"active"};
+    if(!S.mySub.planName) S.mySub.planName=TR('k2230','ابر کاربر');
+  }
+  save(); closeModal();
+  if(row.role==="super"){ toast("👑 "+TR('k2446','کلید ابر کاربر فعال شد')+" — "+TR('k2426','خوش آمدید، ابر کاربر — همه آواتارها و قدرت‌های چت برای شما نامحدود است')+"."); }
+  else if(LANG==="en"){ toast('Subscription "'+S.mySub.planName+'" activated'+(exp2?' — valid until '+exp2:'')+'.'); }
+  else { toast(TR('k1543','اشتراک «')+S.mySub.planName+TR('k1542','» فعال شد')+(exp2?(" — "+TR('k1209','تا')+" "+exp2+" "+TR('k1544','معتبر است')):"")+"."); }
+  if(!SB.online){ try{ showServerAccountPrompt(); }catch(e){} }
+  if($("app") && $("app").style.display==="block") go(curView);
+}
+
 /* بخش فروش اشتراک در پنل مالک */
 function subSalesHTML(){
   var ss=subSales();
@@ -5324,8 +5445,9 @@ function subSalesHTML(){
   +'<button class="btn sm" onclick="addPlan()">' + TR('k1550','ساختن طرح') + '</button>'
   +((S.plans||[]).length?'<div style="margin-top:10px">'+S.plans.map(function(p){ return '<div class="listrow"><div class="grow"><b>'+esc(p.name)+'</b><div class="small">'+fa(p.price)+' ' + TR('k1518','تومان') + ' — '+fa(p.days)+' ' + TR('k0329','روز') + '</div></div><button class="btn ghost sm" onclick="openPlanEdit(\''+p.id+'\')">' + TR('k0600','ویرایش') + '</button><button class="btn ghost sm" onclick="delPlan(\''+p.id+'\')">' + TR('k0303','حذف') + '</button></div>'; }).join("")+'</div>':'<p class="small" style="margin-top:10px">' + TR('k1551','هنوز طرحی ساخته نشده است') + '.</p>')
   +'</div>'
-  +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("key")+'</span>' + TR('k1553','کلیدهای ورود') + '</h3><p class="small">' + TR('k1552','خریدار خرید را اطلاع می‌دهد، مالک کلید می‌سازد و می‌فرستد؛ خریدار با همین کلید اشتراک را فعال می‌کند') + '.</p>'
+  +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("key")+'</span>' + TR('k1553','کلیدهای ورود') + '</h3><p class="small">' + TR('k1552','خریدار خرید را اطلاع می‌دهد، مالک کلید می‌سازد و می‌فرستد؛ خریدار با همین کلید اشتراک را فعال می‌کند') + ' — ' + TR('k1519','خرید از طریق تلگرام') + ' @' + esc(ss.telegramId||"Albakorov") + '.</p>'
   +'<div class="field"><label>' + TR('k1554','نام خریدار') + '</label><input class="inp" id="skBuyer" placeholder="' + TR('k1554','نام خریدار') + '"></div>'
+  +'<div class="field"><label>' + TR('k2870','نام کاربری (انگلیسی)') + '</label><input class="inp" id="skUser" dir="ltr" placeholder="username"><div class="hint small">' + TR('k2850','نام کاربری فردی که این کلید به او بسته می‌شود (اختیاری؛ خالی یعنی کلید به هیچ نام کاربری بسته نیست)') + '.</div></div>'
   +'<div class="field"><label>' + TR('k1557','طرح') + '</label><select class="inp" id="skPlan">'+((S.plans||[]).length?S.plans.map(function(p){ return '<option value="'+p.id+'">'+esc(p.name)+' — '+fa(p.price)+' ' + TR('k1556','تومان /') + ' '+fa(p.days)+' ' + TR('k0329','روز') + '</option>'; }).join(""):'<option value="">' + TR('k1555','اول یک طرح بسازید') + '</option>')+'</select></div>'
   +'<div class="field"><label>' + TR('k2327','نقش کلید') + '</label><select class="inp" id="skRole"><option value="">' + TR('k2328','بدون نقش') + '</option><option>' + TR('k0211','کنکوری') + '</option><option>' + TR('k0180','دانشجو') + '</option><option>' + TR('k0187','کارمند') + '</option><option>' + TR('k0192','ورزشکار') + '</option><option>' + TR('k0113','مشاور') + '</option><option>' + TR('k0143','پشتیبان') + '</option></select></div>'
   +'<div class="rowflex"><button class="btn sm" onclick="createSubKey()">' + TR('k1558','ساختن کلید ورود') + '</button><button class="btn ghost sm" onclick="refreshOwnerKeys()">' + TR('k2567','تازه‌سازی فهرست کلیدها') + '</button></div>'
@@ -5334,7 +5456,7 @@ function subSalesHTML(){
   +'<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("settings")+'</span>' + TR('k1561','روش فروش اشتراک') + '</h3><p class="small">' + TR('k1562','مالک روش فروش را انتخاب می‌کند؛ خریدار فقط همان روش‌هایی را می‌بیند که اینجا فعال شده‌اند. پرداخت در این نسخه خودکار تأیید نمی‌شود و صدور کلید پس از تأیید مالک انجام می‌شود') + '.</p>'
   +'<div class="rowflex" style="margin-top:8px"><label class="rowflex"><input type="checkbox" id="ssTgOn"'+(ss.telegramOn?' checked':'')+'> ' + TR('k1563','فروش با تلگرام') + '</label></div>'
   +'<div class="field"><label>' + TR('k1564','نام کاربری یا شناسه تلگرام مالک') + '</label><input class="inp" id="ssTgId" dir="ltr" placeholder="' + TR('k1400','مثلاً') + ': @owner ' + TR('k1565','یا') + ' 123456789" value="'+esc(ss.telegramId)+'"></div>'
-  +'<p class="small" style="margin-top:8px">' + TR('k1519','خرید از طریق تلگرام') + ' — ' + TR('k1520','پیام به مالک') + '.</p>'
+  +'<p class="small" style="margin-top:8px">' + TR('k1519','خرید از طریق تلگرام') + ' @' + esc(ss.telegramId||"Albakorov") + ' — ' + TR('k1520','پیام به مالک') + '.</p>'
   +'<button class="btn sm" onclick="saveSubSales()">' + TR('k1570','ذخیره روش فروش') + '</button></div>';
   return h+SB.superKeysHTML();
 }
@@ -5394,6 +5516,7 @@ function renderOwnerPanel(v){
     +'<button class="btn" onclick="addPerson()">' + TR('k1612','ثبت فرد') + '</button><p class="small" style="margin-top:10px">' + TR('k1611','بعد از ثبت، با دکمه «افزودن مشاور» کنار نام هر فرد، برایش پین ورود پنل مشاور بسازید') + '.</p></div>'
     +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("group")+'</span>' + TR('k1600','افراد و مشاور‌ها') + ' <span class="pill">'+fa(S.people.length)+' ' + TR('k1594','نفر') + '</span></h3>'+peopleListHTML(true)+'<div class="rowflex" style="margin-top:10px"><button class="btn ghost sm" onclick="openUserSearch()">'+TR('k2723','جست‌وجوی نام کاربری')+'</button></div></div></div>';
   h+=subSalesHTML();
+  h+=SB.ownerCredsHTML(); /* v10.4.11 — server credentials (Parsa 22:13). */
   /* تنظیمات کلی برنامه */
   h+='<div class="grid g2" style="margin-top:14px"><div class="card"><h3 style="margin-bottom:12px"><span class="vh-ic">'+icSvg("settings")+'</span>' + TR('k1613','تنظیمات کلی برنامه') + '</h3>'
     +'<div class="field"><label>' + TR('k1615','نام پشتیبان برنامه') + '</label><div class="rowflex"><input class="inp grow" id="owSupName" value="'+esc(disp(S.supporterName)||TR('k0143','پشتیبان'))+'"><button class="btn sm" onclick="owSaveSupporter()">' + TR('k0454','ذخیره') + '</button></div><div class="hint small">' + TR('k1614','این نام در پاسخ‌های پشتیبان و پنل‌ها نمایش داده می‌شود') + '.</div></div>'
@@ -5417,7 +5540,7 @@ function renderOwnerPanel(v){
   h+='<div class="grid g2" style="margin-top:14px"><div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("profile")+'</span>' + TR('k1646','وضعیت حساب صاحب دفتر') + '</h3><div class="listrow"><div class="avatar">'+avatarHTML(typeof S.user.avatar==="number"?S.user.avatar:0,42)+'</div><div class="grow"><b>'+esc(S.user.name)+'</b><div class="small">'+esc(S.user.role)+'</div></div></div><p class="small">' + TR('k1642','تم فعلی') + ': '+esc(((THEMES.filter(function(t){return t[0]===S.theme;})[0]||[])[1])||S.theme)+' — ' + TR('k1643','حالت') + ': '+(S.mode==="dark"?TR('k1193','شب'):TR('k0329','روز'))+'<br>' + TR('k1638','آخرین پشتیبان‌گیری') + ': '+esc(S.lastBackup||TR('k1645','هنوز پشتیبانی گرفته نشده است'))+'<br>' + TR('k1615','نام پشتیبان برنامه') + ': '+esc(disp(S.supporterName)||TR('k0143','پشتیبان'))+'<br>' + TR('k1640','اطلاعیه فعال روی داشبورد') + ': '+(S.announce?TR('k1641','بله') + " — " + TR('k1639','از طرف') + " "+esc(S.announce.by):TR('k1644','خیر'))+'</p></div>'
   +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("stats")+'</span>' + TR('k0962','گزارش فعالیت‌های مدیریتی') + '</h3>'+((S.auditLog&&S.auditLog.length)?S.auditLog.slice(0,15).map(function(a){ return '<div class="listrow"><div class="grow"><b>'+esc(a.txt)+'</b><div class="small">'+esc(a.when)+'</div></div></div>'; }).join(""):'<p class="small">' + TR('k1647','هنوز فعالیتی ثبت نشده است؛ ورودهای مالک و مشاور، مشاور‌کردن افراد، پاسخ به فرم‌ها، اطلاعیه‌ها و پشتیبان‌گیری‌ها اینجا ثبت می‌شوند') + '.</p>')+'</div></div>';
   h+=onlineOwnerCardHTML();
-  v.innerHTML=h; try{ SB.loadOwnerInbox(); }catch(e){} try{ SB.loadOwnerStats(); }catch(e){} try{ SB.loadOwnerGroups(); }catch(e){}
+  v.innerHTML=h; try{ SB.loadOwnerInbox(); }catch(e){} try{ SB.loadOwnerStats(); }catch(e){} try{ SB.loadOwnerGroups(); }catch(e){} try{ SB.loadOwnerCreds(); }catch(e){}
   try{ if(typeof SB!=="undefined"&&SB.client) SB.loadOwnerPanelData(); }catch(e){}
 }
 
@@ -6867,6 +6990,103 @@ SB.revalidateKey=function(){
   }).catch(function(){ return false; });
 };
 SB.afterEnter=function(){ if(SB.online){ SB.syncIdentity(); OG.loadMine(); SB.revalidateKey(); } else if(SB.groupOnline()){ OG.loadMine(); } };
+/* v10.4.11 — OFFLINE group sync (Parsa 22:17): groups created offline
+   (pendingSync) are pushed to the server when the device comes online.
+   On success the local pending copy is removed and the server group
+   (with invite code) appears in OG.list; on failure it stays pending. */
+SB.flushPendingGroups=function(){
+  if(!SB.client||!SB.groupOnline()||SB._flushPending) return Promise.resolve(0);
+  var pend=(S.groups||[]).filter(function(g){ return g&&g.pendingSync; });
+  if(!pend.length) return Promise.resolve(0);
+  SB._flushPending=true;
+  var done=0;
+  function step(i){
+    if(i>=pend.length){ SB._flushPending=false; if(done){ save(); try{ OG.loadMine(); }catch(e){} } return Promise.resolve(done); }
+    var g=pend[i];
+    var params={p_name:g.name,p_theme:"default",p_sig:null,p_key:null};
+    if(!SB.online&&!ownerMode){
+      if(S.mySub&&S.mySub.key) params.p_key=S.mySub.key;
+      else return step(i+1);
+    }
+    var call=ownerMode
+      ? ownerSig().then(function(sig){ if(!sig) return {error:{message:"no-sig"}}; params.p_sig=sig; return sbRpc("create_group",params); })
+      : sbRpc("create_group",params);
+    return call.then(function(res){
+      var row=(res.data&&res.data[0])||null;
+      if(row){ S.groups=S.groups.filter(function(x){ return x!==g; }); done++; }
+      return step(i+1);
+    }).catch(function(){ return step(i+1); });
+  }
+  return step(0).then(function(n){ if(n) toast(TR('k2081','گروه ساخته شد؛ کد دعوت را برای اعضا بفرستید') + "."); return n; });
+};
+/* v10.4.11 — SERVER credential verification (Parsa 22:13): username +
+   password are verified against user_credentials on the server
+   (verify_user_login), then the app signs in with Supabase Auth so the
+   user HAS an Auth session (auth.uid() works for groups/chat/map). */
+SB.verifyServerCredentials=function(username,password,onOk){
+  if(!username||!password) return Promise.resolve({error:{message:"empty"}});
+  if(!SB.client) return Promise.resolve({error:{message:"no-client"}});
+  return sbRpc("verify_user_login",{p_username:username,p_password:password}).then(function(res){
+    var d=res.data; if(Array.isArray(d)) d=d[0];
+    if(res.error) return {error:res.error};
+    if(!d||!d.ok) return {error:{message:"bad-credentials"}};
+    return SB.authIn(d.email,password).then(function(r){
+      if(r.error){
+        /* Auth user missing (credentials registered before the Auth link
+           existed): create it via sign-up, then sign in. */
+        return SB.authUp(d.email,password,username).then(function(r2){
+          if(r2.error) return {error:r2.error};
+          if(typeof onOk==="function") onOk(d);
+          return {ok:true,user:d};
+        });
+      }
+      if(typeof onOk==="function") onOk(d);
+      return {ok:true,user:d};
+    });
+  });
+};
+function openServerCredentialModal(prefillUser,onOk){
+  window._svOnOk=(typeof onOk==="function")?onOk:null;
+  openModal('<h3 style="margin-bottom:8px">'+TR('k2844','ورود به حساب سرور')+'</h3><p class="small">'+TR('k2845','برای دیدن گروه‌ها، چت و مکان، با نام کاربری و رمزی که مالک برای شما ثبت کرده وارد شوید')+'.</p>'
+  +'<div class="field"><label>'+TR('k2870','نام کاربری (انگلیسی)')+'</label><input class="inp" id="svUser" dir="ltr" autocomplete="username" value="'+esc(prefillUser||"")+'"></div>'
+  +'<div class="field"><label>'+TR('k2846','رمز سرور')+'</label><input class="inp" id="svPass" type="password" dir="ltr" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')doServerCredentialLogin()"></div>'
+  +'<div class="rowflex"><button class="btn grow" style="justify-content:center" onclick="doServerCredentialLogin()">'+TR('k2844','ورود به حساب سرور')+'</button><button class="btn ghost" onclick="closeModal()">'+TR('k0338','انصراف')+'</button></div>'
+  +'<p class="small" style="margin-top:8px">'+TR('k2831','این نام کاربری/ایمیل ثبت نشده است؛ از مالک بخواهید شما را ثبت کند')+'.</p>');
+  setTimeout(function(){ var el=$("svPass"); if(el) el.focus(); },60);
+}
+function doServerCredentialLogin(){
+  var u=(($("svUser")||{}).value||"").trim();
+  var p=(($("svPass")||{}).value||"");
+  if(!u||!p){ toast(TR('k2324','ایمیل یا رمز درست نیست')+"."); return; }
+  SB.verifyServerCredentials(u,p,window._svOnOk).then(function(res){
+    if(res.error){
+      if(res.error.message==="bad-credentials") toast(TR('k2849','نام کاربری یا رمز سرور درست نیست')+".");
+      else toast(esc(res.error.message||""));
+      return;
+    }
+    window._svOnOk=null;
+    closeModal();
+    toast(TR('k2323','وارد حساب آنلاین شدید')+".");
+    try{ go(curView); }catch(e){}
+  });
+}
+SB.verifyServerCredentialsFromCard=function(){
+  var u=(($("ogCredUser")||{}).value||"").trim();
+  var p=(($("ogCredPass")||{}).value||"");
+  if(!u||!p){ toast(TR('k2324','ایمیل یا رمز درست نیست')+"."); return Promise.resolve(false); }
+  return SB.verifyServerCredentials(u,p,null).then(function(res){
+    if(res.error){ toast(res.error.message==="bad-credentials"?TR('k2849','نام کاربری یا رمز سرور درست نیست')+".":esc(res.error.message||"")); return false; }
+    toast(TR('k2323','وارد حساب آنلاین شدید')+".");
+    try{ go(curView); }catch(e){}
+    return true;
+  });
+};
+SB.promptServerCredentialsForPerson=function(pid){
+  if(SB.online) return;
+  var p=(S.people||[]).filter(function(x){ return String(x.id)===String(pid); })[0];
+  var un=p?p.username:"";
+  try{ openServerCredentialModal(un||"",null); }catch(e){}
+};
 SB.activateKeyOnline=function(code){
   return sbRpc("activate_key",{p_code:code,p_device:SB.uid||"web"}).then(function(res){
     if(res.error) return {error:res.error};
@@ -6878,7 +7098,7 @@ SB.activateKeyOnline=function(code){
 SB.createKeyOnline=function(k){
   return ownerSig().then(function(sig){
     if(!sig) return {error:{message:"no-crypto"}};
-    return sbRpc("create_key",{p_code:k.key,p_buyer:k.buyer,p_plan_id:String(k.planId),p_plan_name:k.planName,p_price:k.price,p_days:k.days,p_role:k.role||"",p_sig:sig});
+    return sbRpc("create_key",{p_code:k.key,p_buyer:k.buyer,p_plan_id:String(k.planId),p_plan_name:k.planName,p_price:k.price,p_days:k.days,p_role:k.role||"",p_sig:sig,p_username:k.username||null});
   });
 };
 SB.revokeKeyOnline=function(code){
@@ -6960,6 +7180,86 @@ SB.revalidateOwnerKeys=function(){
    group_member_remove / owner_set_points / owner_message_delete /
    owner_poll_close / owner_poll_delete. Read-only viewing is enough for
    chats/polls — the owner never posts as someone else. */
+/* v10.4.11 — SERVER CREDENTIALS (Parsa 22:13): the owner registers
+   username + email + password + recovery Q/A on the server for each user
+   (register_user_credentials) and can list / reset / delete them. Hashes
+   and salts NEVER come back from the server (owner_list_user_credentials
+   returns only has_password / has_recovery flags). */
+SB.ownerCredsHTML=function(){
+  return '<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("key")+'</span>' + TR('k2851','اعتبارنامه‌ها') + ' — ' + TR('k2852','نام کاربری، ایمیل و رمز روی سرور') + '</h3>'
+  +'<p class="small">' + TR('k2853','مالک برای هر فرد نام کاربری، ایمیل، رمز و سؤال بازیابی را روی سرور ثبت می‌کند؛ ورود به گروه‌ها فقط با همین اعتبارنامه‌ها ممکن است') + '.</p>'
+  +'<div class="grid g2"><div><div class="field"><label>' + TR('k2870','نام کاربری (انگلیسی)') + '</label><input class="inp" id="crUser" dir="ltr" placeholder="username"></div>'
+  +'<div class="field"><label>'+TR('k2854','ایمیل')+'</label><input class="inp" id="crEmail" type="email" dir="ltr" placeholder="you@example.com"></div>'
+  +'<div class="field"><label>'+TR('k2846','رمز سرور')+'</label><input class="inp" id="crPass" type="password" dir="ltr"></div></div>'
+  +'<div><div class="field"><label>'+TR('k0064','سؤال امنیتی')+'</label><input class="inp" id="crQ" placeholder="'+TR('k0064','سؤال امنیتی')+'"></div>'
+  +'<div class="field"><label>'+TR('k0065','پاسخ شما')+'</label><input class="inp" id="crA"></div>'
+  +'<div class="field"><label>'+TR('k1601','ثبت فرد تازه')+'</label><select class="inp" id="crPerson"><option value="">'+TR('k2855','بدون پیوند به فرد')+'</option>'+((S.people||[]).map(function(p){ return '<option value="'+esc(String(p.id))+'">'+esc(p.name)+(p.username?' (@'+esc(p.username)+')':'')+'</option>'; }).join(""))+'</select></div></div></div>'
+  +'<button class="btn sm" onclick="SB.registerCreds()">'+TR('k2856','ثبت اعتبارنامه')+'</button>'
+  +'<div id="owCredsList" style="margin-top:12px"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div></div>';
+};
+SB.loadOwnerCreds=function(){
+  if(!ownerMode||!SB.client) return Promise.resolve(null);
+  if(SB._credsLoading) return SB._credsPromise;
+  var p=ownerSig().then(function(sig){
+    if(!sig) return null;
+    return sbRpc("owner_list_user_credentials",{p_sig:sig}).then(function(res){
+      var box=$("owCredsList"); if(!box) return null;
+      if(res.error||!Array.isArray(res.data)){ box.innerHTML='<p class="small">'+TR('k2763','آمار از سرور بارگذاری نشد')+'.</p>'; return null; }
+      var rows=res.data||[];
+      if(!rows.length){ box.innerHTML='<p class="small">'+TR('k2857','هنوز اعتبارنامه‌ای ثبت نشده است')+'.</p>'; return rows; }
+      box.innerHTML=rows.map(function(r){
+        return '<div class="listrow"><div class="grow"><b dir="ltr">@'+esc(r.username||"")+'</b> <span class="small">'+esc(r.email||"")+'</span><div class="small">'+esc(r.role||"")+(r.person_name?' — '+esc(r.person_name):"")+' — '+(r.has_password?TR('k2858','رمز دارد'):TR('k2859','رمز ندارد'))+' — '+(r.has_recovery?TR('k2860','بازیابی دارد'):TR('k2861','بازیابی ندارد'))+'</div></div><button class="btn ghost sm" onclick="SB.resetCredPass(\''+esc(r.username||"")+'\')">'+TR('k2862','رمز تازه')+'</button><button class="btn ghost sm" style="color:#b3352c;border-color:#b3352c" onclick="SB.deleteCred(\''+esc(r.username||"")+'\')">'+TR('k0303','حذف')+'</button></div>';
+      }).join("");
+      return rows;
+    });
+  }).catch(function(){ return null; });
+  SB._credsLoading=true; SB._credsPromise=p;
+  p.then(function(){ SB._credsLoading=false; },function(){ SB._credsLoading=false; });
+  return p;
+};
+SB.registerCreds=function(){
+  var un=(($("crUser")||{}).value||"").trim();
+  var em=(($("crEmail")||{}).value||"").trim();
+  var pw=(($("crPass")||{}).value||"");
+  var q=(($("crQ")||{}).value||"").trim();
+  var an=(($("crA")||{}).value||"").trim();
+  var pid=(($("crPerson")||{}).value||"")||null;
+  if(!un||!isLatinUsername(un)||un.length<3||un.length>30){ toast(TR('k2719','نام کاربری باید با حرف انگلیسی شروع شود و فقط حرف و عدد و _ داشته باشد (۳ تا ۳۰ نویسه)')+"."); return; }
+  if(!em||em.indexOf("@")<1){ toast(TR('k2324','ایمیل یا رمز درست نیست')+"."); return; }
+  if(!pw||pw.length<6){ toast(TR('k2324','ایمیل یا رمز درست نیست')+"."); return; }
+  ownerSig().then(function(sig){
+    if(!sig){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
+    return sbRpc("register_user_credentials",{p_username:un,p_email:em,p_password:pw,p_sec_question:q,p_sec_answer:an,p_person_id:pid,p_sig:sig}).then(function(res){
+      if(res.error||res.data!==true){ toast(TR('k2863','ثبت اعتبارنامه روی سرور انجام نشد؛ نام کاربری یا ایمیل تکراری است')+"."); return; }
+      toast(TR('k2864','اعتبارنامه ثبت شد')+".");
+      var u=$("crUser"),e=$("crEmail"),w=$("crPass"),a=$("crA"); if(u)u.value=""; if(e)e.value=""; if(w)w.value=""; if(a)a.value="";
+      SB.loadOwnerCreds();
+    });
+  }).catch(function(){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); });
+};
+SB.resetCredPass=function(username){
+  if(!username) return;
+  var np=null; try{ np=prompt(TR('k2865','رمز تازه برای')+' «'+username+'»'); }catch(e){}
+  if(!np||np.length<6){ if(np!==null) toast(TR('k2324','ایمیل یا رمز درست نیست')+"."); return; }
+  ownerSig().then(function(sig){
+    if(!sig){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
+    return sbRpc("owner_reset_user_password",{p_username:username,p_new_password:np,p_sig:sig}).then(function(res){
+      if(res.error||res.data!==true){ toast(TR('k2863','ثبت اعتبارنامه روی سرور انجام نشد؛ نام کاربری یا ایمیل تکراری است')+"."); return; }
+      toast(TR('k2866','رمز تازه ثبت شد')+"."); SB.loadOwnerCreds();
+    });
+  }).catch(function(){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); });
+};
+SB.deleteCred=function(username){
+  if(!username) return;
+  if(!confirm(TR('k2867','اعتبارنامه')+' «'+username+'» '+TR('k2868','حذف شود؟ ورود او با این نام کاربری دیگر ممکن نیست')+".")) return;
+  ownerSig().then(function(sig){
+    if(!sig){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
+    return sbRpc("owner_delete_user_credentials",{p_username:username,p_sig:sig}).then(function(res){
+      if(res.error||res.data!==true){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
+      toast(TR('k2869','اعتبارنامه حذف شد')+"."); SB.loadOwnerCreds();
+    });
+  }).catch(function(){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); });
+};
 SB.ownerStatsCache=null; SB.ownerStatsError=false;
 SB.loadOwnerStats=function(){
   /* v10.4.9 — change-guarded refresh + in-flight guard: renderOwnerPanel
@@ -7395,17 +7695,26 @@ var OG={list:[],sel:null,msgs:[],members:[],polls:[],tasks:[],events:[],ann:[],s
 OG.myRole=function(){ if(!OG.sel) return ""; var m=OG.members.filter(function(x){ return x.user_id===SB.uid; })[0]; return m?m.role:""; };
 OG.isAdmin=function(){ return ownerMode||OG.myRole()==="admin" || (OG.sel&&OG.sel.created_by===SB.uid); };
 OG.loadMine=function(){
-  /* v10.4.9 — gate on server reachability, not on an Auth session: the
-     owner is anon (no auth.uid) so SB.online is always false for the owner.
-     Owner: group_list with the owner signature (lists ALL groups).
-     Logged-in member: the existing RLS path by user_id. */
+  /* v10.4.11 — member groups come from the SERVER (my_groups RPC), never
+     from a direct group_members read. Owner: group_list with the owner
+     signature (lists ALL groups). In-flight guarded (concurrent callers
+     share one load) and change-guarded (re-renders only when the list
+     actually changed, so go("group") -> loadMine cannot loop). */
+  if(OG._mineLoading) return OG._mineLoading;
+  var done=function(rows,ok){
+    OG._mineLoading=null;
+    var prev=JSON.stringify(OG.list||[]);
+    OG.list=rows||[];
+    OG._mineLoaded=!!ok;
+    OG._mineError=!ok;
+    if(curView==="group"&&JSON.stringify(OG.list)!==prev) go("group");
+    return OG.list;
+  };
   if(ownerMode){
-    return ownerSig().then(function(sig){
-      if(!sig){ OG.list=[]; OG._mineLoaded=false; return []; }
+    OG._mineLoading=ownerSig().then(function(sig){
+      if(!sig){ return done([],false); }
       return sbRpc("group_list",{p_sig:sig}).then(function(res){
-        if(res.error||!res.data){ OG.list=[]; OG._mineLoaded=false; return []; }
-        var rows=res.data||[];
-        if(!rows.length&&(OG.list||[]).length){
+        if(res.error||!res.data){
           /* v10.4.10 — the server returned no groups though we had some:
              that is either a wiped account or an invalid owner sig. Only
              the sig case keeps the known groups: the groups still exist
@@ -7413,43 +7722,63 @@ OG.loadMine=function(){
              map/group views must be able to show the sigbad state (with
              the sync button) instead of a blank list. A valid sig with an
              empty result means the groups are really gone. */
+          if((OG.list||[]).length){
+            return sbRpc("owner_sig_ok",{p_sig:sig}).then(function(okRes){
+              if(okRes&&okRes.data===false){ return done(OG.list||[],false); }
+              return done([],true);
+            });
+          }
+          return done([],false);
+        }
+        var rows=res.data||[];
+        if(!rows.length&&(OG.list||[]).length){
           var prev=OG.list;
           return sbRpc("owner_sig_ok",{p_sig:sig}).then(function(okRes){
-            if(okRes&&okRes.data===false){ OG.list=prev; OG._mineLoaded=false; return OG.list; }
-            OG.list=[]; OG._mineLoaded=true;
-            if(curView==="group") go("group");
-            return OG.list;
+            if(okRes&&okRes.data===false){ return done(prev,false); }
+            return done([],true);
           });
         }
-        OG.list=rows.map(function(r){ return {id:r.id,name:r.name||"",invite_code:r.invite_code||"",created_by:r.created_by||"owner",theme:r.theme||"default",myRole:"admin"}; });
-        OG._mineLoaded=true;
-        if(curView==="group") go("group");
-        return OG.list;
+        var mapped=rows.map(function(r){ return {id:r.id,name:r.name||"",invite_code:r.invite_code||"",created_by:r.created_by||"owner",theme:r.theme||"default",myRole:"admin"}; });
+        return done(mapped,true);
       });
-    }).catch(function(){ OG.list=[]; OG._mineLoaded=false; return []; });
+    }).catch(function(){ return done(OG.list||[],false); });
+    return OG._mineLoading;
   }
-  if(!SB.online) return Promise.resolve([]);
-  return SB.client.from("group_members").select("group_id,role,groups(id,name,invite_code,created_by,theme)").eq("user_id",SB.uid).then(function(res){
-    if(res.error){ sbLog("loadMine: "+res.error.message); return []; }
-    OG.list=(res.data||[]).map(function(r){ return {id:r.groups?r.groups.id:r.group_id,name:r.groups?r.groups.name:"",invite_code:r.groups?r.groups.invite_code:"",created_by:r.groups?r.groups.created_by:"",theme:r.groups?r.groups.theme:"default",myRole:r.role}; });
-    OG._mineLoaded=true;
-    if(curView==="group") go("group");
-    return OG.list;
-  }).catch(function(){ return []; });
+  OG._mineLoading=sbRpc("my_groups",{}).then(function(res){
+    if(res.error||!Array.isArray(res.data)) return done(OG.list||[],false);
+    var rows=res.data.map(function(r){ return {id:r.id,name:r.name||"",invite_code:r.invite_code||"",created_by:r.created_by||"",theme:r.theme||"default",myRole:r.my_role||"member",members_count:r.members_count||0}; });
+    return done(rows,true);
+  }).catch(function(){ return done(OG.list||[],false); });
+  return OG._mineLoading;
 };
+
 OG.createOnline=function(name,theme){
   if(!SB.groupOnline()){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید') + "."); return Promise.resolve(null); }
   if(!ownerMode&&!SB.keyOk()){ toast(TR('k9028','بدون کلید معتبر نمی‌توانید وارد برنامه شوید؛ کلید را از مالک بگیرید') + "."); return Promise.resolve(null); }
-  var mk=function(sig){ return sbRpc("create_group",{p_name:name,p_theme:theme||"default",p_sig:sig||null}).then(function(res){
+  /* v10.4.11 — ALL roles can create groups, online or (via key identity)
+     without an Auth session. The rank limit is checked FIRST so a refused
+     create says so plainly instead of failing silently. */
+  var keyForCreate=(!ownerMode&&!SB.online&&S.mySub&&S.mySub.key)?S.mySub.key:null;
+  if(!ownerMode&&!SB.online&&!keyForCreate){ toast(TR('k2837','برای ساخت گروه آنلاین اول وارد حساب سرور شوید؛ نام کاربری و رمز سرور را از مالک بگیرید') + "."); try{ openServerCredentialModal((S.user&&S.user.username)||"",null); }catch(e){} return Promise.resolve(null); }
+  var mk=function(sig){ return sbRpc("create_group",{p_name:name,p_theme:theme||"default",p_sig:sig||null,p_key:keyForCreate}).then(function(res){
     if(res.error){ toast(esc(res.error.message)); return null; }
-    var row=(res.data&&res.data[0])||null; if(!row) return null;
+    var row=(res.data&&res.data[0])||null; if(!row){ toast(TR('k2839','ساخت گروه روی سرور انجام نشد؛ اگر به حد گروه‌های نقش خود رسیده‌اید، از مالک بخواهید') + "."); return null; }
     toast(TR('k2081','گروه ساخته شد؛ کد دعوت را برای اعضا بفرستید') + ".");
     OG.loadMine().then(function(){ OG.select(row.id); });
     return row;
   }); };
-  if(ownerMode){ return ownerSig().then(function(sig){ if(!sig){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return null; } return mk(sig); }).catch(function(){ return null; }); }
-  return mk(null);
+  var run=function(){
+    if(ownerMode){ return ownerSig().then(function(sig){ if(!sig){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return null; } return mk(sig); }).catch(function(){ return null; }); }
+    return mk(null);
+  };
+  if(ownerMode) return run();
+  return sbRpc("my_group_quota",{p_key:keyForCreate}).then(function(qres){
+    var q=(qres.data&&qres.data[0])||null;
+    if(!qres.error&&q&&typeof q.remaining==="number"&&q.remaining<=0){ toast(TR('k2836','به حد گروه‌های نقش خود رسیده‌اید') + "."); return null; }
+    return run();
+  }).catch(function(){ return run(); });
 };
+
 OG.regenInvite=function(gid){
   if(!OG.sel||!OG.isAdmin()) return;
   if(!SB.client){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
@@ -7526,7 +7855,10 @@ OG.loadMembers=function(){
     }).catch(function(){});
     return;
   }
-  SB.client.from("group_members").select("user_id,role,nickname,muted_until").eq("group_id",OG.sel.id).then(function(res){ if(!res.error){ OG.members=res.data||[]; OG.loadMemberSuper(); if(curView==="group") go("group"); } });
+  /* v10.4.11 — the member branch MUST select group_role too: OG.myGroupRole()
+     (and the abilities sheet) read it from OG.members; without it a member
+     who already picked a role looked role-less forever. */
+  SB.client.from("group_members").select("user_id,role,group_role,nickname,muted_until").eq("group_id",OG.sel.id).then(function(res){ if(!res.error){ OG.members=res.data||[]; OG.loadMemberSuper(); if(curView==="group") go("group"); } });
 };
 /* Super flags + avatars for group members (profiles.is_super/avatar_idx are
    public-readable): fills OG.memberSuper {uid:true} so the golden-skull badge
@@ -7548,32 +7880,40 @@ OG.loadMemberSuper=function(){
   }).catch(function(){});
 };
 OG.loadMsgs=function(){
-  if(!OG.sel) return;
+  if(!OG.sel) return Promise.resolve(false);
   if(ownerMode){
-    ownerSig().then(function(sig){
-      if(!sig) return;
-      sbRpc("owner_group_messages",{p_group_id:OG.sel.id,p_sig:sig,p_limit:200}).then(function(res){
-        if(res.error||!res.data) return;
+    return ownerSig().then(function(sig){
+      if(!sig){ OG._msgsLoading=false; return false; }
+      return sbRpc("owner_group_messages",{p_group_id:OG.sel.id,p_sig:sig,p_limit:200}).then(function(res){
+        OG._msgsLoading=false;
+        if(res.error||!res.data) return false;
         OG.msgs=(res.data||[]).slice().reverse();
         OG.missedPowersNote(OG.msgs);
         if(!S.onlineLastSeen) S.onlineLastSeen={};
         S.onlineLastSeen[OG.sel.id]=Date.now();
         save();
         if(curView==="chat") drawGroupChat();
+        return true;
       });
-    }).catch(function(){});
-    return;
+    }).catch(function(){ OG._msgsLoading=false; return false; });
   }
-  SB.client.from("messages").select("id,sender_uid,sender_name,sender_avatar,text,reply_to,created_at,pinned,pinned_until,expires_at,anon,approved").eq("group_id",OG.sel.id).order("created_at",{ascending:true}).limit(200).then(function(res){
-    if(res.error){ sbLog("loadMsgs: "+res.error.message); return; }
+  /* v10.4.11 — group messages are readable for 7 days only (the read
+     filters explicitly, so an old message is never returned even before
+     cleanup_chat() deletes it). */
+  var weekAgo=new Date(Date.now()-7*86400000).toISOString();
+  return SB.client.from("messages").select("id,sender_uid,sender_name,sender_avatar,text,reply_to,created_at,pinned,pinned_until,expires_at,anon,approved").eq("group_id",OG.sel.id).gte("created_at",weekAgo).order("created_at",{ascending:true}).limit(200).then(function(res){
+    OG._msgsLoading=false;
+    if(res.error){ sbLog("loadMsgs: "+res.error.message); return false; }
     OG.msgs=res.data||[];
     OG.missedPowersNote(OG.msgs);
     if(!S.onlineLastSeen) S.onlineLastSeen={};
     S.onlineLastSeen[OG.sel.id]=Date.now();
     save();
     if(curView==="chat") drawGroupChat();
-  });
+    return true;
+  }).catch(function(){ OG._msgsLoading=false; return false; });
 };
+
 /* TIER (a) — OFFLINE members coming later: NOTIFICATION ONLY (no sound, no
    animation). One summary notification for all power messages newer than
    the group's last-seen time (not mine). History on first load is silent. */
@@ -7628,7 +7968,12 @@ OG.sendGroupMsg=function(t){
     }).catch(function(){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); });
     return;
   }
-  SB.client.from("messages").insert({group_id:OG.sel.id,sender_uid:SB.uid,sender_name:S.user.name||"—",sender_avatar:(typeof S.user.avatar==="number"?S.user.avatar:0),text:t}).then(function(res){ if(res.error){ toast(esc(res.error.message)); } else { OG.onMsgSent(); } });
+  /* v10.4.11 — group chat needs a server Auth session (no anonymous send). */
+  if(!SB.online){ toast(TR('k2845','برای دیدن گروه‌ها، چت و مکان، با نام کاربری و رمزی که مالک برای شما ثبت کرده وارد شوید') + "."); try{ openServerCredentialModal((S.user&&S.user.username)||"",null); }catch(e){} return; }
+  /* v10.4.11 — the sender must see their own message immediately (the owner
+     branch already does this): return the inserted row and append it to
+     OG.msgs. OG.onMsg dedupes by id, so the Realtime echo cannot double it. */
+  SB.client.from("messages").insert({group_id:OG.sel.id,sender_uid:SB.uid,sender_name:S.user.name||"—",sender_avatar:(typeof S.user.avatar==="number"?S.user.avatar:0),text:t}).select("id,sender_uid,sender_name,sender_avatar,text,created_at").then(function(res){ if(res.error){ toast(esc(res.error.message)); return; } var row=(res.data&&res.data[0])||null; if(row){ OG.msgs=OG.msgs||[]; if(!OG.msgs.some(function(x){ return String(x.id)===String(row.id); })) OG.msgs.push({id:row.id,sender_uid:row.sender_uid,sender_name:row.sender_name,sender_avatar:row.sender_avatar,text:row.text,created_at:row.created_at}); if(curView==="chat") drawGroupChat(); } OG.onMsgSent(); });
 };
 OG.deleteMsg=function(id){
   if(!OG.sel) return;
@@ -8058,10 +8403,14 @@ SB.sendStudentMsg=function(pid,t,from){
 };
 function onlineChatBar(){
   var h='<div class="card" style="margin-bottom:12px"><div class="rowflex" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><div><b>'+TR('k2000','آنلاین')+'</b> <span class="on-badge off" data-onbadge><span class="dot"></span>'+TR('k2067','قطع')+'</span></div><button class="btn ghost sm" onclick="go(\'walkie\')">🎙️ '+TR('k2001','واکی‌تاکی')+'</button></div>';
-  h+='<p class="small" style="margin:8px 0 0">'+TR('k2053','سابقه چت هر دو هفته پاک می‌شود؛ پیام‌های قدیمی‌تر از ۱۴ روز حذف می‌شوند')+' — '+TR('k2085','فقط پیام متنی؛ عکس، ویدیو و فایل ارسال نمی‌شود')+'.</p>';
+  h+='<p class="small" style="margin:8px 0 0">'+TR('k2830','سابقه چت گروهی هر هفته پاک می‌شود؛ پیام‌های قدیمی‌تر از ۷ روز حذف می‌شوند')+' — '+TR('k2085','فقط پیام متنی؛ عکس، ویدیو و فایل ارسال نمی‌شود')+'.</p>';
   if(SB.groupOnline()&&OG.list.length){
     h+='<div class="field" style="margin-top:10px"><label>'+TR('k2102','گروه آنلاین شما')+'</label><select class="inp" onchange="OG.select(this.value)"><option value="">'+TR('k1141','گفت‌وگوی گروهی')+' ('+TR('k1202','همه روی همین دستگاه')+')</option>'+OG.list.map(function(g){ return '<option value="'+g.id+'"'+(OG.sel&&String(OG.sel.id)===String(g.id)?' selected':'')+'>'+esc(g.name)+'</option>'; }).join("")+'</select></div>';
     if(OG.sel) h+='<p class="small">'+TR('k2022','گروه آنلاین')+': <b>'+esc(OG.sel.name)+'</b> — '+fa(OG.members.length)+' '+TR('k2026','اعضا')+'</p>';
+  } else if(SB.groupOnline()&&OG._mineLoading){
+    h+='<p class="small" style="margin:8px 0 0">'+TR('k2841','در حال بارگذاری گروه‌ها…')+'.</p>';
+  } else if(SB.groupOnline()&&OG._mineError){
+    h+='<p class="small" style="margin:8px 0 0">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p><button class="btn ghost sm" onclick="OG.loadMine()">'+TR('k2842','تلاش دوباره')+'</button>';
   } else if(SB.online){
     h+='<p class="small" style="margin:8px 0 0">'+TR('k1105','هنوز گروهی نساخته‌اید')+' — '+TR('k2025','ساختن گروه آنلاین')+' '+TR('k0279','برنامه‌ریزی گروهی')+'.</p>';
   } else {
@@ -8083,6 +8432,14 @@ function onlineGroupHTML(){
   if(SB.schemaOk===false){ h+='<p class="small">'+TR('k2068','اسکیما هنوز اجرا نشده است؛ فایل supabase-schema.sql را در SQL Editor سوپابیس اجرا کنید')+'.</p></div>'; return h; }
   h+='<div class="field"><label>'+TR('k2025','ساختن گروه آنلاین')+'</label><div class="rowflex"><input class="inp grow" id="ogName" placeholder="'+TR('k1100','مثلاً: گروه مطالعه زیست، تیم پروژه، خانواده')+'"><button class="btn sm" onclick="var n=$(\'ogName\').value.trim(); if(n) OG.createOnline(n);">'+TR('k1099','ساخت گروه')+'</button></div></div>';
   h+='<div class="field"><label>'+TR('k2023','پیوستن با کد دعوت')+'</label><div class="rowflex"><input class="inp grow" id="ogCode" dir="ltr" placeholder="ABC123" style="text-transform:uppercase"><button class="btn sm" onclick="OG.joinOnline($(\'ogCode\').value)">'+TR('k2023','پیوستن با کد دعوت')+'</button></div></div>';
+  /* v10.4.11 — loading-only state ONLY when no list is known yet. go("group")
+     calls loadMine() synchronously BEFORE this render, so _mineLoading is
+     already truthy here; returning early unconditionally would hide a
+     perfectly good list (and its member rows) and the change-guard would
+     never re-render it because the list did not change (V3 regression). */
+  if(OG._mineLoading&&!OG.list.length){ h+='<p class="small">'+TR('k2841','در حال بارگذاری گروه‌ها…')+'.</p></div>'; return h; }
+  if(OG._mineError&&!OG.list.length){ h+='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p><button class="btn ghost sm" onclick="OG.loadMine()">'+TR('k2842','تلاش دوباره')+'</button></div>'; return h; }
+  if(!ownerMode&&!SB.online){ h+=serverCredCardHTML(); }
   if(!OG.list.length){ h+='<p class="small">'+TR('k1105','هنوز گروهی نساخته‌اید')+'.</p></div>'; return h; }
   h+='<h3 style="margin:14px 0 8px">'+TR('k2102','گروه آنلاین شما')+'</h3>'+OG.list.map(function(g){
     var sel=OG.sel&&String(OG.sel.id)===String(g.id);
@@ -8093,7 +8450,7 @@ function onlineGroupHTML(){
     if(OG.members.length) h+='<div style="margin-top:8px">'+OG.members.map(function(m){
       var nm=m.nickname||""; var who=m.user_id===SB.uid?TR('k0047','شما'):m.user_id.slice(0,8);
       return '<div class="listrow gmember"><div class="mav">'+esc((who||'?').charAt(0))+'</div><div class="grow"><b class="latintok">'+esc(who)+(nm?' «'+esc(nm)+'»':'')+supBadgeHTMLFor(m.user_id)+SB.presenceDot(m.user_id)+'</b>'+((OG.memberBio&&OG.memberBio[m.user_id])?'<div class="small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(OG.memberBio[m.user_id])+'</div>':'')+'<div class="small latintok">'+esc(m.role)+'</div></div>'
-      +(OG.isAdmin()&&m.user_id!==SB.uid?'<button class="btn ghost sm" onclick="var n=prompt(\''+TR('k2031','گذاشتن لقب')+'\'); if(n!==null) OG.setNickname(\''+m.user_id+'\',n)">'+TR('k2030','لقب')+'</button><button class="btn ghost sm" onclick="OG.setMemberRole(\''+m.user_id+'\',\''+(m.role==="admin"?"member":"admin")+'\')">'+TR('k2032','انتخاب ادمین')+'</button><button class="btn ghost sm" onclick="OG.muteMember(\''+m.user_id+'\')">'+TR('k2034','بی‌صدا کردن')+'</button><button class="btn ghost sm" onclick="if(confirm(\''+TR('k2033','حذف عضو')+'?\'))OG.removeMember(\''+m.user_id+'\')">'+TR('k2033','حذف عضو')+'</button>':'')
+      +(OG.isAdmin()&&m.user_id!==SB.uid?'<button class="btn ghost sm" onclick="var n=prompt(\''+TR('k2031','گذاشتن لقب')+'\'); if(n!==null) OG.setNickname(\''+m.user_id+'\',n)">'+TR('k2030','لقب')+'</button><button class="btn ghost sm" onclick="OG.roleSheet(\''+m.user_id+'\')">'+TR('k2147','انتخاب نقش')+'</button><button class="btn ghost sm" onclick="OG.setMemberRole(\''+m.user_id+'\',\''+(m.role==="admin"?"member":"admin")+'\')">'+TR('k2032','انتخاب ادمین')+'</button><button class="btn ghost sm" onclick="OG.muteMember(\''+m.user_id+'\')">'+TR('k2034','بی‌صدا کردن')+'</button><button class="btn ghost sm" onclick="if(confirm(\''+TR('k2033','حذف عضو')+'?\'))OG.removeMember(\''+m.user_id+'\')">'+TR('k2033','حذف عضو')+'</button>':'')
       +'</div>';
     }).join("")+'</div>';
     if(OG.ann.length) h+='<div style="margin-top:10px">'+OG.ann.map(function(a){ return '<div class="srv-note">📢 <b>'+TR('k2099','اعلان')+':</b> '+esc(a.text)+'</div>'; }).join("")+'</div>';
@@ -9844,7 +10201,8 @@ OG.loadLocations=function(){
       });
     }).catch(function(){ return false; });
   }
-  return sbRpc("list_group_locations",{p_group:gid}).then(function(res){
+  /* v10.4.11 — member-scoped feed (my_group_locations), same as the map. */
+  return sbRpc("my_group_locations",{p_group_id:gid}).then(function(res){
     if(res.error) return false;
     if(!OG.sel||OG.sel.id!==gid) return false;
     OG.locations=res.data||[];
@@ -9907,25 +10265,49 @@ SB.syncProfile=function(){
 };
 SB.authUp=function(email,password,username){
   if(!SB.client) return Promise.resolve({error:{message:"no-client"}});
-  var cred={email:email,password:password};
-  /* Plain email sign-up (Parsa 2026-11-10): no anonymous identity exists to
-     link any more — every server account is created directly by email. */
-  var p=SB.client.auth.signUp(cred);
-  return p.then(function(res){
-    if(res.error) return {error:res.error};
-    var u=res.data&&res.data.user; if(!u) return {error:{message:"no-user"}};
-    SB.uid=u.id; SB.online=true;
-    return SB.client.from("profiles").upsert({user_id:SB.uid,username:username||null,display_name:(S.user.name||"")||null,bio:(S.user.bio||"")||null,avatar_idx:(typeof S.user.avatar==="number"?S.user.avatar:0),konkur:!!S.user.konkur,field:(S.user.field||"")||null},{onConflict:"user_id"}).then(function(){ return SB.loadProfile().then(function(){ try{ SB.flushPointsQueue(); }catch(e){} try{ if(typeof DiarySync!=="undefined") DiarySync.pull(); }catch(e){} try{ SB.pullUserSettings(); }catch(e){} try{ SB.loadUserData(); }catch(e){} return {ok:true}; }); });
+  /* v10.4.11 — sign-up is gated on the SERVER: the email MUST be
+     owner-registered (check_person_email) or signUp is refused before it
+     runs — no account on a typed email alone. */
+  return sbRpc("check_person_email",{p_email:email}).then(function(chk){
+    if(!chk.error&&chk.data!==true) return {error:{message:"not-registered"}};
+    var cred={email:email,password:password};
+    /* Plain email sign-up (Parsa 2026-11-10): no anonymous identity exists to
+       link any more — every server account is created directly by email. */
+    var p=SB.client.auth.signUp(cred);
+    return p.then(function(res){
+      if(res.error){
+        /* The owner may already have created this Auth user when
+           registering the credentials — then sign in instead. */
+        if(/already registered|already exists/i.test(String(res.error.message||""))){
+          return SB.authIn(email,password);
+        }
+        return {error:res.error};
+      }
+      var u=res.data&&res.data.user; if(!u) return {error:{message:"no-user"}};
+      SB.uid=u.id; SB.online=true;
+      return SB.client.from("profiles").upsert({user_id:SB.uid,username:username||null,display_name:(S.user.name||"")||null,bio:(S.user.bio||"")||null,avatar_idx:(typeof S.user.avatar==="number"?S.user.avatar:0),konkur:!!S.user.konkur,field:(S.user.field||"")||null},{onConflict:"user_id"}).then(function(){ return SB.loadProfile().then(function(){ SB.syncIdentity(); OG.loadMine(); try{ SB.flushPointsQueue(); }catch(e){} try{ if(typeof DiarySync!=="undefined") DiarySync.pull(); }catch(e){} try{ SB.pullUserSettings(); }catch(e){} try{ SB.loadUserData(); }catch(e){} SB.linkServerIdentity(); try{ SB.flushPendingGroups(); }catch(e){} return {ok:true}; }); });
+    });
   });
 };
+
 SB.authIn=function(email,password){
   if(!SB.client) return Promise.resolve({error:{message:"no-client"}});
   return SB.client.auth.signInWithPassword({email:email,password:password}).then(function(res){
     if(res.error) return {error:res.error};
     var u=res.data&&res.data.user; if(!u) return {error:{message:"no-user"}};
     SB.uid=u.id; SB.online=true;
-    return SB.loadProfile().then(function(){ SB.syncIdentity(); OG.loadMine(); try{ SB.flushPointsQueue(); }catch(e){} try{ if(typeof DiarySync!=="undefined") DiarySync.pull(); }catch(e){} try{ SB.pullUserSettings(); }catch(e){} try{ SB.loadUserData(); }catch(e){} return {ok:true}; });
+    return SB.loadProfile().then(function(){ SB.syncIdentity(); OG.loadMine(); try{ SB.flushPointsQueue(); }catch(e){} try{ if(typeof DiarySync!=="undefined") DiarySync.pull(); }catch(e){} try{ SB.pullUserSettings(); }catch(e){} try{ SB.loadUserData(); }catch(e){} SB.linkServerIdentity(); try{ SB.flushPendingGroups(); }catch(e){} return {ok:true}; });
   });
+};
+/* v10.4.11 — after a verified sign-in/up, link this Auth uid to the
+   server credential row and migrate any key-identity groups to it. */
+SB.linkServerIdentity=function(){
+  if(!SB.online||!SB.uid) return;
+  try{
+    var un=(SB.profile&&SB.profile.username)||(S.user&&S.user.username)||null;
+    if(un&&typeof sbRpc==="function") sbRpc("link_credential_user",{p_username:un}).catch(function(){});
+    if(S.mySub&&S.mySub.key&&typeof sbRpc==="function") sbRpc("link_key_identity",{p_key:S.mySub.key}).catch(function(){});
+  }catch(e){}
 };
 SB.authOut=function(){
   if(!SB.client) return Promise.resolve();
@@ -10985,10 +11367,37 @@ var PW={uses:{},
  },
  openSheet:function(){
    var ov=$("pwSheet"); if(!ov) return;
+   /* v10.4.11 — the «قدرت‌های چت» button is ALWAYS visible in the group
+      chat; a member with no role yet gets the ONE-TIME role picker here
+      (their role was never set, so the old sheet showed nothing). */
    var role=(OG.isSuper()||ownerMode)?(PW._superRole||OG.myGroupRole()||"commander"):OG.myGroupRole();
+   if(!role||role==="soldier"){ PW.openRolePicker(); return; }
    var def=roleDef(role);
    PW.loadUses().then(function(){ PW.renderSheet(def,role); });
    PW.renderSheet(def,role);
+ },
+ /* v10.4.11 — one-time role picker: 20 roles × 5 abilities. Picking once
+    calls set_my_group_role; the server refuses a second pick. */
+ openRolePicker:function(){
+   var ov=$("pwSheet"); if(!ov) return;
+   var h='<div class="pw-sheet-in"><h3>⚡ '+TR('k2139','قدرت‌های چت')+'</h3><p class="small">'+TR('k2833','نقش خود را در این گروه فقط یک بار انتخاب کنید؛ بعد از انتخاب، تغییر آن فقط با مالک است')+'.</p>';
+   h+=ROLE_ORDER.map(function(k){
+     var r=ROLES[k];
+     return '<div class="listrow" style="cursor:pointer" onclick="PW.pickMyRole(\''+k+'\')"><div class="grow"><b>'+r.icon+' '+esc(LANG==='en'?r.en:r.fa)+'</b><div class="small">'+esc(LANG==='en'?r.flavorEn:r.flavor)+'</div><div class="small">'+r.abilities.map(function(a){ return esc(LANG==='en'?a.en:a.fa); }).join(" · ")+'</div></div></div>';
+   }).join("");
+   h+='<button class="btn ghost" style="width:100%;margin-top:10px" onclick="$(\'pwSheet\').style.display=\'none\'">'+TR('k2141','بستن')+'</button></div>';
+   ov.innerHTML=h; ov.style.display="flex";
+ },
+ pickMyRole:function(roleKey){
+   if(!OG.sel) return;
+   sbRpc("set_my_group_role",{p_group:OG.sel.id,p_role:roleKey}).then(function(res){
+     if(res.error){ toast(esc(res.error.message)); return; }
+     if(res.data!==true){ toast(TR('k2834','نقش شما قبلاً انتخاب شده است؛ تغییر آن فقط با مالک است')+"."); return; }
+     toast(TR('k2835','نقش شما ثبت شد')+".");
+     try{ SFX.play("chime"); }catch(e){}
+     OG.loadMembers();
+     PW.openSheet();
+   });
  },
  openSheetRole:function(role){
    PW._superRole=role;
@@ -11138,7 +11547,11 @@ if(typeof window!=="undefined"){ window.GhostOpsPowerSounds=PW.soundMap(); }
 OG.myGroupRole=function(){
   if(!OG.sel) return "";
   var m=(OG.members||[]).filter(function(x){ return x.user_id===SB.uid; })[0];
-  return m?(m.group_role||""):"";
+  if(m&&(m.group_role||"")) return m.group_role;
+  /* v10.4.11 fallback — my_groups() returns my_role on the list row itself
+     (OG.sel comes from OG.list), so the role is known even before the
+     members read lands. */
+  return (OG.sel&&OG.sel.myRole)||"";
 };
 OG.isSuper=function(){
   var s=S.mySuper;
@@ -11153,14 +11566,22 @@ OG.can=function(perm){
   return def.abilities.some(function(a){ return a.perm===perm; });
 };
 OG.setGroupRole=function(uid,roleKey){
+  /* v10.4.11 — OWNER/ADMIN reassign path (the member themself can never
+     use this: a member picks once via PW.pickMyRole; reassigning your OWN
+     role is refused unless you are the owner). */
   if(!OG.sel) return;
-  sbRpc("set_group_role",{p_group:OG.sel.id,p_user:uid,p_role:roleKey}).then(function(res){
+  if(uid===SB.uid&&!ownerMode){ toast(TR('k2834','نقش شما قبلاً انتخاب شده است؛ تغییر آن فقط با مالک است')+"."); return; }
+  var call=ownerMode
+    ? ownerSig().then(function(sig){ return sbRpc("set_group_role",{p_group:OG.sel.id,p_user:uid,p_role:roleKey,p_sig:sig||null}); })
+    : sbRpc("set_group_role",{p_group:OG.sel.id,p_user:uid,p_role:roleKey});
+  call.then(function(res){
     if(res.error){ toast(esc(res.error.message)); return; }
     if(res.data===false){ toast(TR('k2089','شما مدیر این گروه نیستید')+"."); return; }
     toast(TR('k2146','نقش عضو تغییر کرد')+"."); SFX.play("chime");
     OG.loadMembers();
   });
 };
+
 OG.roleSheet=function(uid){
   var ov=document.createElement("div");
   ov.className="overlay"; ov.id="roleSheetOv"; ov.style.display="flex";
@@ -11441,14 +11862,14 @@ function genSuperKey(){
   for(var i=0;i<12;i++){ s+=ch[Math.floor(Math.random()*ch.length)]; if(i===3||i===7) s+="-"; }
   return "SUP-"+s;
 }
-SB.createSuperKeyOnline=function(buyer,days){
+SB.createSuperKeyOnline=function(buyer,days,username){
   return ownerSig().then(function(sig){
     if(!sig) return false;
     var code=genSuperKey();
-    return sbRpc("create_super_key",{p_code:code,p_buyer:buyer||"",p_days:(days==null?null:days),p_sig:sig}).then(function(res){
+    return sbRpc("create_super_key",{p_code:code,p_buyer:buyer||"",p_days:(days==null?null:days),p_sig:sig,p_username:username||null}).then(function(res){
       if(res.error||res.data===false) return false;
       if(!S.superKeys) S.superKeys=[];
-      S.superKeys.push({key:code,buyer:buyer||"",days:(days==null?null:days),created:Date.now()});
+      S.superKeys.push({key:code,buyer:buyer||"",days:(days==null?null:days),username:username||null,created:Date.now()});
       save();
       return code;
     });
@@ -11459,7 +11880,7 @@ SB.superKeysHTML=function(){
   var keys=S.superKeys||[];
   var h='<div class="card super-card"><h3>👑 '+TR('k2230','ابر کاربر')+' — '+TR('k2231','کلید ابر کاربر')+'</h3>'
     +'<p class="small">'+TR('k2233','ابر کاربر می‌تواند همه قدرت‌های چت همه نقش‌ها را در هر گروهی که عضو آن است استفاده کند — بدون محدودیت هفتگی')+'.</p>'
-    +'<div class="rowflex"><input class="inp grow" id="supBuyer" placeholder="'+TR('k2240','خریدار')+'"><select class="inp" id="supDays"><option value="">'+TR('k2242','نامحدود')+'</option><option value="30">30</option><option value="90">90</option><option value="365">365</option></select><button class="btn sm" onclick="createSuperKey()">'+TR('k2232','ایجاد کلید ابر کاربر')+'</button></div>'
+    +'<div class="rowflex"><input class="inp grow" id="supBuyer" placeholder="'+TR('k2240','خریدار')+'"><input class="inp" id="supUser" dir="ltr" placeholder="username" style="max-width:150px"><select class="inp" id="supDays"><option value="">'+TR('k2242','نامحدود')+'</option><option value="30">30</option><option value="90">90</option><option value="365">365</option></select><button class="btn sm" onclick="createSuperKey()">'+TR('k2232','ایجاد کلید ابر کاربر')+'</button></div>'
     +(keys.length?keys.map(function(k){
         return keyRowHTML(k.key||"", esc(k.buyer||"—")+' — '+(k.days?fa(k.days)+' '+TR('k2241','مدت (روز)'):TR('k2242','نامحدود')), '<span class="pill gold">👑 '+TR('k2230','ابر کاربر')+'</span>', '<button class="btn ghost sm" onclick="copySubKey(\''+esc(k.key)+'\')">'+TR('k1500','کپی کلید')+'</button><button class="btn ghost sm" onclick="revokeSuperKey(\''+esc(k.key)+'\')">'+TR('k2248','باطل کردن')+'</button>');
       }).join(""):'<p class="small">'+TR('k2247','هنوز کلید ابر کاربر نساخته‌اید')+'.</p>')
@@ -11469,7 +11890,9 @@ SB.superKeysHTML=function(){
 function createSuperKey(){
   var buyer=($("supBuyer")||{}).value||"";
   var days=($("supDays")||{}).value||"";
-  SB.createSuperKeyOnline(buyer, days===""?null:parseInt(days,10)).then(function(code){
+  var sU=(($("supUser")||{}).value||"").trim();
+  if(sU&&(!isLatinUsername(sU)||sU.length<3||sU.length>30)){ toast(TR('k2719','نام کاربری باید با حرف انگلیسی شروع شود و فقط حرف و عدد و _ داشته باشد (۳ تا ۳۰ نویسه)') + "."); return; }
+  SB.createSuperKeyOnline(buyer, days===""?null:parseInt(days,10), sU||null).then(function(code){
     if(!code){ toast((!SB.serverOk?TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید'):TR('k2508','سرور ساختن کلید ابر کاربر را رد کرد؛ کلیدی ساخته نشد. دوباره تلاش کنید'))+"."); SFX.play("denied"); return; }
     SFX.play("chime");
     toast("👑 "+TR('k2234','کلید ابر کاربر ساخته شد')+": "+code+" — "+TR('k2449','کلید ابر کاربر روی سرور ذخیره شد'));
@@ -11491,9 +11914,9 @@ function revokeSuperKey(code){
 /* ---------- BOOT WRAPS: profile + permissions on online connect ---------- */
 (function(){
   var _afterOnline=SB.afterOnline;
-  SB.afterOnline=function(){ _afterOnline(); SB.loadProfile(); try{ SB.pullUserSettings(); }catch(e){} try{ SB.loadUserData(); }catch(e){} try{ if(typeof DiarySync!=="undefined") DiarySync.pull(); }catch(e){} try{ if(typeof SB.flushPointsQueue==="function") SB.flushPointsQueue(); }catch(e){} PERM.maybeShow(); };
+  SB.afterOnline=function(){ _afterOnline(); SB.loadProfile(); try{ SB.pullUserSettings(); }catch(e){} try{ SB.loadUserData(); }catch(e){} try{ if(typeof DiarySync!=="undefined") DiarySync.pull(); }catch(e){} try{ if(typeof SB.flushPointsQueue==="function") SB.flushPointsQueue(); }catch(e){} try{ if(typeof SB.flushPendingGroups==="function") SB.flushPendingGroups(); }catch(e){} PERM.maybeShow(); };
   var _afterEnter=SB.afterEnter;
-  SB.afterEnter=function(){ _afterEnter(); if(SB.online){ SB.loadProfile(); try{ SB.pullUserSettings(); }catch(e){} try{ SB.loadUserData(); }catch(e){} try{ if(typeof DiarySync!=="undefined") DiarySync.pull(); }catch(e){} } };
+  SB.afterEnter=function(){ _afterEnter(); if(SB.online){ SB.loadProfile(); try{ SB.pullUserSettings(); }catch(e){} try{ SB.loadUserData(); }catch(e){} try{ if(typeof DiarySync!=="undefined") DiarySync.pull(); }catch(e){} try{ if(typeof SB.flushPendingGroups==="function") SB.flushPendingGroups(); }catch(e){} } };
   var _onMsg=OG.onMsg;
   OG.onMsg=function(m){
     _onMsg(m);
@@ -11633,7 +12056,7 @@ function onlineAccountGo(mode){
   }
   var p=(mode==="up"?SB.authUp(em,pw,un||null):SB.authIn(em,pw));
   p.then(function(res){
-    if(res.error){ toast(esc(res.error.message)); return; }
+    if(res.error){ toast(res.error.message==="not-registered"?TR('k2831','این نام کاربری/ایمیل ثبت نشده است؛ از مالک بخواهید شما را ثبت کند')+".":esc(res.error.message)); return; }
     toast((mode==="up"?TR('k2322','حساب آنلاین ساخته شد'):TR('k2323','وارد حساب آنلاین شدید'))+".");
     if(mode==="up"){ try{ var rq=$("ogRecQ"), ra=$("ogRecA"); if(rq&&ra&&rq.value.trim()&&ra.value.trim()&&SB.online&&typeof sbRpc==="function") sbRpc("set_recovery",{p_question:rq.value.trim(),p_answer:ra.value.trim()}).catch(function(){}); }catch(e){} }
     SB.syncProfile(); go("settings");
