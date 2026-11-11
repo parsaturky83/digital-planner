@@ -1735,6 +1735,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
       <p class="lead"><span data-i18n="k0045">دفتر</span> <b id="loginName">شما</b> <span data-i18n="k0046">روی همین دستگاه است و همه داده‌هایتان سر جایش مانده. برای باز کردنش رمزتان را وارد کنید</span>.</p>
       <div class="field"><label for="loginPass" data-i18n="k0048">رمز عبور دفتر</label><input class="inp" id="loginPass" type="password" placeholder="رمز عبورتان" onkeydown="if(event.key==='Enter')tryLogin()" / data-i18n-ph="k0049"></div>
       <button class="btn" style="width:100%;justify-content:center" onclick="tryLogin()" data-i18n="k0050">باز کردن دفتر</button>
+      <button class="btn ghost" style="width:100%;justify-content:center;margin-top:10px" onclick="openRegistrationModal()" data-i18n="k2981">ثبت نام</button>
+      <p class="small" style="text-align:center;margin-top:6px" data-i18n="k3036">حساب ندارید؟ برای ورود به برنامه ثبت نام کنید؛ درخواست شما همان لحظه برای مالک ارسال می‌شود.</p>
       <p class="small" style="text-align:center;margin-top:12px"><span data-i18n="k0052">رمز را فراموش کرده‌اید</span><span class="qm">؟</span> <a href="#" onclick="showRecPane();return false;" style="color:var(--acc)" data-i18n="k0051">بازیابی با سؤال امنیتی</a></p>
       <div class="ow-divider" data-i18n="k0053">دسترسی ویژه مالک</div>
       <div class="ownercard">
@@ -1766,6 +1768,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <select class="inp" id="obSec"><option><span data-i18n="k0078">نام اولین مدرسه‌تان چه بود</span><span class="qm">؟</span></option><option><span data-i18n="k0080">نام شهر تولدتان</span><span class="qm">؟</span></option><option><span data-i18n="k0079">نام حیوان خانگی‌تان</span><span class="qm">؟</span></option></select></div>
       <div class="field"><label for="obSecA" data-i18n="k0082">پاسخ سؤال امنیتی</label><input class="inp" id="obSecA" placeholder="پاسخ را اینجا بنویسید" / data-i18n-ph="k0081"></div>
       <button class="btn grow" style="width:100%;justify-content:center" onclick="obNext(2)" data-i18n="k0083">ادامه</button>
+      <button class="btn ghost" style="width:100%;justify-content:center;margin-top:10px" onclick="openRegistrationModal()" data-i18n="k2981">ثبت نام</button>
+      <p class="small" style="text-align:center;margin-top:6px" data-i18n="k3036">حساب ندارید؟ برای ورود به برنامه ثبت نام کنید؛ درخواست شما همان لحظه برای مالک ارسال می‌شود.</p>
       <p class="small" style="text-align:center;margin-top:12px"><span data-i18n="k0085">حساب دارید</span><span class="qm">؟</span> <a href="#" onclick="toast(TR('k0084','اگر قبلاً روی این دستگاه دفتر ساخته‌اید، صفحه را دوباره باز کنید تا با رمزتان وارد شوید') + '.');return false;" style="color:var(--acc)" data-i18n="k0087">وارد شوید</a> — <span data-i18n="k0086">همه‌چیز آفلاین و روی دستگاه خودتان است</span>.</p>
       <div class="ow-divider" data-i18n="k0053">دسترسی ویژه مالک</div>
       <div class="ownercard">
@@ -1785,6 +1789,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
       <button class="choice" id="chWork" onclick="obKonkur('work')"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg><span><span data-i18n="k0187">کارمند</span><small data-i18n="k0207">جلسه، پروژه، گزارش و پیگیری</small></span></button>
       <button class="choice" id="chSport" onclick="obKonkur('sport')"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><span><span data-i18n="k0192">ورزشکار</span><small data-i18n="k0206">تمرین، ریکاوری، تغذیه و خواب</small></span></button>
       <button class="choice" id="chPersonal" onclick="obKonkur('personal')"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg><span><span data-i18n="k0195">برنامه شخصی</span><small data-i18n="k0208">کارهای روزمره، خانواده و رشد فردی</small></span></button>
+      <button class="btn ghost" style="width:100%;justify-content:center;margin-top:10px" onclick="openRegistrationModal()" data-i18n="k2981">ثبت نام</button>
+      <p class="small" style="text-align:center;margin-top:6px" data-i18n="k3036">حساب ندارید؟ برای ورود به برنامه ثبت نام کنید؛ درخواست شما همان لحظه برای مالک ارسال می‌شود.</p>
       <div class="ow-divider" data-i18n="k0095">یا از درگاه مالک وارد شوید</div>
       <div class="ownercard">
         <div class="ow-top"><div class="ow-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><circle cx="12" cy="10" r="2.6"/><path d="M12 12.6V16"/></svg></div><div><h3 data-i18n="k0054">ورود مالک برنامه</h3><div class="ow-status" data-owstatus><span data-i18n="k0055">وضعیت رمز مالک</span>…</div></div></div>
@@ -4774,8 +4780,8 @@ Object.assign(I18N_EN,{"k2900":"Jalali","k2901":"phone clock","k2902":"Alarm tim
 Object.assign(I18N_EN,{"k2910":"Talk without holding the button","k2911":"Hands-free mode","k2912":"Mic is open; tap again to stop","k2913":"Walkie-talkie is on","k2915":"View calendar","k2916":"Top 3 for today","k2917":"Today's habits","k2918":"Alarms","k2920":"Custom widget","k2921":"Widget title","k2922":"Widget text","k2923":"Add custom widget","k2924":"Write a widget title","k2926":"Mic is open; talk without holding the button","k2927":"Mic closed","k2928":"Build your own widget; it stays on Home with your title and text and syncs with the server","k2929":"Custom widget added","k2932":"Connected","k2933":"Tap to talk","k2934":"Hands-free is on — mic is open","k2935":"My Today screen (test)","k2936":"Default landing (test)","k2937":"Walkie-talkie global + hands-free (test)","k2938":"Top bar (test)","k2939":"Home default layout + customization (test)","k2940":"Alarm picker — Jalali + clock (test)","k2941":"Home layout server sync (test)","k2942":"Walkie-talkie widget (test)","k2943":"Key expiry (test)","k2944":"Delete revoked-key history (test)","k2945":"Owner-panel widgets (test)","k2946":"Unlimited","k2947":"Today is the last day","k2949":"Delete revoked-key history","k2950":"Delete the history of revoked and expired keys? This cannot be undone.","k2951":"Deleting the key history failed","k2952":"Revoked-key history deleted","k2954":"Quick access","k2955":"Owner login + recovery (test)","k2956":"At least 6 characters","k2957":"The owner password must be at least 6 characters","k2958":"The owner password changed only on this device; the server was NOT updated. If login with the new password fails, log in with the previous password; then run the complete server SQL and try recovery again when online.","k2959":"Updated at","k2960":"Widgets — server connection (test)","k2961":"Widgets — 180-second refresh (test)","k2962":"Press back again to exit","k2963":"Groups","k2964":"My points","k2965":"Offline — last data","k2966":"Widgets have not updated from the server yet","k2967":"Top group","k2968":"Server error — showing last data","k2969":"Server error; try again or ask the owner to refresh your account","k2970":"Server is out of date; ask the owner to run the server file","k2971":"Something went wrong; try again","k2972":"Error signing in to the online account; try again or ask the owner to refresh your account","k2973":"This username or email is already registered","k2974":"Your registration request was already sent and is waiting for the owner to approve it","k2975":"One-time role — role pick (test)","k2976":"Role powers (test)","k2977":"Power use + 3-per-week cap (test)","k2978":"Your request has not been approved yet","k2979":"Your request was rejected","k2980":"Your registration request was sent. You can sign in after the owner approves it.","k2981":"Register","k2982":"Registration requests","k2983":"Approve","k2984":"Reject","k2985":"Registration + owner approval (test)","k2986":"Registration + owner rejection (test)","k2987":"Registration + entry key (test)","k2988":"Your entry key","k2989":"Role","k2990":"Key plan","k2991":"Display name","k2992":"Recovery question","k2993":"Recovery answer","k2994":"Enter your username, email and password; your request is sent to the owner and you can sign in after they approve it.","k2995":"Waiting for approval","k2996":"Users who registered and are waiting for your approval; approving creates their credentials, role and entry key.","k2997":"No requests","k2998":"Advisor","k2999":"Reason (optional)","k3000":"Owner signature not verified on the server; owner lists may appear empty.","k3001":"Refresh the owner password from the password-recovery section, or log in as the owner again."});
 /* v10.4.14 recovery — EN strings for the registration role (Parsa 17:04),
    the advisor personal chat, and the server debug. */
-Object.assign(I18N_EN,{"k3002":"Personal chat","k3003":"My personal chats","k3004":"Start a personal chat","k3005":"Chat with my advisor","k3006":"Assigned students","k3007":"No personal chats yet","k3008":"Type a message…","k3009":"Send","k3010":"This chat is only between you and your assigned advisor or student","k3011":"Personal chats are kept for 2 weeks, then deleted","k3012":"Not assigned","k3013":"You can only chat with students the owner assigned to you","k3014":"Advisor","k3015":"Become an advisor","k3016":"Assign a student to an advisor","k3017":"Student username (exact)","k3018":"Advisor — personal chat (test)","k3019":"Server debug (test)","k3020":"Server debug","k3021":"Advisor username (exact)","k3022":"Assign","k3023":"Remove assignment","k3024":"Assignments","k3025":"No assignments yet","k3026":"You are now acting as an advisor","k3027":"Open personal chats","k3028":"Chat with this student","k3029":"No advisor assigned to you yet","k3030":"The role you request; the owner may change it on approval","k3031":"Requested role","k3032":"Super-user registration + SUP- key only (test)"});
-var APP_VERSION="10.4.14";
+Object.assign(I18N_EN,{"k3002":"Personal chat","k3003":"My personal chats","k3004":"Start a personal chat","k3005":"Chat with my advisor","k3006":"Assigned students","k3007":"No personal chats yet","k3008":"Type a message…","k3009":"Send","k3010":"This chat is only between you and your assigned advisor or student","k3011":"Personal chats are kept for 2 weeks, then deleted","k3012":"Not assigned","k3013":"You can only chat with students the owner assigned to you","k3014":"Advisor","k3015":"Become an advisor","k3016":"Assign a student to an advisor","k3017":"Student username (exact)","k3018":"Advisor — personal chat (test)","k3019":"Server debug (test)","k3020":"Server debug","k3021":"Advisor username (exact)","k3022":"Assign","k3023":"Remove assignment","k3024":"Assignments","k3025":"No assignments yet","k3026":"You are now acting as an advisor","k3027":"Open personal chats","k3028":"Chat with this student","k3029":"No advisor assigned to you yet","k3030":"The role you request; the owner may change it on approval","k3031":"Requested role","k3032":"Super-user registration + SUP- key only (test)","k3033":"Konkoori (exam student)","k3034":"All","k3035":"Filter by role","k3036":"No account yet? Register to join; your request is sent to the owner the moment you register.","k3037":"Konkoori registration + PLN- key (test)"});
+var APP_VERSION="10.4.15";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -7221,6 +7227,11 @@ SB.runOnlineFeaturesTest=function(){
     var regTestUserSup='ts'+String(ts).slice(-8);
     var regTestEmailSup='ts'+String(ts).slice(-8)+'@example.com';
     var regTestReqIdSup=null, regTestKeySup=null;
+    /* v10.4.15 — konkoori approval test data (Parsa 19:01): a registration
+       request with role=konkoori must yield a PLN- key, never a SUP- key. */
+    var regTestUserKonk='tk'+String(ts).slice(-8);
+    var regTestEmailKonk='tk'+String(ts).slice(-8)+'@example.com';
+    var regTestReqIdKonk=null, regTestKeyKonk=null;
     var pinHash=null;
     var planCreated=false, personCreated=false, groupCreated=false;
     function step(label, fn){
@@ -7848,7 +7859,7 @@ SB.runOnlineFeaturesTest=function(){
           return sbRpc("widget_home_data",{p_sig:sig});
         }).then(function(res){
           var d=res.data; if(Array.isArray(d)) d=d[0];
-          if(res.error) return {st:'fail', detail:"widget_home_data: "+persianErr(res.error)+" — run the complete v10.4.14 SQL"};
+          if(res.error) return {st:'fail', detail:"widget_home_data: "+persianErr(res.error)+" — run the complete v10.4.15 SQL"};
           if(!d||d.ok!==true) return {st:'fail', detail:"widget_home_data did not return ok:true"};
           if(!d.server_now||!Array.isArray(d.top_groups)||typeof d.my_points!=="number"||!Array.isArray(d.my_groups)) return {st:'fail', detail:"widget_home_data shape wrong (need server_now, top_groups[], my_groups[], my_points)"};
           return {st:'ok', detail:"server_now + top_groups + my_groups + my_points"+(d.owner?" + owner stats":"")};
@@ -8056,7 +8067,7 @@ SB.runOnlineFeaturesTest=function(){
       }],
       [TR('k3019','دیباگ سرور (تست)'), function(){
         return sbRpc("server_debug",{p_sig:sig}).then(function(res){
-          if(res.error) return {st:'fail', detail:persianErr(res.error)+" — run the complete v10.4.14 SQL"};
+          if(res.error) return {st:'fail', detail:persianErr(res.error)+" — run the complete v10.4.15 SQL"};
           var d=res.data; if(Array.isArray(d)) d=d[0];
           if(!d||d.ok!==true) return {st:'fail', detail:"server_debug did not return ok:true"};
           var checks=Array.isArray(d.checks)?d.checks:[];
@@ -8120,6 +8131,58 @@ SB.runOnlineFeaturesTest=function(){
           });
         });
       }],
+      [TR('k3037','ثبت نام کنکوری + کلید PLN- (تست)'), function(){
+        /* Konkoori registration (Parsa 19:01): request with role=konkoori ->
+           owner approves -> a PLN- key is created (never SUP-) with the key
+           role konkoori -> the approved user logs in via the unified login. */
+        return sbRpc("submit_registration_request",{p_username:regTestUserKonk,p_email:regTestEmailKonk,p_password:"RegTest123",p_name:"تست کنکوری",p_question:"سؤال؟",p_answer:"جواب",p_role:"konkoori"}).then(function(res){
+          if(res.error) return {st:'fail', detail:persianErr(res.error)};
+          var d=res.data; if(Array.isArray(d)) d=d[0];
+          if(!d||d.ok!==true) return {st:'fail', detail:"submit failed: "+((d&&d.reason)||"")};
+          return sbRpc("list_registration_requests",{p_sig:sig}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:persianErr(res2.error)};
+            var rows=Array.isArray(res2.data)?res2.data:[];
+            var req=rows.filter(function(r){ return String(r.username||"")===regTestUserKonk&&r.status==="pending"; })[0];
+            if(!req) return {st:'fail', detail:"test konkoori request not in the owner list"};
+            if(String(req.requested_role||"")!=="konkoori") return {st:'fail', detail:"requested_role is not konkoori"};
+            regTestReqIdKonk=req.id;
+            return sbRpc("approve_registration_request",{p_id:req.id,p_sig:sig,p_role:"konkoori",p_plan_id:planId,p_plan_name:"TEST-PLAN",p_price:0,p_days:1}).then(function(res3){
+              if(res3.error) return {st:'fail', detail:persianErr(res3.error)};
+              var d3=res3.data; if(Array.isArray(d3)) d3=d3[0];
+              if(!d3||d3.ok!==true) return {st:'fail', detail:"approve failed: "+((d3&&d3.reason)||"")};
+              if(!d3.key_code||d3.key_code.indexOf("PLN-")!==0) return {st:'fail', detail:"approval did not return a PLN- key (got "+(d3.key_code||"none")+")"};
+              regTestKeyKonk=d3.key_code;
+              return sbRpc("list_keys",{p_sig:sig}).then(function(res4){
+                if(res4.error) return {st:'fail', detail:persianErr(res4.error)};
+                var krows=Array.isArray(res4.data)?res4.data:[];
+                var mine=krows.filter(function(r){ return String(r.buyer||"")===regTestUserKonk; });
+                if(!mine.length) return {st:'fail', detail:"approved PLN- key not in the key list"};
+                var sup=mine.filter(function(r){ return String(r.code||"").indexOf("SUP-")===0; });
+                if(sup.length) return {st:'fail', detail:"a SUP- key was created for the konkoori user"};
+                var pln=mine.filter(function(r){ return String(r.code||"").indexOf("PLN-")===0; });
+                if(pln.length!==1) return {st:'fail', detail:"expected exactly 1 PLN- key, found "+pln.length};
+                if(String(pln[0].role||"")!=="konkoori") return {st:'fail', detail:"key role is not konkoori"};
+                return sbRpc("verify_user_login",{p_username:regTestUserKonk,p_password:"RegTest123"}).then(function(res5){
+                  if(res5.error) return {st:'fail', detail:persianErr(res5.error)};
+                  var d5=res5.data; if(Array.isArray(d5)) d5=d5[0];
+                  if(!d5||d5.ok!==true) return {st:'fail', detail:"approved konkoori user cannot log in (unified login)"};
+                  return sbRpc("revoke_key",{p_code:regTestKeyKonk,p_sig:sig}).then(function(res6){
+                    if(res6.error) return {st:'fail', detail:persianErr(res6.error)};
+                    return sbRpc("owner_delete_user_credentials",{p_username:regTestUserKonk,p_sig:sig}).then(function(res7){
+                      if(res7.error) return {st:'fail', detail:persianErr(res7.error)};
+                      return sbRpc("delete_registration_request",{p_id:regTestReqIdKonk,p_sig:sig}).then(function(res8){
+                        if(res8.error) return {st:'fail', detail:persianErr(res8.error)};
+                        regTestKeyKonk=null; regTestReqIdKonk=null;
+                        return {st:'ok', detail:"PLN- key "+d3.key_code+" created for konkoori; unified login ok; cleaned up"};
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      }],
       [TR('k2577','حذف طرح آزمایشی'), function(){
         if(!planCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
         return sbRpc("plan_delete",{p_id:planId,p_sig:sig}).then(function(res){
@@ -8165,6 +8228,9 @@ SB.runOnlineFeaturesTest=function(){
       if(regTestUserSup) clean.push(sbRpc("owner_delete_user_credentials",{p_username:regTestUserSup,p_sig:sig}).catch(function(){ return null; }));
       if(regTestKeySup) clean.push(sbRpc("revoke_key",{p_code:regTestKeySup,p_sig:sig}).catch(function(){ return null; }));
       if(regTestReqIdSup) clean.push(sbRpc("delete_registration_request",{p_id:regTestReqIdSup,p_sig:sig}).catch(function(){ return null; }));
+      if(regTestUserKonk) clean.push(sbRpc("owner_delete_user_credentials",{p_username:regTestUserKonk,p_sig:sig}).catch(function(){ return null; }));
+      if(regTestKeyKonk) clean.push(sbRpc("revoke_key",{p_code:regTestKeyKonk,p_sig:sig}).catch(function(){ return null; }));
+      if(regTestReqIdKonk) clean.push(sbRpc("delete_registration_request",{p_id:regTestReqIdKonk,p_sig:sig}).catch(function(){ return null; }));
         if(groupCreated) extraCalls.push(sbRpc("owner_list_group_locations",{p_group_id:groupId,p_sig:sig}).catch(function(){ return {data:[]}; }));
         if(homeTestRan) extraCalls.push(sbRpc("owner_load_user_settings",{p_sig:sig}).catch(function(){ return {data:null}; }));
         return Promise.all([
@@ -8716,13 +8782,13 @@ function openRegistrationModal(mode){
   +'<div class="field"><label>'+TR('k2854','ایمیل')+'</label><input class="inp" id="rgEmail" type="email" dir="ltr" placeholder="you@example.com"></div>'
   +'<div class="field"><label>'+TR('k2846','رمز سرور')+'</label><input class="inp" id="rgPass" type="password" dir="ltr"></div>'
   +'<div class="field"><label>'+TR('k2991','نام نمایشی')+'</label><input class="inp" id="rgName" placeholder="'+TR('k1602','مثلاً: علی رضایی')+'"></div>'
-  +'<div class="field"><label>'+TR('k2004','نقش')+'</label><select class="inp" id="rgRole"><option value="member">'+TR('k1104','عضو')+'</option><option value="advisor">'+TR('k2998','مشاور')+'</option><option value="super">'+TR('k2230','ابر کاربر')+'</option></select><div class="hint small">'+TR('k3030','نقش درخواستی شما؛ مالک هنگام تایید می‌تواند آن را تغییر دهد')+'.</div></div>'
+  +'<div class="field"><label>'+TR('k2004','نقش')+'</label><select class="inp" id="rgRole"><option value="member">'+TR('k1104','عضو')+'</option><option value="advisor">'+TR('k2998','مشاور')+'</option><option value="super">'+TR('k2230','ابر کاربر')+'</option><option value="konkoori">'+TR('k3033','کنکوری')+'</option></select><div class="hint small">'+TR('k3030','نقش درخواستی شما؛ مالک هنگام تایید می‌تواند آن را تغییر دهد')+'.</div></div>'
   +'<div class="field"><label>'+TR('k2992','سؤال بازیابی')+'</label><input class="inp" id="rgQ"></div>'
   +'<div class="field"><label>'+TR('k2993','پاسخ بازیابی')+'</label><input class="inp" id="rgA"></div>'
   +'<div class="rowflex"><button class="btn grow" style="justify-content:center" onclick="doRegistrationSubmit()">'+TR('k2981','ثبت نام')+'</button><button class="btn ghost" onclick="closeModal()">'+TR('k0338','انصراف')+'</button></div>');
   /* v10.4.14 recovery (Parsa 17:04): super user is a role in the registration
-     role list; openRegistrationModal('advisor'|'super') pre-selects it. */
-  try{ var _rg=$("rgRole"); if(_rg){ if(mode==="advisor") _rg.value="advisor"; else if(mode==="super") _rg.value="super"; else _rg.value="member"; } }catch(e){}
+     role list; openRegistrationModal('advisor'|'super'|'konkoori') pre-selects it. */
+  try{ var _rg=$("rgRole"); if(_rg){ if(mode==="advisor") _rg.value="advisor"; else if(mode==="super") _rg.value="super"; else if(mode==="konkoori") _rg.value="konkoori"; else _rg.value="member"; } }catch(e){}
 }
 function doRegistrationSubmit(){
   var un=(($("rgUser")||{}).value||"").trim();
@@ -8732,7 +8798,7 @@ function doRegistrationSubmit(){
   var q=(($("rgQ")||{}).value||"").trim();
   var an=(($("rgA")||{}).value||"").trim();
   var role=(($("rgRole")||{}).value||"member");
-  if(role!=="member"&&role!=="advisor"&&role!=="super") role="member";
+  if(role!=="member"&&role!=="advisor"&&role!=="super"&&role!=="konkoori") role="member";
   if(!/^[A-Za-z][A-Za-z0-9_]{2,29}$/.test(un)){ toast(TR('k2719','نام کاربری باید با حرف انگلیسی شروع شود و فقط حرف و عدد و _ داشته باشد (۳ تا ۳۰ نویسه)')+"."); return; }
   if(!em||em.indexOf("@")<1){ toast(TR('k2324','ایمیل یا رمز درست نیست')+"."); return; }
   if(!pw||pw.length<6){ toast(TR('k2324','ایمیل یا رمز درست نیست')+"."); return; }
@@ -8932,7 +8998,78 @@ SB.regReqsHTML=function(){
   return '<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("profile")+'</span>' + TR('k2982','درخواست‌های ثبت نام') + ' <span class="pill gold" id="owRegReqCount">0</span></h3>'
   +'<p class="small">'+TR('k2996','کاربرانی که ثبت نام کرده‌اند و منتظر تایید شما هستند؛ با تایید، اعتبارنامه، نقش و کلید ورود برایشان ساخته می‌شود')+'.</p>'
   +'<div class="rowflex" style="margin-bottom:10px"><button class="btn ghost sm" onclick="SB.loadRegReqs()">'+TR('k2567','تازه‌سازی فهرست کلیدها')+'</button></div>'
+  +'<div id="owRegReqCats" style="margin-bottom:10px"></div>'
   +'<div id="owRegReqsList"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div></div>';
+};
+/* v10.4.15 — registration role helpers (Parsa 19:01/19:18/19:19): konkoori is
+   a first-class registration role. regRoleNorm maps any value to one of the
+   four known roles (unknown -> member, so the approval dropdown always has a
+   valid value). regRoleName returns the Persian name for a known role, or the
+   raw value for a future/unknown role, so no role is ever hidden. */
+SB.regRoleNorm=function(role){
+  if(role==="advisor"||role==="super"||role==="konkoori") return role;
+  return "member";
+};
+SB.regRoleName=function(role){
+  var n=SB.regRoleNorm(role);
+  if(n==="advisor") return TR('k2998','مشاور');
+  if(n==="super") return TR('k2230','ابر کاربر');
+  if(n==="konkoori") return TR('k3033','کنکوری');
+  if(role&&String(role)!==n) return String(role);
+  return TR('k1104','عضو');
+};
+/* v10.4.15 — owner-panel role categories (Parsa 19:01): the requests widget
+   filters by role. The category list is DATA-DRIVEN: the four known roles
+   first, then any other requested_role value actually present in the data,
+   so a new role automatically gets a category and is never hidden. Each
+   category shows its PENDING count. */
+SB.regReqCat="all";
+SB._regReqRows=[];
+SB.setRegReqCat=function(cat){
+  SB.regReqCat=cat||"all";
+  SB.renderRegReqs();
+};
+SB.renderRegReqs=function(){
+  var box=$("owRegReqsList"); if(!box) return;
+  var rows=SB._regReqRows||[];
+  var pend=rows.filter(function(r){ return r.status==="pending"; });
+  var cnt=$("owRegReqCount"); if(cnt) cnt.textContent=String(pend.length);
+  var badge=$("owRegReqBadge"); if(badge) badge.textContent=String(pend.length);
+  var rawRole=function(r){ var v=String(r.requested_role||"").trim(); return v||"member"; };
+  var known=["member","advisor","super","konkoori"];
+  var cats=["all"].concat(known);
+  rows.forEach(function(r){ var v=rawRole(r); if(cats.indexOf(v)<0) cats.push(v); });
+  if(SB.regReqCat&&SB.regReqCat!=="all"&&cats.indexOf(SB.regReqCat)<0) SB.regReqCat="all";
+  var catBox=$("owRegReqCats");
+  if(catBox){
+    catBox.innerHTML='<div class="small" style="margin-bottom:6px">'+TR('k3035','دسته‌بندی بر اساس نقش')+':</div><div class="rowflex" style="flex-wrap:wrap;gap:6px">'+cats.map(function(c){
+      var n=c==="all"?pend.length:pend.filter(function(r){ return rawRole(r)===c; }).length;
+      var label=c==="all"?TR('k3034','همه'):SB.regRoleName(c);
+      return '<button class="btn '+(SB.regReqCat===c?"":"ghost")+' sm" onclick="SB.setRegReqCat(\''+esc(c)+'\')">'+esc(label)+' ('+fa(n)+')</button>';
+    }).join("")+'</div>';
+  }
+  var shown=rows;
+  if(SB.regReqCat&&SB.regReqCat!=="all") shown=rows.filter(function(r){ return rawRole(r)===SB.regReqCat; });
+  if(!rows.length){ box.innerHTML='<p class="small">'+TR('k2997','درخواستی نیست')+'.</p>'; return; }
+  if(!shown.length){ box.innerHTML='<p class="small">'+TR('k2997','درخواستی نیست')+'.</p>'; return; }
+  var plans=S.plans||[];
+  var planOpts=plans.map(function(p){ return '<option value="'+esc(String(p.id))+'">'+esc(p.name)+' — '+fa(p.days)+' '+TR('k0329','روز')+'</option>'; }).join("");
+  box.innerHTML=shown.map(function(r){
+    var isPend=r.status==="pending";
+    var st=r.status==="approved"?'✓ '+TR('k2983','تایید'):(r.status==="rejected"?'✗ '+TR('k2984','رد'):TR('k2995','در انتظار تایید'));
+    /* v10.4.15: show the role the user requested at registration (konkoori
+       included) and pre-select it in the approval dropdown. */
+    var reqRole=SB.regRoleNorm(r.requested_role);
+    var reqRoleName=SB.regRoleName(r.requested_role);
+    var h='<div class="listrow"><div class="grow"><b>'+esc(r.username)+'</b> <span class="small">('+esc(r.email)+')</span><div class="small">'+esc(r.name||"")+' · '+esc((r.requested_at||"").slice(0,10))+' · '+esc(st)+' · '+TR('k3031','نقش درخواستی')+': '+reqRoleName+'</div>';
+    if(isPend){
+      h+='<div class="rowflex" style="margin-top:6px"><select class="inp" id="rrRole-'+esc(r.id)+'" style="max-width:130px"><option value="member"'+(reqRole==="member"?" selected":"")+'>'+TR('k1104','عضو')+'</option><option value="advisor"'+(reqRole==="advisor"?" selected":"")+'>'+TR('k2998','مشاور')+'</option><option value="super"'+(reqRole==="super"?" selected":"")+'>'+TR('k2230','ابر کاربر')+'</option><option value="konkoori"'+(reqRole==="konkoori"?" selected":"")+'>'+TR('k3033','کنکوری')+'</option></select>'
+      +'<select class="inp grow" id="rrPlan-'+esc(r.id)+'">'+(planOpts||'<option value="">—</option>')+'</select></div>'
+      +'<div class="rowflex" style="margin-top:6px"><button class="btn sm" onclick="SB.approveRegReq(\''+esc(r.id)+'\')">'+TR('k2983','تایید')+'</button><button class="btn ghost sm" onclick="SB.rejectRegReq(\''+esc(r.id)+'\')">'+TR('k2984','رد')+'</button></div>';
+    }
+    if(r.status==="rejected"&&r.rejection_reason) h+='<div class="small">'+esc(r.rejection_reason)+'</div>';
+    return h+'</div></div>';
+  }).join("");
 };
 SB.loadRegReqs=function(){
   if(!ownerMode||!SB.client) return Promise.resolve(null);
@@ -8941,30 +9078,9 @@ SB.loadRegReqs=function(){
     return sbRpc("list_registration_requests",{p_sig:sig}).then(function(res){
       var box=$("owRegReqsList"); if(!box) return null;
       if(res.error||!Array.isArray(res.data)){ box.innerHTML='<p class="small">'+TR('k2763','آمار از سرور بارگذاری نشد')+'.</p>'; return null; }
-      var rows=res.data||[];
-      var pend=rows.filter(function(r){ return r.status==="pending"; });
-      var cnt=$("owRegReqCount"); if(cnt) cnt.textContent=String(pend.length);
-      var badge=$("owRegReqBadge"); if(badge) badge.textContent=String(pend.length);
-      if(!rows.length){ box.innerHTML='<p class="small">'+TR('k2997','درخواستی نیست')+'.</p>'; return rows; }
-      var plans=S.plans||[];
-      var planOpts=plans.map(function(p){ return '<option value="'+esc(String(p.id))+'">'+esc(p.name)+' — '+fa(p.days)+' '+TR('k0329','روز')+'</option>'; }).join("");
-      box.innerHTML=rows.map(function(r){
-        var isPend=r.status==="pending";
-        var st=r.status==="approved"?'✓ '+TR('k2983','تایید'):(r.status==="rejected"?'✗ '+TR('k2984','رد'):TR('k2995','در انتظار تایید'));
-        /* v10.4.14 recovery (Parsa 17:04): show the role the user requested
-           at registration and pre-select it in the approval dropdown. */
-        var reqRole=(r.requested_role==="advisor"||r.requested_role==="super")?r.requested_role:"member";
-        var reqRoleName=reqRole==="advisor"?TR('k2998','مشاور'):(reqRole==="super"?TR('k2230','ابر کاربر'):TR('k1104','عضو'));
-        var h='<div class="listrow"><div class="grow"><b>'+esc(r.username)+'</b> <span class="small">('+esc(r.email)+')</span><div class="small">'+esc(r.name||"")+' · '+esc((r.requested_at||"").slice(0,10))+' · '+esc(st)+' · '+TR('k3031','نقش درخواستی')+': '+reqRoleName+'</div>';
-        if(isPend){
-          h+='<div class="rowflex" style="margin-top:6px"><select class="inp" id="rrRole-'+esc(r.id)+'" style="max-width:130px"><option value="member"'+(reqRole==="member"?" selected":"")+'>'+TR('k1104','عضو')+'</option><option value="advisor"'+(reqRole==="advisor"?" selected":"")+'>'+TR('k2998','مشاور')+'</option><option value="super"'+(reqRole==="super"?" selected":"")+'>'+TR('k2230','ابر کاربر')+'</option></select>'
-          +'<select class="inp grow" id="rrPlan-'+esc(r.id)+'">'+(planOpts||'<option value="">—</option>')+'</select></div>'
-          +'<div class="rowflex" style="margin-top:6px"><button class="btn sm" onclick="SB.approveRegReq(\''+esc(r.id)+'\')">'+TR('k2983','تایید')+'</button><button class="btn ghost sm" onclick="SB.rejectRegReq(\''+esc(r.id)+'\')">'+TR('k2984','رد')+'</button></div>';
-        }
-        if(r.status==="rejected"&&r.rejection_reason) h+='<div class="small">'+esc(r.rejection_reason)+'</div>';
-        return h+'</div></div>';
-      }).join("");
-      return rows;
+      SB._regReqRows=res.data||[];
+      SB.renderRegReqs();
+      return SB._regReqRows;
     });
   }).catch(function(){ return null; });
 };
