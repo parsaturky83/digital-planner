@@ -201,13 +201,13 @@ table.wk td.time, table.wk th.time{ background:var(--surface2); color:var(--ink2
 /* کانبان و ماتریس */
 .kb{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 @media (max-width:820px){ .kb{ grid-template-columns:1fr; } }
-.kbcol{ background:var(--surface2); border:1px solid var(--line); border-radius:var(--radius); padding:12px; min-height:120px; }
+.kbcol{ background:var(--surface2); border:2px solid var(--line); border-radius:var(--radius); padding:12px; min-height:120px; }
 .kbcol h3{ font-size:14px; margin-bottom:10px; display:flex; justify-content:space-between; }
-.kbcard{ background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin-bottom:8px; font-size:13.5px; }
+.kbcard{ background:var(--surface); border:2px solid var(--line); border-radius:10px; padding:9px 11px; margin-bottom:8px; font-size:13.5px; }
 .kbcard .rowflex{ margin-top:6px; }
 .mx{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 @media (max-width:640px){ .mx{ grid-template-columns:1fr; } }
-.mxq{ border-radius:var(--radius); padding:14px; border:1px solid var(--line); }
+.mxq{ border-radius:var(--radius); padding:14px; border:2px solid var(--line); }
 .mxq h3{ font-size:14px; margin-bottom:8px; }
 .mxq.q1{ background:#fbeae8; } .mxq.q2{ background:#e8f2e9; } .mxq.q3{ background:#fdf3d8; } .mxq.q4{ background:var(--surface2); }
 [data-mode="dark"] .mxq.q1{ background:#38201d; } [data-mode="dark"] .mxq.q2{ background:#1d2f21; } [data-mode="dark"] .mxq.q3{ background:#38300f; }
@@ -325,7 +325,7 @@ input[type=range].rng{ width:100%; accent-color:var(--acc); }
 @media (max-width:820px){ .bottomnav{ display:flex; } }
 
 /* کاتالوگ قابلیت‌ها */
-.feat{ border:1px solid var(--line); border-radius:11px; padding:10px 13px; background:var(--surface); font-size:13.5px; display:flex; gap:9px; align-items:flex-start; }
+.feat{ border:2px solid var(--line); border-radius:11px; padding:10px 13px; background:var(--surface); font-size:13.5px; display:flex; gap:9px; align-items:flex-start; }
 .feat .ic{ width:17px; height:17px; color:var(--acc); margin-top:4px; }
 .feat small{ display:block; color:var(--ink2); font-size:12px; }
 .onlinecard{ border:1.5px dashed var(--acc2); background:var(--surface); border-radius:var(--radius); padding:18px; cursor:pointer; }
@@ -530,11 +530,25 @@ h3 .vh-ic .ic{ width:18px; height:18px; }
 .wt-pill .dot{ width:10px; height:10px; border-radius:50%; background:#22c55e; flex:none; }
 .wt-pill.talking .dot{ background:#ef4444; animation:wtpulse 1s infinite; }
 @keyframes wtpulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
-/* v10.4.12 (sketch 1, clarified 2026-11-11 10:40) — the yellow rectangle
-   at the top-left of Home IS the walkie-talkie widget: a rectangular card
-   below the top bar, on the left side (flex-end in RTL). */
-.home-walkie-row{ justify-content:flex-end; margin-bottom:14px; }
-.home-walkie{ display:flex; align-items:center; gap:10px; width:min(340px,62%); text-align:start; cursor:pointer; padding:12px 14px; }
+/* v10.4.13 (Parsa 2026-11-11: the v10.4.12 Home «عملا هیچ شباهتی» to the
+   sketch — it was a vertical stack because the 560px media query
+   collapsed .g2 to one column). The Home grid is now a REAL 2-column grid
+   at ALL widths: .home-grid (NOT .g2) so no media query can collapse it;
+   direction:ltr on the grid so DOM order maps left-to-right exactly like
+   the sketch (today LEFT, tasks RIGHT; calendar LEFT, notes RIGHT); the
+   cards inside stay direction:rtl. The walkie rectangle sits in the
+   header row at the top-LEFT (second flex child in RTL), compact, with an
+   ellipsized status line so its text can never clip at the edge. */
+.home-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; direction:ltr; }
+.home-grid>*{ direction:rtl; }
+.home-grid .home-w-wide{ grid-column:1 / -1; }
+.home-head{ display:flex; align-items:stretch; justify-content:space-between; gap:12px; margin-bottom:14px; }
+.home-head h2{ margin:0; align-self:center; }
+.home-walkie{ display:flex; align-items:center; gap:10px; flex:0 1 250px; min-width:0; text-align:start; cursor:pointer; padding:12px 14px; }
+.home-walkie .grow{ min-width:0; }
+.home-walkie .grow .small{ display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.widget-bar{ margin:0 0 14px; padding:8px 12px; border:2px solid var(--line); border-radius:var(--radius); background:var(--surface); }
+.ow-shorts-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 /* v10.4.12 (sketch 2) — the two shortcut buttons sit on the left under
    the top bar (flex-end in RTL); the numbered badges of the top-3 box;
    the green live dot on the walkie shortcut; the wide calendar card. */
@@ -2771,6 +2785,9 @@ function buildNav(){
     $("navList").innerHTML=h;
     return;
   }
+  /* v10.4.13 — «شخصی‌سازی خانه» lives in the hamburger menu (see
+     homeCustomizeFromDrawer): the big button is gone from Home itself. */
+  h+='<div class="navrow"><button class="navitem" onclick="homeCustomizeFromDrawer()">'+icSvg("edit")+esc(TR('k1340','شخصی‌سازی خانه'))+'</button></div>';
   NAV.forEach(function(n){
     if(n.sec){ h+='<div class="navsec">'+esc(n.sec)+'</div>'; return; }
     /* v10.4.8 — every drawer section gets an "add to Home" toggle (Parsa:
@@ -2793,6 +2810,8 @@ function buildBottomNav(){
 function openDrawer(){ refreshProf(); $("drawerWrap").classList.add("open"); }
 function closeDrawer(){ $("drawerWrap").classList.remove("open"); }
 var curView="today";
+var _goHistReady=false; /* v10.4.13 — back-button history guard (see go()/popstate below) */
+var _goBackAt=0; /* v10.4.13 — timestamp of the last back press while on My Today */
 /* افکت تایپ‌شدن متن — فقط در تم هکری و با احترام به کاهش حرکت */
 function typeEl(el,txt,speed){
   if(!el) return;
@@ -2807,6 +2826,19 @@ function go(id){
   if(adminMode && !ownerMode && id!=="adminpanel" && id!=="themes"){ id="adminpanel"; } /* گیت نقش مشاور: هر ناوبری به بخش‌های صاحب دفتر — از منو، ناوبری پایین، جست‌وجوی فرمانی یا هر دکمه‌ای — به پنل مشاور برمی‌گردد؛ داده خصوصی صاحب دفتر با ناوبری عمومی دور زده نمی‌شود */
   var _prevView=curView;
   curView=id; typeEl($("tbTitle"),TITLES[id]||"",45);
+  /* v10.4.13 — Android BACK button (Parsa 2026-11-11: «میخوام وقتی دکمه
+     عقب لاین پایین رو میزنی بره توی صفحه امروز من»): every real view
+     change pushes a history state, so a system back press — the bottom
+     button OR the gesture edge-swipe, both arrive as a history pop in
+     the WebView — fires popstate instead of exiting. The popstate
+     handler (below) turns the first press into "go to My Today" and the
+     second press (on My Today, within 2s) into exit via
+     GhostOpsBridge.exitApp(). The first go() also pushes a guard state
+     so the very first back press is intercepted too. */
+  try{
+    if(!_goHistReady){ _goHistReady=true; history.pushState({v:"__guard"}, "", location.href); }
+    else if(id!==_prevView){ history.pushState({v:id}, "", location.href); }
+  }catch(e){}
   /* v10.4.12 — the calendar ALWAYS opens on the current Jalali month
      (Parsa 2026-11-11: «تقویم آپدیت نیست»): entering the view from
      anywhere else snaps it back to today; moving between months or
@@ -2840,6 +2872,38 @@ function go(id){
   try{ if(typeof WT!=="undefined"&&WT.paintPill) WT.paintPill(); }catch(e){}
   window.scrollTo({top:0});
 }
+/* v10.4.13 — Android BACK button (Parsa 2026-11-11): the system back
+   button AND the gesture edge-swipe both arrive here as a popstate (see
+   go() — every view change pushes a history state). The rule is absolute:
+   back (not on My Today) -> go to «امروز من»; back ON My Today -> a
+   «برای خروج دوباره بزنید» toast, and a second back within 2s EXITS the
+   app (GhostOpsBridge.exitApp() in the APK; in a plain browser the guard
+   is left popped so the next back leaves the page). An open modal is
+   closed first instead. */
+function pushGoGuard(){ try{ history.pushState({v:"__guard"}, "", location.href); }catch(e){} }
+window.addEventListener("popstate", function(){
+  try{
+    if(window.__goExitRequested) return;
+    var mw=$("modalWrap");
+    if(mw && mw.classList.contains("open")){ closeModal(); pushGoGuard(); return; }
+    if(curView!=="today"){ go("today"); return; }
+    var now=Date.now();
+    if(now-_goBackAt<2000){
+      window.__goExitRequested=true;
+      try{ if(window.GhostOpsBridge && GhostOpsBridge.exitApp) GhostOpsBridge.exitApp(); }catch(e){}
+      try{ history.back(); }catch(e){}
+      /* Plain-browser fallback: if the page is still alive 1s later (the
+         APK's finish() already destroyed it, so this never fires there),
+         clear the exit flag and push a fresh guard state so later back
+         presses work normally again instead of being ignored. */
+      setTimeout(function(){ try{ window.__goExitRequested=false; _goBackAt=0; pushGoGuard(); }catch(e){} }, 1000);
+      return;
+    }
+    _goBackAt=now;
+    toast(TR('k2962','برای خروج دوباره بزنید'));
+    pushGoGuard();
+  }catch(e){}
+});
 
 /* ================= مولفه‌های مشترک ================= */
 function ringSVG(pct,size,gold,label){
@@ -3153,7 +3217,7 @@ function renderTasks(v){
       h+='<div class="card" style="margin-bottom:12px"><h3 style="margin:0 0 8px">'+d+(di===todayIdx()?' <span class="pill gold">' + TR('k0213','امروز') + '</span>':'')+'</h3>'+ts.map(taskHTML).join("")+'</div>'; });
     var some=S.tasks.filter(function(t){return t.day===-1||t.day===undefined;});
     if(some.length) h+='<div class="card" style="margin-bottom:12px"><h3 style="margin:0 0 8px">' + TR('k0309','بدون تاریخ') + ' — ' + TR('k0330','یک روزی') + '</h3><p class="small" style="margin:0 0 8px">' + TR('k0418','کارهایی که هنوز روزشان مشخص نیست؛ هر وقت آماده بودید روزی برایشان بگذارید') + '.</p>'+some.map(taskHTML).join("");
-    if(!S.tasks.length) h+='<div class="empty">' + TR('k0419','هنوز کاری ثبت نشده است') + '.</div>';
+    if(!S.tasks.length) h+='<div class="card"><div class="empty">' + TR('k0419','هنوز کاری ثبت نشده است') + '.</div></div>';
   }else if(taskTab==="kanban"){
     var cols=[["todo",TR('k0420','برای انجام')],["doing",TR('k0421','در حال انجام')],["done",TR('k0308','انجام‌شده')]];
     h+='<div class="kb">'+cols.map(function(c){
@@ -3326,7 +3390,7 @@ function setWheel(i,n){ if(!S.wheel) S.wheel=[0,0,0,0]; S.wheel[i]=n; go("journa
 function renderNotes(v){
   var h=vhead(TR('k0265','یادداشت‌ها'),TR('k0593','یادداشت برای هر کار و هر روز، مجموعه‌ها و جست‌وجو') + " — " + TR('k0592','بدون نیاز به اینترنت') + ".",'<button class="btn" onclick="openNoteModal()">+ ' + TR('k0594','یادداشت تازه') + '</button>');
   h+='<div class="searchbar"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="noteSearch" placeholder="' + TR('k0595','جست‌وجو در یادداشت‌ها') + '…" oninput="filterNotes(this.value)"></div><div id="noteGrid" class="grid g3">';
-  h+=S.notes.slice().sort(function(a,b){ return (b.pin?1:0)-(a.pin?1:0); }).map(noteCard).join("")+'</div>';
+  h+=(S.notes.length?S.notes.slice().sort(function(a,b){ return (b.pin?1:0)-(a.pin?1:0); }).map(noteCard).join(""):'<div class="card"><p class="small">'+TR('k1337','هنوز یادداشتی نیست')+'.</p></div>')+'</div>';
   v.innerHTML=h;
 }
 function noteCard(n){ return '<div class="card" data-note="'+esc(n.title+" "+n.body)+'"><div class="rowflex" style="justify-content:space-between"><b>'+esc(n.title)+'</b><span>'+(n.pin?'<span class="pill gold">' + TR('k0598','سنجاق‌شده') + '</span> ':'')+'<span class="pill gray">'+esc(n.tag)+'</span></span></div><p class="small" style="margin:6px 0 0">'+esc(n.body)+'</p><div class="rowflex" style="margin-top:8px"><button class="btn ghost sm" onclick="openNoteModal('+n.id+')">' + TR('k0600','ویرایش') + '</button><button class="btn ghost sm" onclick="pinNote('+n.id+')">'+(n.pin?TR('k0596','برداشتن سنجاق'):TR('k0599','سنجاق‌کردن'))+'</button><button class="del" onclick="delNote('+n.id+')">' + TR('k0597','حذف یادداشت') + '</button></div></div>'; }
@@ -4212,7 +4276,7 @@ function openPrintView(){
    mode. The yellow rectangle at the top-left is the WALKIE-TALKIE widget
    (clarified 2026-11-11 10:40) — it lives in the Home header row, not in
    this list. */
-var HOME_DEFAULTS=["today","tasks","week","notes","calendar"];
+var HOME_DEFAULTS=["today","tasks","week","calendar","notes"];
 var HOME_WIDGETS={
  today:{t:TR('k0105','امروز من'),d:TR('k1291','پیشرفت امروز و سه کار مهم')},
  week:{t:TR('k0007','جدول هفتگی'),d:TR('k1292','بلوک‌های امروز و حلقه ساعت')},
@@ -4279,6 +4343,10 @@ function homeToggleEdit(){
   renderHomeOnly();
   if(homeEdit) toast(TR('k1316','حالت شخصی‌سازی خانه فعال شد') + " — " + TR('k1315','برای جابه‌جایی، دکمه یا دستگیره هر بخش را نگه دارید و بکشید') + ".");
 }
+/* v10.4.13 — Home customization lives in the hamburger menu (Parsa
+   2026-11-11: the sketch's top bar carries it; the big button is gone
+   from Home itself): open Home in edit mode from the drawer. */
+function homeCustomizeFromDrawer(){ closeDrawer(); go("home"); if(!homeEdit) homeToggleEdit(); }
 function homeReset(){ homeSave(HOME_DEFAULTS.slice()); homeEdit=false; renderHomeOnly(); toast(TR('k1317','چیدمان خانه به پیش‌فرض برگشت') + "."); }
 function homeAdd(id){
   var layout=homeLayout();
@@ -4535,8 +4603,8 @@ Object.assign(I18N_EN,{"k2830": "Group chat history is cleaned every week; messa
 Object.assign(I18N_EN,{"k2900":"Jalali","k2901":"phone clock","k2902":"Alarm time","k2903":"Now","k2522":"Sounds are muted; turn off Mute first","k2523":"Hear the selected sound before saving","k2528":"Top groups of the week","k2529":"Last 7 days","k2533":"Points this week","k2534":"members","k2535":"Tasks done this week","k2536":"Focus minutes this week","k2537":"Messages this week","k2538":"You must be online to see the top groups of the week","k2539":"Refresh","k2600":"No group has earned points this week yet","k2601":"Top groups of the week (test)","k2602":"Server-verified login (test)","k2603":"Wrong password rejected","k2604":"Group message — persistence (test)","k2605":"Group message — 7-day retention (test)","k2606":"Member access to groups (test)","k2607":"Member locations on the map (test)","k2608":"One-time role + abilities (test)","k2609":"Telegram sales form (test)","k2610":"Offline Jalali calendar (test)","k2611":"Alarm sound test (test)","k2612":"Delete test credential","k2613":"Top groups by this week's points","k2614":"Only overall group information is shown here; no member's name or information appears"});
 /* v10.4.12 — sketch screens, walkie-talkie global + hands-free, top bar,
    owner-panel tests for the new resources. */
-Object.assign(I18N_EN,{"k2910":"Talk without holding the button","k2911":"Hands-free mode","k2912":"Mic is open; tap again to stop","k2913":"Walkie-talkie is on","k2915":"View calendar","k2916":"Top 3 for today","k2917":"Today's habits","k2918":"Alarms","k2920":"Custom widget","k2921":"Widget title","k2922":"Widget text","k2923":"Add custom widget","k2924":"Write a widget title","k2926":"Mic is open; talk without holding the button","k2927":"Mic closed","k2928":"Build your own widget; it stays on Home with your title and text and syncs with the server","k2929":"Custom widget added","k2932":"Connected","k2933":"Tap to talk","k2934":"Hands-free is on — mic is open","k2935":"My Today screen (test)","k2936":"Default landing (test)","k2937":"Walkie-talkie global + hands-free (test)","k2938":"Top bar (test)","k2939":"Home default layout + customization (test)","k2940":"Alarm picker — Jalali + clock (test)","k2941":"Home layout server sync (test)","k2942":"Walkie-talkie widget (test)","k2943":"Key expiry (test)","k2944":"Delete revoked-key history (test)","k2945":"Owner-panel widgets (test)","k2946":"Unlimited","k2947":"Today is the last day","k2949":"Delete revoked-key history","k2950":"Delete the history of revoked and expired keys? This cannot be undone.","k2951":"Deleting the key history failed","k2952":"Revoked-key history deleted","k2954":"Quick access"});
-var APP_VERSION="10.4.12";
+Object.assign(I18N_EN,{"k2910":"Talk without holding the button","k2911":"Hands-free mode","k2912":"Mic is open; tap again to stop","k2913":"Walkie-talkie is on","k2915":"View calendar","k2916":"Top 3 for today","k2917":"Today's habits","k2918":"Alarms","k2920":"Custom widget","k2921":"Widget title","k2922":"Widget text","k2923":"Add custom widget","k2924":"Write a widget title","k2926":"Mic is open; talk without holding the button","k2927":"Mic closed","k2928":"Build your own widget; it stays on Home with your title and text and syncs with the server","k2929":"Custom widget added","k2932":"Connected","k2933":"Tap to talk","k2934":"Hands-free is on — mic is open","k2935":"My Today screen (test)","k2936":"Default landing (test)","k2937":"Walkie-talkie global + hands-free (test)","k2938":"Top bar (test)","k2939":"Home default layout + customization (test)","k2940":"Alarm picker — Jalali + clock (test)","k2941":"Home layout server sync (test)","k2942":"Walkie-talkie widget (test)","k2943":"Key expiry (test)","k2944":"Delete revoked-key history (test)","k2945":"Owner-panel widgets (test)","k2946":"Unlimited","k2947":"Today is the last day","k2949":"Delete revoked-key history","k2950":"Delete the history of revoked and expired keys? This cannot be undone.","k2951":"Deleting the key history failed","k2952":"Revoked-key history deleted","k2954":"Quick access","k2955":"Owner login + recovery (test)","k2956":"At least 6 characters","k2957":"The owner password must be at least 6 characters","k2958":"The owner password changed only on this device; the server was NOT updated. If login with the new password fails, log in with the previous password; then run the complete server SQL and try recovery again when online.","k2959":"Updated at","k2960":"Widgets — server connection (test)","k2961":"Widgets — 180-second refresh (test)","k2962":"Press back again to exit","k2963":"Groups","k2964":"My points","k2965":"Offline — last data","k2966":"Widgets have not updated from the server yet","k2967":"Top group","k2968":"Server error — showing last data"});
+var APP_VERSION="10.4.13";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -4882,7 +4950,7 @@ function groupMapRefreshMarkers(){
    ever reaches this view (the RPC itself returns only aggregates). */
 function renderTopGroups(v){
   var h=vhead(TR('k2528','گروه‌های برتر هفته'),TR('k2529','۷ روز گذشته')+" — "+TR('k2613','برترین گروه‌ها بر اساس امتیاز هفته')+".",'<button class="btn ghost sm" onclick="loadTopGroups(true)">'+TR('k2539','به‌روزرسانی')+'</button>');
-  h+='<div id="topGroupsBox"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div>';
+  h+='<div id="topGroupsBox"><div class="card"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div></div>';
   h+='<p class="small" style="margin-top:10px">'+TR('k2614','فقط اطلاعات کلی گروه‌ها نمایش داده می‌شود؛ نام یا اطلاعات هیچ عضوی اینجا نیست')+'.</p>';
   v.innerHTML=h;
   loadTopGroups(false);
@@ -4922,13 +4990,15 @@ function paintTopGroups(rows){
   /* v10.4.12 (option B): points earned before this version have no group,
      so the first week after installing it every group is still at 0 —
      that is the honest empty state, not a broken board. */
-  if(!rows.length || rows.every(function(r){ return +r.weekly_points === 0; })){ box.innerHTML='<div class="empty">'+TR('k2600','هنوز گروهی در این هفته امتیاز نگرفته است')+'.</div>'; return; }
+  if(!rows.length || rows.every(function(r){ return +r.weekly_points === 0; })){ box.innerHTML='<div class="card"><div class="empty">'+TR('k2600','هنوز گروهی در این هفته امتیاز نگرفته است')+'.</div></div>'; return; }
   var medals=["🥇","🥈","🥉"];
+  /* v10.4.13 — every section is widget-organized: each ranked group is a
+     framed widget card (2px border, all themes), not a bare list row. */
   box.innerHTML=rows.map(function(r,i){
-    return '<div class="listrow"><div class="grow"><b>'+(medals[i]||fa(i+1)+" — ")+esc(r.group_name||"—")+'</b>'
+    return '<div class="card" style="margin-bottom:10px"><div class="listrow"><div class="grow"><b>'+(medals[i]||fa(i+1)+" — ")+esc(r.group_name||"—")+'</b>'
       +'<div class="small">'+fa(r.weekly_points||0)+' '+TR('k2533','امتیاز این هفته')+' · '+fa(r.member_count||0)+' '+TR('k2534','عضو')+'</div>'
       +'<div class="small">'+fa(r.tasks_done_week||0)+' '+TR('k2535','کار انجام‌شده این هفته')+' · '+fa(r.focus_min_week||0)+' '+TR('k2536','دقیقه تمرکز این هفته')+' · '+fa(r.messages_week||0)+' '+TR('k2537','پیام این هفته')+'</div></div>'
-      +'<span class="pill gold">'+fa(r.weekly_points||0)+'</span></div>';
+      +'<span class="pill gold">'+fa(r.weekly_points||0)+'</span></div></div>';
   }).join("");
 }
 function renderGroupMap(v){
@@ -5056,10 +5126,22 @@ function inviteUserToGroup(username, groupId){
 
 function renderHome(v){
   var layout=homeLayout();
-  var h=vhead(TR('k0256','خانه'),TR('k1339','خانه شما') + " — " + TR('k1338','بخش‌هایی که بیشتر استفاده می‌کنید، اینجا جمع‌اند؛ با «شخصی‌سازی خانه» چیدمان را عوض کنید') + ".",'<button class="btn" onclick="homeToggleEdit()">'+(homeEdit?TR('k1341','پایان شخصی‌سازی'):TR('k1340','شخصی‌سازی خانه'))+'</button>');
-  h+='<div class="rowflex home-walkie-row"><div class="card home-walkie" onclick="go(\'walkie\')" role="button" tabindex="0"><span style="font-size:24px">🎙️</span><span class="grow" style="text-align:start"><b>'+TR('k2001','واکی‌تاکی')+'</b><span class="small" id="homeWalkieStatus" style="display:block">'+WT.homeStatus()+'</span></span><span class="pill'+(WT.joined?' gold':'')+'">'+(WT.joined?TR('k2932','متصل'):TR('k2933','برای صحبت بزنید'))+'</span></div></div>';
-  h+='<div class="homebrand"><img data-logo class="glogo glogo-home" alt="GhostOps" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><div><b>GhostOps</b><span>' + TR('k9000','دفتر برنامه‌ریزی دیجیتال') + '</span></div></div>';
-  h+='<div class="grid g2">';
+  /* v10.4.13 — Home rebuilt to match Parsa's sketch 1 EXACTLY (2026-11-11:
+     the v10.4.12 Home «عملا هیچ شباهتی» to the sketch — it was a vertical
+     stack). The sketch: top bar; rectangular WALKIE-TALKIE widget
+     TOP-LEFT; «امروز من» + «کارها» SIDE BY SIDE; «جدول هفتگی» FULL-WIDTH;
+     «تقویم» + «یادداشت‌ها» SIDE BY SIDE at the bottom. So: a header row
+     (title right, walkie rectangle left), a server status strip, and a
+     dedicated .home-grid (2 columns at ALL widths — NOT .g2, so the 560px
+     media query can never collapse it; direction:ltr so DOM order maps
+     left-to-right exactly like the sketch). NO GhostOps brand card, NO
+     descriptive paragraph, NO big «شخصی‌سازی خانه» button on Home —
+     customization lives in the hamburger menu (homeCustomizeFromDrawer).
+     The default layout is the sketch grid; customization (edit mode,
+     drawer toggles, custom widgets) and server sync still work. */
+  var h='<div class="home-head"><h2>'+esc(TR('k0256','خانه'))+'</h2><div class="card home-walkie" onclick="go(\'walkie\')" role="button" tabindex="0"><span style="font-size:24px">🎙️</span><span class="grow" style="text-align:start"><b>'+TR('k2001','واکی‌تاکی')+'</b><span class="small" id="homeWalkieStatus" style="display:block">'+WT.homeStatus()+'</span></span><span class="pill'+(WT.joined?' gold':'')+'">'+(WT.joined?TR('k2932','متصل'):TR('k2933','برای صحبت بزنید'))+'</span></div></div>';
+  h+='<div class="small widget-bar" id="widgetServerBar">'+widgetServerBarInner()+'</div>';
+  h+='<div class="home-grid">';
   layout.forEach(function(id){
     var w=HOME_WIDGETS[id]||customWidgetDef(id); if(!w) return;
     var isCw=id.indexOf("cw-")===0;
@@ -5075,6 +5157,7 @@ function renderHome(v){
   });
   h+='</div>';
   if(homeEdit){
+    h+='<div class="rowflex" style="margin-bottom:10px"><button class="btn sm" onclick="homeToggleEdit()">'+TR('k1341','پایان شخصی‌سازی')+'</button></div>';
     var avail=Object.keys(HOME_WIDGETS).filter(function(id){ return layout.indexOf(id)===-1 && (id!=="ownerpanel"||ownerMode) && (id!=="adminpanel"||adminMode||!S.account); });
     h+='<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("edit")+'</span>' + TR('k1348','افزودن بخش به خانه') + '</h3><p class="small">' + TR('k1349','روی هر بخش بزنید تا به خانه اضافه شود؛ ترتیب را با نگه‌داشتن دستگیره (') + '⠿' + TR('k1347',') و کشیدن') + ' — ' + TR('k1351','یا با دکمه‌های') + ' ↑ و ↓ — ' + TR('k1350','عوض کنید') + '.</p><div class="rowflex" style="flex-wrap:wrap;margin-top:10px">'
     +(avail.length?avail.map(function(id){ return '<button class="btn ghost sm" onclick="homeAdd(\''+id+'\')"><span class="vh-ic">'+icSvg(id)+'</span>'+esc(HOME_WIDGETS[id].t)+'</button>'; }).join(""):'<span class="small">' + TR('k1352','همه بخش‌ها همین حالا در خانه‌اند') + '.</span>')
@@ -5082,6 +5165,61 @@ function renderHome(v){
     +'<div style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px"><h3 style="margin-bottom:8px"><span class="vh-ic">'+icSvg("edit")+'</span>' + TR('k2920','ویجت سفارشی') + '</h3><p class="small">' + TR('k2928','ویجت خودتان را بسازید؛ با عنوان و متن دلخواه در خانه می‌ماند و با سرور همگام می‌شود') + '.</p><div class="field" style="margin-top:8px"><label>' + TR('k2921','عنوان ویجت') + '</label><input class="inp" id="cwTitle" placeholder="' + TR('k2921','عنوان ویجت') + '"></div><div class="field"><label>' + TR('k2922','متن ویجت') + '</label><input class="inp" id="cwText" placeholder="' + TR('k2922','متن ویجت') + '"></div><button class="btn sm" onclick="homeAddCustom()">' + TR('k2923','افزودن ویجت سفارشی') + '</button></div></div>';
   }
   v.innerHTML=h;
+}
+
+/* ================= ویجت‌ها — اتصال به سرور + تازه‌سازی ۱۸۰ ثانیه‌ای =================
+   v10.4.13 (Parsa 2026-11-11: «ویجت ها به سرور وصل نیستن که آپدیت بشن هر
+   ۱۸۰ ثانیه» + «کد های اتصال به سرور برای وجیت ها ... وجود نداشت»): every
+   180 seconds the Home widgets fetch fresh data from the server
+   (widget_home_data RPC: server time, my groups + my points, top groups
+   of the week, owner stats when the owner is signed in) and re-render in
+   place. Offline the last server data is kept and the widgets keep
+   working from local data. No toast spam — only the small status strip
+   under the Home header changes. Personal data (tasks, notes, calendar,
+   week blocks) lives on the device and is re-rendered from local state on
+   every refresh; the SERVER data (groups, points, top groups, owner
+   stats, server time) comes from the RPC. */
+var WIDGET_REFRESH_MS=180000;
+var WIDGET_TIMER=null;
+var WIDGET_LAST_ERR=false;
+function widgetServerBarInner(){
+  var ws=S.widgetServer||null;
+  if(!ws) return '<span>'+TR('k2966','ویجت‌ها هنوز از سرور به‌روز نشده‌اند')+'</span>';
+  var t=S.widgetUpdatedAt?fa(new Date(S.widgetUpdatedAt).toLocaleTimeString("fa-IR",{hour:"2-digit",minute:"2-digit"})):"—";
+  var top=(ws.top_groups&&ws.top_groups[0])?esc(ws.top_groups[0].group_name||"—"):"—";
+  var s='<span>✓ '+TR('k2959','به‌روزرسانی شد')+' '+t+' · '+TR('k2963','گروه‌ها')+': '+fa(ws.my_groups?ws.my_groups.length:0)+' · '+TR('k2964','امتیاز من')+': '+fa(ws.my_points||0)+' · '+TR('k2967','برترین گروه')+': '+top+'</span>';
+  if(WIDGET_LAST_ERR) s+=' <span>· '+TR('k2968','خطای سرور — آخرین داده نمایش داده می‌شود')+'</span>';
+  else if(!SB.serverOk) s+=' <span>· '+TR('k2965','آفلاین — آخرین داده')+'</span>';
+  return s;
+}
+function widget_refresh(force){
+  if(!SB.client){ widgetPaintBar(); return Promise.resolve(false); }
+  var sigP=(ownerMode?ownerSig():Promise.resolve(null));
+  return sigP.then(function(sig){
+    return sbRpc("widget_home_data",{p_sig:sig});
+  }).then(function(res){
+    var d=res.data; if(Array.isArray(d)) d=d[0];
+    if(res.error||!d||d.ok!==true){ WIDGET_LAST_ERR=true; widgetPaintBar(); return false; }
+    WIDGET_LAST_ERR=false;
+    S.widgetServer=d; S.widgetUpdatedAt=Date.now(); save();
+    widgetPaintBar(); widgetRepaintBodies();
+    try{ if(typeof WT!=="undefined"&&WT.paintHomeWalkie) WT.paintHomeWalkie(); }catch(e){}
+    return true;
+  }).catch(function(){ WIDGET_LAST_ERR=true; widgetPaintBar(); return false; });
+}
+function widgetPaintBar(){ var el=$("widgetServerBar"); if(el){ try{ el.innerHTML=widgetServerBarInner(); }catch(e){} } }
+function widgetRepaintBodies(){
+  if(curView!=="home") return;
+  document.querySelectorAll("#mainEl .home-w").forEach(function(card){
+    var id=card.getAttribute("data-hw"); if(!id) return;
+    var b=card.querySelector(".hw-body"); if(!b) return;
+    try{ b.innerHTML=homeWidgetBody(id); }catch(e){}
+  });
+}
+function startWidgetRefresh(){
+  if(WIDGET_TIMER) return;
+  WIDGET_TIMER=setInterval(function(){ try{ widget_refresh(false); }catch(e){} }, WIDGET_REFRESH_MS);
+  setTimeout(function(){ try{ widget_refresh(false); }catch(e){} }, 1500);
 }
 
 /* ================= نمای امروز =================
@@ -5092,9 +5230,9 @@ function renderHome(v){
    right side a LARGE box with the big progress ring; bottom a WIDE box
    that IS the same calendar widget (clarified 2026-11-11 10:39): it shows
    today's current Jalali date and tapping it opens the calendar.
-   HELD (not guessed): the exact meaning of the word «Link» written on the
-   bottom box in the sketch — the box opens the calendar, nothing else
-   was invented for it. */
+   v10.4.13 (Parsa 2026-11-11 11:45): the word «Link» written on the
+   bottom box in the sketch is MEANINGLESS — the box is ONLY the calendar
+   widget, nothing else. */
 function renderToday(v){
   var td=todayIdx(), todays=S.tasks.filter(function(t){return t.day===td;});
   var done=todays.filter(function(t){return t.done;}).length;
@@ -5193,7 +5331,7 @@ function openOwnerModal(){
   }else{
     openModal('<div class="ow-head"><div class="ow-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><circle cx="12" cy="10" r="2.6"/><path d="M12 12.6V16"/></svg></div><div><h3>' + TR('k1398','ساختن پروفایل مالک') + '</h3><div class="small">' + TR('k1389','پنل اختصاصی مالک برنامه') + ' — ' + TR('k1397','راه‌اندازی بار اول') + '</div></div></div><p class="small">' + TR('k1395','برای اولین بار نام کاربری و رمز مالک برنامه را بسازید. از این به بعد «پنل مالک»') + ' — ' + TR('k1396','ثبت افراد، افزودن مشاور، مدیریت دسترسی‌ها و فروش اشتراک') + ' — ' + TR('k1399','فقط با همین نام کاربری و رمز باز می‌شود. این پروفایل فقط روی همین دستگاه می‌ماند و در فایل پشتیبان هم نمی‌رود') + '.</p>'
     +'<div class="field"><label>' + TR('k1390','نام کاربری مالک') + '</label><input class="inp" id="owNewUser" value="owner" disabled placeholder="owner"></div>'
-    +'<div class="field"><label>' + TR('k1391','رمز مالک') + '</label><input class="inp" id="owNew" type="password" placeholder="' + TR('k0066','دست‌کم ۴ نویسه') + '"></div>'
+    +'<div class="field"><label>' + TR('k1391','رمز مالک') + '</label><input class="inp" id="owNew" type="password" placeholder="' + TR('k2956','دست‌کم ۶ نویسه') + '"></div>'
     +'<div class="field"><label>' + TR('k1401','تکرار رمز مالک') + '</label><input class="inp" id="owRep" type="password"></div>'
     +'<div class="field"><label>' + TR('k1402','سؤال امنیتی مالک') + '</label><select class="inp" id="owSecQ"><option>' + TR('k1372','نام اولین مدرسه شما چیست') + '؟</option><option>' + TR('k0080','نام شهر تولدتان') + '؟</option><option>' + TR('k0079','نام حیوان خانگی‌تان') + '؟</option></select></div>'
     +'<div class="field"><label>' + TR('k0082','پاسخ سؤال امنیتی') + '</label><input class="inp" id="owSecA" placeholder="' + TR('k0081','پاسخ را اینجا بنویسید') + '"></div>'
@@ -5215,24 +5353,41 @@ function ownerEnter(){
    owner_reset_password / owner_get_state are SECURITY DEFINER RPCs; hashing
    happens server-side, so the app sends plaintext over TLS and never stores
    it. Every call fails soft offline or before the new SQL runs. */
-function ownerServerSetProfile(user,pass,question,answer,curPass){
+function ownerServerSetProfile(user,pass,question,answer,curPass,sig){
   if(typeof SB==="undefined"||!SB.client||typeof sbRpc!=="function") return Promise.resolve(false);
-  return sbRpc("owner_set_profile",{p_user:user||null,p_password:pass||null,p_question:question||null,p_answer:answer||null,p_current_password:curPass||null}).then(function(res){
+  return sbRpc("owner_set_profile",{p_user:user||null,p_password:pass||null,p_question:question||null,p_answer:answer||null,p_current_password:curPass||null,p_sig:sig||null}).then(function(res){
     if(res.error){ sbLog("owner_set_profile: "+res.error.message); return false; }
     return true;
   }).catch(function(){ return false; });
+}
+/* v10.4.13 — same call, but returns the parsed server result so callers
+   can tell ok / bad_current / rpc-failure apart (owner_set_profile
+   returns {"ok":false,"error":"bad_current"} when a row exists and the
+   current password does not verify). */
+/* v10.4.13 — sig: optional owner signature; when the server profile
+   exists and the caller no longer has the plaintext current password
+   (e.g. after a security-question recovery), a valid owner signature
+   is accepted by owner_set_profile instead of the current password. */
+function ownerServerSetProfileFull(user,pass,question,answer,curPass,sig){
+  if(typeof SB==="undefined"||!SB.client||typeof sbRpc!=="function") return Promise.resolve({ok:false,error:'offline'});
+  return sbRpc("owner_set_profile",{p_user:user||null,p_password:pass||null,p_question:question||null,p_answer:answer||null,p_current_password:curPass||null,p_sig:sig||null}).then(function(res){
+    if(res.error){ sbLog("owner_set_profile: "+res.error.message); return {ok:false,error:'rpc'}; }
+    var d=res.data; if(Array.isArray(d)) d=d[0];
+    if(d&&d.ok===true) return {ok:true};
+    return {ok:false,error:(d&&d.error)||'failed'};
+  }).catch(function(){ return {ok:false,error:'rpc'}; });
 }
 async function doOwnerSetup(){
   var u=($("owNewUser")?$("owNewUser").value:"owner").trim();
   if(u.length<3){ toast(TR('k1406','نام کاربری مالک باید دست‌کم ۳ نویسه باشد') + "."); return; }
   if(!isLatinUsername(u)){ toast(TR('k2420','نام کاربری باید فقط با حروف و عددهای انگلیسی باشد (بدون فاصله و بدون حروف فارسی)')+"."); return; }
   var p=$("owNew").value;
-  if(p.length<4){ toast(TR('k1407','رمز مالک باید دست‌کم ۴ نویسه باشد') + "."); return; }
+  if(p.length<6){ toast(TR('k2957','رمز مالک باید دست‌کم ۶ نویسه باشد') + "."); return; }
   if(p!==$("owRep").value){ toast(TR('k1408','دو بار رمز مالک مثل هم نیست') + "."); return; }
   var sa=$("owSecA").value.trim();
   if(!sa){ toast(TR('k1409','پاسخ سؤال امنیتی مالک را بنویسید تا بازیابی رمز ممکن باشد') + "."); return; }
   if(!S.owner) S.owner={passHash:"",user:"",secQ:"",secHash:""};
-  S.owner.user=u; S.owner.passHash=await hashNew("owner:"+p); S.ownerSecret=await sha256hex("ghostops-owner-secret:"+p);
+  S.owner.user=u; S.owner.passHash=await hashNew("owner:"+p); S.ownerSecret=await sha256hex("ghostops-owner-secret:"+S.owner.passHash);
   S.owner.secQ=$("owSecQ").value; S.owner.secHash=await hashNew(sa.toLowerCase());
   save();
   if(typeof SB!=="undefined"&&SB.client){ ownerServerSetProfile(u,p,S.owner.secQ,sa,null).then(function(ok){ if(!ok) toast(TR('k9030','پروفایل مالک روی سرور ذخیره نشد؛ فقط روی همین دستگاه ماند')+"."); }); }
@@ -5243,24 +5398,63 @@ async function doOwnerLogin(){
   var pw=$("owPass").value;
   var want=((S.owner&&S.owner.user)||"owner").toLowerCase();
   if(u!==want&&!isLatinUsername(u)){ toast(TR('k2420','نام کاربری باید فقط با حروف و عددهای انگلیسی باشد (بدون فاصله و بدون حروف فارسی)')+"."); return; }
+  var serverTried=false;
   if(typeof SB!=="undefined"&&SB.client&&typeof sbRpc==="function"){
     try{
       var res=await sbRpc("owner_verify_password",{p_password:pw});
+      serverTried=true;
       var d=res.data; if(Array.isArray(d)) d=d[0];
       if(!res.error&&d&&d.ok){
         var serverUser=String(d.user||"").toLowerCase();
         if(serverUser&&serverUser!==u){ toast(TR('k1410','نام کاربری یا رمز مالک درست نیست') + "."); return; }
         if(S.owner&&d.user) S.owner.user=d.user;
-        try{ if(S.owner) S.owner.passHash=await hashNew("owner:"+pw); save(); }catch(e){}
-        try{ S.ownerSecret=await sha256hex("ghostops-owner-secret:"+pw); save(); }catch(e){}
+        try{ if(S.owner) S.owner.passHash=await hashNew("owner:"+pw); S.ownerSecret=await sha256hex("ghostops-owner-secret:"+S.owner.passHash); save();
+          /* v10.4.13 — heal the server secret: a poisoned/missing server
+             secret (v10.4.12 derived it from the plaintext password)
+             breaks every later owner-signature call. reset_owner_secret
+             verifies the password we JUST proved and stores the
+             canonical secret. Best-effort; a missing RPC is ignored. */
+          try{ await sbRpc("reset_owner_secret",{p_password:pw,p_new_secret:S.ownerSecret}); }catch(_e){} }catch(e){}
         ownerEnter(); return;
       }
-      if(!res.error){ toast(TR('k1410','نام کاربری یا رمز مالک درست نیست') + "."); return; }
+      /* v10.4.13 — the server distinguishes the failure (reason codes):
+         an EXPLICIT bad_password rejection is final (the server is the
+         source of truth; no local bypass). A missing server profile
+         (reason no_profile), an old SQL without a reason field, or an
+         unreachable/missing RPC is NOT a rejection — fall through to the
+         local password check below. */
+      if(!res.error&&d&&d.reason==="bad_password"){ toast(TR('k1410','نام کاربری یا رمز مالک درست نیست') + "."); return; }
     }catch(e){}
   }
-  /* v10.4.11 — NO local fallback for owner PANEL entry (Parsa 22:13):
-     owner commands run on the server. Server verify or fail with a
-     server error. The local diary lock (tryLogin) is untouched. */
+  /* v10.4.13 — local fallback (no profile / RPC missing / unreachable /
+     old SQL): if the locally stored owner password matches, log in AND
+     try to seed/sync the server profile so the server gets fixed
+     (owner_set_profile INSERTs when no row exists). */
+  if(S.owner&&S.owner.passHash&&await verifyHash("owner:"+pw,S.owner.passHash)){
+    if(u!==want){ toast(TR('k1410','نام کاربری یا رمز مالک درست نیست') + "."); return; }
+    /* v10.4.13 — re-derive the canonical secret from the verified
+       passHash (a stale plaintext-derived value from v10.4.12 must
+       never be sent to the server). */
+    try{ S.ownerSecret=await sha256hex("ghostops-owner-secret:"+S.owner.passHash); save(); }catch(e){}
+    if(typeof SB!=="undefined"&&SB.client){
+      /* v10.4.13 — LIVE STATE (2026-11-11 11:58): the server has NO
+         owner_profile row at all, so NO password works there. Seed it
+         from the local device profile now: owner_set_profile INSERTs
+         when no row exists. Then establish the server secret too
+         (reset_owner_secret verifies the password we JUST proved and
+         stores the canonical secret; it even creates the profile
+         itself if owner_set_profile is missing) so the owner signature
+         verifies for a later security-question recovery. Both
+         best-effort: the login itself already succeeded locally. */
+      try{ var rr=await ownerServerSetProfileFull(u,pw,(S.owner.secQ||null),null,null);
+        if(!rr.ok) sbLog("owner login: server profile seed failed ("+rr.error+")");
+        try{ var rs=await sbRpc("reset_owner_secret",{p_password:pw,p_new_secret:S.ownerSecret});
+          var rsd=rs&&rs.data; if(Array.isArray(rsd)) rsd=rsd[0];
+          if(!rs||rs.error||!rsd||rsd.ok!==true) sbLog("owner login: server secret seed failed"); }catch(_e){} }catch(e){}
+    }
+    ownerEnter(); return;
+  }
+  if(serverTried){ toast(TR('k1410','نام کاربری یا رمز مالک درست نیست') + "."); return; }
   toast(TR('k2848','ورود مالک فقط با تأیید سرور ممکن است؛ اینترنت را بررسی کنید و دوباره تلاش کنید') + ".");
 }
 
@@ -5268,16 +5462,16 @@ function ownerLogout(){ ownerMode=false; syncOwnerUI(); if(curView==="ownerpanel
 function openOwnerPass(){
   openModal('<h3 style="margin-bottom:12px">' + TR('k1412','تغییر رمز مالک') + '</h3>'
   +'<div class="field"><label>' + TR('k1413','رمز مالک فعلی') + '</label><input class="inp" id="owpCur" type="password"></div>'
-  +'<div class="field"><label>' + TR('k1414','رمز مالک تازه') + '</label><input class="inp" id="owpNew" type="password" placeholder="' + TR('k0066','دست‌کم ۴ نویسه') + '"></div>'
+  +'<div class="field"><label>' + TR('k1414','رمز مالک تازه') + '</label><input class="inp" id="owpNew" type="password" placeholder="' + TR('k2956','دست‌کم ۶ نویسه') + '"></div>'
   +'<div class="rowflex"><button class="btn grow" style="justify-content:center" onclick="doOwnerPass()">' + TR('k1261','ثبت رمز تازه') + '</button><button class="btn ghost" onclick="closeModal()">' + TR('k0338','انصراف') + '</button></div>');
 }
 async function doOwnerPass(){
   var cur=$("owpCur").value;
   if(!S.owner || !await verifyHash("owner:"+cur,S.owner.passHash)){ toast(TR('k1415','رمز مالک فعلی درست نیست') + "."); return; }
-  var np=$("owpNew").value; if(np.length<4){ toast(TR('k0252','رمز تازه باید دست‌کم ۴ نویسه باشد') + "."); return; }
+  var np=$("owpNew").value; if(np.length<6){ toast(TR('k2957','رمز مالک باید دست‌کم ۶ نویسه باشد') + "."); return; }
   if(!isLatinPassword(np)){ toast(TR('k2421','رمز باید فقط با نویسه‌های انگلیسی باشد (بدون حروف فارسی)')+"."); return; }
   var oldSig=null; try{ oldSig=await ownerSig(); }catch(e){}
-  S.owner.passHash=await hashNew("owner:"+np); S.ownerSecret=await sha256hex("ghostops-owner-secret:"+np); save();
+  S.owner.passHash=await hashNew("owner:"+np); S.ownerSecret=await sha256hex("ghostops-owner-secret:"+S.owner.passHash); save();
   if(typeof SB!=="undefined"&&SB.client){
     try{
       var newSec=S.ownerSecret;
@@ -5295,7 +5489,7 @@ function openOwnerRecover(){
   openModal('<h3 style="margin-bottom:12px">' + TR('k1418','بازیابی رمز مالک') + '</h3><p class="small">' + TR('k1419','به سؤال امنیتی مالک پاسخ بدهید و رمز تازه بسازید') + ' — ' + TR('k0062','بدون ایمیل و بدون اینترنت') + '.</p>'
   +'<div class="field"><label>' + TR('k1390','نام کاربری مالک') + '</label><input class="inp" id="owrUser" value="'+esc((S.owner&&S.owner.user)||"owner")+'"></div>'
   +'<div class="field"><label>'+esc(disp((window._owServerQ||(S.owner&&S.owner.secQ))||"")||TR('k0064','سؤال امنیتی'))+'</label><input class="inp" id="owrAns" placeholder="' + TR('k0065','پاسخ شما') + '"></div>'
-  +'<div class="field"><label>' + TR('k1414','رمز مالک تازه') + '</label><input class="inp" id="owrNew" type="password" placeholder="' + TR('k0066','دست‌کم ۴ نویسه') + '"></div>'
+  +'<div class="field"><label>' + TR('k1414','رمز مالک تازه') + '</label><input class="inp" id="owrNew" type="password" placeholder="' + TR('k2956','دست‌کم ۶ نویسه') + '"></div>'
   +'<div class="rowflex"><button class="btn grow" style="justify-content:center" onclick="doOwnerRecover()">' + TR('k0782','ساختن رمز تازه') + '</button><button class="btn ghost" onclick="closeModal()">' + TR('k0338','انصراف') + '</button></div>');
 }
 async function doOwnerRecover(){
@@ -5304,23 +5498,58 @@ async function doOwnerRecover(){
   if(u!==want){ toast(TR('k1420','نام کاربری مالک درست نیست') + "."); return; }
   if(u!==want&&!isLatinUsername(u)){ toast(TR('k2420','نام کاربری باید فقط با حروف و عددهای انگلیسی باشد (بدون فاصله و بدون حروف فارسی)')+"."); return; }
   var ans=($("owrAns").value||"").trim();
-  var np=$("owrNew").value; if(np.length<4){ toast(TR('k0252','رمز تازه باید دست‌کم ۴ نویسه باشد') + "."); return; }
+  /* v10.4.13 — the server requires 6+ chars (owner_reset_password); the
+     app now requires 6+ too, so a password that works locally also works
+     on the server (4–5 chars used to "succeed" locally and then fail
+     every server-only login). */
+  var np=$("owrNew").value; if(np.length<6){ toast(TR('k2957','رمز مالک باید دست‌کم ۶ نویسه باشد') + "."); return; }
   if(!isLatinPassword(np)){ toast(TR('k2421','رمز باید فقط با نویسه‌های انگلیسی باشد (بدون حروف فارسی)')+"."); return; }
   if(typeof SB!=="undefined"&&SB.client&&typeof sbRpc==="function"){
     try{
       var res=await sbRpc("owner_reset_password",{p_answer:ans,p_new_password:np});
       var d=res.data; if(Array.isArray(d)) d=d[0];
-      if(!res.error&&!(d&&d.ok===false)){
-        if(S.owner){ try{ var oldSig=null; try{ oldSig=await ownerSig(); }catch(_e){} S.owner.passHash=await hashNew("owner:"+np); S.ownerSecret=await sha256hex("ghostops-owner-secret:"+np); save(); try{ if(oldSig){ var rr=await sbRpc("rotate_owner_secret",{p_old_sig:oldSig,p_new_secret:S.ownerSecret}); if(!rr||rr.error||rr.data===false){ await sbRpc("set_owner_secret",{p_secret:S.ownerSecret}); } } }catch(_e){} }catch(e){} }
+      if(!res.error&&d&&d.ok){
+        /* Server password updated — update locally with the SAME secret
+           derivation (from the new passHash, never from plaintext). */
+        var newHash=await hashNew("owner:"+np);
+        var newSec=await sha256hex("ghostops-owner-secret:"+newHash);
+        if(S.owner){ try{ var oldSig=null; try{ oldSig=await ownerSig(); }catch(_e){} S.owner.passHash=newHash; S.ownerSecret=newSec; save(); try{ if(oldSig){ var rr=await sbRpc("rotate_owner_secret",{p_old_sig:oldSig,p_new_secret:newSec}); if(!rr||rr.error||rr.data===false){ await sbRpc("reset_owner_secret",{p_password:np,p_new_secret:newSec}); } } }catch(_e){} }catch(e){} }
         closeModal(); toast(TR('k1421','رمز مالک تازه ساخته شد؛ حالا با نام کاربری و رمز تازه وارد شوید') + "."); openOwnerModal(); return;
       }
     }catch(e){}
   }
+  /* Local fallback (server reset failed: no profile / wrong server answer /
+     RPC missing / unreachable). The LOCAL security answer decides. */
   if(!S.owner || !await verifyHash(ans.toLowerCase(),S.owner.secHash)){ toast(TR('k0251','پاسخ سؤال امنیتی درست نیست') + "."); return; }
   var oldSig2=null; try{ oldSig2=await ownerSig(); }catch(e){}
-  S.owner.passHash=await hashNew("owner:"+np); S.ownerSecret=await sha256hex("ghostops-owner-secret:"+np); save();
-  if(typeof SB!=="undefined"&&SB.client){ try{ if(oldSig2){ var rr=await sbRpc("rotate_owner_secret",{p_old_sig:oldSig2,p_new_secret:S.ownerSecret}); if(!rr||rr.error||rr.data===false){ await sbRpc("set_owner_secret",{p_secret:S.ownerSecret}); } } }catch(e){} }
-  closeModal(); toast(TR('k1421','رمز مالک تازه ساخته شد؛ حالا با نام کاربری و رمز تازه وارد شوید') + "."); openOwnerModal();
+  var newHash2=await hashNew("owner:"+np);
+  var newSec2=await sha256hex("ghostops-owner-secret:"+newHash2);
+  S.owner.passHash=newHash2; S.ownerSecret=newSec2; save();
+  /* v10.4.13 — NEVER show success while the server password was not
+     updated: sync the new password to the server (owner_set_profile
+     INSERTs when no row exists). Only a confirmed server update earns
+     the success toast; otherwise show a CLEAR warning instead. */
+  var synced=false;
+  if(typeof SB!=="undefined"&&SB.client){
+    try{
+      /* v10.4.13 — pass the OLD owner signature too: when the server
+         profile already exists (e.g. seeded by a login, with no
+         security-answer hash), owner_set_profile cannot verify a
+         current password the app no longer has — but a valid owner
+         signature proves the same ownership, so the server accepts it
+         instead and updates password + answer together. */
+      var sr=await ownerServerSetProfileFull(u,np,(S.owner.secQ||null),ans,null,oldSig2);
+      if(sr.ok){ synced=true; } else { sbLog("owner recover: server profile sync failed ("+sr.error+")"); }
+    }catch(e){ sbLog("owner recover: server profile sync failed (rpc)"); }
+    if(synced&&oldSig2){
+      try{ var rr3=await sbRpc("rotate_owner_secret",{p_old_sig:oldSig2,p_new_secret:newSec2});
+        if(!rr3||rr3.error||rr3.data===false){ await sbRpc("reset_owner_secret",{p_password:np,p_new_secret:newSec2}); } }catch(e){}
+    }
+  }
+  closeModal();
+  if(synced){ toast(TR('k1421','رمز مالک تازه ساخته شد؛ حالا با نام کاربری و رمز تازه وارد شوید') + "."); }
+  else{ toast(TR('k2958','رمز مالک فقط روی همین دستگاه عوض شد؛ روی سرور به‌روز نشد. اگر ورود با رمز تازه ناموفق بود، با رمز پیشین وارد شوید؛ سپس کد کامل سرور را اجرا کنید و آنلاین دوباره بازیابی کنید') + "."); }
+  openOwnerModal();
 }
 /* ویرایش پروفایل مالک — نام کاربری، رمز و سؤال امنیتی */
 function openOwnerProfile(){
@@ -5844,7 +6073,13 @@ function ownerShortcutsHTML(){
     ["💰",TR('k0999','فروش اشتراک و کلید ورود'),"owSecSales"],
     ["💾",TR('k1622','پشتیبان‌گیری و بازیابی'),"owSecBackup"]
   ];
-  return '<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("ownerpanel")+'</span>' + TR('k2954','دسترسی سریع') + '</h3><div class="grid g2 ow-shorts">'
+  /* v10.4.13 — owner-only shortcut widgets (Parsa 2026-11-11): the 8
+     shortcuts are framed widget cards in a dedicated 2-column grid that
+     stays 2-column on phones (NOT .g2 — the 560px media query collapsed
+     it to a single stacked column). They render ONLY when ownerMode is
+     on (renderOwnerPanel shows a locked card otherwise) and owGoSec
+     refuses for non-owners. */
+  return '<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("ownerpanel")+'</span>' + TR('k2954','دسترسی سریع') + '</h3><div class="ow-shorts-grid">'
     + items.map(function(it){ return '<div class="card ow-short" onclick="owGoSec(\''+it[2]+'\')" role="button" tabindex="0"><span style="font-size:24px">'+it[0]+'</span><b>'+esc(it[1])+'</b></div>'; }).join("")
     + '</div></div>';
 }
@@ -6293,10 +6528,14 @@ function renderMyRole(v){
   var role=S.user.role||"", pr=selfPro();
   var kind = S.user.konkur||roleHas(role,'کنکور') ? "konkur" : roleHas(role,'دانشجو') ? "student" : roleHas(role,'ورزشکار') ? "sport" : "work";
   var h=vhead(TR('k0270','ابزار تخصصی نقش من'),TR('k1897','ابزارهای مخصوص نقش شما (')+esc(role||TR('k0195','شخصی'))+") — " + TR('k1898','همه آفلاین و روی همین دستگاه') + ".");
-  if(kind==="konkur") h+=examsHTML("me",pr);
-  else if(kind==="student") h+=coursesHTML("me",pr);
-  else if(kind==="sport") h+=sportHTML("me",pr);
-  else h+=workHTML("me",pr);
+  /* v10.4.13 — every section is widget-organized: the role tools render
+     inside a framed widget card (2px border, all themes). */
+  var _roleHTML="";
+  if(kind==="konkur") _roleHTML=examsHTML("me",pr);
+  else if(kind==="student") _roleHTML=coursesHTML("me",pr);
+  else if(kind==="sport") _roleHTML=sportHTML("me",pr);
+  else _roleHTML=workHTML("me",pr);
+  h+='<div class="card">'+_roleHTML+'</div>';
   v.innerHTML=h;
 }
 
@@ -7168,7 +7407,7 @@ SB.runOnlineFeaturesTest=function(){
         return {st:'ok', detail:"burger, logo, notification, search, night, profile"};
       }],
       [TR('k2939','چیدمان پیش‌فرض خانه + سفارشی‌سازی (تست)'), function(){
-        var want=["today","tasks","week","notes","calendar"];
+        var want=["today","tasks","week","calendar","notes"];
         if(JSON.stringify(HOME_DEFAULTS)!==JSON.stringify(want)) return {st:'fail', detail:"HOME_DEFAULTS="+HOME_DEFAULTS.join(",")};
         var d=document.createElement("div"); renderHome(d);
         var order=[];
@@ -7320,6 +7559,68 @@ SB.runOnlineFeaturesTest=function(){
         ownerMode=savedOwner;
         if(blocked!==false) return {st:'fail', detail:"owGoSec worked for a non-owner"};
         return {st:'ok', detail:"owner sees shortcuts; non-owner sees none"};
+      }],
+      /* v10.4.13 — owner login + recovery round-trip (Parsa 2026-11-11:
+         login failed even after a security-question reset). Non-destructive:
+         the row never changes the real owner password — it checks the
+         server distinguishes the failure modes (no_profile vs bad_password
+         vs bad_answer vs bad_current) and that the app enforces 6+ chars
+         and falls back to local only when the server does NOT explicitly
+         reject. The full round-trip (recovery updates BOTH local and
+         server, changed password logs in) is covered by probe_v10413
+         (mocked server + local PostgreSQL). */
+      [TR('k2955','ورود و بازیابی مالک (تست)'), function(){
+        return sbRpc("owner_get_state",{}).then(function(r0){
+          var s0=r0.data; if(Array.isArray(s0)) s0=s0[0];
+          if(r0.error||!s0||!s0.exists) return {st:'fail', detail:"no server owner profile — log in once as owner (or run the server SQL)"};
+          return sbRpc("owner_verify_password",{p_password:"__wrong__"+ts}).then(function(r1){
+            var d1=r1.data; if(Array.isArray(d1)) d1=d1[0];
+            if(r1.error||!d1||d1.ok!==false) return {st:'fail', detail:"wrong password was NOT rejected by the server"};
+            if(d1.reason!=="bad_password") return {st:'fail', detail:"server did not return reason 'bad_password' (got '"+(d1.reason||"none")+"') — run the complete v10.4.13 SQL"};
+            return sbRpc("owner_reset_password",{p_answer:"__wrong__",p_new_password:"NewPass123"}).then(function(r2){
+              var d2=r2.data; if(Array.isArray(d2)) d2=d2[0];
+              if(r2.error||!d2||d2.ok!==false) return {st:'fail', detail:"wrong security answer was NOT rejected by the server"};
+              if(d2.reason!=="bad_answer") return {st:'fail', detail:"server did not return reason 'bad_answer' (got '"+(d2.reason||"none")+"')"};
+              return sbRpc("owner_set_profile",{p_user:null,p_password:null,p_question:null,p_answer:null,p_current_password:"__wrong__"}).then(function(r3){
+                var d3=r3.data; if(Array.isArray(d3)) d3=d3[0];
+                if(r3.error||!d3||d3.ok!==false) return {st:'fail', detail:"owner_set_profile accepted a wrong current password"};
+                if(d3.error!=="bad_current") return {st:'fail', detail:"server did not return error 'bad_current' (got '"+(d3.error||"none")+"')"};
+                var src=[doOwnerRecover,doOwnerPass,doOwnerSetup].map(function(f){ return (f&&f.toString())||""; });
+                if(src.some(function(t){ return t.indexOf("length<6")===-1; })) return {st:'fail', detail:"owner password minimum is not 6+ everywhere (setup/change/recovery)"};
+                if((doOwnerLogin.toString()||"").indexOf("no_profile")===-1) return {st:'fail', detail:"doOwnerLogin has no no_profile local-fallback path"};
+                return ownerSig().then(function(sig){
+                  return sbRpc("owner_set_profile",{p_user:null,p_password:null,p_question:null,p_answer:null,p_current_password:"__wrong__",p_sig:sig}).then(function(r4){
+                    var d4=r4.data; if(Array.isArray(d4)) d4=d4[0];
+                    if(r4.error||!d4||d4.ok!==true) return {st:'fail', detail:"server did not accept a valid owner signature for owner_set_profile (got '"+((d4&&d4.error)||"rpc error")+"') — run the complete v10.4.13 SQL and log in once as owner (login re-syncs the server secret)"};
+                    return {st:'ok', detail:"profile exists; wrong password -> bad_password; wrong answer -> bad_answer; wrong current -> bad_current; owner signature accepted; 6+ enforced; local fallback present"};
+                  });
+                });
+              });
+            });
+          });
+        });
+      }],
+      [TR('k2960','ویجت‌ها — اتصال به سرور (تست)'), function(){
+        return ownerSig().then(function(sig){
+          return sbRpc("widget_home_data",{p_sig:sig});
+        }).then(function(res){
+          var d=res.data; if(Array.isArray(d)) d=d[0];
+          if(res.error) return {st:'fail', detail:"widget_home_data RPC error: "+(res.error.message||res.error.code||"")+" — run the complete v10.4.13 SQL"};
+          if(!d||d.ok!==true) return {st:'fail', detail:"widget_home_data did not return ok:true"};
+          if(!d.server_now||!Array.isArray(d.top_groups)||typeof d.my_points!=="number"||!Array.isArray(d.my_groups)) return {st:'fail', detail:"widget_home_data shape wrong (need server_now, top_groups[], my_groups[], my_points)"};
+          return {st:'ok', detail:"server_now + top_groups + my_groups + my_points"+(d.owner?" + owner stats":"")};
+        });
+      }],
+      [TR('k2961','ویجت‌ها — تازه‌سازی ۱۸۰ ثانیه‌ای (تست)'), function(){
+        if(typeof WIDGET_REFRESH_MS==="undefined"||WIDGET_REFRESH_MS!==180000) return {st:'fail', detail:"WIDGET_REFRESH_MS is not 180000"};
+        if(!WIDGET_TIMER) return {st:'fail', detail:"widget refresh interval is not running"};
+        if(!SB.serverOk) return {st:'skip', detail:TR('k2571','تست نشد')};
+        var before=S.widgetUpdatedAt||0;
+        return widget_refresh(true).then(function(ok){
+          if(!ok) return {st:'fail', detail:"widget_home_data did not respond"};
+          if(!(S.widgetUpdatedAt>before)) return {st:'fail', detail:"widget refresh did not update the last-updated time"};
+          return {st:'ok', detail:"180s loop running; server data refreshed"};
+        });
       }],
       [TR('k2577','حذف طرح آزمایشی'), function(){
         if(!planCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
@@ -13078,6 +13379,7 @@ SB.syncLocalKeys=function(){
 /* ---------- Boot: start the online layer, permissions overlay, key gate ---------- */
 (function(){
   try{ SB.boot(); }catch(e){ try{ console.log("[online] boot failed",e); }catch(_){} }
+  try{ startWidgetRefresh(); }catch(e){}
   try{ PERM.maybeShow(); }catch(e){}
   try{ hideBootSplash(); }catch(e){}
   try{ applyLang(); }catch(e){}
