@@ -1768,7 +1768,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <select class="inp" id="obSec"><option><span data-i18n="k0078">نام اولین مدرسه‌تان چه بود</span><span class="qm">؟</span></option><option><span data-i18n="k0080">نام شهر تولدتان</span><span class="qm">؟</span></option><option><span data-i18n="k0079">نام حیوان خانگی‌تان</span><span class="qm">؟</span></option></select></div>
       <div class="field"><label for="obSecA" data-i18n="k0082">پاسخ سؤال امنیتی</label><input class="inp" id="obSecA" placeholder="پاسخ را اینجا بنویسید" / data-i18n-ph="k0081"></div>
       <button class="btn grow" style="width:100%;justify-content:center" onclick="obNext(2)" data-i18n="k0083">ادامه</button>
-      <button class="btn ghost" style="width:100%;justify-content:center;margin-top:10px" onclick="openRegistrationModal()" data-i18n="k2981">ثبت نام</button>
+      <button class="btn ghost" style="width:100%;justify-content:center;margin-top:10px" onclick="obRegister()" data-i18n="k2981">ثبت نام</button>
       <p class="small" style="text-align:center;margin-top:6px" data-i18n="k3036">حساب ندارید؟ برای ورود به برنامه ثبت نام کنید؛ درخواست شما همان لحظه برای مالک ارسال می‌شود.</p>
       <p class="small" style="text-align:center;margin-top:12px"><span data-i18n="k0085">حساب دارید</span><span class="qm">؟</span> <a href="#" onclick="toast(TR('k0084','اگر قبلاً روی این دستگاه دفتر ساخته‌اید، صفحه را دوباره باز کنید تا با رمزتان وارد شوید') + '.');return false;" style="color:var(--acc)" data-i18n="k0087">وارد شوید</a> — <span data-i18n="k0086">همه‌چیز آفلاین و روی دستگاه خودتان است</span>.</p>
       <div class="ow-divider" data-i18n="k0053">دسترسی ویژه مالک</div>
@@ -1789,7 +1789,9 @@ svg.leaflet-image-layer.leaflet-interactive path {
       <button class="choice" id="chWork" onclick="obKonkur('work')"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg><span><span data-i18n="k0187">کارمند</span><small data-i18n="k0207">جلسه، پروژه، گزارش و پیگیری</small></span></button>
       <button class="choice" id="chSport" onclick="obKonkur('sport')"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><span><span data-i18n="k0192">ورزشکار</span><small data-i18n="k0206">تمرین، ریکاوری، تغذیه و خواب</small></span></button>
       <button class="choice" id="chPersonal" onclick="obKonkur('personal')"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg><span><span data-i18n="k0195">برنامه شخصی</span><small data-i18n="k0208">کارهای روزمره، خانواده و رشد فردی</small></span></button>
-      <button class="btn ghost" style="width:100%;justify-content:center;margin-top:10px" onclick="openRegistrationModal()" data-i18n="k2981">ثبت نام</button>
+      <button class="choice" id="chSuper" onclick="obKonkur('super')"><svg class="ic" viewBox="0 0 24 24"><path d="M5 16L3 6l5.5 4L12 4l3.5 6L21 6l-2 10H5zm0 2h14v2H5z"/></svg><span><span data-i18n="k3038">ابرکاربر</span><small data-i18n="k3039">دسترسی کامل به برنامه و مدیریت کاربران</small></span></button>
+      <button class="choice" id="chAdvisor" onclick="obKonkur('advisor')"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><span><span data-i18n="k3040">مشاور</span><small data-i18n="k3041">راهنمایی و پیگیری دانش‌آموزها</small></span></button>
+      <button class="btn ghost" style="width:100%;justify-content:center;margin-top:10px" onclick="obRegister()" data-i18n="k2981">ثبت نام</button>
       <p class="small" style="text-align:center;margin-top:6px" data-i18n="k3036">حساب ندارید؟ برای ورود به برنامه ثبت نام کنید؛ درخواست شما همان لحظه برای مالک ارسال می‌شود.</p>
       <div class="ow-divider" data-i18n="k0095">یا از درگاه مالک وارد شوید</div>
       <div class="ownercard">
@@ -2634,17 +2636,22 @@ var GFX={
   }
 };
 /* ================= آنبوردینگ ================= */
-var obIsKonkur=null, obPick=null, obRole=null;
+var obIsKonkur=null, obPick=null, obRole=null, obRegRole=null;
 function obNext(n){
   [1,2,3].forEach(function(i){ $("obp"+i).classList.toggle("active",i===n); $("obs"+i).classList.toggle("on",i<=n); });
 }
 function obKonkur(k){
-  /* Five separate roles (Parsa 2026-11-10): 'konkur' | 'student' | 'work' |
-     'sport' | 'personal'. Booleans still accepted (true=Konkur, false=personal)
-     for old callers such as the language-switch restore in setLang(). */
+  /* Seven roles (Parsa 2026-11-10/11): 'konkur' | 'student' | 'work' |
+     'sport' | 'personal' | 'super' | 'advisor'. Booleans still accepted
+     (true=Konkur, false=personal) for old callers such as the
+     language-switch restore in setLang(). 'super'/'advisor' are system
+     roles (not planner personas); they use the personal template. */
   var role=(k===true)?"konkur":(k===false)?"personal":(typeof k==="string"?k:"personal");
   obRole=role; obIsKonkur=(role==="konkur");
-  ["chKonkur","chStudent","chWork","chSport","chPersonal"].forEach(function(id){ var el=$(id); if(el) el.classList.toggle("sel",id===("ch"+role.charAt(0).toUpperCase()+role.slice(1))); });
+  /* Registration role for the «ثبت نام» button (obRegister): the role the
+     user picked on this screen pre-selects the registration role list. */
+  obRegRole=(role==="super")?"super":(role==="advisor")?"advisor":(role==="konkur")?"konkoori":"member";
+  ["chKonkur","chStudent","chWork","chSport","chPersonal","chSuper","chAdvisor"].forEach(function(id){ var el=$(id); if(el) el.classList.toggle("sel",id===("ch"+role.charAt(0).toUpperCase()+role.slice(1))); });
   var box=$("obChoices"); box.innerHTML=""; obPick=null; $("obFinish").disabled=true;
   if(role==="konkur"){
     $("obp3title").textContent=TR('k0199','رشته کنکورتان چیست') + (LANG==="en"?"?":"؟");
@@ -2659,21 +2666,32 @@ function obKonkur(k){
     /* Step 3 for the four non-Konkur roles: show THIS role's own starter
        track (its ROLE_TASKS list) as one card to confirm. The role was
        already chosen in step 2, so there is nothing else to pick here. */
-    var roleLabel={student:TR('k0180','دانشجو'),work:TR('k0187','کارمند'),sport:TR('k0192','ورزشکار'),personal:TR('k0195','شخصی')}[role]||TR('k0195','شخصی');
+    var roleLabel={student:TR('k0180','دانشجو'),work:TR('k0187','کارمند'),sport:TR('k0192','ورزشکار'),personal:TR('k0195','شخصی'),super:TR('k3038','ابرکاربر'),advisor:TR('k3040','مشاور')}[role]||TR('k0195','شخصی');
     var track=(ROLE_TASKS[roleKey(roleLabel)]||ROLE_TASKS["شخصی"]);
+    /* Super/advisor are system roles: their confirmation card shows what
+       the role does, not a planner task list. */
+    var smallTxt=(role==="super")?TR('k3039','دسترسی کامل به برنامه و مدیریت کاربران'):(role==="advisor")?TR('k3041','راهنمایی و پیگیری دانش‌آموزها'):track.join(LANG==='en'?', ':'، ');
     $("obp3title").textContent=TR('k9023','قالب آماده نقش شما') + " — " + roleLabel;
     $("obp3lead").textContent=TR('k9024','این کارها و دسته‌ها از اول در دفترتان چیده می‌شود؛ بعداً می‌توانید همه‌چیز را عوض کنید') + ".";
     var b=document.createElement("button"); b.className="choice";
-    b.innerHTML='<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><span>'+esc(roleLabel)+'<small>'+esc(track.join(LANG==='en'?', ':'، '))+'</small></span>';
+    b.innerHTML='<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><span>'+esc(roleLabel)+'<small>'+esc(smallTxt)+'</small></span>';
     b.onclick=function(){ obPick=roleLabel; box.querySelectorAll(".choice").forEach(function(c){c.classList.remove("sel");}); b.classList.add("sel"); $("obFinish").disabled=false; };
     box.appendChild(b);
   }
   obNext(3);
 }
+/* Registration from the onboarding panes: opens the registration modal with
+   the role the user picked on the role screen pre-selected (super/advisor/
+   konkoori/member). Defaults to member when nothing is picked yet. */
+function obRegister(){ openRegistrationModal(obRegRole||"member"); }
 function seedData(){
   var name=$("obName").value.trim()||TR('k0210','کاربر گرامی');
   S.user={ name:name, konkur:!!obIsKonkur, field:obIsKonkur?obPick:"", role:obIsKonkur?(TR('k0211','کنکوری') + " — " + TR('k0203','رشته') + " "+obPick):obPick };
-  var tasks = obIsKonkur ? FIELD_SUBJECTS[obPick].slice(0,4).map(function(s){return TR('k0212','مطالعه') + " "+s;}) : (ROLE_TASKS[roleKey(obPick)]||ROLE_TASKS["شخصی"]);
+  /* Super/advisor are system roles, not planner personas: they get the
+     personal template (ROLE_TASKS["شخصی"]). The fallback below already does
+     this, but make it explicit so a future role never breaks seeding. */
+  var isSysRole=(obRole==="super"||obRole==="advisor");
+  var tasks = obIsKonkur ? FIELD_SUBJECTS[obPick].slice(0,4).map(function(s){return TR('k0212','مطالعه') + " "+s;}) : (isSysRole?ROLE_TASKS["شخصی"]:(ROLE_TASKS[roleKey(obPick)]||ROLE_TASKS["شخصی"]));
   tasks.forEach(function(t,i){ S.tasks.push({id:nid(),name:t,done:false,pri:i===0?1:2,day:todayIdx(),cat:obIsKonkur?TR('k0212','مطالعه'):TR('k0214','کار'),col:"todo",est:60,due:TR('k0213','امروز')}); });
   S.tasks.push({id:nid(),name:TR('k0216','سه کار مهم امروز را مشخص کن'),done:false,pri:1,day:todayIdx(),cat:TR('k0215','برنامه‌ریزی'),col:"todo",est:15,due:TR('k0213','امروز')});
   var cats = obIsKonkur?[TR('k0212','مطالعه'),TR('k0217','تست و آزمون'),TR('k0222','مرور')]: (obPick===TR('k0192','ورزشکار')?[TR('k0219','تمرین'),TR('k0221','ریکاوری'),TR('k0218','تغذیه')]:[TR('k0223','کار عمیق'),TR('k0220','جلسه و هماهنگی'),TR('k0224','کارهای سبک')]);
@@ -4780,8 +4798,8 @@ Object.assign(I18N_EN,{"k2900":"Jalali","k2901":"phone clock","k2902":"Alarm tim
 Object.assign(I18N_EN,{"k2910":"Talk without holding the button","k2911":"Hands-free mode","k2912":"Mic is open; tap again to stop","k2913":"Walkie-talkie is on","k2915":"View calendar","k2916":"Top 3 for today","k2917":"Today's habits","k2918":"Alarms","k2920":"Custom widget","k2921":"Widget title","k2922":"Widget text","k2923":"Add custom widget","k2924":"Write a widget title","k2926":"Mic is open; talk without holding the button","k2927":"Mic closed","k2928":"Build your own widget; it stays on Home with your title and text and syncs with the server","k2929":"Custom widget added","k2932":"Connected","k2933":"Tap to talk","k2934":"Hands-free is on — mic is open","k2935":"My Today screen (test)","k2936":"Default landing (test)","k2937":"Walkie-talkie global + hands-free (test)","k2938":"Top bar (test)","k2939":"Home default layout + customization (test)","k2940":"Alarm picker — Jalali + clock (test)","k2941":"Home layout server sync (test)","k2942":"Walkie-talkie widget (test)","k2943":"Key expiry (test)","k2944":"Delete revoked-key history (test)","k2945":"Owner-panel widgets (test)","k2946":"Unlimited","k2947":"Today is the last day","k2949":"Delete revoked-key history","k2950":"Delete the history of revoked and expired keys? This cannot be undone.","k2951":"Deleting the key history failed","k2952":"Revoked-key history deleted","k2954":"Quick access","k2955":"Owner login + recovery (test)","k2956":"At least 6 characters","k2957":"The owner password must be at least 6 characters","k2958":"The owner password changed only on this device; the server was NOT updated. If login with the new password fails, log in with the previous password; then run the complete server SQL and try recovery again when online.","k2959":"Updated at","k2960":"Widgets — server connection (test)","k2961":"Widgets — 180-second refresh (test)","k2962":"Press back again to exit","k2963":"Groups","k2964":"My points","k2965":"Offline — last data","k2966":"Widgets have not updated from the server yet","k2967":"Top group","k2968":"Server error — showing last data","k2969":"Server error; try again or ask the owner to refresh your account","k2970":"Server is out of date; ask the owner to run the server file","k2971":"Something went wrong; try again","k2972":"Error signing in to the online account; try again or ask the owner to refresh your account","k2973":"This username or email is already registered","k2974":"Your registration request was already sent and is waiting for the owner to approve it","k2975":"One-time role — role pick (test)","k2976":"Role powers (test)","k2977":"Power use + 3-per-week cap (test)","k2978":"Your request has not been approved yet","k2979":"Your request was rejected","k2980":"Your registration request was sent. You can sign in after the owner approves it.","k2981":"Register","k2982":"Registration requests","k2983":"Approve","k2984":"Reject","k2985":"Registration + owner approval (test)","k2986":"Registration + owner rejection (test)","k2987":"Registration + entry key (test)","k2988":"Your entry key","k2989":"Role","k2990":"Key plan","k2991":"Display name","k2992":"Recovery question","k2993":"Recovery answer","k2994":"Enter your username, email and password; your request is sent to the owner and you can sign in after they approve it.","k2995":"Waiting for approval","k2996":"Users who registered and are waiting for your approval; approving creates their credentials, role and entry key.","k2997":"No requests","k2998":"Advisor","k2999":"Reason (optional)","k3000":"Owner signature not verified on the server; owner lists may appear empty.","k3001":"Refresh the owner password from the password-recovery section, or log in as the owner again."});
 /* v10.4.14 recovery — EN strings for the registration role (Parsa 17:04),
    the advisor personal chat, and the server debug. */
-Object.assign(I18N_EN,{"k3002":"Personal chat","k3003":"My personal chats","k3004":"Start a personal chat","k3005":"Chat with my advisor","k3006":"Assigned students","k3007":"No personal chats yet","k3008":"Type a message…","k3009":"Send","k3010":"This chat is only between you and your assigned advisor or student","k3011":"Personal chats are kept for 2 weeks, then deleted","k3012":"Not assigned","k3013":"You can only chat with students the owner assigned to you","k3014":"Advisor","k3015":"Become an advisor","k3016":"Assign a student to an advisor","k3017":"Student username (exact)","k3018":"Advisor — personal chat (test)","k3019":"Server debug (test)","k3020":"Server debug","k3021":"Advisor username (exact)","k3022":"Assign","k3023":"Remove assignment","k3024":"Assignments","k3025":"No assignments yet","k3026":"You are now acting as an advisor","k3027":"Open personal chats","k3028":"Chat with this student","k3029":"No advisor assigned to you yet","k3030":"The role you request; the owner may change it on approval","k3031":"Requested role","k3032":"Super-user registration + SUP- key only (test)","k3033":"Konkoori (exam student)","k3034":"All","k3035":"Filter by role","k3036":"No account yet? Register to join; your request is sent to the owner the moment you register.","k3037":"Konkoori registration + PLN- key (test)"});
-var APP_VERSION="10.4.15";
+Object.assign(I18N_EN,{"k3002":"Personal chat","k3003":"My personal chats","k3004":"Start a personal chat","k3005":"Chat with my advisor","k3006":"Assigned students","k3007":"No personal chats yet","k3008":"Type a message…","k3009":"Send","k3010":"This chat is only between you and your assigned advisor or student","k3011":"Personal chats are kept for 2 weeks, then deleted","k3012":"Not assigned","k3013":"You can only chat with students the owner assigned to you","k3014":"Advisor","k3015":"Become an advisor","k3016":"Assign a student to an advisor","k3017":"Student username (exact)","k3018":"Advisor — personal chat (test)","k3019":"Server debug (test)","k3020":"Server debug","k3021":"Advisor username (exact)","k3022":"Assign","k3023":"Remove assignment","k3024":"Assignments","k3025":"No assignments yet","k3026":"You are now acting as an advisor","k3027":"Open personal chats","k3028":"Chat with this student","k3029":"No advisor assigned to you yet","k3030":"The role you request; the owner may change it on approval","k3031":"Requested role","k3032":"Super-user registration + SUP- key only (test)","k3033":"Konkoori (exam student)","k3034":"All","k3035":"Filter by role","k3036":"No account yet? Register to join; your request is sent to the owner the moment you register.","k3037":"Konkoori registration + PLN- key (test)","k3038":"Super user","k3039":"Full access to the program and user management","k3040":"Advisor","k3041":"Guiding and following up students"});
+var APP_VERSION="10.4.16";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
