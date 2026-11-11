@@ -125,7 +125,7 @@ main{ max-width:1060px; width:100%; margin:0 auto; padding:20px 16px 110px; min-
 .vhead p{ margin:2px 0 0; color:var(--ink2); font-size:13.5px; }
 .vhead .sp{ flex:1; }
 
-.card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:0 1px 3px rgba(20,15,5,.04); }
+.card{ background:var(--surface); border:2px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:0 1px 3px rgba(20,15,5,.04); }
 .grid{ display:grid; gap:14px; }
 .g2{ grid-template-columns:repeat(2,1fr); } .g3{ grid-template-columns:repeat(3,1fr); } .g4{ grid-template-columns:repeat(4,1fr); }
 @media (max-width:820px){ .g3,.g4{ grid-template-columns:repeat(2,1fr);} }
@@ -497,6 +497,51 @@ body[data-theme="cyber"], [data-theme="cyber"] .inp, [data-theme="cyber"] .btn, 
 h3 .vh-ic{ vertical-align:-3px; }
 h3 .vh-ic .ic{ width:18px; height:18px; }
 .home-w{ position:relative; }
+/* v10.4.12 (sketch 1) — GOOD FRAMING: Home widgets get a visibly stronger
+   frame than plain cards, so each section reads as its own box. */
+.home-w{ border:2px solid var(--line); box-shadow:0 2px 8px rgba(20,15,5,.07); }
+/* v10.4.12 (Parsa 2026-11-11 10:54) — EVERY section gets the same framed
+   widget treatment as Home/My Today: the .card rule above (2px themed
+   border) is the shared widget frame, so all 13 themes penetrate every
+   section through var(--line)/var(--surface). Owner-panel shortcuts: */
+.ow-shorts{ gap:12px; }
+.ow-short{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; text-align:center; cursor:pointer; padding:16px 10px; min-height:86px; transition:transform .15s ease, box-shadow .15s ease; }
+.ow-short:hover{ transform:translateY(-2px); box-shadow:0 6px 18px rgba(20,15,5,.12); }
+.ow-short b{ font-size:14px; }
+.ow-flash{ outline:3px solid var(--acc, #8a6d1b); outline-offset:3px; }
+.home-w-wide{ grid-column:1/-1; }
+/* v10.4.12 (sketch 1) — the calendar widget shows the Jalali day number
+   in a circle, exactly as drawn. */
+.cal-daynum{ display:inline-flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:50%; border:2px solid var(--acc, #8a6d1b); font-size:24px; font-weight:800; flex:none; }
+/* v10.4.12 (sketch 2) — «امروز من»: progress ring on one side, three
+   boxes stacked on the other; a wide calendar button at the bottom. In
+   RTL the first grid child (ring) sits on the right, the column on the
+   left — exactly as drawn. */
+.mytoday-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:stretch; }
+.mytoday-col{ display:flex; flex-direction:column; gap:14px; }
+.mytoday-ring{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.mytoday-cal{ width:100%; padding:14px; margin-top:14px; justify-content:center; font-size:17px; }
+@media (max-width:360px){ .mytoday-grid{ grid-template-columns:1fr; } }
+/* v10.4.12 — walkie-talkie is GLOBAL (Parsa 2026-11-11): the remote-audio
+   box lives in the app shell, not in the walkie view, so voices keep
+   playing on ANY page. The pill shows the live channel on every page. */
+#wtAudioBox{ display:none; }
+.wt-pill{ position:fixed; left:50%; transform:translateX(-50%); bottom:74px; z-index:120; display:flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px; border:2px solid var(--acc, #8a6d1b); background:var(--surface); color:var(--ink); font-weight:700; font-size:14px; box-shadow:0 4px 16px rgba(0,0,0,.25); cursor:pointer; }
+.wt-pill .dot{ width:10px; height:10px; border-radius:50%; background:#22c55e; flex:none; }
+.wt-pill.talking .dot{ background:#ef4444; animation:wtpulse 1s infinite; }
+@keyframes wtpulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
+/* v10.4.12 (sketch 1, clarified 2026-11-11 10:40) — the yellow rectangle
+   at the top-left of Home IS the walkie-talkie widget: a rectangular card
+   below the top bar, on the left side (flex-end in RTL). */
+.home-walkie-row{ justify-content:flex-end; margin-bottom:14px; }
+.home-walkie{ display:flex; align-items:center; gap:10px; width:min(340px,62%); text-align:start; cursor:pointer; padding:12px 14px; }
+/* v10.4.12 (sketch 2) — the two shortcut buttons sit on the left under
+   the top bar (flex-end in RTL); the numbered badges of the top-3 box;
+   the green live dot on the walkie shortcut; the wide calendar card. */
+.mytoday-shortcuts{ justify-content:flex-end; margin-bottom:14px; }
+.mytoday-num{ display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; border:2px solid var(--acc, #8a6d1b); font-weight:800; flex:none; }
+.wt-live-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; vertical-align:middle; }
+.mytoday-calcard{ margin-top:14px; cursor:pointer; }
 .home-w.dragging{ opacity:.45; }
 .home-w.drag-over{ outline:2px dashed var(--acc); outline-offset:3px; }
 .hw-head{ display:flex; align-items:center; gap:8px; margin-bottom:10px; }
@@ -1760,8 +1805,9 @@ svg.leaflet-image-layer.leaflet-interactive path {
     <div class="t-wrap"><div class="t-title" id="tbTitle">امروز من</div><div class="t-sub" id="tbDate"></div></div>
     <div class="sp"></div>
     <span id="srvStatus" class="srv-dot bad" title=""><span class="dot"></span><span></span></span>
-    <button class="iconbtn" id="tbSearchBtn" onclick="openPalette()" aria-label="جست‌وجوی سریع فرمانی" data-i18n-aria="k0106"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
     <button class="iconbtn" id="tbRemBtn" onclick="go('reminders')" aria-label="یادآوری‌ها" data-i18n-aria="k0107"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><span class="dot" id="remDot"></span></button>
+    <!-- v10.4.12 top bar (Parsa 2026-11-11 10:44), right to left: hamburger, logo, [title], notification, search, night mode, profile. The notification circle is the existing reminders bell (it carries the notification dot). -->
+    <button class="iconbtn" id="tbSearchBtn" onclick="openPalette()" aria-label="جست‌وجوی سریع فرمانی" data-i18n-aria="k0106"><svg class="ic" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
     <button class="iconbtn" onclick="cycleMode()" aria-label="حالت روز و شب" data-i18n-aria="k0108"><svg class="ic" viewBox="0 0 24 24" id="modeIcon" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
     <div class="avatar" id="tbAvatar">؟</div>
   </header>
@@ -1778,6 +1824,12 @@ svg.leaflet-image-layer.leaflet-interactive path {
   </div>
 
   <main id="mainEl"><!-- نماها با جاوااسکریپت ساخته می‌شوند --></main>
+
+  <!-- v10.4.12 — walkie-talkie is GLOBAL (Parsa 2026-11-11): the remote-audio
+       box lives in the app shell, NOT in the walkie view, so incoming voices
+       keep playing on ANY page. The pill shows the live channel everywhere. -->
+  <div id="wtAudioBox" aria-hidden="true"></div>
+  <button id="wtPill" class="wt-pill" style="display:none" onclick="go('walkie')" aria-label="واکی‌تاکی"><span class="dot"></span><span id="wtPillTxt">🎙️ واکی‌تاکی</span></button>
 
   <nav class="bottomnav" id="bottomnav"></nav>
   <button class="fab" id="fabBtn" onclick="openTaskModal()" aria-label="کار تازه" data-i18n-aria="k0124">+</button>
@@ -1888,8 +1940,9 @@ NAV=[
  {id:"chat",t:TR('k0274','چت گروهی'),ic:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'},
  {id:"walkie",t:TR('k2001','واکی‌تاکی'),ic:'<rect x="8" y="7" width="8" height="14" rx="2"/><path d="M12 7V3"/><path d="M10 11h4"/><path d="M10 14h4"/><path d="M10 17h2"/>'},
  {id:"groupmap",t:TR('k2700','نقشه گروه‌ها'),ic:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>'},
+ {id:"topgroups",t:TR('k2528','گروه‌های برتر هفته'),ic:'<path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H5a2 2 0 0 0 0 4h2M17 6h2a2 2 0 0 1 0 4h-2"/>'},
 ];
-TITLES={home:TR('k0256','خانه'),today:TR('k0105','امروز من'),week:TR('k0007','جدول هفتگی'),calendar:TR('k0008','تقویم'),tasks:TR('k0005','کارها'),goals:TR('k0259','هدف‌ها'),habits:TR('k0260','عادت‌ها و روتین'),review:TR('k0278','ارزیابی هفته'),support:TR('k0263','پشتیبان من'),journal:TR('k0283','ژورنال'),notes:TR('k0265','یادداشت‌ها'),reminders:TR('k0266','یادآوری و آلارم'),timer:TR('k0280','تایمر تمرکز'),stats:TR('k0268','آمار و نمودارها'),templates:TR('k0269','قالب‌های آماده'),tools:TR('k0042','ابزارهای آفلاین'),features:TR('k0282','قابلیت‌های آفلاین'),group:TR('k0279','برنامه‌ریزی گروهی'),chat:TR('k0274','چت گروهی'),walkie:TR('k2001','واکی‌تاکی'),groupmap:TR('k2700','نقشه گروه‌ها'),ownerpanel:TR('k0276','پنل مالک'),adminpanel:TR('k0277','پنل مشاور'),themes:TR('k0281','تم‌ها و ظاهر'),settings:TR('k0118','تنظیمات')};
+TITLES={home:TR('k0256','خانه'),today:TR('k0105','امروز من'),week:TR('k0007','جدول هفتگی'),calendar:TR('k0008','تقویم'),tasks:TR('k0005','کارها'),goals:TR('k0259','هدف‌ها'),habits:TR('k0260','عادت‌ها و روتین'),review:TR('k0278','ارزیابی هفته'),support:TR('k0263','پشتیبان من'),journal:TR('k0283','ژورنال'),notes:TR('k0265','یادداشت‌ها'),reminders:TR('k0266','یادآوری و آلارم'),timer:TR('k0280','تایمر تمرکز'),stats:TR('k0268','آمار و نمودارها'),templates:TR('k0269','قالب‌های آماده'),tools:TR('k0042','ابزارهای آفلاین'),features:TR('k0282','قابلیت‌های آفلاین'),group:TR('k0279','برنامه‌ریزی گروهی'),chat:TR('k0274','چت گروهی'),walkie:TR('k2001','واکی‌تاکی'),groupmap:TR('k2700','نقشه گروه‌ها'),topgroups:TR('k2528','گروه‌های برتر هفته'),ownerpanel:TR('k0276','پنل مالک'),adminpanel:TR('k0277','پنل مشاور'),themes:TR('k0281','تم‌ها و ظاهر'),settings:TR('k0118','تنظیمات')};
 THEMES=[
  ["zomorod",TR('k1161','زمرد و طلای کهنه'),"#0e6e5c","#c9a227",TR('k1160','زمرد عمیق با طلای مات')],
  ["yaghout",TR('k1163','یاقوت و هلویی سوخته'),"#8e2242","#d98a4b",TR('k1162','یاقوت تیره با گرمای هلویی')],
@@ -2079,6 +2132,7 @@ HOME_WIDGETS={
  chat:{t:TR('k0274','چت گروهی'),d:TR('k1310','گفت‌وگو با گروه')},
  walkie:{t:TR('k2001','واکی‌تاکی'),d:TR('k2715','گفت‌وگوی صوتی زنده با گروه')},
  groupmap:{t:TR('k2700','نقشه گروه‌ها'),d:TR('k2716','جای دقیق اعضای گروه روی نقشه واقعی')},
+ topgroups:{t:TR('k2528','گروه‌های برتر هفته'),d:TR('k2613','برترین گروه‌ها بر اساس امتیاز هفته')},
  ownerpanel:{t:TR('k0276','پنل مالک'),d:TR('k1311','مدیریت کامل برنامه')},
  adminpanel:{t:TR('k0277','پنل مشاور'),d:TR('k1312','مدیریت دانش‌آموزان')},
  themes:{t:TR('k0281','تم‌ها و ظاهر'),d:TR('k1313','رنگ و حالت برنامه')},
@@ -2109,7 +2163,7 @@ function setLang(lang){
   try{ save(); if(typeof SB!=="undefined") SB.pushUserSettings(); }catch(e){}
   rebuildI18nMaps(); applyLang();
   try{ if(typeof refreshOwnerCards==="function") refreshOwnerCards(); }catch(e){}
-  if($("tbDate")) $("tbDate").textContent=faDateShort(new Date());
+  if($("tbDate")) $("tbDate").textContent=jalTodayStr();
   if($("drRole")) $("drRole").textContent=disp(S.user.role);
   if($("app")&&$("app").style.display==="block"){
     try{ buildNav(); }catch(e){}
@@ -2151,11 +2205,11 @@ var S={
   journal:{}, reviews:{}, people:[], supportReqs:[], chat:[], gchat:[],
   groups:[], groupTasks:[], poll:null, shopping:[], focusMin:0, idealWeek:"", vision:"", supOpinion:"",
   wheel:[0,0,0,0], trash:[], events:[], habitLog:{},
-  settings:{quietFrom:"23:00",quietTo:"07:00",sound:"soft",lang:"fa"},
+  settings:{quietFrom:"23:00",quietTo:"07:00",sound:"soft",lang:"fa",wtHandsFree:false},
   owner:{passHash:"",user:"",secQ:"",secHash:""}, admins:[], adminPins:{}, supporterName:TR('k0143','پشتیبان'),
   auditLog:[], announce:null, pomoLog:{}, weekScore:0, weekWin:"", fontSize:"normal", lastBackup:"",
   weekDecisions:{}, supporterNotes:[""], challenge:"", strategy:"",
-  calCursor:null, calSel:null, theme:"zomorod", mode:"light", plans:[], subKeys:[], mySub:null, mySuper:null, superKeys:[], onlineLastSeen:{}, loggedIn:false, keyGateShown:false, permMic:false, permNotif:false, permBg:false, permCal:false, permLoc:false, permStorage:false, ghostMode:false, ghostUntil:0, onlineStats:null, sfxMute:false, sfxVol:0.6, avUnlockSeen:[], homeLayout:null, subSales:{telegramOn:true,telegramId:"Albakorov",gatewayOn:false,gatewayName:"",merchantId:"",payLink:""}
+  calCursor:null, calSel:null, theme:"zomorod", mode:"light", plans:[], subKeys:[], mySub:null, mySuper:null, superKeys:[], onlineLastSeen:{}, loggedIn:false, keyGateShown:false, permMic:false, permNotif:false, permBg:false, permCal:false, permLoc:false, permStorage:false, ghostMode:false, ghostUntil:0, onlineStats:null, sfxMute:false, sfxVol:0.6, avUnlockSeen:[], homeLayout:null, customWidgets:[], subSales:{telegramOn:true,telegramId:"Albakorov",gatewayOn:false,gatewayName:"",merchantId:"",payLink:""}
 };
 var uid=1; function nid(){ return uid++; }
 /* ذخیره‌سازی روی دستگاه: همه داده‌های دفتر در حافظه همین مرورگر/گوشی می‌ماند و با بستن و باز کردن صفحه از بین نمی‌رود */
@@ -2281,6 +2335,7 @@ var ROLE_TASKS={
 };
 </script>
 <script>
+
 /* v10.4: the brushed-metal treatment is removed — flat theme colors only. */
 var MetalTex={apply:function(){}};
 
@@ -2581,6 +2636,10 @@ function refreshAvatarUI(){
   var d2=$("drAvatar"); if(d2) d2.textContent=letter;
 }
 function hideBootSplash(){ try{ var s=document.getElementById("bootsplash"); if(s) s.style.display="none"; }catch(e){} }
+/* v10.4.12 — the landing rule (Parsa 2026-11-11 10:49): every user except
+   the owner lands on «امروز من» on EVERY entry — even with no password,
+   even offline. The owner lands on Home. */
+function landingView(){ return ownerMode?"home":"today"; }
 function enterApp(){
   try{ hideBootSplash(); }catch(e){}
   $("onboard").style.display="none"; $("app").style.display="block";
@@ -2594,7 +2653,13 @@ function enterApp(){
   document.body.setAttribute("data-mode",S.mode||"light");
   applyFontSize();
   syncOwnerUI(); syncAdminUI(); startMatrix();
-  buildNav(); buildBottomNav(); go("home");
+  buildNav(); buildBottomNav();
+  /* v10.4.12 — DEFAULT LANDING (Parsa 2026-11-11 10:49, refined): EVERY
+     user except the owner lands on «امروز من» on EVERY entry into the app
+     — even when no password is required, even when entering offline. The
+     owner lands on Home, as before. Extracted so the owner-panel test can
+     check the rule without navigating away. */
+  go(landingView());
   if(window._goSettingsAfterEnter){ window._goSettingsAfterEnter=false; try{ go("settings"); }catch(e){} }
   if(!clockStarted){ clockStarted=true; startReminderClock(); }
   try{ if(typeof SB!=="undefined") SB.afterEnter(); }catch(e){}
@@ -2695,8 +2760,9 @@ var NAV=[
  {id:"chat",t:TR('k0274','چت گروهی'),ic:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'},
  {id:"walkie",t:TR('k2001','واکی‌تاکی'),ic:'<rect x="8" y="7" width="8" height="14" rx="2"/><path d="M12 7V3"/><path d="M10 11h4"/><path d="M10 14h4"/><path d="M10 17h2"/>'},
  {id:"groupmap",t:TR('k2700','نقشه گروه‌ها'),ic:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>'},
+ {id:"topgroups",t:TR('k2528','گروه‌های برتر هفته'),ic:'<path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H5a2 2 0 0 0 0 4h2M17 6h2a2 2 0 0 1 0 4h-2"/>'},
 ];
-var TITLES={home:TR('k0256','خانه'),today:TR('k0105','امروز من'),week:TR('k0007','جدول هفتگی'),calendar:TR('k0008','تقویم'),tasks:TR('k0005','کارها'),goals:TR('k0259','هدف‌ها'),habits:TR('k0260','عادت‌ها و روتین'),review:TR('k0278','ارزیابی هفته'),support:TR('k0263','پشتیبان من'),journal:TR('k0283','ژورنال'),notes:TR('k0265','یادداشت‌ها'),reminders:TR('k0266','یادآوری و آلارم'),timer:TR('k0280','تایمر تمرکز'),stats:TR('k0268','آمار و نمودارها'),templates:TR('k0269','قالب‌های آماده'),tools:TR('k0042','ابزارهای آفلاین'),features:TR('k0282','قابلیت‌های آفلاین'),group:TR('k0279','برنامه‌ریزی گروهی'),chat:TR('k0274','چت گروهی'),walkie:TR('k2001','واکی‌تاکی'),groupmap:TR('k2700','نقشه گروه‌ها'),ownerpanel:TR('k0276','پنل مالک'),adminpanel:TR('k0277','پنل مشاور'),themes:TR('k0281','تم‌ها و ظاهر'),settings:TR('k0118','تنظیمات')};
+var TITLES={home:TR('k0256','خانه'),today:TR('k0105','امروز من'),week:TR('k0007','جدول هفتگی'),calendar:TR('k0008','تقویم'),tasks:TR('k0005','کارها'),goals:TR('k0259','هدف‌ها'),habits:TR('k0260','عادت‌ها و روتین'),review:TR('k0278','ارزیابی هفته'),support:TR('k0263','پشتیبان من'),journal:TR('k0283','ژورنال'),notes:TR('k0265','یادداشت‌ها'),reminders:TR('k0266','یادآوری و آلارم'),timer:TR('k0280','تایمر تمرکز'),stats:TR('k0268','آمار و نمودارها'),templates:TR('k0269','قالب‌های آماده'),tools:TR('k0042','ابزارهای آفلاین'),features:TR('k0282','قابلیت‌های آفلاین'),group:TR('k0279','برنامه‌ریزی گروهی'),chat:TR('k0274','چت گروهی'),walkie:TR('k2001','واکی‌تاکی'),groupmap:TR('k2700','نقشه گروه‌ها'),topgroups:TR('k2528','گروه‌های برتر هفته'),ownerpanel:TR('k0276','پنل مالک'),adminpanel:TR('k0277','پنل مشاور'),themes:TR('k0281','تم‌ها و ظاهر'),settings:TR('k0118','تنظیمات')};
 function buildNav(){
   var h="";
   if(adminMode && !ownerMode){
@@ -2739,7 +2805,13 @@ function typeEl(el,txt,speed){
 function go(id){
   if(id==="admin") id="ownerpanel"; /* مسیر قدیمی «مدیریت افراد» حذف شده است؛ هر ارجاع قدیمی مستقیم به پنل مالک می‌رود */
   if(adminMode && !ownerMode && id!=="adminpanel" && id!=="themes"){ id="adminpanel"; } /* گیت نقش مشاور: هر ناوبری به بخش‌های صاحب دفتر — از منو، ناوبری پایین، جست‌وجوی فرمانی یا هر دکمه‌ای — به پنل مشاور برمی‌گردد؛ داده خصوصی صاحب دفتر با ناوبری عمومی دور زده نمی‌شود */
+  var _prevView=curView;
   curView=id; typeEl($("tbTitle"),TITLES[id]||"",45);
+  /* v10.4.12 — the calendar ALWAYS opens on the current Jalali month
+     (Parsa 2026-11-11: «تقویم آپدیت نیست»): entering the view from
+     anywhere else snaps it back to today; moving between months or
+     picking a day inside the view never snaps. */
+  if(id==="calendar" && _prevView!=="calendar"){ try{ calSnapToToday(); }catch(e){} }
   /* v10.4.11 — entering the group view ALWAYS refreshes from the server
      (OG.loadMine is in-flight guarded + change-guarded, so this cannot
      re-render in a loop). */
@@ -2761,6 +2833,11 @@ function go(id){
      rendered view otherwise shows its static default («قطع») until the
      next serverOk flip, even when the server is reachable. */
   try{ if(typeof SB!=="undefined"&&SB.paintBadges) SB.paintBadges(); }catch(e){}
+  /* v10.4.12 — the top-bar date is ALWAYS today (never stale across
+     midnight or a long session), and the walkie-talkie pill follows the
+     channel on EVERY page. */
+  try{ var _td=$("tbDate"); if(_td&&typeof jalTodayStr==="function") _td.textContent=jalTodayStr(); }catch(e){}
+  try{ if(typeof WT!=="undefined"&&WT.paintPill) WT.paintPill(); }catch(e){}
   window.scrollTo({top:0});
 }
 
@@ -2815,6 +2892,7 @@ var ICONS={
  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
  walkie:'<rect x="8" y="7" width="8" height="14" rx="2"/><path d="M12 7V3"/><path d="M10 11h4"/><path d="M10 14h4"/><path d="M10 17h2"/>',
  groupmap:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',
+ topgroups:'<path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H5a2 2 0 0 0 0 4h2M17 6h2a2 2 0 0 1 0 4h-2"/>',
  ownerpanel:'<path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><circle cx="12" cy="10" r="2.6"/><path d="M12 12.6V16"/>',
  adminpanel:'<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.2 3.6-5 7-5s6.2 1.8 7 5"/><path d="M17.5 3.5l.9 1.8 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2L14.6 5.6l2-.3z"/>',
  themes:'<circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1.3" fill="currentColor"/><circle cx="15" cy="8.5" r="1.3" fill="currentColor"/><circle cx="16" cy="15" r="1.3" fill="currentColor"/>',
@@ -2919,18 +2997,91 @@ function toggleBlock(d,hr){ var b=S.blocks[d+"-"+hr]; if(b) b.done=!b.done; save
 function delBlock(d,hr){ delete S.blocks[d+"-"+hr]; save(); closeModal(); go("week"); toast(TR('k0374','بلوک حذف شد') + "."); }
 
 /* ================= تقویم ================= */
+/* ================= تقویم جلالی — تبدیل تاریخ (v10.4.12) =================
+   Parsa 2026-11-11: «تقویم آپدیت نیست». دو اشکال بود: (۱) جدول تقویم
+   میلادی بود (روزهای ۱ تا ۳۱ ماه میلادی) و فقط سربرگ آن با Intl به نام
+   ماه جلالی ترجمه می‌شد — پس شماره روزها با ماه جلالی نمی‌خواند؛
+   (۲) ماه نمایش‌داده‌شده یک بار در هر بارگذاری صفحه مقدار می‌گرفت و در
+   وب‌ویوی APK که روزها باز می‌ماند، کهنه می‌شد. حالا تقویم یک تقویم
+   واقعی جلالی است: تبدیل میلادی↔جلالی با الگوریتم استاندارد (چرخه
+   ۳۳ساله) کاملاً آفلاین و روی همین دستگاه حساب می‌شود — بدون سرور و
+   بدون اینترنت — و با باز شدن بخش تقویم همیشه روی ماه جاری می‌ایستد.
+   تبدیل در Node با تقویم فارسی ICU روی ۲۰۲۰ تا ۲۰۳۰ (۴٬۰۱۸ روز، بدون
+   هیچ اختلاف) و با جفت‌های معلوم (۲۰۲۶-۱۱-۱۱ = ۱۴۰۵-۰۸-۲۰، ۲۰۲۶-۰۳-۲۱ =
+   ۱۴۰۵-۰۱-۰۱، ۲۰۲۵-۰۳-۲۰ = ۱۴۰۳-۱۲-۳۰ کبیسه، ۲۰۳۰-۰۳-۲۰ = ۱۴۰۸-۱۲-۳۰
+   کبیسه) بررسی شده است. داده‌ها (کارها/مناسبت‌ها/یادآوری‌ها) همچنان با
+   کلید تاریخ میلادی (keyOf) ذخیره می‌شوند؛ هر خانه جلالی به تاریخ
+   میلادی خودش برمی‌گردد. */
+var JALALI_MONTHS_FA=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+var JALALI_MONTHS_EN=["Farvardin","Ordibehesht","Khordad","Tir","Mordad","Shahrivar","Mehr","Aban","Azar","Dey","Bahman","Esfand"];
+function _jalDiv(a,b){ return ~~(a/b); }
+function _jalMod(a,b){ return a-~~(a/b)*b; }
+var _JAL_BREAKS=[-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178];
+function jalCal(jy){
+  var bl=_JAL_BREAKS, gy=jy+621, leapJ=-14, jp=bl[0], jm, jump, leap, leapG, march, n, i;
+  if(jy<jp||jy>=bl[bl.length-1]) throw new Error("Invalid Jalaali year "+jy);
+  for(i=1;i<bl.length;i+=1){ jm=bl[i]; jump=jm-jp; if(jy<jm) break; leapJ+=_jalDiv(jump,33)*8+_jalDiv(_jalMod(jump,33),4); jp=jm; }
+  n=jy-jp;
+  leapJ+=_jalDiv(n,33)*8+_jalDiv(_jalMod(n,33)+3,4);
+  if(_jalMod(jump,33)===4&&jump-n===4) leapJ+=1;
+  leapG=_jalDiv(gy,4)-_jalDiv((_jalDiv(gy,100)+1)*3,4)-150;
+  march=20+leapJ-leapG;
+  if(jump-n<6) n=n-jump+_jalDiv(jump+4,33)*33;
+  leap=_jalMod(_jalMod(n+1,33)-1,4); if(leap===-1) leap=4;
+  return {leap:leap, gy:gy, march:march};
+}
+function _g2d(gy,gm,gd){
+  var d=_jalDiv((gy+_jalDiv(gm-8,6)+100100)*1461,4)+_jalDiv(153*_jalMod(gm+9,12)+2,5)+gd-34840408;
+  d=d-_jalDiv(_jalDiv(gy+100100+_jalDiv(gm-8,6),100)*3,4)+752;
+  return d;
+}
+function _d2g(jdn){
+  var j=4*jdn+139361631;
+  j=j+_jalDiv(_jalDiv(4*jdn+183187720,146097)*3,4)*4-3908;
+  var i=_jalDiv(_jalMod(j,1461),4)*5+308;
+  var gd=_jalDiv(_jalMod(i,153),5)+1;
+  var gm=_jalMod(_jalDiv(i,153),12)+1;
+  var gy=_jalDiv(j,1461)-100100+_jalDiv(8-gm,6);
+  return {gy:gy, gm:gm, gd:gd};
+}
+function _j2d(jy,jm,jd){
+  var r=jalCal(jy);
+  return _g2d(r.gy,3,r.march)+(jm-1)*31-_jalDiv(jm,7)*(jm-7)+jd-1;
+}
+function _d2j(jdn){
+  var gy=_d2g(jdn).gy, jy=gy-621, r=jalCal(jy), jdn1f=_g2d(gy,3,r.march), jd, jm, k;
+  k=jdn-jdn1f;
+  if(k>=0){ if(k<=185){ jm=1+_jalDiv(k,31); jd=_jalMod(k,31)+1; return {jy:jy, jm:jm, jd:jd}; } k-=186; }
+  else { jy-=1; k+=179; if(r.leap===1) k+=1; }
+  jm=7+_jalDiv(k,30); jd=_jalMod(k,30)+1;
+  return {jy:jy, jm:jm, jd:jd};
+}
+function g2j(gy,gm,gd){ return _d2j(_g2d(gy,gm,gd)); }
+function j2g(jy,jm,jd){ return _d2g(_j2d(jy,jm,jd)); }
+function jalIsLeap(jy){ return jalCal(jy).leap===0; }
+function jalMonthLen(jy,jm){ if(jm<=6) return 31; if(jm<=11) return 30; return jalIsLeap(jy)?30:29; }
+function jalToday(){ var n=new Date(); return g2j(n.getFullYear(),n.getMonth()+1,n.getDate()); }
+/* v10.4.12 — TODAY's date as a Jalali string, always current, never
+   hardcoded (Parsa 2026-11-11: «هر جا تاریخ هست باید به روز باشه»). */
+function jalTodayStr(){ var t=jalToday(); return LANG==="en"?t.jd+" "+jalMonthName(t.jm)+" "+t.jy:fa(t.jd)+" "+jalMonthName(t.jm)+" "+fa(t.jy); }
+function jalMonthName(jm){ return (LANG==="en"?JALALI_MONTHS_EN:JALALI_MONTHS_FA)[jm-1]||""; }
+/* Displayed Jalali month (module state, NOT persisted — the view always
+   opens on the current month; see the snap in go()). */
+var calJal={jy:0,jm:0};
+function calSnapToToday(){ var t=jalToday(); calJal={jy:t.jy,jm:t.jm}; S.calSel=todayKey(); }
 function renderCalendar(v){
-  if(!S.calCursor){ S.calCursor=new Date(); S.calCursor.setDate(1); }
-  if(!S.calSel) S.calSel=todayKey();
-  var cur=S.calCursor, y=cur.getFullYear(), mo=cur.getMonth();
-  var first=new Date(y,mo,1), startDay=(first.getDay()+1)%7, daysIn=new Date(y,mo+1,0).getDate();
-  var h=vhead(TR('k0008','تقویم'),faMonth(cur)+" — " + TR('k0375','روی هر روز بزنید تا کارهایش را ببینید و کار تازه بسازید') + ".",'<div class="rowflex"><button class="btn ghost sm" onclick="calMove(-1)">' + TR('k0377','ماه قبل') + '</button><button class="btn ghost sm" onclick="calMove(1)">' + TR('k0376','ماه بعد') + '</button></div>');
+  var t=jalToday();
+  if(!calJal.jy){ calSnapToToday(); t=jalToday(); }
+  var jy=calJal.jy, jm=calJal.jm;
+  var g1=j2g(jy,jm,1);
+  var first=new Date(g1.gy,g1.gm-1,g1.gd), startDay=(first.getDay()+1)%7, daysIn=jalMonthLen(jy,jm);
+  var h=vhead(TR('k0008','تقویم'),jalMonthName(jm)+" "+fa(jy)+" — " + TR('k0375','روی هر روز بزنید تا کارهایش را ببینید و کار تازه بسازید') + ".",'<div class="rowflex"><button class="btn ghost sm" onclick="calMove(-1)">' + TR('k0377','ماه قبل') + '</button><button class="btn ghost sm" onclick="calSnapBtn()">' + TR('k0213','امروز') + '</button><button class="btn ghost sm" onclick="calMove(1)">' + TR('k0376','ماه بعد') + '</button></div>');
   h+='<div class="cal"><div class="dow">' + TR('k0138','شنبه') + '</div><div class="dow">' + TR('k0141','یکشنبه') + '</div><div class="dow">' + TR('k0136','دوشنبه') + '</div><div class="dow">' + TR('k0137','سه‌شنبه') + '</div><div class="dow">' + TR('k0140','چهارشنبه') + '</div><div class="dow">' + TR('k0139','پنجشنبه') + '</div><div class="dow">' + TR('k0135','جمعه') + '</div>';
   for(var i=0;i<startDay;i++) h+='<div></div>';
   for(var d=1;d<=daysIn;d++){
-    var dt=new Date(y,mo,d), key=keyOf(dt);
+    var gd=j2g(jy,jm,d), dt=new Date(gd.gy,gd.gm-1,gd.gd), key=keyOf(dt);
     var cnt=S.tasks.filter(function(t){ return t.day===(dt.getDay()+1)%7 && !t.done; }).length;
-    var isToday=key===todayKey();
+    var isToday=(jy===t.jy&&jm===t.jm&&d===t.jd);
     h+='<div class="day'+(isToday?" today":"")+(S.calSel===key?" sel":"")+'" onclick="calPick(\''+key+'\','+((dt.getDay()+1)%7)+')"><b>'+fa(d)+'</b>'+(cnt?'<div class="dots"><i></i>'+(cnt>1?'<i class="g"></i>':'')+'</div><div class="cnt">'+fa(cnt)+' ' + TR('k0379','کار باز') + '</div>':'<div class="cnt">' + TR('k0378','بدون کار باز') + '</div>')+'</div>';
   }
   h+='</div>';
@@ -2969,7 +3120,8 @@ function addEvent(){
   save(); go("calendar"); toast(TR('k0405','مناسبت ثبت شد') + ".");
 }
 function delEvent(id){ S.events=S.events.filter(function(e){return e.id!==id;}); save(); go("calendar"); }
-function calMove(n){ S.calCursor.setMonth(S.calCursor.getMonth()+n); go("calendar"); }
+function calMove(n){ var m=calJal.jm+n, y=calJal.jy; while(m<1){ m+=12; y--; } while(m>12){ m-=12; y++; } calJal={jy:y,jm:m}; go("calendar"); }
+function calSnapBtn(){ calSnapToToday(); go("calendar"); }
 function calPick(key,idx){ S.calSel=key; go("calendar"); }
 
 /* ================= کارها: لیست، کانبان، ماتریس ================= */
@@ -2998,9 +3150,9 @@ function renderTasks(v){
     h+='<div class="searchbar"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input placeholder="' + TR('k0413','جست‌وجو در کارها و دسته‌ها') + '…" oninput="taskQuery=this.value;applyTaskFilter()"></div>'
       +'<div class="tabs" id="taskFilterRow"><button class="tab active" onclick="setTaskFilter(\'all\',this)">' + TR('k0417','همه کارها') + '</button><button class="tab" onclick="setTaskFilter(\'open\',this)">' + TR('k0415','فقط بازها') + '</button><button class="tab" onclick="setTaskFilter(\'done\',this)">' + TR('k0414','انجام‌شده‌ها') + '</button><button class="tab" onclick="setTaskFilter(\'p1\',this)">' + TR('k0416','مهم‌ترین‌ها (اولویت ۱)') + '</button></div>';
     DAYS.forEach(function(d,di){ var ts=S.tasks.filter(function(t){return t.day===di;}); if(!ts.length) return;
-      h+='<h3 style="margin:14px 0 8px">'+d+(di===todayIdx()?' <span class="pill gold">' + TR('k0213','امروز') + '</span>':'')+'</h3>'+ts.map(taskHTML).join(""); });
+      h+='<div class="card" style="margin-bottom:12px"><h3 style="margin:0 0 8px">'+d+(di===todayIdx()?' <span class="pill gold">' + TR('k0213','امروز') + '</span>':'')+'</h3>'+ts.map(taskHTML).join("")+'</div>'; });
     var some=S.tasks.filter(function(t){return t.day===-1||t.day===undefined;});
-    if(some.length) h+='<h3 style="margin:14px 0 8px">' + TR('k0309','بدون تاریخ') + ' — ' + TR('k0330','یک روزی') + '</h3><p class="small" style="margin:0 0 8px">' + TR('k0418','کارهایی که هنوز روزشان مشخص نیست؛ هر وقت آماده بودید روزی برایشان بگذارید') + '.</p>'+some.map(taskHTML).join("");
+    if(some.length) h+='<div class="card" style="margin-bottom:12px"><h3 style="margin:0 0 8px">' + TR('k0309','بدون تاریخ') + ' — ' + TR('k0330','یک روزی') + '</h3><p class="small" style="margin:0 0 8px">' + TR('k0418','کارهایی که هنوز روزشان مشخص نیست؛ هر وقت آماده بودید روزی برایشان بگذارید') + '.</p>'+some.map(taskHTML).join("");
     if(!S.tasks.length) h+='<div class="empty">' + TR('k0419','هنوز کاری ثبت نشده است') + '.</div>';
   }else if(taskTab==="kanban"){
     var cols=[["todo",TR('k0420','برای انجام')],["doing",TR('k0421','در حال انجام')],["done",TR('k0308','انجام‌شده')]];
@@ -3190,20 +3342,83 @@ function delNote(id){ var n=S.notes.filter(function(x){return x.id===id;})[0]; S
 
 /* ================= یادآوری و آلارم ================= */
 function renderReminders(v){
+  /* v10.4.12 — alarm form starts on today's Jalali date and the device's
+     own clock (rounded up to the next 5 minutes), never a locked 08:00. */
+  rmJal=jalToday(); var _dt=rmDefaultTime(); rmHour=_dt.h; rmMin=_dt.m;
   var h=vhead(TR('k0266','یادآوری و آلارم'),TR('k0609','یادآوری کاملاً آفلاین: بر اساس ساعت و تاریخ همین گوشی زنگ می‌خورد؛ بدون ایمیل و بدون سرور') + ".");
-  h+='<div class="grid g2"><div class="card"><h3 style="margin-bottom:12px">' + TR('k0617','یادآوری تازه') + '</h3><div class="field"><label>' + TR('k0613','عنوان یادآوری') + '</label><input class="inp" id="rmTitle" placeholder="' + TR('k0615','مثلاً: شروع مطالعه شیمی') + '"></div><div class="rowflex"><div class="field grow"><label>' + TR('k0162','تاریخ') + '</label><input class="inp" id="rmDate" type="date" value="'+todayKey()+'"></div><div class="field grow"><label>' + TR('k0347','ساعت') + '</label><input class="inp" id="rmTime" type="time" value="08:00"></div></div><div class="field"><label>' + TR('k0611','تکرار یادآوری') + '</label><select class="inp" id="rmRepeat"><option value="">' + TR('k0614','فقط یک بار') + '</option><option value="daily">' + TR('k0494','هر روز') + '</option><option value="weekly">' + TR('k0616','هر هفته') + '</option></select></div><div class="field"><label>'+TR('k2462','صدای آلارم')+'</label><select class="inp" id="rmSound"><option value="chime">'+TR('k2463','زنگ ملایم')+'</option><option value="beep">'+TR('k2464','بوق کلاسیک')+'</option><option value="siren">'+TR('k2465','آژیر')+'</option><option value="reveille">'+TR('k2466','بوق بیدارباش')+'</option><option value="drum">'+TR('k2467','طبل')+'</option><option value="march">'+TR('k2468','مارش')+'</option><option value="custom">'+TR('k2514','موسیقی دلخواه من')+'</option></select></div><button class="btn" onclick="addReminder()">' + TR('k0612','ثبت یادآوری') + '</button><p class="small" style="margin-top:10px">' + TR('k0610','تا وقتی این صفحه باز است، ساعت گوشی هر چند ثانیه بررسی می‌شود و سر وقت، نوار آلارم بالای صفحه با صدا خبر می‌دهد. در نسخه اندروید همین یادآوری‌ها به آلارم سیستم گوشی سپرده می‌شوند تا حتی با بسته‌بودن برنامه هم زنگ بخورند') + '.</p></div>'
+  h+='<div class="grid g2"><div class="card"><h3 style="margin-bottom:12px">' + TR('k0617','یادآوری تازه') + '</h3><div class="field"><label>' + TR('k0613','عنوان یادآوری') + '</label><input class="inp" id="rmTitle" placeholder="' + TR('k0615','مثلاً: شروع مطالعه شیمی') + '"></div><div class="rowflex"><div class="field grow"><label>' + TR('k0162','تاریخ') + ' (' + TR('k2900','شمسی') + ')</label><button type="button" class="inp" id="rmDateBtn" onclick="openJalPicker()" style="text-align:start;width:100%">'+rmJalLabel()+'</button></div><div class="field grow"><label>' + TR('k0347','ساعت') + ' (' + TR('k2901','ساعت گوشی') + ')</label><div class="inp" style="text-align:center"><span id="rmClockLive" class="stat-num" style="font-size:20px">--:--:--</span></div></div></div><div class="field"><label>' + TR('k2902','ساعت آلارم') + '</label><div class="rowflex" style="align-items:center;justify-content:center;gap:4px"><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'h\',1)" aria-label="+">▲</button><span id="rmHourShow" class="stat-num" style="font-size:24px;min-width:52px;text-align:center"></span><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'h\',-1)" aria-label="-">▼</button><span style="align-self:center;font-size:22px">:</span><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'m\',1)" aria-label="+">▲</button><span id="rmMinShow" class="stat-num" style="font-size:24px;min-width:52px;text-align:center"></span><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'m\',-1)" aria-label="-">▼</button><button class="btn ghost sm" type="button" onclick="rmTimeNow()">'+TR('k2903','الان')+'</button></div></div><div class="field"><label>' + TR('k0611','تکرار یادآوری') + '</label><select class="inp" id="rmRepeat"><option value="">' + TR('k0614','فقط یک بار') + '</option><option value="daily">' + TR('k0494','هر روز') + '</option><option value="weekly">' + TR('k0616','هر هفته') + '</option></select></div><div class="field"><label>'+TR('k2462','صدای آلارم')+'</label><select class="inp" id="rmSound"><option value="chime">'+TR('k2463','زنگ ملایم')+'</option><option value="beep">'+TR('k2464','بوق کلاسیک')+'</option><option value="siren">'+TR('k2465','آژیر')+'</option><option value="reveille">'+TR('k2466','بوق بیدارباش')+'</option><option value="drum">'+TR('k2467','طبل')+'</option><option value="march">'+TR('k2468','مارش')+'</option><option value="custom">'+TR('k2514','موسیقی دلخواه من')+'</option></select><div class="rowflex" style="margin-top:8px"><button class="btn ghost sm" type="button" onclick="testAlarmSound(($(\'rmSound\')||{}).value||\'chime\')">▶ '+TR('k2311','تست صدا')+'</button><span class="small" style="align-self:center">'+TR('k2523','صدای انتخاب‌شده را پیش از ثبت بشنوید')+'</span></div></div><button class="btn" onclick="addReminder()">' + TR('k0612','ثبت یادآوری') + '</button><p class="small" style="margin-top:10px">' + TR('k0610','تا وقتی این صفحه باز است، ساعت گوشی هر چند ثانیه بررسی می‌شود و سر وقت، نوار آلارم بالای صفحه با صدا خبر می‌دهد. در نسخه اندروید همین یادآوری‌ها به آلارم سیستم گوشی سپرده می‌شوند تا حتی با بسته‌بودن برنامه هم زنگ بخورند') + '.</p></div>'
   +'<div class="card"><h3 style="margin-bottom:10px">' + TR('k0622','یادآوری‌های من') + '</h3>'+(S.reminders.length?S.reminders.map(function(r){ return '<div class="listrow"><svg class="ic" viewBox="0 0 24 24" style="color:var(--acc)"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><div class="grow"><b>'+esc(r.title)+'</b><div class="small">'+(r.date?faDateShort(new Date(r.date)):"")+' — ' + TR('k0347','ساعت') + ' '+fa(r.time)+'</div>'+(r.repeat?'<div class="small">'+(r.repeat==="daily"?TR('k0618','تکرار روزانه'):TR('k0619','تکرار هفتگی'))+'</div>':'')+'</div>'+(r.fired?'<span class="pill gray">' + TR('k0300','انجام شد') + '</span>':'<span class="pill">' + TR('k0620','فعال') + '</span>')+'<button class="del" onclick="delReminder('+r.id+')">' + TR('k0303','حذف') + '</button></div>'; }).join(""):'<div class="empty">' + TR('k0621','یادآوری ندارید') + '.</div>')+'</div></div>';
   v.innerHTML=h;
+  rmPaintTime(); rmTickClock(); if(rmClockInt) clearInterval(rmClockInt); rmClockInt=setInterval(rmTickClock,1000);
 }
 function addReminder(){
   var t=$("rmTitle").value.trim(); if(!t){ toast(TR('k0623','عنوان یادآوری را بنویسید') + "."); return; }
-  S.reminders.push({id:nid(),title:t,date:$("rmDate").value,time:$("rmTime").value,fired:false,repeat:$("rmRepeat").value,sound:($("rmSound")?$("rmSound").value:"chime")});
+  S.reminders.push({id:nid(),title:t,date:rmPickKey(),time:rmTimeStr(),fired:false,repeat:$("rmRepeat").value,sound:($("rmSound")?$("rmSound").value:"chime")});
   try{ if(typeof SB!=="undefined") SB.pushAlarms(); }catch(e){}
   go("reminders"); toast(TR('k0624','یادآوری ثبت شد؛ سر ساعت با ساعت گوشی خبرتان می‌کنیم') + ".");
 }
 function delReminder(id){ S.reminders=S.reminders.filter(function(r){return r.id!==id;}); try{ if(typeof SB!=="undefined") SB.pushAlarms(); }catch(e){} go("reminders"); }
+
+/* ================= v10.4.12 — Jalali date picker + in-app clock for alarms
+   (Parsa 2026-11-11: «وقتی میخوایم آلارم بزاریم میره رو تقویم میلادی و ساعت
+   هم رو ۸ AM قفل شده»). The old form used a native <input type="date">
+   (the Gregorian picker on Android) and a hardcoded 08:00 default. Now:
+   an in-app Jalali picker built on the same offline Jalali conversion as
+   the calendar, and a professional in-app clock driven by the device's own
+   date/time (new Date(), live every second) — fully offline. The alarm
+   time defaults to the current device time rounded up to the next 5
+   minutes, never a locked 08:00. Reminders still store a Gregorian key
+   (date) + HH:MM (time), so firing and server sync are unchanged. */
+var rmJal=null, rmHour=8, rmMin=0, rmClockInt=null;
+function rmDefaultTime(){ var n=new Date(); var m=n.getMinutes()+5-(n.getMinutes()%5); var h=n.getHours(); if(m>=60){ m-=60; h=(h+1)%24; } return {h:h,m:m}; }
+function rmTimeStr(){ return String(rmHour).padStart(2,"0")+":"+String(rmMin).padStart(2,"0"); }
+function rmJalLabel(){ var t=rmJal||jalToday(); return fa(t.jd)+" "+jalMonthName(t.jm)+" "+fa(t.jy); }
+function rmPickKey(){ var t=rmJal||jalToday(); var g=j2g(t.jy,t.jm,t.jd); return g.gy+"-"+String(g.gm).padStart(2,"0")+"-"+String(g.gd).padStart(2,"0"); }
+function rmPaintTime(){ var h=$("rmHourShow"), m=$("rmMinShow"); if(h) h.textContent=fa(String(rmHour).padStart(2,"0")); if(m) m.textContent=fa(String(rmMin).padStart(2,"0")); }
+function rmTimeStep(part,dir){ if(part==="h"){ rmHour=(rmHour+dir+24)%24; } else { rmMin=(rmMin+dir*5+60)%60; } rmPaintTime(); }
+function rmTimeNow(){ var n=new Date(); rmHour=n.getHours(); rmMin=n.getMinutes(); rmPaintTime(); }
+function rmTickClock(){ var el=$("rmClockLive"); if(!el){ if(rmClockInt){ clearInterval(rmClockInt); rmClockInt=null; } return; } var n=new Date(); el.textContent=fa(String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0")+":"+String(n.getSeconds()).padStart(2,"0")); }
+var jalPickState={jy:0,jm:0};
+function openJalPicker(){ var t=rmJal||jalToday(); jalPickState={jy:t.jy,jm:t.jm}; jalPickRender(); var ov=$("jalPick"); if(ov) ov.style.display="flex"; }
+function jalPickClose(){ var ov=$("jalPick"); if(ov) ov.style.display="none"; }
+function jalPickToday(){ var t=jalToday(); jalPickState={jy:t.jy,jm:t.jm}; jalPickRender(); }
+function jalPickMove(n){ var m=jalPickState.jm+n, y=jalPickState.jy; while(m<1){ m+=12; y--; } while(m>12){ m-=12; y++; } jalPickState={jy:y,jm:m}; jalPickRender(); }
+function jalPickDay(d){ rmJal={jy:jalPickState.jy,jm:jalPickState.jm,jd:d}; var b=$("rmDateBtn"); if(b) b.textContent=rmJalLabel(); jalPickClose(); }
+function jalPickRender(){
+  var ov=$("jalPick"); if(!ov) return;
+  var jy=jalPickState.jy, jm=jalPickState.jm, t=jalToday();
+  var daysIn=jalMonthLen(jy,jm);
+  var g1=j2g(jy,jm,1), first=new Date(g1.gy,g1.gm-1,g1.gd), startDay=(first.getDay()+1)%7;
+  var sel=rmJal||jalToday();
+  var h='<div class="card" style="max-width:420px;width:100%"><h3 style="margin-bottom:8px">'+jalMonthName(jm)+' '+fa(jy)+'</h3>'
+    +'<div class="rowflex"><button class="btn ghost sm" onclick="jalPickMove(-1)">'+TR('k0377','ماه قبل')+'</button><button class="btn ghost sm" onclick="jalPickToday()">'+TR('k0213','امروز')+'</button><button class="btn ghost sm" onclick="jalPickMove(1)">'+TR('k0376','ماه بعد')+'</button></div>'
+    +'<div class="cal" style="margin-top:10px"><div class="dow">'+TR('k0138','شنبه')+'</div><div class="dow">'+TR('k0141','یکشنبه')+'</div><div class="dow">'+TR('k0136','دوشنبه')+'</div><div class="dow">'+TR('k0137','سه‌شنبه')+'</div><div class="dow">'+TR('k0140','چهارشنبه')+'</div><div class="dow">'+TR('k0139','پنجشنبه')+'</div><div class="dow">'+TR('k0135','جمعه')+'</div>';
+  for(var i=0;i<startDay;i++) h+='<div></div>';
+  for(var d=1;d<=daysIn;d++){
+    var isToday=(jy===t.jy&&jm===t.jm&&d===t.jd);
+    var isSel=(jy===sel.jy&&jm===sel.jm&&d===sel.jd);
+    h+='<div class="day'+(isToday?" today":"")+(isSel?" sel":"")+'" onclick="jalPickDay('+d+')"><b>'+fa(d)+'</b></div>';
+  }
+  h+='</div><button class="btn ghost" style="width:100%;margin-top:12px" onclick="jalPickClose()">'+TR('k2141','بستن')+'</button></div>';
+  ov.innerHTML=h;
+}
 var audioCtx=null, curAlarm=null;
 function beep(){ try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==="suspended") audioCtx.resume(); [0,0.35,0.7].forEach(function(off){ var o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.frequency.value=880; var t=audioCtx.currentTime+off; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.25,t+0.03); g.gain.exponentialRampToValueAtTime(0.0001,t+0.28); o.start(t); o.stop(t+0.3); }); }catch(e){} }
+/* v10.4.12 — تست صدای آلارم (Parsa 2026-11-11: «صدای هشدارها هم قابلیت
+   تست ندارن که صداشونو بشنویم» + «صدای هشدار یادآور و اون تیکه‌های نظامی
+   و...»). The preview plays through the SAME path the alarm itself uses —
+   SFX.alarm(name) — so what the user hears is exactly what the alarm will
+   sound like: the same Tone.js military rebuild (bugle call, drum roll,
+   march rhythm, siren sweep) or the same WebAudio fallback, the same
+   volume, the same headset/speaker routing. For "custom" it plays the
+   user's own chosen file, exactly as the alarm would (SFX.alarm falls
+   back to the chime when no file is stored). Works offline; the alarm
+   does not need to fire. */
+function testAlarmSound(name){
+  var n=name||S.alarmSound||"chime";
+  if(S.sfxMute){ toast(TR('k2522','صداها بی‌صدا هستند؛ اول «بی‌صدا» را خاموش کنید')+"."); return; }
+  try{ SFX.alarm(n); }catch(e){ try{ beep(); }catch(_){} }
+}
 function startReminderClock(){
   setInterval(function(){
     var now=new Date(), key=todayKey();
@@ -3216,7 +3431,8 @@ function startReminderClock(){
       else due.fired=true;
       $("alarmText").textContent=TR('k0625','یادآوری') + ": "+due.title+" — " + TR('k0347','ساعت') + " "+fa(due.time);
       $("alarmbar").classList.add("show");
-      if(S.settings.sound!=="silent" && !inQuiet()){ try{ SFX.alarm(r.sound||S.alarmSound||"chime"); }catch(e){ beep(); } }
+      /* v10.4.12 — was r.sound (undefined here → ReferenceError → the generic beep every time): the reminder's own chosen sound never played. */
+      if(S.settings.sound!=="silent" && !inQuiet()){ try{ SFX.alarm(due.sound||S.alarmSound||"chime"); }catch(e){ beep(); } }
       save();
     }
   },4000);
@@ -3989,7 +4205,14 @@ function openPrintView(){
 }
 
 /* ================= صفحه خانه — ابزارک‌های قابل‌شخصی‌سازی ================= */
-var HOME_DEFAULTS=["today","week","tasks","goals","habits","calendar","notes"];
+/* v10.4.12 — Home DEFAULT layout from Parsa's hand-drawn sketch 1
+   (2026-11-11): today + tasks side by side, weekly timetable full-width,
+   notes + calendar at the bottom (calendar shows the Jalali day number in
+   a circle). Other sections stay addable from the hamburger menu / edit
+   mode. The yellow rectangle at the top-left is the WALKIE-TALKIE widget
+   (clarified 2026-11-11 10:40) — it lives in the Home header row, not in
+   this list. */
+var HOME_DEFAULTS=["today","tasks","week","notes","calendar"];
 var HOME_WIDGETS={
  today:{t:TR('k0105','امروز من'),d:TR('k1291','پیشرفت امروز و سه کار مهم')},
  week:{t:TR('k0007','جدول هفتگی'),d:TR('k1292','بلوک‌های امروز و حلقه ساعت')},
@@ -4012,6 +4235,7 @@ var HOME_WIDGETS={
  chat:{t:TR('k0274','چت گروهی'),d:TR('k1310','گفت‌وگو با گروه')},
  walkie:{t:TR('k2001','واکی‌تاکی'),d:TR('k2715','گفت‌وگوی صوتی زنده با گروه')},
  groupmap:{t:TR('k2700','نقشه گروه‌ها'),d:TR('k2716','جای دقیق اعضای گروه روی نقشه واقعی')},
+ topgroups:{t:TR('k2528','گروه‌های برتر هفته'),d:TR('k2613','برترین گروه‌ها بر اساس امتیاز هفته')},
  ownerpanel:{t:TR('k0276','پنل مالک'),d:TR('k1311','مدیریت کامل برنامه')},
  adminpanel:{t:TR('k0277','پنل مشاور'),d:TR('k1312','مدیریت دانش‌آموزان')},
  themes:{t:TR('k0281','تم‌ها و ظاهر'),d:TR('k1313','رنگ و حالت برنامه')},
@@ -4024,8 +4248,28 @@ NAV.forEach(function(n){ if(!n.id||n.id==="home") return; if(!HOME_WIDGETS[n.id]
 function homeLayout(){
   var layout=S.homeLayout;
   if(!layout || !layout.length) layout=HOME_DEFAULTS.slice();
-  layout=layout.filter(function(id){ return HOME_WIDGETS[id] && (id!=="ownerpanel"||ownerMode) && (id!=="adminpanel"||adminMode||!S.account); });
+  layout=layout.filter(function(id){ return (HOME_WIDGETS[id]||customWidgetDef(id)) && (id!=="ownerpanel"||ownerMode) && (id!=="adminpanel"||adminMode||!S.account); });
   return layout;
+}
+/* v10.4.12 — CUSTOM widgets (Parsa 2026-11-11, sketch 1: "add a CUSTOM
+   widget"): user-made cards with their own title + text. They live in
+   S.customWidgets, ride in the Home layout like any section, and sync to
+   the server with the rest of the user settings. */
+function customWidgetDef(id){
+  if(!id||id.indexOf("cw-")!==0) return null;
+  if(!S.customWidgets) S.customWidgets=[];
+  var cw=S.customWidgets.filter(function(x){ return x.id===id; })[0];
+  return cw?{t:cw.title||TR('k2920','ویجت سفارشی'),d:cw.text||""}:null;
+}
+function homeAddCustom(){
+  var t=($("cwTitle")||{}).value||"", tx=($("cwText")||{}).value||"";
+  t=t.trim(); tx=tx.trim();
+  if(!t){ toast(TR('k2924','عنوان ویجت را بنویسید')+"."); return; }
+  if(!S.customWidgets) S.customWidgets=[];
+  var id="cw-"+Date.now();
+  S.customWidgets.push({id:id,title:t,text:tx});
+  var layout=homeLayout(); layout.push(id); homeSave(layout); renderHomeOnly();
+  toast(TR('k2929','ویجت سفارشی اضافه شد')+".");
 }
 function homeSave(layout){ S.homeLayout=layout.slice(); save(); try{ if(typeof SB!=="undefined") SB.pushUserSettings(); }catch(e){} }
 function homeEditMode(){ return homeEdit===true; }
@@ -4044,6 +4288,7 @@ function homeAdd(id){
 function homeRemove(id){
   var layout=homeLayout().filter(function(x){ return x!==id; });
   if(!layout.length){ toast(TR('k1319','دست‌کم یک بخش باید در خانه بماند') + "."); return; }
+  if(id.indexOf("cw-")===0 && S.customWidgets) S.customWidgets=S.customWidgets.filter(function(x){ return x.id!==id; });
   homeSave(layout); renderHomeOnly();
 }
 function homeMove(id,dir){
@@ -4158,7 +4403,9 @@ function homeWidgetBody(id){
   if(id==="calendar"){
     var evs=S.events.filter(function(e){ return e.date===tday; });
     var rems=S.reminders.filter(function(r){ return r.date===tday; });
-    return '<p class="small">' + TR('k0213','امروز') + ': '+fa(evs.length)+' ' + TR('k1335','رویداد و') + ' '+fa(rems.length)+' ' + TR('k0625','یادآوری') + '</p>'
+    var _jt=jalToday();
+    return '<div class="rowflex" style="align-items:center;gap:10px"><span class="cal-daynum">'+fa(_jt.jd)+'</span><span class="small"><b>'+fa(_jt.jd)+' '+jalMonthName(_jt.jm)+' '+fa(_jt.jy)+'</b></span></div>'
+    +'<p class="small" style="margin-top:8px">' + TR('k0213','امروز') + ': '+fa(evs.length)+' ' + TR('k1335','رویداد و') + ' '+fa(rems.length)+' ' + TR('k0625','یادآوری') + '</p>'
     +(evs.length?'<div style="margin-top:8px">'+evs.slice(0,3).map(function(e){ return '<div class="listrow"><div class="grow"><b>'+esc(e.title)+'</b><div class="small">'+esc(e.time||"")+'</div></div></div>'; }).join("")+'</div>':'<p class="small" style="margin-top:8px">' + TR('k1336','برای امروز رویدادی نیست') + '.</p>');
   }
   if(id==="notes"){
@@ -4254,6 +4501,17 @@ function homeWidgetBody(id){
     return '<p class="small">'+TR('k2706','نقشه واقعی — موقعیت‌های زنده اعضا از سرور')+'</p>'
     +'<p class="small" style="margin-top:8px">'+fa(mg.length)+' '+TR('k1143','گروه')+' — '+fa(located)+' '+TR('k2736','موقعیت دقیق')+'</p>';
   }
+  if(id==="topgroups"){
+    var _tg=(typeof OG!=="undefined"&&OG._topGroups)||[];
+    if(!_tg.length){ try{ loadHomeTopGroups(); }catch(e){} return '<div id="hwTopGroups"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div>'; }
+    if(_tg.every(function(r){ return +r.weekly_points===0; })) return '<div id="hwTopGroups"><p class="small">'+TR('k2600','هنوز گروهی در این هفته امتیاز نگرفته است')+'.</p></div>';
+    var _md=["🥇","🥈","🥉"];
+    return '<div id="hwTopGroups">'+_tg.slice(0,3).map(function(r,i){ return '<div class="listrow"><div class="grow"><b>'+(_md[i]||fa(i+1)+" — ")+esc(r.group_name||"—")+'</b><div class="small">'+fa(r.weekly_points||0)+' '+TR('k2533','امتیاز این هفته')+' · '+fa(r.member_count||0)+' '+TR('k2534','عضو')+'</div></div><span class="pill gold">'+fa(r.weekly_points||0)+'</span></div>'; }).join("")+'</div>';
+  }
+  if(id.indexOf("cw-")===0){
+    var _cw=customWidgetDef(id);
+    return _cw?'<p>'+esc(_cw.d||"")+'</p>':'<p class="small">—</p>';
+  }
   return '<p class="small">'+esc(HOME_WIDGETS[id].d)+'</p>';
 }
 function renderHomeOnly(){ if(curView==="home") go("home"); }
@@ -4272,7 +4530,13 @@ Object.assign(I18N_EN,{"k2700":"Groups map","k2701":"Add to Home","k2703":"Remov
 Object.assign(I18N_EN,{"k2810":"Online groups test","k2811":"This test checks every group capability with test data; all test data is deleted afterwards.","k2812":"Edit group (test)","k2813":"Join by invite code (test)","k2814":"Join with wrong code (test)","k2815":"Set role (test)","k2816":"Group message (test)","k2817":"Poll (test)","k2818":"Group announcement (test)","k2819":"Group task (test)","k2820":"Group event (test)","k2821":"Map group","k2822":"Choose a group to view on the map","k2823":"Stale location","k2824":"Owner signature invalid; sync from the owner panel","k2825":"Type the full username; only an exact match is shown, never a list","k2826":"My live location","k2827":"Live location stopped","k2828":"Owner location sharing","k2829":"Group test"});
 Object.assign(I18N_EN,{"k2750":"Log in online first to use online chat","k2751":"The map needs the internet; locations are not fresh","k2752":"Live — locations from the server","k2753":"Locations are stale — offline","k2754":"Not connected to the server; locations could not be loaded","k2755":"Last updated","k2756":"Add by username","k2757":"Username must be at least 3 characters","k2758":"Current group members","k2759":"Share the invite code","k2760":"Create or select an online group first","k2761":"Owner location sharing needs a new server function","k2762":"Server stats","k2763":"Stats could not be loaded from the server","k2764":"Refresh stats","k2765":"All groups (owner)","k2766":"Edit group","k2767":"Group name","k2768":"Save changes","k2771":"Accounts","k2772":"Registered people","k2773":"Keys","k2774":"Active keys","k2775":"Revoked keys","k2776":"Super keys","k2777":"Groups","k2778":"Members","k2779":"Messages","k2780":"Points","k2781":"Super users","k2782":"By group","k2783":"Nobody has shared a location yet","k2784":"Map","k2785":"View chat","k2786":"View advisor chats","k2787":"View polls","k2788":"Set points","k2789":"Points","k2790":"Owner read of group tasks/events is not on the server yet","k2791":"Owner supervision","k2792":"Delete message","k2793":"Close poll","k2794":"Delete poll","k2795":"Points saved","k2796":"Poll closed","k2797":"Poll deleted","k2798":"Message deleted","k2799":"Group updated","k2800":"The owner can change everything here","k2801":"Personal data stays private; only counts sync to the server"});
 Object.assign(I18N_EN,{"k2830": "Group chat history is cleaned every week; messages older than 7 days are deleted", "k2831": "This username/email is not registered; ask the owner to register you", "k2832": "This key is bound to a different username", "k2833": "Pick your role in this group only once; afterwards only the owner can change it", "k2834": "Your role was already picked; only the owner can change it", "k2835": "Your role was saved", "k2836": "You have reached your role's group limit", "k2837": "To create an online group, first sign in to the server account; get the server username and password from the owner", "k2838": "Enter your username and email; the owner registered them for you", "k2839": "The group could not be created on the server; if you reached your role's group limit, ask the owner", "k2840": "waiting to sync to the server", "k2841": "Loading groups\u2026", "k2842": "Retry", "k2843": "Loading messages\u2026", "k2844": "Sign in to the server account", "k2845": "To see groups, chat and locations, sign in with the username and password the owner registered for you", "k2846": "Server password", "k2848": "Owner sign-in needs server verification; check the internet and try again", "k2849": "The server username or password is wrong", "k2850": "Username this key is bound to (optional; empty means the key is not bound to any username)", "k2851": "Credentials", "k2852": "Usernames, emails and passwords on the server", "k2853": "The owner registers each person's username, email, password and recovery question on the server; group entry is only possible with these credentials", "k2854": "Email", "k2855": "Not linked to a person", "k2856": "Register credentials", "k2857": "No credentials registered yet", "k2858": "has a password", "k2859": "no password", "k2860": "has recovery", "k2861": "no recovery", "k2862": "New password", "k2863": "Saving the credentials on the server failed; the username or email is already used", "k2864": "Credentials registered", "k2865": "New password for", "k2866": "New password saved", "k2867": "Credentials", "k2868": "will be deleted. They will no longer be able to sign in with this username", "k2869": "Credentials deleted", "k2870": "Username (English)", "k2871": "Enter the username and email the owner registered for you; without the owner's registration, online groups are not accessible"});
-var APP_VERSION="10.4.11";
+/* v10.4.12 — EN strings for the Jalali calendar, alarm-sound test,
+   top-groups leaderboard and the extended owner-panel test. */
+Object.assign(I18N_EN,{"k2900":"Jalali","k2901":"phone clock","k2902":"Alarm time","k2903":"Now","k2522":"Sounds are muted; turn off Mute first","k2523":"Hear the selected sound before saving","k2528":"Top groups of the week","k2529":"Last 7 days","k2533":"Points this week","k2534":"members","k2535":"Tasks done this week","k2536":"Focus minutes this week","k2537":"Messages this week","k2538":"You must be online to see the top groups of the week","k2539":"Refresh","k2600":"No group has earned points this week yet","k2601":"Top groups of the week (test)","k2602":"Server-verified login (test)","k2603":"Wrong password rejected","k2604":"Group message — persistence (test)","k2605":"Group message — 7-day retention (test)","k2606":"Member access to groups (test)","k2607":"Member locations on the map (test)","k2608":"One-time role + abilities (test)","k2609":"Telegram sales form (test)","k2610":"Offline Jalali calendar (test)","k2611":"Alarm sound test (test)","k2612":"Delete test credential","k2613":"Top groups by this week's points","k2614":"Only overall group information is shown here; no member's name or information appears"});
+/* v10.4.12 — sketch screens, walkie-talkie global + hands-free, top bar,
+   owner-panel tests for the new resources. */
+Object.assign(I18N_EN,{"k2910":"Talk without holding the button","k2911":"Hands-free mode","k2912":"Mic is open; tap again to stop","k2913":"Walkie-talkie is on","k2915":"View calendar","k2916":"Top 3 for today","k2917":"Today's habits","k2918":"Alarms","k2920":"Custom widget","k2921":"Widget title","k2922":"Widget text","k2923":"Add custom widget","k2924":"Write a widget title","k2926":"Mic is open; talk without holding the button","k2927":"Mic closed","k2928":"Build your own widget; it stays on Home with your title and text and syncs with the server","k2929":"Custom widget added","k2932":"Connected","k2933":"Tap to talk","k2934":"Hands-free is on — mic is open","k2935":"My Today screen (test)","k2936":"Default landing (test)","k2937":"Walkie-talkie global + hands-free (test)","k2938":"Top bar (test)","k2939":"Home default layout + customization (test)","k2940":"Alarm picker — Jalali + clock (test)","k2941":"Home layout server sync (test)","k2942":"Walkie-talkie widget (test)","k2943":"Key expiry (test)","k2944":"Delete revoked-key history (test)","k2945":"Owner-panel widgets (test)","k2946":"Unlimited","k2947":"Today is the last day","k2949":"Delete revoked-key history","k2950":"Delete the history of revoked and expired keys? This cannot be undone.","k2951":"Deleting the key history failed","k2952":"Revoked-key history deleted","k2954":"Quick access"});
+var APP_VERSION="10.4.12";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -4609,6 +4873,64 @@ function groupMapRefreshMarkers(){
   });
   groupMapPaintState();
 }
+/* ================= گروه‌های برتر هفته (v10.4.12, Parsa 2026-11-11) =========
+   Weekly leaderboard, SERVER-BACKED (top_groups_week RPC): the ranking and
+   the stats come from the server, so they are the same for everyone.
+   PRIVACY: only AGGREGATE data is ever shown — group name, weekly points,
+   member count, tasks done / focus minutes / messages this week. NO member
+   name, NO username, NO member detail, NO private data of any individual
+   ever reaches this view (the RPC itself returns only aggregates). */
+function renderTopGroups(v){
+  var h=vhead(TR('k2528','گروه‌های برتر هفته'),TR('k2529','۷ روز گذشته')+" — "+TR('k2613','برترین گروه‌ها بر اساس امتیاز هفته')+".",'<button class="btn ghost sm" onclick="loadTopGroups(true)">'+TR('k2539','به‌روزرسانی')+'</button>');
+  h+='<div id="topGroupsBox"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div>';
+  h+='<p class="small" style="margin-top:10px">'+TR('k2614','فقط اطلاعات کلی گروه‌ها نمایش داده می‌شود؛ نام یا اطلاعات هیچ عضوی اینجا نیست')+'.</p>';
+  v.innerHTML=h;
+  loadTopGroups(false);
+}
+function loadTopGroups(force){
+  var box=$("topGroupsBox"); if(!box) return;
+  if(!SB.client||typeof sbRpc!=="function"){ box.innerHTML='<div class="empty">'+TR('k2538','برای دیدن گروه‌های برتر هفته باید آنلاین باشید')+'.</div>'; return; }
+  sbRpc("top_groups_week",{p_limit:10}).then(function(res){
+    if(res.error){ box.innerHTML='<div class="empty">'+TR('k2538','برای دیدن گروه‌های برتر هفته باید آنلاین باشید')+'.</div>'; return; }
+    var rows=Array.isArray(res.data)?res.data:[];
+    paintTopGroups(rows);
+  }).catch(function(){ box.innerHTML='<div class="empty">'+TR('k2538','برای دیدن گروه‌های برتر هفته باید آنلاین باشید')+'.</div>'; });
+}
+function loadHomeTopGroups(){
+  if(!SB.client||typeof sbRpc!=="function") return;
+  sbRpc("top_groups_week",{p_limit:10}).then(function(res){
+    if(res.error) return;
+    var rows=Array.isArray(res.data)?res.data:[];
+    try{ OG._topGroups=rows; }catch(e){}
+    var box=$("hwTopGroups"); if(!box) return;
+    if(!rows.length || rows.every(function(r){ return +r.weekly_points===0; })){ box.innerHTML='<p class="small">'+TR('k2600','هنوز گروهی در این هفته امتیاز نگرفته است')+'.</p>'; return; }
+    var medals=["🥇","🥈","🥉"];
+    box.innerHTML=rows.slice(0,3).map(function(r,i){ return '<div class="listrow"><div class="grow"><b>'+(medals[i]||fa(i+1)+" — ")+esc(r.group_name||"—")+'</b><div class="small">'+fa(r.weekly_points||0)+' '+TR('k2533','امتیاز این هفته')+' · '+fa(r.member_count||0)+' '+TR('k2534','عضو')+'</div></div><span class="pill gold">'+fa(r.weekly_points||0)+'</span></div>'; }).join("");
+  }).catch(function(){});
+}
+function paintTopGroups(rows){
+  try{ OG._topGroups=Array.isArray(rows)?rows:[]; }catch(e){}
+  var hw=$("hwTopGroups");
+  if(hw){
+    if(!rows.length || rows.every(function(r){ return +r.weekly_points===0; })){ hw.innerHTML='<p class="small">'+TR('k2600','هنوز گروهی در این هفته امتیاز نگرفته است')+'.</p>'; }
+    else{
+      var medals0=["🥇","🥈","🥉"];
+      hw.innerHTML=rows.slice(0,3).map(function(r,i){ return '<div class="listrow"><div class="grow"><b>'+(medals0[i]||fa(i+1)+" — ")+esc(r.group_name||"—")+'</b><div class="small">'+fa(r.weekly_points||0)+' '+TR('k2533','امتیاز این هفته')+' · '+fa(r.member_count||0)+' '+TR('k2534','عضو')+'</div></div><span class="pill gold">'+fa(r.weekly_points||0)+'</span></div>'; }).join("");
+    }
+  }
+  var box=$("topGroupsBox"); if(!box) return;
+  /* v10.4.12 (option B): points earned before this version have no group,
+     so the first week after installing it every group is still at 0 —
+     that is the honest empty state, not a broken board. */
+  if(!rows.length || rows.every(function(r){ return +r.weekly_points === 0; })){ box.innerHTML='<div class="empty">'+TR('k2600','هنوز گروهی در این هفته امتیاز نگرفته است')+'.</div>'; return; }
+  var medals=["🥇","🥈","🥉"];
+  box.innerHTML=rows.map(function(r,i){
+    return '<div class="listrow"><div class="grow"><b>'+(medals[i]||fa(i+1)+" — ")+esc(r.group_name||"—")+'</b>'
+      +'<div class="small">'+fa(r.weekly_points||0)+' '+TR('k2533','امتیاز این هفته')+' · '+fa(r.member_count||0)+' '+TR('k2534','عضو')+'</div>'
+      +'<div class="small">'+fa(r.tasks_done_week||0)+' '+TR('k2535','کار انجام‌شده این هفته')+' · '+fa(r.focus_min_week||0)+' '+TR('k2536','دقیقه تمرکز این هفته')+' · '+fa(r.messages_week||0)+' '+TR('k2537','پیام این هفته')+'</div></div>'
+      +'<span class="pill gold">'+fa(r.weekly_points||0)+'</span></div>';
+  }).join("");
+}
 function renderGroupMap(v){
   groupMapOGInit();
   try{ if(OG._mapPoll){ clearInterval(OG._mapPoll); OG._mapPoll=null; } }catch(e){}
@@ -4735,18 +5057,20 @@ function inviteUserToGroup(username, groupId){
 function renderHome(v){
   var layout=homeLayout();
   var h=vhead(TR('k0256','خانه'),TR('k1339','خانه شما') + " — " + TR('k1338','بخش‌هایی که بیشتر استفاده می‌کنید، اینجا جمع‌اند؛ با «شخصی‌سازی خانه» چیدمان را عوض کنید') + ".",'<button class="btn" onclick="homeToggleEdit()">'+(homeEdit?TR('k1341','پایان شخصی‌سازی'):TR('k1340','شخصی‌سازی خانه'))+'</button>');
+  h+='<div class="rowflex home-walkie-row"><div class="card home-walkie" onclick="go(\'walkie\')" role="button" tabindex="0"><span style="font-size:24px">🎙️</span><span class="grow" style="text-align:start"><b>'+TR('k2001','واکی‌تاکی')+'</b><span class="small" id="homeWalkieStatus" style="display:block">'+WT.homeStatus()+'</span></span><span class="pill'+(WT.joined?' gold':'')+'">'+(WT.joined?TR('k2932','متصل'):TR('k2933','برای صحبت بزنید'))+'</span></div></div>';
   h+='<div class="homebrand"><img data-logo class="glogo glogo-home" alt="GhostOps" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><div><b>GhostOps</b><span>' + TR('k9000','دفتر برنامه‌ریزی دیجیتال') + '</span></div></div>';
   h+='<div class="grid g2">';
   layout.forEach(function(id){
-    var w=HOME_WIDGETS[id]; if(!w) return;
+    var w=HOME_WIDGETS[id]||customWidgetDef(id); if(!w) return;
+    var isCw=id.indexOf("cw-")===0;
     var tools="";
     if(homeEdit){
       tools='<span class="sp"></span><span class="hw-tools"><button class="btn ghost sm" onclick="homeMove(\''+id+'\',-1)" title="' + TR('k1342','جابه‌جایی به بالا') + '">↑</button><button class="btn ghost sm" onclick="homeMove(\''+id+'\',1)" title="' + TR('k1343','جابه‌جایی به پایین') + '">↓</button><button class="btn ghost sm" onclick="homeRemove(\''+id+'\')" title="' + TR('k1344','حذف از خانه') + '">✕</button></span>';
     }
-    h+='<div class="card home-w" data-hw="'+id+'"'+(homeEdit?' draggable="true" ondragstart="hwDragStart(event,\''+id+'\')" ondragend="hwDragEnd(event)" ondragover="hwDragOver(event)" ondrop="hwDrop(event)"':'')
+    h+='<div class="card home-w'+(id==="week"?" home-w-wide":"")+'" data-hw="'+id+'"'+(homeEdit?' draggable="true" ondragstart="hwDragStart(event,\''+id+'\')" ondragend="hwDragEnd(event)" ondragover="hwDragOver(event)" ondrop="hwDrop(event)"':'')
     +'><div class="hw-head"><span class="vh-ic">'+icSvg(id)+'</span><b>'+esc(w.t)+'</b>'+(homeEdit?'<span class="hw-handle" title="' + TR('k1345','نگه دارید و بکشید') + '" onpointerdown="hwTouchStart(event,\''+id+'\')" onpointermove="hwTouchMove(event)" onpointerup="hwTouchEnd(event)" onpointercancel="hwTouchEnd(event)">⠿</span>':'')+tools+'</div>'
     +'<div class="hw-body">'+homeWidgetBody(id)+'</div>'
-    +'<div class="rowflex" style="margin-top:10px"><button class="btn ghost sm" onclick="go(\''+id+'\')">' + TR('k1346','باز کردن بخش «')+esc(w.t)+'»</button></div>'
+    +(isCw?"":'<div class="rowflex" style="margin-top:10px"><button class="btn ghost sm" onclick="go(\''+id+'\')">' + TR('k1346','باز کردن بخش «')+esc(w.t)+'»</button></div>')
     +'</div>';
   });
   h+='</div>';
@@ -4754,30 +5078,48 @@ function renderHome(v){
     var avail=Object.keys(HOME_WIDGETS).filter(function(id){ return layout.indexOf(id)===-1 && (id!=="ownerpanel"||ownerMode) && (id!=="adminpanel"||adminMode||!S.account); });
     h+='<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("edit")+'</span>' + TR('k1348','افزودن بخش به خانه') + '</h3><p class="small">' + TR('k1349','روی هر بخش بزنید تا به خانه اضافه شود؛ ترتیب را با نگه‌داشتن دستگیره (') + '⠿' + TR('k1347',') و کشیدن') + ' — ' + TR('k1351','یا با دکمه‌های') + ' ↑ و ↓ — ' + TR('k1350','عوض کنید') + '.</p><div class="rowflex" style="flex-wrap:wrap;margin-top:10px">'
     +(avail.length?avail.map(function(id){ return '<button class="btn ghost sm" onclick="homeAdd(\''+id+'\')"><span class="vh-ic">'+icSvg(id)+'</span>'+esc(HOME_WIDGETS[id].t)+'</button>'; }).join(""):'<span class="small">' + TR('k1352','همه بخش‌ها همین حالا در خانه‌اند') + '.</span>')
-    +'</div><div class="rowflex" style="margin-top:12px"><button class="btn ghost sm" onclick="homeReset()">' + TR('k1353','بازنشانی چیدمان خانه') + '</button></div></div>';
+    +'</div><div class="rowflex" style="margin-top:12px"><button class="btn ghost sm" onclick="homeReset()">' + TR('k1353','بازنشانی چیدمان خانه') + '</button></div>'
+    +'<div style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px"><h3 style="margin-bottom:8px"><span class="vh-ic">'+icSvg("edit")+'</span>' + TR('k2920','ویجت سفارشی') + '</h3><p class="small">' + TR('k2928','ویجت خودتان را بسازید؛ با عنوان و متن دلخواه در خانه می‌ماند و با سرور همگام می‌شود') + '.</p><div class="field" style="margin-top:8px"><label>' + TR('k2921','عنوان ویجت') + '</label><input class="inp" id="cwTitle" placeholder="' + TR('k2921','عنوان ویجت') + '"></div><div class="field"><label>' + TR('k2922','متن ویجت') + '</label><input class="inp" id="cwText" placeholder="' + TR('k2922','متن ویجت') + '"></div><button class="btn sm" onclick="homeAddCustom()">' + TR('k2923','افزودن ویجت سفارشی') + '</button></div></div>';
   }
   v.innerHTML=h;
 }
 
-/* ================= نمای امروز ================= */
+/* ================= نمای امروز =================
+   v10.4.12 — rebuilt from Parsa's hand-drawn sketch 2 (2026-11-11):
+   header «امروز من» + sun icon + TODAY's Jalali date (live, never fixed);
+   shortcut buttons (Home + walkie-talkie, clarified 2026-11-11 10:39);
+   left column of three boxes (top 3 today / today's habits / alarms);
+   right side a LARGE box with the big progress ring; bottom a WIDE box
+   that IS the same calendar widget (clarified 2026-11-11 10:39): it shows
+   today's current Jalali date and tapping it opens the calendar.
+   HELD (not guessed): the exact meaning of the word «Link» written on the
+   bottom box in the sketch — the box opens the calendar, nothing else
+   was invented for it. */
 function renderToday(v){
   var td=todayIdx(), todays=S.tasks.filter(function(t){return t.day===td;});
   var done=todays.filter(function(t){return t.done;}).length;
   var pct=todays.length?done/todays.length*100:0;
-  var big3=todays.filter(function(t){return t.pri===1;}).slice(0,3);
-  var nextRem=S.reminders.filter(function(r){return !r.fired;})[0];
-  var h=vhead(TR('k0105','امروز من'),TR('k0548','سلام') + " "+S.user.name+" — "+faDate(new Date()),'<button class="btn" onclick="openTaskModal()"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>' + TR('k0124','کار تازه') + '</button>');
+  var big3=todays.filter(function(t){return t.pri===1 && !t.done;}).slice(0,3);
+  if(!big3.length) big3=todays.filter(function(t){return !t.done;}).slice(0,3);
+  var todaysRems=S.reminders.filter(function(r){return r.date===todayKey();});
+  var h=vhead("☀️ "+TR('k0105','امروز من'),jalTodayStr(),'<button class="btn" onclick="openTaskModal()"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>' + TR('k0124','کار تازه') + '</button>');
   if(S.announce) h+='<div class="card" style="margin-bottom:14px;border-color:var(--acc2)"><div class="rowflex"><span class="pill gold">' + TR('k1354','اطلاعیه') + ' '+esc(S.announce.by)+'</span><span class="small">'+esc(S.announce.when)+'</span></div><p style="margin:8px 0 0">'+esc(S.announce.text)+'</p></div>';
-  h+='<div class="grid g3">'
-    +'<div class="card" style="text-align:center">'+ringSVG(pct,104,false,TR('k1355','پیشرفت امروز'))+'<div class="small">'+fa(done)+' ' + TR('k0299','از') + ' '+fa(todays.length)+' ' + TR('k1356','کار انجام شده') + '</div></div>'
-    +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("tasks")+'</span>' + TR('k1357','سه کار مهم امروز') + '</h3>'+(big3.length?big3.map(function(t){return '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><span class="pri" style="background:#c0392b"></span><span'+(t.done?' style="text-decoration:line-through"':'')+'>'+esc(t.name)+'</span></div>';}).join(""):'<p class="small">' + TR('k1359','هنوز کار با اولویت ۱ ندارید؛ از بخش کارها یکی را مهم کنید') + '.</p>')+'<button class="btn ghost sm" onclick="go(\'tasks\')">' + TR('k1358','مدیریت کارها') + '</button></div>'
-    +'<div class="card"><h3 style="margin-bottom:8px"><span class="vh-ic">'+icSvg("reminders")+'</span>' + TR('k1360','آلارم بعدی') + '</h3>'+(nextRem?'<div class="stat-num">'+fa(nextRem.time)+'</div><div>'+esc(nextRem.title)+'</div><div class="small">' + TR('k1361','یادآوری با ساعت و تاریخ همین گوشی، کاملاً آفلاین') + '</div>':'<p class="small">' + TR('k1362','یادآوری فعالی ندارید') + '.</p>')+'<button class="btn ghost sm" style="margin-top:8px" onclick="go(\'reminders\')">' + TR('k0107','یادآوری‌ها') + '</button></div>'
-    +'</div>';
-  h+='<div class="grid g2" style="margin-top:14px"><div class="card"><h3 style="margin-bottom:12px"><span class="vh-ic">'+icSvg("tasks")+'</span>' + TR('k1364','کارهای امروز') + '</h3><div>'+(todays.length?todays.map(taskHTML).join(""):'<div class="empty">' + TR('k1363','برای امروز کاری ثبت نشده است') + '.</div>')+'</div></div>'
-    +'<div><div class="card" style="margin-bottom:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("habits")+'</span>' + TR('k1365','عادت‌های امروز') + '</h3>'+S.habits.map(function(hb){ var on=(hb.days||[])[td]; return '<div class="rowflex" style="justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)"><span>'+esc(hb.name)+'</span><button class="tog'+(on?" on":"")+'" onclick="toggleHabit('+hb.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M4 12.5l5 5L20 6.5"/></svg></button></div>'; }).join("")+'</div>'
-    +'<div class="card"><h3 style="margin-bottom:8px"><span class="vh-ic">'+icSvg("support")+'</span>' + TR('k1367','پشتیبان شما می‌گوید') + '</h3><p style="margin:0">«'+esc(S.supporterNotes[0]||"")+'»</p><p class="small">' + TR('k1366','دستورها و نکات پشتیبان هر هفته در صفحه ارزیابی هفته ثبت می‌شود') + '.</p><button class="btn ghost sm" onclick="go(\'review\')">' + TR('k0278','ارزیابی هفته') + '</button></div></div></div>';
+  /* Shortcuts (sketch 2): Home + walkie-talkie, with icons. */
+  h+='<div class="rowflex mytoday-shortcuts"><button class="btn ghost sm" onclick="go(\'home\')">🏠 '+TR('k0256','خانه')+'</button><button class="btn ghost sm" onclick="go(\'walkie\')">🎙️ '+TR('k2001','واکی‌تاکی')+(WT.joined?' <span class="wt-live-dot"></span>':'')+'</button></div>';
+  h+='<div class="mytoday-grid">'
+    +'<div class="card mytoday-ring">'+ringSVG(pct,180,false,TR('k1355','پیشرفت امروز'))+'<div class="small" style="margin-top:8px">'+fa(done)+' ' + TR('k0299','از') + ' '+fa(todays.length)+' ' + TR('k1356','کار انجام شده') + '</div></div>'
+    +'<div class="mytoday-col">'
+    +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("tasks")+'</span>' + TR('k2916','سه تا مهم امروز') + '</h3>'+(big3.length?big3.map(function(t,i){return '<div class="listrow"><span class="mytoday-num">'+fa(i+1)+'</span><div class="grow"><b'+(t.done?' style="text-decoration:line-through"':'')+'>'+esc(t.name)+'</b></div><button class="tog'+(t.done?' on':'')+'" onclick="toggleTask('+t.id+')" aria-label="' + TR('k0300','انجام شد') + '"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M4 12.5l5 5L20 6.5"/></svg></button></div>';}).join(""):'<p class="small">' + TR('k1359','هنوز کار با اولویت ۱ ندارید؛ از بخش کارها یکی را مهم کنید') + '.</p>')+'<button class="btn ghost sm" style="margin-top:8px" onclick="go(\'tasks\')">' + TR('k1358','مدیریت کارها') + '</button></div>'
+    +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("habits")+'</span>' + TR('k2917','عادت‌های امروز') + '</h3>'+(S.habits.length?S.habits.map(function(hb){ var on=(hb.days||[])[td]; return '<div class="rowflex" style="justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)"><span>'+esc(hb.name)+'</span><button class="tog'+(on?" on":"")+'" onclick="toggleHabit('+hb.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M4 12.5l5 5L20 6.5"/></svg></button></div>'; }).join(""):'<p class="small">' + TR('k1334','هنوز عادتی ساخته نشده است') + '.</p>')+'</div>'
+    +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("reminders")+'</span>' + TR('k2918','آلارم‌ها') + '</h3>'+(todaysRems.length?todaysRems.slice(0,3).map(function(r){return '<div class="listrow"><div class="grow"><b>'+esc(r.title)+'</b><div class="small">'+fa(r.time||"")+'</div></div></div>';}).join(""):'<p class="small">' + TR('k1362','یادآوری فعالی ندارید') + '.</p>')+'<button class="btn ghost sm" style="margin-top:8px" onclick="go(\'reminders\')">' + TR('k0107','یادآوری‌ها') + '</button></div>'
+    +'</div></div>';
+  /* Bottom wide box = THE SAME calendar widget as Home (clarified
+     2026-11-11 10:39): today's current Jalali date; tapping opens the
+     calendar. */
+  h+='<div class="card mytoday-calcard" onclick="go(\'calendar\')" role="button" tabindex="0"><div class="hw-body">'+homeWidgetBody("calendar")+'</div><div class="rowflex" style="margin-top:10px"><span class="btn ghost sm">📅 '+TR('k2915','مشاهده تقویم')+'</span></div></div>';
   v.innerHTML=h;
 }
+
 
 /* ================= مالک برنامه — فقط مالک به مدیریت افراد و افزودن مشاور دسترسی دارد ================= */
 var ownerMode=false;
@@ -5298,8 +5640,15 @@ function revokeSubKey(id){
   try{ var pend=JSON.parse(localStorage.getItem("go-pending-revokes")||"[]"); if(pend.indexOf(k.key)===-1) pend.push(k.key); localStorage.setItem("go-pending-revokes",JSON.stringify(pend)); }catch(e){}
   go("ownerpanel"); toast(TR('k2450','کلید روی همین دستگاه باطل شد؛ با وصل‌شدن به سرور هم باطل می‌شود') + ".");
 }
+/* v10.4.12 — UNLIMITED keys (no expiry date and no day limit) never expire
+   and must never be shown as expired. Before this fix mySubDaysLeft()
+   returned 0 for them, so the subscription card said «منقضی شده است»
+   for a perfectly valid unlimited key. */
+function mySubUnlimited(){ return !!(S.mySub && !S.mySub.expires && (!S.mySub.days || +S.mySub.days<=0)); }
 function mySubDaysLeft(){
-  if(!S.mySub || !S.mySub.expires) return 0;
+  if(!S.mySub) return 0;
+  if(mySubUnlimited()) return Infinity;
+  if(!S.mySub.expires) return 0;
   var d=Math.ceil((new Date(S.mySub.expires+"T00:00:00")-new Date(todayKey()+"T00:00:00"))/86400000);
   return d<0?0:d;
 }
@@ -5350,7 +5699,11 @@ function subBuyHTML(){
 function subStatusHTML(){
   if(!S.mySub) return '<p class="small">' + TR('k1526','اشتراک فعالی ندارید') + '.</p><div class="rowflex"><button class="btn sm" onclick="openSubActivate()">' + TR('k0060','خرید یا فعال‌سازی اشتراک') + '</button></div>';
   var left=mySubDaysLeft();
-  return '<div class="listrow"><div class="grow"><b>' + TR('k1481','طرح «')+esc(S.mySub.planName)+'»</b><div class="small">' + (LANG==='en'?'From':TR('k0299','از')) + ' '+esc(S.mySub.start)+' ' + TR('k1209','تا') + ' '+esc(S.mySub.expires)+' — '+(left>0?fa(left)+' ' + TR('k0402','روز مانده'):TR('k1529','منقضی شده است'))+'</div></div><span class="pill '+(left>0?'':' gray')+'">'+(left>0?TR('k0620','فعال'):TR('k1528','منقضی'))+'</span></div><button class="btn ghost sm" onclick="openSubActivate()">' + TR('k1527','فعال‌سازی با کلید تازه') + '</button>';
+  var expired=keyExpired(S.mySub)||S.mySub.status==="revoked";
+  var unlimited=mySubUnlimited();
+  var whenTxt=unlimited?TR('k2946','نامحدود'):((LANG==='en'?'From':TR('k0299','از')) + ' '+esc(S.mySub.start)+' ' + TR('k1209','تا') + ' '+esc(S.mySub.expires||"—"));
+  var leftTxt=unlimited?TR('k2946','نامحدود'):(expired?TR('k1529','منقضی شده است'):(left>0?(fa(left)+' ' + TR('k0402','روز مانده')):TR('k2947','امروز آخرین روز است')));
+  return '<div class="listrow"><div class="grow"><b>' + TR('k1481','طرح «')+esc(S.mySub.planName)+'»</b><div class="small">' + whenTxt + ' — ' + leftTxt + '</div></div><span class="pill '+(expired?' gray':'')+'">'+(expired?TR('k1528','منقضی'):TR('k0620','فعال'))+'</span></div><button class="btn ghost sm" onclick="openSubActivate()">' + TR('k1527','فعال‌سازی با کلید تازه') + '</button>';
 }
 function showServerAccountPrompt(){
   /* v10.4.11 — after key activation the user must complete SERVER
@@ -5421,10 +5774,21 @@ function activateSubKey(val){
   });
 }
 function finishKeyActivation(k,row){
+  /* v10.4.12 — OFFLINE DAY-COUNTING (Parsa 2026-11-11): once a key is
+     activated, the app counts its days OFFLINE from the activation time,
+     so the user never has to go online to re-enter a key while days
+     remain. The expiry comes from the server when it sends one
+     (expires_at); otherwise it is computed HERE from the activation day
+     + the plan's days (never a locked or missing date). NULL/0 days =
+     unlimited: no expiry at all. activatedAt (ms) is stored so the count
+     is provably from activation. */
   var exp2=row.expires_at?row.expires_at.slice(0,10):null;
-  S.mySub={keyId:null,key:k,planId:null,planName:row.plan_name||"",price:0,days:row.days||0,role:row.role||"",start:todayKey(),expires:exp2,status:"active"};
+  if(!exp2 && row.days && +row.days>0){
+    var _d=new Date(); _d.setDate(_d.getDate()+ (+row.days)); exp2=keyOf(_d);
+  }
+  S.mySub={keyId:null,key:k,planId:null,planName:row.plan_name||"",price:0,days:row.days||0,role:row.role||"",start:todayKey(),expires:exp2,activatedAt:Date.now(),status:"active"};
   if(row.role==="super"){
-    S.mySuper={key:k,expires:exp2,status:"active"};
+    S.mySuper={key:k,expires:exp2,activatedAt:Date.now(),status:"active"};
     if(!S.mySub.planName) S.mySub.planName=TR('k2230','ابر کاربر');
   }
   save(); closeModal();
@@ -5445,12 +5809,12 @@ function subSalesHTML(){
   +'<button class="btn sm" onclick="addPlan()">' + TR('k1550','ساختن طرح') + '</button>'
   +((S.plans||[]).length?'<div style="margin-top:10px">'+S.plans.map(function(p){ return '<div class="listrow"><div class="grow"><b>'+esc(p.name)+'</b><div class="small">'+fa(p.price)+' ' + TR('k1518','تومان') + ' — '+fa(p.days)+' ' + TR('k0329','روز') + '</div></div><button class="btn ghost sm" onclick="openPlanEdit(\''+p.id+'\')">' + TR('k0600','ویرایش') + '</button><button class="btn ghost sm" onclick="delPlan(\''+p.id+'\')">' + TR('k0303','حذف') + '</button></div>'; }).join("")+'</div>':'<p class="small" style="margin-top:10px">' + TR('k1551','هنوز طرحی ساخته نشده است') + '.</p>')
   +'</div>'
-  +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("key")+'</span>' + TR('k1553','کلیدهای ورود') + '</h3><p class="small">' + TR('k1552','خریدار خرید را اطلاع می‌دهد، مالک کلید می‌سازد و می‌فرستد؛ خریدار با همین کلید اشتراک را فعال می‌کند') + ' — ' + TR('k1519','خرید از طریق تلگرام') + ' @' + esc(ss.telegramId||"Albakorov") + '.</p>'
+  +'<div class="card" id="owSecKeys"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("key")+'</span>' + TR('k1553','کلیدهای ورود') + '</h3><p class="small">' + TR('k1552','خریدار خرید را اطلاع می‌دهد، مالک کلید می‌سازد و می‌فرستد؛ خریدار با همین کلید اشتراک را فعال می‌کند') + ' — ' + TR('k1519','خرید از طریق تلگرام') + ' @' + esc(ss.telegramId||"Albakorov") + '.</p>'
   +'<div class="field"><label>' + TR('k1554','نام خریدار') + '</label><input class="inp" id="skBuyer" placeholder="' + TR('k1554','نام خریدار') + '"></div>'
   +'<div class="field"><label>' + TR('k2870','نام کاربری (انگلیسی)') + '</label><input class="inp" id="skUser" dir="ltr" placeholder="username"><div class="hint small">' + TR('k2850','نام کاربری فردی که این کلید به او بسته می‌شود (اختیاری؛ خالی یعنی کلید به هیچ نام کاربری بسته نیست)') + '.</div></div>'
   +'<div class="field"><label>' + TR('k1557','طرح') + '</label><select class="inp" id="skPlan">'+((S.plans||[]).length?S.plans.map(function(p){ return '<option value="'+p.id+'">'+esc(p.name)+' — '+fa(p.price)+' ' + TR('k1556','تومان /') + ' '+fa(p.days)+' ' + TR('k0329','روز') + '</option>'; }).join(""):'<option value="">' + TR('k1555','اول یک طرح بسازید') + '</option>')+'</select></div>'
   +'<div class="field"><label>' + TR('k2327','نقش کلید') + '</label><select class="inp" id="skRole"><option value="">' + TR('k2328','بدون نقش') + '</option><option>' + TR('k0211','کنکوری') + '</option><option>' + TR('k0180','دانشجو') + '</option><option>' + TR('k0187','کارمند') + '</option><option>' + TR('k0192','ورزشکار') + '</option><option>' + TR('k0113','مشاور') + '</option><option>' + TR('k0143','پشتیبان') + '</option></select></div>'
-  +'<div class="rowflex"><button class="btn sm" onclick="createSubKey()">' + TR('k1558','ساختن کلید ورود') + '</button><button class="btn ghost sm" onclick="refreshOwnerKeys()">' + TR('k2567','تازه‌سازی فهرست کلیدها') + '</button></div>'
+  +'<div class="rowflex"><button class="btn sm" onclick="createSubKey()">' + TR('k1558','ساختن کلید ورود') + '</button><button class="btn ghost sm" onclick="refreshOwnerKeys()">' + TR('k2567','تازه‌سازی فهرست کلیدها') + '</button><button class="btn ghost sm" onclick="deleteRevokedKeys()">' + TR('k2949','حذف سابقه کلیدهای باطل‌شده') + '</button></div>'
   +SB.ownerKeysHTML()
   +'</div></div>'
   +'<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("settings")+'</span>' + TR('k1561','روش فروش اشتراک') + '</h3><p class="small">' + TR('k1562','مالک روش فروش را انتخاب می‌کند؛ خریدار فقط همان روش‌هایی را می‌بیند که اینجا فعال شده‌اند. پرداخت در این نسخه خودکار تأیید نمی‌شود و صدور کلید پس از تأیید مالک انجام می‌شود') + '.</p>'
@@ -5462,6 +5826,55 @@ function subSalesHTML(){
 }
 
 /* ================= پنل اختصاصی مالک ================= */
+/* v10.4.12 — OWNER-PANEL WIDGETS + SHORTCUTS (Parsa 2026-11-11 10:49):
+   framed shortcut widgets at the top of the owner panel for fast access
+   to every section. OWNER-ONLY (Parsa 2026-11-11 10:50): this whole block
+   renders only inside renderOwnerPanel AFTER its !ownerMode early return,
+   so a non-owner never sees it; and every action below refuses when
+   !ownerMode (defense in depth — calling the function directly does
+   nothing for a non-owner). */
+function ownerShortcutsHTML(){
+  var items=[
+    ["🔑",TR('k1553','کلیدهای ورود'),"owSecKeys"],
+    ["👥",TR('k1600','افراد و مشاور‌ها'),"owSecPeople"],
+    ["🪪",TR('k2851','اعتبارنامه‌ها'),"owSecCreds"],
+    ["📊",TR('k2762','آمار سرور'),"owSecStats"],
+    ["👥",TR('k2765','همه گروه‌ها (مالک)'),"owSecGroups"],
+    ["🧪",TR('k2569','تست ویژگی‌های آنلاین'),"owSecTests"],
+    ["💰",TR('k0999','فروش اشتراک و کلید ورود'),"owSecSales"],
+    ["💾",TR('k1622','پشتیبان‌گیری و بازیابی'),"owSecBackup"]
+  ];
+  return '<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("ownerpanel")+'</span>' + TR('k2954','دسترسی سریع') + '</h3><div class="grid g2 ow-shorts">'
+    + items.map(function(it){ return '<div class="card ow-short" onclick="owGoSec(\''+it[2]+'\')" role="button" tabindex="0"><span style="font-size:24px">'+it[0]+'</span><b>'+esc(it[1])+'</b></div>'; }).join("")
+    + '</div></div>';
+}
+function owGoSec(id){
+  if(!ownerMode) return false;
+  var el=document.getElementById(id);
+  if(!el) return false;
+  try{ el.scrollIntoView({behavior:"smooth",block:"start"}); }catch(e){ el.scrollIntoView(); }
+  try{ el.classList.add("ow-flash"); setTimeout(function(){ try{ el.classList.remove("ow-flash"); }catch(e){} },1400); }catch(e){}
+  return true;
+}
+/* v10.4.12 — DELETE REVOKED-KEY HISTORY (Parsa 2026-11-11): the owner
+   panel button that deletes the records of revoked (and expired) keys —
+   they clutter the key list. Owner-only; asks for confirmation; the key
+   list is refreshed afterwards. */
+function deleteRevokedKeys(){
+  if(!ownerMode) return;
+  if(!confirm(TR('k2950','سابقه کلیدهای باطل‌شده و منقضی‌شده حذف شود؟ این کار برگشت‌پذیر نیست.'))) return;
+  if(typeof SB==="undefined"||!SB.client){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
+  ownerSig().then(function(sig){
+    if(!sig){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
+    return sbRpc("delete_revoked_keys",{p_sig:sig}).then(function(res){
+      if(res.error){ toast(TR('k2951','حذف سابقه کلیدها ناموفق بود')+"."); return; }
+      var n=(typeof res.data==="number")?res.data:0;
+      toast(TR('k2952','سابقه کلیدهای باطل‌شده حذف شد')+" — "+fa(n)+".");
+      try{ if(SB.loadOwnerKeysServer) SB.loadOwnerKeysServer(); }catch(e){}
+      go("ownerpanel");
+    });
+  }).catch(function(){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); });
+}
 function owSetTheme(t){ S.theme=t; document.body.setAttribute("data-theme",t); startMatrix(); save(); go("ownerpanel"); toast(TR('k1571','تم پیش‌فرض برنامه عوض شد') + "."); }
 function owSetMode(m){ if(isDarkTheme()){ toast(darkThemeMsg()); return; } S.mode=m; document.body.setAttribute("data-mode",m); save(); go("ownerpanel"); }
 function owSaveSupporter(){ var n=$("owSupName").value.trim(); S.supporterName=n||TR('k0143','پشتیبان'); save(); toast(TR('k1572','نام پشتیبان برنامه ذخیره شد') + ": "+S.supporterName); }
@@ -5491,23 +5904,24 @@ function renderOwnerPanel(v){
   var kb=0; try{ kb=Math.round((localStorage.getItem(LSKEY)||"").length/102.4)/10; }catch(e){}
   var h=vhead(TR('k0276','پنل مالک'),TR('k1389','پنل اختصاصی مالک برنامه') + " — " + TR('k1586','همه ابزارهای مالکانه در یک جای جدا، با رمز جدا') + ".");
   h+='<div class="card" style="margin-bottom:14px;border-color:var(--acc2)"><div class="rowflex" style="justify-content:space-between"><div><b>' + TR('k0119','حالت مالک فعال است') + '</b><div class="small">' + TR('k1588','فقط شما به این پنل دسترسی دارید؛ مشاور‌ها و صاحب دفتر این صفحه را نمی‌بینند') + '.</div></div><div class="rowflex"><button class="btn ghost sm" onclick="openOwnerProfile()">' + TR('k1423','ویرایش پروفایل مالک') + '</button><button class="btn ghost sm" onclick="openOwnerPass()">' + TR('k1412','تغییر رمز مالک') + '</button><button class="btn sm" onclick="ownerLogout()">' + TR('k1587','خروج از حالت مالک') + '</button></div></div></div>';
+  h+=ownerShortcutsHTML();
   h+='<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("profile")+'</span>' + TR('k1369','پروفایل مالک') + '</h3><div class="listrow"><div class="avatar">'+esc((S.owner.user||"owner").charAt(0))+'</div><div class="grow"><b>'+esc(S.owner.user||"owner")+'</b><div class="small">' + TR('k1390','نام کاربری مالک') + ' — ' + TR('k1589','دسترسی کامل به همه بخش‌ها، همه افراد و همه داده‌ها') + '</div><div class="small">' + TR('k0064','سؤال امنیتی') + ': '+esc(disp(S.owner.secQ)||"—")+'</div></div></div><p class="small" style="margin:8px 0 0">' + TR('k1590','پروفایل مالک وقتی آنلاین باشید روی سرور هم ذخیره می‌شود؛ آفلاین فقط روی همین دستگاه می‌ماند') + '.</p></div>';
   /* بررسی سلامت سرور (v10.4.4, Parsa 2026-11-10) — owner diagnostics: calls
      the real server operations and reports pass/fail. Create operations use
      a clearly-marked test key / test person that is revoked / deleted
      immediately, so no test data is left behind. */
-  h+='<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("health")+'</span>' + TR('k2544','بررسی سلامت سرور') + '</h3><p class="small">' + TR('k2549','این بررسی عملیات واقعی سرور را فراخوانی می‌کند؛ کلید و فرد آزمایشی بلافاصله پس از ساخت باطل و حذف می‌شوند و چیزی از آن‌ها باقی نمی‌ماند') + '.</p><div class="rowflex"><button class="btn" onclick="SB.runDiagnostics()">'+TR('k2544','بررسی سلامت سرور')+'</button><button class="btn ghost" onclick="SB.syncOwnerSecret()">'+TR('k2559','همگام‌سازی رمز مالک با سرور')+'</button></div><div id="diagResults" style="margin-top:10px"></div><div class="rowflex" style="margin-top:10px"><button class="btn" onclick="SB.runOnlineFeaturesTest()">'+TR('k2569','تست ویژگی‌های آنلاین')+'</button></div><p class="small">'+TR('k2570','این تست همهٔ ویژگی‌های آنلاین را با دادهٔ آزمایشی بررسی می‌کند؛ همهٔ داده‌های آزمایشی پس از تست پاک می‌شوند.')+'</p><div id="onlineTestResults" style="margin-top:10px"></div><div class="rowflex" style="margin-top:10px"><button class="btn" onclick="SB.runGroupsOnlineTest()">'+TR('k2810','تست آنلاین گروه‌ها')+'</button></div><p class="small">'+TR('k2811','این تست همهٔ قابلیت‌های گروه را با دادهٔ آزمایشی بررسی می‌کند؛ همهٔ داده‌های آزمایشی پس از تست پاک می‌شوند.')+'</p><div id="groupsTestResults" style="margin-top:10px"></div></div>';
+  h+='<div class="card" id="owSecTests"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("health")+'</span>' + TR('k2544','بررسی سلامت سرور') + '</h3><p class="small">' + TR('k2549','این بررسی عملیات واقعی سرور را فراخوانی می‌کند؛ کلید و فرد آزمایشی بلافاصله پس از ساخت باطل و حذف می‌شوند و چیزی از آن‌ها باقی نمی‌ماند') + '.</p><div class="rowflex"><button class="btn" onclick="SB.runDiagnostics()">'+TR('k2544','بررسی سلامت سرور')+'</button><button class="btn ghost" onclick="SB.syncOwnerSecret()">'+TR('k2559','همگام‌سازی رمز مالک با سرور')+'</button></div><div id="diagResults" style="margin-top:10px"></div><div class="rowflex" style="margin-top:10px"><button class="btn" onclick="SB.runOnlineFeaturesTest()">'+TR('k2569','تست ویژگی‌های آنلاین')+'</button></div><p class="small">'+TR('k2570','این تست همهٔ ویژگی‌های آنلاین را با دادهٔ آزمایشی بررسی می‌کند؛ همهٔ داده‌های آزمایشی پس از تست پاک می‌شوند.')+'</p><div id="onlineTestResults" style="margin-top:10px"></div><div class="rowflex" style="margin-top:10px"><button class="btn" onclick="SB.runGroupsOnlineTest()">'+TR('k2810','تست آنلاین گروه‌ها')+'</button></div><p class="small">'+TR('k2811','این تست همهٔ قابلیت‌های گروه را با دادهٔ آزمایشی بررسی می‌کند؛ همهٔ داده‌های آزمایشی پس از تست پاک می‌شوند.')+'</p><div id="groupsTestResults" style="margin-top:10px"></div></div>';
   /* آمار کلی — v10.4.9: server-computed via owner_stats (the old local
      counts are gone; a failed call shows "stats not loaded", never stale
      local numbers presented as server stats). */
-  h+='<h3 style="margin:16px 0 10px"><span class="vh-ic">'+icSvg("stats")+'</span>' + TR('k1592','آمار کلی برنامه') + ' — ' + TR('k2762','آمار سرور') + '</h3><div id="owStats">'+SB.ownerStatsHTML()+'</div>';
+  h+='<h3 id="owSecStats" style="margin:16px 0 10px"><span class="vh-ic">'+icSvg("stats")+'</span>' + TR('k1592','آمار کلی برنامه') + ' — ' + TR('k2762','آمار سرور') + '</h3><div id="owStats">'+SB.ownerStatsHTML()+'</div>';
   /* v10.4.9 — ALL groups (owner): list + view + edit + members + delete,
      regardless of who created them (group_list / group_update / group_delete). */
-  h+='<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("group")+'</span>' + TR('k2765','همه گروه‌ها (مالک)') + '</h3><div id="owGroups">'+SB.ownerGroupsHTML()+'</div>'
+  h+='<div class="card" id="owSecGroups" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("group")+'</span>' + TR('k2765','همه گروه‌ها (مالک)') + '</h3><div id="owGroups">'+SB.ownerGroupsHTML()+'</div>'
     +'<div class="rowflex" style="margin-top:10px"><button class="btn ghost sm" onclick="SB.loadOwnerGroups()">'+TR('k2567','تازه‌سازی فهرست کلیدها')+'</button><button class="btn ghost sm" onclick="SB.viewOwnerAdvisorThreads()">'+TR('k2786','مشاهده چت‌های مشاور')+'</button></div>'
     +'<p class="small" style="margin-top:8px">'+TR('k2800','مالک می‌تواند همه‌چیز را تغییر دهد')+'.</p></div>';
   /* افراد و مشاور‌ها */
-  h+='<div class="grid g2" style="margin-top:14px"><div class="card"><h3 style="margin-bottom:12px"><span class="vh-ic">'+icSvg("profile")+'</span>' + TR('k1601','ثبت فرد تازه') + '</h3>'
+  h+='<div class="grid g2" id="owSecPeople" style="margin-top:14px"><div class="card"><h3 style="margin-bottom:12px"><span class="vh-ic">'+icSvg("profile")+'</span>' + TR('k1601','ثبت فرد تازه') + '</h3>'
     +'<div class="field"><label>' + TR('k1603','نام و نام خانوادگی') + '</label><input class="inp" id="adName" placeholder="' + TR('k1602','مثلاً: علی رضایی') + '"></div>'
     +'<div class="rowflex"><div class="field grow"><label>' + TR('k1607','نقش') + '</label><select class="inp" id="adRole"><option>' + TR('k0211','کنکوری') + '</option><option>' + TR('k0180','دانشجو') + '</option><option>' + TR('k0187','کارمند') + '</option><option>' + TR('k0192','ورزشکار') + '</option><option>' + TR('k1605','عضو گروه') + '</option><option>' + TR('k0143','پشتیبان') + '</option></select></div><div class="field grow"><label>' + TR('k1604','رشته / گروه') + '</label><input class="inp" id="adField" placeholder="' + TR('k1606','مثلاً: تجربی') + '"></div></div>'
     +'<div class="field"><label>' + TR('k1608','شماره تماس') + '</label><input class="inp" id="adPhone" placeholder="' + TR('k1609','۰۹') + '…"></div>'
@@ -5515,20 +5929,20 @@ function renderOwnerPanel(v){
     +'<div class="field"><label>' + TR('k0590','یادداشت') + '</label><textarea class="inp" id="adNote" placeholder="' + TR('k1610','نکته‌ای درباره این فرد') + '…"></textarea></div>'
     +'<button class="btn" onclick="addPerson()">' + TR('k1612','ثبت فرد') + '</button><p class="small" style="margin-top:10px">' + TR('k1611','بعد از ثبت، با دکمه «افزودن مشاور» کنار نام هر فرد، برایش پین ورود پنل مشاور بسازید') + '.</p></div>'
     +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("group")+'</span>' + TR('k1600','افراد و مشاور‌ها') + ' <span class="pill">'+fa(S.people.length)+' ' + TR('k1594','نفر') + '</span></h3>'+peopleListHTML(true)+'<div class="rowflex" style="margin-top:10px"><button class="btn ghost sm" onclick="openUserSearch()">'+TR('k2723','جست‌وجوی نام کاربری')+'</button></div></div></div>';
-  h+=subSalesHTML();
-  h+=SB.ownerCredsHTML(); /* v10.4.11 — server credentials (Parsa 22:13). */
+  h+='<div id="owSecSales">'+subSalesHTML()+'</div>';
+  h+='<div id="owSecCreds">'+SB.ownerCredsHTML()+'</div>'; /* v10.4.11 — server credentials (Parsa 22:13). */
   /* تنظیمات کلی برنامه */
-  h+='<div class="grid g2" style="margin-top:14px"><div class="card"><h3 style="margin-bottom:12px"><span class="vh-ic">'+icSvg("settings")+'</span>' + TR('k1613','تنظیمات کلی برنامه') + '</h3>'
+  h+='<div class="grid g2" id="owSecSettings" style="margin-top:14px"><div class="card"><h3 style="margin-bottom:12px"><span class="vh-ic">'+icSvg("settings")+'</span>' + TR('k1613','تنظیمات کلی برنامه') + '</h3>'
     +'<div class="field"><label>' + TR('k1615','نام پشتیبان برنامه') + '</label><div class="rowflex"><input class="inp grow" id="owSupName" value="'+esc(disp(S.supporterName)||TR('k0143','پشتیبان'))+'"><button class="btn sm" onclick="owSaveSupporter()">' + TR('k0454','ذخیره') + '</button></div><div class="hint small">' + TR('k1614','این نام در پاسخ‌های پشتیبان و پنل‌ها نمایش داده می‌شود') + '.</div></div>'
     +'<div class="field"><label>' + TR('k1616','تم پیش‌فرض برنامه') + '</label><select class="inp" onchange="owSetTheme(this.value)">'+THEMES.map(function(t){ return '<option value="'+t[0]+'"'+(S.theme===t[0]?" selected":"")+'>'+t[1]+'</option>'; }).join("")+'</select></div>'
     +'<div class="field"><label>' + TR('k1190','حالت پایه') + '</label><div class="rowflex"><button class="tab'+(S.mode==="light"?" active":"")+'" onclick="owSetMode(\'light\')">' + TR('k0329','روز') + ' — ' + TR('k1192','سفید') + '</button><button class="tab'+(S.mode==="dark"?" active":"")+'" onclick="owSetMode(\'dark\')">' + TR('k1193','شب') + ' — ' + TR('k1194','مشکی') + '</button></div></div>'
     +'<div class="field"><label>' + TR('k1617','ساعت سکوت یادآوری‌ها') + '</label><div class="rowflex"><input class="inp grow" type="time" value="'+esc(S.settings.quietFrom)+'" onchange="S.settings.quietFrom=this.value;save();SB.pushUserSettings()"><span>' + TR('k1209','تا') + '</span><input class="inp grow" type="time" value="'+esc(S.settings.quietTo)+'" onchange="S.settings.quietTo=this.value;save();SB.pushUserSettings()"></div></div>'
     +'<div class="field"><label>' + TR('k1214','صدای یادآوری') + '</label><select class="inp" onchange="S.settings.sound=this.value;save();SB.pushUserSettings()">'+soundLabels().map(function(o){ return '<option value="'+o[0]+'"'+(S.settings.sound===o[0]?' selected':'')+'>'+o[1]+'</option>'; }).join("")+'</select></div></div>'
   /* پشتیبان‌گیری */
-    +'<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("backup")+'</span>' + TR('k1622','پشتیبان‌گیری و بازیابی') + '</h3><p class="small">' + TR('k1619','از همه داده‌های برنامه') + ' — ' + TR('k1620','افراد، کارها، گروه‌ها، چت‌ها، فرم‌ها و تنظیمات') + ' — ' + TR('k1621','فایل پشتیبان بگیرید یا پشتیبان قبلی را برگردانید. رمز مالک، رمز دفتر، پین قفل و پین‌های مشاور داخل فایل پشتیبان نمی‌روند') + '.</p><div class="rowflex"><button class="btn" onclick="exportData()">' + TR('k1218','دانلود فایل پشتیبان') + '</button><label class="btn ghost" style="margin:0">' + TR('k1217','برگرداندن پشتیبان') + '<input type="file" accept=".json" style="display:none" onchange="importData(this)"></label></div>'
+    +'<div class="card" id="owSecBackup"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("backup")+'</span>' + TR('k1622','پشتیبان‌گیری و بازیابی') + '</h3><p class="small">' + TR('k1619','از همه داده‌های برنامه') + ' — ' + TR('k1620','افراد، کارها، گروه‌ها، چت‌ها، فرم‌ها و تنظیمات') + ' — ' + TR('k1621','فایل پشتیبان بگیرید یا پشتیبان قبلی را برگردانید. رمز مالک، رمز دفتر، پین قفل و پین‌های مشاور داخل فایل پشتیبان نمی‌روند') + '.</p><div class="rowflex"><button class="btn" onclick="exportData()">' + TR('k1218','دانلود فایل پشتیبان') + '</button><label class="btn ghost" style="margin:0">' + TR('k1217','برگرداندن پشتیبان') + '<input type="file" accept=".json" style="display:none" onchange="importData(this)"></label></div>'
     +'<h3 style="margin:18px 0 8px;color:#b3352c"><span class="vh-ic">'+icSvg("security")+'</span>' + TR('k1625','منطقه خطر') + ' — ' + TR('k1624','فقط مالک') + '</h3><p class="small">' + TR('k1623','حذف کامل همه داده‌های برنامه روی این دستگاه؛ مشاور و صاحب دفتر به این ابزار دسترسی ندارند') + '.</p><button class="btn" style="background:#b3352c" onclick="owWipeAsk()">' + TR('k1575','حذف کامل داده‌های برنامه') + '</button></div></div>';
   /* فرم‌های پشتیبان */
-  h+='<div class="card" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("support")+'</span>' + TR('k1626','فرم‌های پشتیبان') + ' <span class="pill gold">'+fa(unanswered)+' ' + TR('k1627','بی‌پاسخ') + '</span></h3>'+supportFormsHTML()+'</div>';
+  h+='<div class="card" id="owSecForms" style="margin-top:14px"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("support")+'</span>' + TR('k1626','فرم‌های پشتیبان') + ' <span class="pill gold">'+fa(unanswered)+' ' + TR('k1627','بی‌پاسخ') + '</span></h3>'+supportFormsHTML()+'</div>';
   /* نظارت کلی مالک بر مشاوران و دانش‌آموزانشان */
   var advsOw=S.people.filter(function(p){ return isAdmin(p.id); });
   var stuAll=S.people.filter(function(p){ return p.advisorId; });
@@ -5978,7 +6392,7 @@ function startMatrix(){
 function stopMatrix(){ if(mxTimer){ clearInterval(mxTimer); mxTimer=null; } if(mxCv) mxCv.style.display="none"; }
 
 /* ================= جدول رندر ================= */
-var RENDER={ home:renderHome, today:renderToday, week:renderWeek, calendar:renderCalendar, tasks:renderTasks, goals:renderGoals, habits:renderHabits, review:renderReview, support:renderSupport, journal:renderJournal, notes:renderNotes, reminders:renderReminders, timer:renderTimer, stats:renderStats, templates:renderTemplates, tools:renderTools, myrole:renderMyRole, features:renderFeatures, group:renderGroup, chat:renderChat,walkie:function(v){return renderWalkieView(v);}, groupmap:renderGroupMap, ownerpanel:renderOwnerPanel, adminpanel:renderAdminPanel, themes:renderThemes, settings:renderSettings };
+var RENDER={ home:renderHome, today:renderToday, week:renderWeek, calendar:renderCalendar, tasks:renderTasks, goals:renderGoals, habits:renderHabits, review:renderReview, support:renderSupport, journal:renderJournal, notes:renderNotes, reminders:renderReminders, timer:renderTimer, stats:renderStats, templates:renderTemplates, tools:renderTools, myrole:renderMyRole, features:renderFeatures, group:renderGroup, chat:renderChat,walkie:function(v){return renderWalkieView(v);}, groupmap:renderGroupMap, topgroups:renderTopGroups, ownerpanel:renderOwnerPanel, adminpanel:renderAdminPanel, themes:renderThemes, settings:renderSettings };
 /* راه‌اندازی: اگر دفتری روی این دستگاه ذخیره شده، از همان‌جا ادامه بده */
 (function boot(){
   var had=load();
@@ -6006,6 +6420,7 @@ var RENDER={ home:renderHome, today:renderToday, week:renderWeek, calendar:rende
     else { enterApp(); }
   }
 })();
+
 </script>
 <!-- ================= دسترسی‌ها (اولین اجرا) + ورق قدرت‌ها ================= -->
 <div id="permOverlay" style="display:none;position:fixed;inset:0;z-index:180;background:rgba(0,0,0,.72);align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto">
@@ -6024,6 +6439,7 @@ var RENDER={ home:renderHome, today:renderToday, week:renderWeek, calendar:rende
   </div>
 </div>
 <div id="pwSheet" style="display:none;position:fixed;inset:0;z-index:170;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:16px"></div>
+<div id="jalPick" style="display:none;position:fixed;inset:0;z-index:175;background:rgba(0,0,0,.6);align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto"></div>
 
 <script>
 /* ================= Supabase JS 2.119.0 (embedded offline) ================= */
@@ -6538,6 +6954,372 @@ SB.runOnlineFeaturesTest=function(){
       }],
       [TR('k2505','کلید ورود'), function(){
         return {st:'skip', detail:TR('k2574','در «بررسی سلامت سرور» بالا تست می‌شود')};
+      }],
+      /* v10.4.12 — new online capabilities (Parsa 2026-11-11 ~09:50):
+         every new online feature gets its own row here. Anything that
+         needs a group-member Auth session is reported honestly as
+         "skip" — never a fake pass. */
+      [TR('k2601','گروه‌های برتر هفته (تست)'), function(){
+        return sbRpc("top_groups_week",{p_limit:10}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var rows=Array.isArray(res.data)?res.data:[];
+          var allowed=["group_id","group_name","member_count","weekly_points","tasks_done_week","focus_min_week","messages_week"];
+          var bad=rows.some(function(r){ return Object.keys(r||{}).some(function(k){ return allowed.indexOf(k)===-1; }); });
+          if(bad) return {st:'fail', detail:"leaderboard returned member-level fields"};
+          var sorted=rows.every(function(r,i){ return i===0||+rows[i-1].weekly_points>=+r.weekly_points; });
+          if(!sorted) return {st:'fail', detail:"leaderboard is not ranked by weekly points"};
+          var top=rows[0];
+          return {st:'ok', detail:rows.length+" — "+(top?esc(top.group_name||"")+" ("+fa(top.weekly_points||0)+")":"")};
+        });
+      }],
+      [TR('k2602','ورود با سرور (تست)'), function(){
+        if(!personCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        var tu="tcred"+String(ts).slice(-8);
+        var tem=tu+"@test.local";
+        return sbRpc("register_user_credentials",{p_username:tu,p_email:tem,p_password:"Test1234",p_sec_question:"Q?",p_sec_answer:"A",p_person_id:personId,p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          if(res.data!==true) return {st:'fail', detail:"register_user_credentials=false"};
+          return sbRpc("verify_user_login",{p_username:tu,p_password:"Test1234"}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var d=res2.data;
+            if(!d||d.ok!==true) return {st:'fail', detail:"correct password was rejected"};
+            return sbRpc("verify_user_login",{p_username:tu,p_password:"Wrong1234"}).then(function(res3){
+              if(res3.error) return {st:'fail', detail:String(res3.error.message||res3.error)};
+              var d3=res3.data;
+              if(!d3||d3.ok!==false) return {st:'fail', detail:"wrong password was accepted"};
+              return sbRpc("owner_delete_user_credentials",{p_username:tu,p_sig:sig}).then(function(res4){
+                if(res4.error||res4.data!==true) return {st:'fail', detail:"test credential was not deleted"};
+                return {st:'ok', detail:tu};
+              });
+            });
+          });
+        });
+      }],
+      [TR('k2604','پیام گروهی — ماندگاری (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        var txt="TEST-MSG-"+ts;
+        return sbRpc("send_group_message",{p_group:groupId,p_text:txt,p_sender_name:"owner",p_sig:sig,p_avatar:0}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var sent=(res.data&&res.data[0])||null;
+          if(!sent||!sent.id) return {st:'fail', detail:"send_group_message returned no row"};
+          /* Read it back through the owner's own read path: leaving and
+             coming back must not lose it. */
+          return sbRpc("owner_group_messages",{p_group_id:groupId,p_sig:sig,p_limit:50}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var rows=Array.isArray(res2.data)?res2.data:[];
+            var found=rows.some(function(m){ return String(m.id)===String(sent.id) && String(m.text)===txt; });
+            return found?{st:'ok', detail:txt}:{st:'fail', detail:"sent message was not readable back"};
+          });
+        });
+      }],
+      [TR('k2605','پیام گروهی — نگهداری ۷ روزه (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("owner_group_messages",{p_group_id:groupId,p_sig:sig,p_limit:200}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var rows=Array.isArray(res.data)?res.data:[];
+          var weekAgo=Date.now()-7*86400000;
+          var old=rows.filter(function(m){ return new Date(m.created_at).getTime()<weekAgo; });
+          if(old.length) return {st:'fail', detail:old.length+" message(s) older than 7 days still returned"};
+          return {st:'ok', detail:rows.length+" in window"};
+        });
+      }],
+      [TR('k2606','دسترسی عضو به گروه‌ها (تست)'), function(){
+        /* The owner panel has no member Auth session, so my_groups() must
+           return [] here (no leak); the member path is covered by the
+           probe with a mocked member session. */
+        return sbRpc("my_groups",{}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var rows=Array.isArray(res.data)?res.data:[];
+          return rows.length===0?{st:'ok', detail:"anon sees no groups"}:{st:'fail', detail:"anon could enumerate "+rows.length+" group(s)"};
+        });
+      }],
+      [TR('k2607','مکان اعضا در نقشه (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        return sbRpc("my_group_locations",{p_group_id:groupId}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var rows=Array.isArray(res.data)?res.data:[];
+          return rows.length===0?{st:'ok', detail:"anon sees no locations"}:{st:'fail', detail:"anon could read "+rows.length+" location(s)"};
+        });
+      }],
+      [TR('k2608','نقش یک‌باره + Abilityها (تست)'), function(){
+        if(!groupCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
+        /* (a) Without a member session, setting your own role must fail. */
+        return sbRpc("set_my_group_role",{p_group_id:groupId,p_role:"medic"}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          if(res.data!==false) return {st:'fail', detail:"anon could set a group role"};
+          /* (b) The OWNER can reassign a member's role (owner path): the
+             test member was removed earlier in this test, so invite them
+             back, set their role to medic, verify it, then remove them
+             again so no test data is left. */
+          return sbRpc("invite_to_group_by_username",{p_group_id:groupId,p_username:testUsername,p_sig:sig}).then(function(res0){
+            if(res0.error||!res0.data||res0.data.ok!==true) return {st:'fail', detail:"could not re-invite the test member"};
+            var uid="op:"+personId;
+            return sbRpc("owner_set_member_role",{p_group_id:groupId,p_user_id:uid,p_role:"medic",p_sig:sig}).then(function(res2){
+              if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+              if(res2.data!==true) return {st:'fail', detail:"owner could not reassign the test member's role"};
+              return sbRpc("owner_list_group_members",{p_group_id:groupId,p_sig:sig}).then(function(res3){
+                if(res3.error) return {st:'fail', detail:String(res3.error.message||res3.error)};
+                var rows=Array.isArray(res3.data)?res3.data:[];
+                var m=rows.filter(function(r){ return String(r.user_id||"")===uid; })[0];
+                var okRole=m&&String(m.group_role||"")==="medic";
+                return sbRpc("group_member_remove",{p_group_id:groupId,p_username:testUsername,p_sig:sig}).then(function(){
+                  return okRole?{st:'ok', detail:"medic (member removed again)"}:{st:'fail', detail:"role read-back is "+((m&&m.group_role)||"")};
+                });
+              });
+            });
+          });
+        });
+      }],
+      [TR('k2609','فرم فروش تلگرام (تست)'), function(){
+        var ss=subSales();
+        var tgId=(ss.telegramId||"").trim()||"Albakorov";
+        var url=tgLink(tgId);
+        if(!ss.telegramOn) return {st:'fail', detail:"Telegram sales is off"};
+        if(url!=="https://t.me/Albakorov") return {st:'fail', detail:"sales Telegram is "+url};
+        /* The buyer-facing button (rendered off-DOM, no navigation): only
+           present when at least one plan exists. */
+        if((S.plans||[]).length){
+          var d=document.createElement("div"); d.innerHTML=subBuyHTML();
+          var a=d.querySelector('a[href="https://t.me/Albakorov"]');
+          if(!a) return {st:'fail', detail:"buyer Telegram button missing"};
+        }
+        return {st:'ok', detail:"@Albakorov -> "+url};
+      }],
+      [TR('k2610','تقویم جلالی آفلاین (تست)'), function(){
+        var a=g2j(2026,11,11), b=g2j(2025,3,20), c=g2j(2026,3,21);
+        if(!(a.jy===1405&&a.jm===8&&a.jd===20)) return {st:'fail', detail:"2026-11-11 -> "+a.jy+"-"+a.jm+"-"+a.jd};
+        if(!(b.jy===1403&&b.jm===12&&b.jd===30)) return {st:'fail', detail:"2025-03-20 -> "+b.jy+"-"+b.jm+"-"+b.jd};
+        if(!(c.jy===1405&&c.jm===1&&c.jd===1)) return {st:'fail', detail:"2026-03-21 -> "+c.jy+"-"+c.jm+"-"+c.jd};
+        var t=jalToday();
+        return {st:'ok', detail:"1405-08-20 · "+t.jy+"-"+t.jm+"-"+t.jd};
+      }],
+      [TR('k2611','تست صدای آلارم (تست)'), function(){
+        if(typeof testAlarmSound!=="function") return {st:'fail', detail:"testAlarmSound missing"};
+        var seen=[];
+        var orig=SFX.alarm;
+        var wasMute=S.sfxMute; S.sfxMute=false;
+        SFX.alarm=function(n){ seen.push(n); };
+        try{ testAlarmSound("siren"); testAlarmSound("march"); }catch(e){}
+        SFX.alarm=orig; S.sfxMute=wasMute;
+        if(seen.length!==2||seen[0]!=="siren"||seen[1]!=="march") return {st:'fail', detail:"preview did not reach SFX.alarm: "+seen.join(",")};
+        var d1=document.createElement("div"); renderReminders(d1);
+        var hasRemBtn=!!d1.querySelector("button[onclick*='testAlarmSound']");
+        var settingsHtml="";
+        try{ settingsHtml=extraSettingsCards(); }catch(e){}
+        var hasSetBtn=settingsHtml.indexOf("testAlarmSound()")!==-1;
+        if(!hasRemBtn||!hasSetBtn) return {st:'fail', detail:"test button missing (reminder:"+hasRemBtn+", settings:"+hasSetBtn+")"};
+        return {st:'ok', detail:"siren+march via SFX.alarm"};
+      }],
+      /* v10.4.12 — tests for EVERY new resource (Parsa 2026-11-11 10:44,
+         10:49, 10:52): added to this EXISTING test button — no second
+         test screen. Client-side rows run against the live app in this
+         browser; server rows use test keys/data and clean up after
+         themselves. NOTE: the k2943/k2944 rows call delete_revoked_keys,
+         which by design deletes ALL revoked/expired key history on the
+         server (that is the feature) — the returned count is reported. */
+      [TR('k2935','صفحه امروز من (تست)'), function(){
+        var d=document.createElement("div"); renderToday(d);
+        var html=d.innerHTML;
+        var need=["امروز من","سه تا مهم امروز","عادت‌های امروز","آلارم‌ها","پیشرفت امروز","مشاهده تقویم","ringwrap"];
+        var missing=need.filter(function(t){ return html.indexOf(t)===-1; });
+        if(missing.length) return {st:'fail', detail:"missing in My Today: "+missing.join(", ")};
+        var live=jalTodayStr();
+        if(html.indexOf(live)===-1) return {st:'fail', detail:"live Jalali date not shown: "+live};
+        if(html.indexOf("go('home')")===-1||html.indexOf("go('walkie')")===-1) return {st:'fail', detail:"shortcuts (Home / walkie) missing"};
+        if(html.indexOf("go('calendar')")===-1) return {st:'fail', detail:"calendar widget link missing"};
+        return {st:'ok', detail:live};
+      }],
+      [TR('k2936','ورود پیش‌فرض (تست)'), function(){
+        if(typeof landingView!=="function") return {st:'fail', detail:"landingView missing"};
+        if(!ownerMode) return {st:'fail', detail:"owner panel test runs as owner; ownerMode must be true here"};
+        if(landingView()!=="home") return {st:'fail', detail:"owner must land on home, got "+landingView()};
+        var src=landingView.toString();
+        if(src.indexOf('"today"')===-1&&src.indexOf("'today'")===-1) return {st:'fail', detail:"non-owner branch (today) missing from landingView"};
+        if(enterApp.toString().indexOf("landingView()")===-1) return {st:'fail', detail:"enterApp does not use landingView"};
+        return {st:'ok', detail:"owner -> home; others -> today (every entry)"};
+      }],
+      [TR('k2937','واکی‌تاکی سراسری + هندزفری (تست)'), function(){
+        var boxes=document.querySelectorAll("#wtAudioBox").length;
+        if(boxes!==1) return {st:'fail', detail:"shell audio box count="+boxes+" (must be exactly 1)"};
+        if(!$("wtPill")) return {st:'fail', detail:"walkie pill missing from shell"};
+        var fns=["isHandsFree","setHandsFree","toggleTalk","paintPill","homeStatus","paintHomeWalkie"];
+        var missing=fns.filter(function(f){ return typeof WT[f]!=="function"; });
+        if(missing.length) return {st:'fail', detail:"WT methods missing: "+missing.join(", ")};
+        if(renderWalkie.toString().indexOf('wtAudioBox')!==-1) return {st:'fail', detail:"renderWalkie still has an in-view audio box"};
+        var src=renderWalkie.toString();
+        if(src.indexOf("wtHf")===-1||src.indexOf("WT.setHandsFree")===-1||src.indexOf("WT.toggleTalk")===-1) return {st:'fail', detail:"hands-free toggle / tap-to-talk missing from walkie view"};
+        var before=!!(S.settings&&S.settings.wtHandsFree);
+        S.settings.wtHandsFree=true;
+        var on=WT.isHandsFree();
+        S.settings.wtHandsFree=false;
+        var off=!WT.isHandsFree();
+        S.settings.wtHandsFree=before;
+        if(!on||!off) return {st:'fail', detail:"hands-free flag does not drive WT.isHandsFree"};
+        return {st:'ok', detail:"1 shell audio box + pill + hands-free flag"};
+      }],
+      [TR('k2938','نوار بالا (تست)'), function(){
+        var hdr=document.querySelector("header.topbar");
+        if(!hdr) return {st:'fail', detail:"top bar missing"};
+        var kids=Array.prototype.slice.call(hdr.children);
+        function idx(sel){ for(var i=0;i<kids.length;i++){ try{ if(kids[i].matches&&kids[i].matches(sel)) return i; }catch(e){} } return -1; }
+        var b=idx('button[onclick*="openDrawer"]'), l=idx('img[data-logo]'), n=idx('#tbRemBtn'), s2=idx('#tbSearchBtn'), m=idx('button[onclick*="cycleMode"]'), a=idx('#tbAvatar');
+        if([b,l,n,s2,m,a].some(function(x){ return x<0; })) return {st:'fail', detail:"top-bar item missing (burger:"+b+" logo:"+l+" bell:"+n+" search:"+s2+" night:"+m+" avatar:"+a+")"};
+        if(!(b<l&&l<n&&n<s2&&s2<m&&m<a)) return {st:'fail', detail:"top-bar order wrong (burger:"+b+" logo:"+l+" bell:"+n+" search:"+s2+" night:"+m+" avatar:"+a+")"};
+        return {st:'ok', detail:"burger, logo, notification, search, night, profile"};
+      }],
+      [TR('k2939','چیدمان پیش‌فرض خانه + سفارشی‌سازی (تست)'), function(){
+        var want=["today","tasks","week","notes","calendar"];
+        if(JSON.stringify(HOME_DEFAULTS)!==JSON.stringify(want)) return {st:'fail', detail:"HOME_DEFAULTS="+HOME_DEFAULTS.join(",")};
+        var d=document.createElement("div"); renderHome(d);
+        var order=[];
+        var re=/data-hw="([^"]+)"/g, mm;
+        while((mm=re.exec(d.innerHTML))!==null) order.push(mm[1]);
+        if(JSON.stringify(order.slice(0,5))!==JSON.stringify(want)) return {st:'fail', detail:"Home widget order="+order.join(",")};
+        if(d.innerHTML.indexOf("home-walkie")===-1) return {st:'fail', detail:"walkie rectangle missing from Home"};
+        var cw={id:"cw-test-"+Date.now(),title:"TEST-W",text:"TEST-T"};
+        if(!S.customWidgets) S.customWidgets=[];
+        S.customWidgets.push(cw);
+        /* the real flow (homeAddCustom) adds the widget to the saved layout —
+           a definition alone is not on Home until its id is in the layout. */
+        var origLayout=homeLayout().slice();
+        var newLayout=homeLayout(); newLayout.push(cw.id); homeSave(newLayout);
+        var okLayout=homeLayout().indexOf(cw.id)!==-1;
+        var def=customWidgetDef(cw.id);
+        var body=homeWidgetBody(cw.id);
+        S.customWidgets=S.customWidgets.filter(function(x){ return x.id!==cw.id; });
+        homeSave(origLayout);
+        save();
+        if(!okLayout||!def||def.t!=="TEST-W") return {st:'fail', detail:"custom widget not in layout/definition"};
+        if(body.indexOf("TEST-T")===-1) return {st:'fail', detail:"custom widget body wrong"};
+        return {st:'ok', detail:want.join(",")+" + custom widget round-trip"};
+      }],
+      [TR('k2940','انتخاب‌کننده آلارم — جلالی + ساعت (تست)'), function(){
+        var d=document.createElement("div"); renderReminders(d);
+        var html=d.innerHTML;
+        if(/type="date"|type="time"/.test(html)) return {st:'fail', detail:"native date/time input still in the alarm form"};
+        if(html.indexOf("rmDateBtn")===-1) return {st:'fail', detail:"Jalali date button missing"};
+        if(html.indexOf(jalTodayStr())===-1) return {st:'fail', detail:"Jalali button does not show today: "+jalTodayStr()};
+        if(!$("jalPick")) return {st:'fail', detail:"Jalali picker overlay (#jalPick) missing"};
+        if(typeof rmDefaultTime!=="function"||typeof rmPickKey!=="function") return {st:'fail', detail:"rmDefaultTime / rmPickKey missing"};
+        var now=new Date();
+        function fmt(dt){ return String(dt.getHours()).padStart(2,"0")+":"+String(dt.getMinutes()).padStart(2,"0"); }
+        var e1=new Date(now.getTime()); e1.setMinutes(Math.ceil((e1.getMinutes()+1)/5)*5,0,0);
+        var e2=new Date(now.getTime()+60000); e2.setMinutes(Math.ceil((e2.getMinutes()+1)/5)*5,0,0);
+        var _dt=rmDefaultTime(); /* rmDefaultTime() returns {h, m} — format it */
+        var got=String(_dt.h).padStart(2,"0")+":"+String(_dt.m).padStart(2,"0");
+        if(got!==fmt(e1)&&got!==fmt(e2)) return {st:'fail', detail:"default time "+got+" != device time rounded up ("+fmt(e1)+")"};
+        var key=rmPickKey();
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(key||"")) return {st:'fail', detail:"rmPickKey invalid: "+key};
+        return {st:'ok', detail:"Jalali "+jalTodayStr()+" · default "+got};
+      }],
+      [TR('k2941','همگام‌سازی چیدمان خانه با سرور (تست)'), function(){
+        return sbRpc("owner_load_user_settings",{p_sig:sig}).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var cur=res.data; if(Array.isArray(cur)) cur=cur[0];
+          var orig=(cur&&typeof cur==="object")?JSON.parse(JSON.stringify(cur)):null;
+          var test=Object.assign({}, orig||{}, {homeLayout:["tasks","notes","calendar"], customWidgets:[{id:"cw-test-sync",title:"TEST",text:"T"}], wtHandsFree:true});
+          return sbRpc("owner_save_user_settings",{p_settings:test,p_sig:sig}).then(function(res2){
+            if(res2.error||res2.data!==true) return {st:'fail', detail:"owner_save_user_settings (sync test) failed"};
+            return sbRpc("owner_load_user_settings",{p_sig:sig}).then(function(res3){
+              var back=res3.data; if(Array.isArray(back)) back=back[0];
+              var okLayout=back&&Array.isArray(back.homeLayout)&&back.homeLayout.join(",")==="tasks,notes,calendar";
+              var okCw=back&&Array.isArray(back.customWidgets)&&back.customWidgets.some(function(w){ return w.id==="cw-test-sync"; });
+              var okHf=back&&back.wtHandsFree===true;
+              var restore=orig||{};
+              return sbRpc("owner_save_user_settings",{p_settings:restore,p_sig:sig}).then(function(){
+                if(!okLayout) return {st:'fail', detail:"homeLayout did not round-trip"};
+                if(!okCw) return {st:'fail', detail:"customWidgets did not round-trip"};
+                if(!okHf) return {st:'fail', detail:"wtHandsFree did not round-trip"};
+                return {st:'ok', detail:"layout + custom widget + hands-free round-trip"};
+              });
+            });
+          });
+        });
+      }],
+      [TR('k2942','ویجت واکی‌تاکی (تست)'), function(){
+        var d=document.createElement("div"); renderHome(d);
+        var html=d.innerHTML;
+        if(html.indexOf("home-walkie")===-1) return {st:'fail', detail:"walkie rectangle missing from Home"};
+        if(html.indexOf("homeWalkieStatus")===-1) return {st:'fail', detail:"walkie status element missing"};
+        if(html.indexOf("go('walkie')")===-1) return {st:'fail', detail:"walkie widget does not open the walkie view"};
+        var st=WT.homeStatus();
+        if(!st||typeof st!=="string") return {st:'fail', detail:"WT.homeStatus() empty"};
+        if(html.indexOf(st)===-1) return {st:'fail', detail:"walkie status text not in Home render"};
+        return {st:'ok', detail:st};
+      }],
+      [TR('k2943','انقضای کلید (تست)'), function(){
+        var code="TEST-EXP-"+ts;
+        return sbRpc("create_key",{p_code:code,p_buyer:"TEST",p_plan_id:"",p_plan_name:"TEST",p_price:0,p_days:0,p_role:"",p_sig:sig}).then(function(res){
+          if(res.error||res.data!==true) return {st:'fail', detail:"create_key (0-day test key) failed"};
+          return sbRpc("activate_key",{p_code:code,p_device:"test"}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var row=(res2.data&&res2.data[0])||null;
+            if(!row||row.status!=="active"||!row.expires_at) return {st:'fail', detail:"0-day key did not activate with an expiry"};
+            return sbRpc("revoke_expired_keys",{p_sig:sig}).then(function(res3){
+              if(res3.error) return {st:'fail', detail:String(res3.error.message||res3.error)};
+              return sbRpc("list_keys",{p_sig:sig}).then(function(res4){
+                if(res4.error) return {st:'fail', detail:String(res4.error.message||res4.error)};
+                var rows=Array.isArray(res4.data)?res4.data:[];
+                var k=rows.filter(function(r){ return r.code===code; })[0];
+                if(!k) return {st:'fail', detail:"test key vanished before the delete step"};
+                if(k.status!=="expired") return {st:'fail', detail:"0-day key was not expired by the sweep (status="+k.status+")"};
+                return sbRpc("delete_revoked_keys",{p_sig:sig}).then(function(res5){
+                  if(res5.error) return {st:'fail', detail:String(res5.error.message||res5.error)};
+                  var n=(typeof res5.data==="number")?res5.data:0;
+                  return sbRpc("list_keys",{p_sig:sig}).then(function(res6){
+                    var rows6=Array.isArray(res6.data)?res6.data:[];
+                    var gone=!rows6.some(function(r){ return r.code===code; });
+                    return gone?{st:'ok', detail:"0-day key: active -> expired -> deleted ("+n+" dead keys removed)"}:{st:'fail', detail:"test key still listed after delete_revoked_keys"};
+                  });
+                });
+              });
+            });
+          });
+        });
+      }],
+      [TR('k2944','حذف سابقه کلیدهای باطل‌شده (تست)'), function(){
+        var c1="TEST-DEL1-"+ts, c2="TEST-DEL2-"+ts, c3="TEST-KEEP-"+ts;
+        function mk(code,days){ return sbRpc("create_key",{p_code:code,p_buyer:"TEST",p_plan_id:"",p_plan_name:"TEST",p_price:0,p_days:days,p_role:"",p_sig:sig}).then(function(res){ if(res.error||res.data!==true) throw new Error("create_key failed for "+code); return true; }); }
+        return mk(c1,30).then(function(){ return mk(c2,30); }).then(function(){ return mk(c3,30); }).then(function(){
+          return sbRpc("revoke_key",{p_code:c1,p_sig:sig}).then(function(){ return sbRpc("revoke_key",{p_code:c2,p_sig:sig}); });
+        }).then(function(){
+          return sbRpc("activate_key",{p_code:c3,p_device:"test"});
+        }).then(function(){
+          return sbRpc("delete_revoked_keys",{p_sig:sig});
+        }).then(function(res){
+          if(res.error) return {st:'fail', detail:String(res.error.message||res.error)};
+          var n=(typeof res.data==="number")?res.data:0;
+          return sbRpc("list_keys",{p_sig:sig}).then(function(res2){
+            if(res2.error) return {st:'fail', detail:String(res2.error.message||res2.error)};
+            var rows=Array.isArray(res2.data)?res2.data:[];
+            var has=function(c){ return rows.some(function(r){ return r.code===c; }); };
+            if(has(c1)||has(c2)) return {st:'fail', detail:"revoked test keys still listed after delete"};
+            if(!has(c3)) return {st:'fail', detail:"ACTIVE test key was deleted by mistake"};
+            return sbRpc("revoke_key",{p_code:c3,p_sig:sig}).then(function(){ return sbRpc("delete_revoked_keys",{p_sig:sig}); }).then(function(){
+              return {st:'ok', detail:"deleted "+n+" dead key(s); active key kept, then cleaned up"};
+            });
+          });
+        });
+      }],
+      [TR('k2945','ویجت‌های پنل مالک (تست)'), function(){
+        if(typeof ownerShortcutsHTML!=="function"||typeof owGoSec!=="function") return {st:'fail', detail:"ownerShortcutsHTML / owGoSec missing"};
+        var d=document.createElement("div");
+        var savedOwner=ownerMode;
+        ownerMode=true;
+        renderOwnerPanel(d);
+        var htmlOwner=d.innerHTML;
+        ownerMode=false;
+        renderOwnerPanel(d);
+        var htmlNonOwner=d.innerHTML;
+        ownerMode=savedOwner;
+        if(htmlOwner.indexOf("ow-shorts")===-1||htmlOwner.indexOf("owGoSec(")===-1) return {st:'fail', detail:"shortcuts missing for the owner"};
+        if(htmlNonOwner.indexOf("ow-shorts")!==-1) return {st:'fail', detail:"owner shortcuts VISIBLE to a non-owner"};
+        if(owGoSec("owSecKeys")!==true) return {st:'fail', detail:"owGoSec did not work for the owner"};
+        ownerMode=false;
+        var blocked=owGoSec("owSecKeys");
+        ownerMode=savedOwner;
+        if(blocked!==false) return {st:'fail', detail:"owGoSec worked for a non-owner"};
+        return {st:'ok', detail:"owner sees shortcuts; non-owner sees none"};
       }],
       [TR('k2577','حذف طرح آزمایشی'), function(){
         if(!planCreated) return {st:'skip', detail:TR('k2571','تست نشد')};
@@ -9773,7 +10555,7 @@ document.addEventListener("visibilitychange",function(){ try{ if(!document.hidde
 SB.profile=null;
 SB.pushUserSettings=function(){
   if(!SB.online||!SB.uid||typeof sbRpc!=="function") return Promise.resolve(false);
-  var st={sfxMute:!!S.sfxMute,sfxVol:(typeof S.sfxVol==="number"?S.sfxVol:0.6),theme:S.theme||"zomorod",lang:(S.settings&&S.settings.lang)||LANG||"fa",alarmSound:S.alarmSound||"chime",homeLayout:S.homeLayout||null,quietFrom:(S.settings&&S.settings.quietFrom)||"23:00",quietTo:(S.settings&&S.settings.quietTo)||"07:00",fontSize:S.fontSize||"normal",sound:(S.settings&&S.settings.sound)||"soft",activeDays:(S.onlineStats&&S.onlineStats.days)?Object.keys(S.onlineStats.days):[],pomoLog:S.pomoLog||{}};
+  var st={sfxMute:!!S.sfxMute,sfxVol:(typeof S.sfxVol==="number"?S.sfxVol:0.6),theme:S.theme||"zomorod",lang:(S.settings&&S.settings.lang)||LANG||"fa",alarmSound:S.alarmSound||"chime",homeLayout:S.homeLayout||null,quietFrom:(S.settings&&S.settings.quietFrom)||"23:00",quietTo:(S.settings&&S.settings.quietTo)||"07:00",fontSize:S.fontSize||"normal",sound:(S.settings&&S.settings.sound)||"soft",activeDays:(S.onlineStats&&S.onlineStats.days)?Object.keys(S.onlineStats.days):[],pomoLog:S.pomoLog||{},customWidgets:S.customWidgets||[],wtHandsFree:!!(S.settings&&S.settings.wtHandsFree)};
   return sbRpc("save_user_settings",{p_settings:st}).then(function(res){ if(res.error){ sbLog("save_user_settings: "+res.error.message); return false; } return !!res.data; }).catch(function(){ return false; });
 };
 SB.pullUserSettings=function(){
@@ -9788,6 +10570,8 @@ SB.pullUserSettings=function(){
     if(typeof d.lang==="string"&&(d.lang==="fa"||d.lang==="en")&&d.lang!==LANG){ try{ setLang(d.lang); }catch(e){} }
     if(typeof d.alarmSound==="string") S.alarmSound=d.alarmSound;
     if(Array.isArray(d.homeLayout)&&d.homeLayout.length){ S.homeLayout=d.homeLayout.slice(); }
+    if(Array.isArray(d.customWidgets)){ S.customWidgets=d.customWidgets.slice(); }
+    if(typeof d.wtHandsFree==="boolean"&&S.settings) S.settings.wtHandsFree=d.wtHandsFree;
     if(typeof d.quietFrom==="string"&&S.settings) S.settings.quietFrom=d.quietFrom;
     if(typeof d.quietTo==="string"&&S.settings) S.settings.quietTo=d.quietTo;
     if(typeof d.fontSize==="string") S.fontSize=d.fontSize;
@@ -10635,7 +11419,8 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
      }).then(function(st){
        WT.stream=st;
        st.getAudioTracks().forEach(function(t){ t.enabled=false; });
-       WT.joined=true; OG.onWtCall();
+       WT.joined=true; OG.onWtCall(); WT.paintPill();
+       if(WT.isHandsFree()) WT.startTalk();
        if(navigator.wakeLock&&navigator.wakeLock.request) navigator.wakeLock.request("screen").then(function(w){ WT.wakeLock=w; }).catch(function(){});
        if(window.GhostOpsBridge&&GhostOpsBridge.startWalkieService) GhostOpsBridge.startWalkieService();
        SFX.play("join");
@@ -10658,6 +11443,7 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    if(WT.groupId) SB_unsub("wt-"+WT.groupId);
    if(window.GhostOpsBridge&&GhostOpsBridge.stopWalkieService) GhostOpsBridge.stopWalkieService();
    WT.joined=false; WT.groupId=null; WT.talking=false;
+   WT.paintPill();
    if(curView==="walkie") go("walkie");
  },
  /* Speaker output ONLY on an explicit tap (Parsa, 2026-11-09 ~23:42):
@@ -10756,6 +11542,7 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    SFX.play("wt_start");
    if(window.GhostOpsBridge&&GhostOpsBridge.onTalkingChanged) GhostOpsBridge.onTalkingChanged(true);
    var b=$("wtPtt"); if(b) b.classList.add("talking");
+   WT.paintPill();
  },
  stopTalk:function(){
    if(!WT.talking) return;
@@ -10766,6 +11553,7 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    SFX.play("wt_end");
    if(window.GhostOpsBridge&&GhostOpsBridge.onTalkingChanged) GhostOpsBridge.onTalkingChanged(false);
    var b=$("wtPtt"); if(b) b.classList.remove("talking");
+   WT.paintPill();
  },
  watchSpeaking:function(uid,stream){
    try{
@@ -10786,13 +11574,51 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    var el=$("wt-peer-"+uid); if(!el) return;
    el.classList.toggle("speaking",!!on);
    var ind=el.querySelector(".wt-speak"); if(ind) ind.textContent=on?TR('k2056','در حال حرف‌زدن'):TR('k2057','در حال گوش‌دادن');
+ },
+ /* v10.4.12 — walkie-talkie is GLOBAL + HANDS-FREE (Parsa 2026-11-11):
+    the remote-audio box lives in the app shell, so voices are heard on ANY
+    page; the pill shows the live channel everywhere; hands-free keeps the
+    mic open without holding the button. Live-only is unchanged: nothing
+    is ever recorded or saved. Sound routing is unchanged: headset/AirPods
+    if connected, speaker only on an explicit tap. */
+ isHandsFree:function(){ return !!(typeof S!=="undefined"&&S.settings&&S.settings.wtHandsFree); },
+ setHandsFree:function(on){
+   if(typeof S==="undefined"||!S.settings) return;
+   S.settings.wtHandsFree=!!on; save();
+   try{ if(typeof SB!=="undefined") SB.pushUserSettings(); }catch(e){}
+   if(WT.joined){ if(on) WT.startTalk(); else WT.stopTalk(); }
+   WT.paintPill();
+   toast(on?TR('k2926','میکروفون باز شد؛ بدون نگه‌داشتن دکمه حرف بزنید'):TR('k2927','میکروفون بسته شد'));
+   if(curView==="walkie") go("walkie");
+ },
+ toggleTalk:function(){
+   if(!WT.joined||!WT.stream) return;
+   if(WT.talking) WT.stopTalk(); else WT.startTalk();
+ },
+ homeStatus:function(){
+   if(!WT.joined) return TR('k2127','صدا زنده است؛ هرگز ضبط یا ذخیره نمی‌شود');
+   if(WT.talking) return TR('k2056','در حال حرف‌زدن');
+   if(WT.isHandsFree()) return TR('k2934','هندزفری فعال — میکروفون باز است');
+   return TR('k2057','در حال گوش‌دادن');
+ },
+ paintHomeWalkie:function(){ var el=$("homeWalkieStatus"); if(el) el.textContent=WT.homeStatus(); },
+ paintPill:function(){
+   var p=$("wtPill"); if(!p) return;
+   if(!WT.joined){ p.style.display="none"; }
+   else{
+     p.style.display="flex";
+     p.classList.toggle("talking",!!WT.talking);
+     var t=$("wtPillTxt");
+     if(t) t.textContent="🎙️ "+TR('k2001','واکی‌تاکی')+" — "+(WT.talking?TR('k2056','در حال حرف‌زدن'):WT.isHandsFree()?TR('k2934','هندزفری فعال'):TR('k2057','در حال گوش‌دادن'));
+   }
+   try{ WT.paintHomeWalkie(); }catch(e){}
  }
 };
 function renderWalkie(){
   var h='<div class="viewhead"><h2>🎙️ '+TR('k2001','واکی‌تاکی')+'</h2><p class="sub">'+TR('k2127','صدا زنده است؛ هرگز ضبط یا ذخیره نمی‌شود')+' — 1 '+TR('k2128','تا')+' 4 '+TR('k2026','اعضا')+'.</p></div>';
   h+='<div class="card wt-card">';
   h+='<p class="small" style="margin-bottom:10px">🔒 '+TR('k2129','با قفل‌شدن صفحه هم ادامه می‌دهد؛ اگر در APK سرویس پس‌زمینه فعال باشد، صدا قطع نمی‌شود')+'.</p>';
-  if(!SB.groupOnline()){ h+='<p class="small">'+TR('k2052','آنلاین وصل نیست؛ تغییرات روی همین دستگاه می‌ماند')+'.</p><button class="btn" style="width:100%;padding:14px;margin-top:10px;opacity:.55" disabled>🎙️ '+TR('k2130','ورود به کانال واکی‌تاکی')+'</button></div><div id="wtAudioBox"></div>'; return h; }
+  if(!SB.groupOnline()){ h+='<p class="small">'+TR('k2052','آنلاین وصل نیست؛ تغییرات روی همین دستگاه می‌ماند')+'.</p><button class="btn" style="width:100%;padding:14px;margin-top:10px;opacity:.55" disabled>🎙️ '+TR('k2130','ورود به کانال واکی‌تاکی')+'</button></div>'; return h; }
   var gid=WT.groupId||(OG.sel?OG.sel.id:null);
   h+='<div class="field"><label>'+TR('k2102','گروه آنلاین شما')+'</label><select class="inp" id="wtGroupSel" onchange="WT.leave(); WT.join(this.value)">'
     +'<option value="">'+TR('k1105','هنوز گروهی نساخته‌اید')+'</option>'
@@ -10808,12 +11634,19 @@ function renderWalkie(){
           return '<div class="wt-peer" id="wt-peer-'+uid+'"><div class="wt-av">'+avatarHTML(typeof p.avatar==="number"?p.avatar:0,56)+'</div><b>'+esc(p.name||uid.slice(0,8))+'</b>'+supBadgeHTMLFor(uid)+'<span class="wt-speak">'+TR('k2057','در حال گوش‌دادن')+'</span></div>';
         }).join("")
       +'</div>';
-    h+='<button class="btn wt-ptt" id="wtPtt" onpointerdown="WT.startTalk()" onpointerup="WT.stopTalk()" onpointerleave="WT.stopTalk()" oncontextmenu="return false">🎙️ '+TR('k2132','نگه دار و حرف بزن')+'</button>';
-    h+='<p class="small" style="text-align:center;margin-top:8px">'+TR('k2133','دکمه را نگه دارید تا صحبت کنید؛ رها کنید تا گوش دهید')+'.</p>';
+    /* v10.4.12 — HANDS-FREE (Parsa 2026-11-11): a toggle so the mic stays
+       open without holding the button; in hands-free the button is a tap
+       toggle (tap once to talk, tap again to stop). The audio box itself
+       lives in the app shell now, so voices are heard on any page. */
+    h+='<label class="rowflex" style="justify-content:space-between;width:100%;gap:10px;margin-top:10px"><span>'+TR('k2911','حالت هندزفری')+' — '+TR('k2910','بدون نگه‌داشتن دکمه حرف بزن')+'</span><input type="checkbox" id="wtHf"'+(WT.isHandsFree()?' checked':'')+' onchange="WT.setHandsFree(this.checked)"></label>';
+    h+=(WT.isHandsFree()
+      ?'<button class="btn wt-ptt'+(WT.talking?' talking':'')+'" id="wtPtt" onclick="WT.toggleTalk()">🎙️ '+(WT.talking?TR('k2912','میکروفون باز است؛ برای قطع دوباره بزنید'):TR('k2910','بدون نگه‌داشتن دکمه حرف بزن'))+'</button>'
+      :'<button class="btn wt-ptt" id="wtPtt" onpointerdown="WT.startTalk()" onpointerup="WT.stopTalk()" onpointerleave="WT.stopTalk()" oncontextmenu="return false">🎙️ '+TR('k2132','نگه دار و حرف بزن')+'</button>');
+    h+='<p class="small" style="text-align:center;margin-top:8px">'+(WT.isHandsFree()?TR('k2912','میکروفون باز است؛ برای قطع دوباره بزنید'):TR('k2133','دکمه را نگه دارید تا صحبت کنید؛ رها کنید تا گوش دهید'))+'.</p>';
     h+='<div class="rowflex" style="margin-top:10px"><button class="btn ghost sm wt-spk'+(WT.speakerOn?' on':'')+'" onclick="WT.toggleSpeaker()">🔊 '+TR('k2251','بلندگو')+'</button><span class="small">'+TR('k2256','خروجی صدا')+': <b>'+esc(AU.label())+'</b></span></div>';
     h+='<button class="btn ghost" style="width:100%" onclick="WT.leave()">'+TR('k2134','خروج از کانال')+'</button>';
   }
-  h+='</div><div id="wtAudioBox"></div>';
+  h+='</div>';
   return h;
 }
 
@@ -11390,7 +12223,10 @@ var PW={uses:{},
  },
  pickMyRole:function(roleKey){
    if(!OG.sel) return;
-   sbRpc("set_my_group_role",{p_group:OG.sel.id,p_role:roleKey}).then(function(res){
+   /* v10.4.12 — was {p_group: ...}: the server function takes
+      p_group_id, so the role pick always failed on the live server and
+      no member could ever unlock their abilities. */
+   sbRpc("set_my_group_role",{p_group_id:OG.sel.id,p_role:roleKey}).then(function(res){
      if(res.error){ toast(esc(res.error.message)); return; }
      if(res.data!==true){ toast(TR('k2834','نقش شما قبلاً انتخاب شده است؛ تغییر آن فقط با مالک است')+"."); return; }
      toast(TR('k2835','نقش شما ثبت شد')+".");
@@ -12015,7 +12851,7 @@ function extraSettingsCards(){
   +'<div class="rowflex"><label class="rowflex"><input type="checkbox" id="sfxMuteChk"'+(S.sfxMute?' checked':'')+' onchange="S.sfxMute=this.checked;save();SB.pushUserSettings()"> '+TR('k2309','بی‌صدا')+'</label></div>'
   +'<div class="field"><label>'+TR('k2310','بلندی صدا')+'</label><input type="range" class="rng" min="0" max="1" step="0.05" value="'+(typeof S.sfxVol==="number"?S.sfxVol:0.6)+'" oninput="S.sfxVol=+this.value;save();SB.pushUserSettings()"></div>'
   +'<div class="field"><label>'+TR('k2462','صدای آلارم')+'</label><select class="inp" onchange="S.alarmSound=this.value;save();try{SB.pushUserSettings()}catch(e){}">'+[["chime","k2463","زنگ ملایم"],["beep","k2464","بوق کلاسیک"],["siren","k2465","آژیر"],["reveille","k2466","بوق بیدارباش"],["drum","k2467","طبل"],["march","k2468","مارش"],["custom","k2514","موسیقی دلخواه من"]].map(function(o){ return '<option value="'+o[0]+'"'+((S.alarmSound||"chime")===o[0]?' selected':'')+'>'+TR(o[1],o[2])+'</option>'; }).join("")+'</select><div class="rowflex" style="margin-top:8px"><button class="btn sm" onclick="CUSTOMMUSIC.pick()">'+TR('k2513','آپلود موسیقی دلخواه')+'</button><button class="btn ghost sm" onclick="CUSTOMMUSIC.removeMusic()">'+TR('k2519','حذف موسیقی دلخواه')+'</button></div><div class="small" id="customMusicLabel" style="margin-top:6px"></div><input type="file" id="customMusicFile" accept="audio/*" style="display:none" onchange="CUSTOMMUSIC.onFile(this)"></div>'
-  +'<button class="btn ghost sm" onclick="SFX.play(\'chime\')">'+TR('k2311','تست صدا')+'</button></div>';
+  +'<button class="btn ghost sm" onclick="testAlarmSound()">'+TR('k2311','تست صدا')+'</button></div>';
   /* Rank + badges */
   var next=rk.next;
   h+='<div class="card"><h3 style="margin-bottom:10px"><span class="vh-ic">'+icSvg("profile")+'</span>' + TR('k2312','رتبه و نشان‌های من') + '</h3>'
