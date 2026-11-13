@@ -4193,7 +4193,14 @@ function supBadgeHTMLFor(uid){
     if(typeof S!=="undefined"&&S.mySuper&&S.mySuper.status==="active"){
       if(!uid||typeof SB==="undefined"||!SB.uid||uid===SB.uid){ isSup=true; }
     }
-    if(!isSup&&typeof OG!=="undefined"&&OG.memberSuper&&uid&&OG.memberSuper[uid]){ isSup=true; }
+    /* v10.4.31 (Thread 7): when fresh member rows covered is_super for
+       this uid, the SERVER value is the truth for everyone (self
+       included) — the local S.mySuper fast path must not contradict
+       what others see for the same user. Without RPC coverage, the
+       local path + the fallback map stand as before. */
+    if(uid&&typeof OG!=="undefined"&&OG._attrsRpcUids&&OG._attrsRpcUids[uid]&&OG._attrsCovered&&OG._attrsCovered.super){
+      isSup=!!(OG.memberSuper&&OG.memberSuper[uid]);
+    } else if(!isSup&&typeof OG!=="undefined"&&OG.memberSuper&&uid&&OG.memberSuper[uid]){ isSup=true; }
   }catch(e){}
   return isSup?supBadgeHTML():"";
 }
@@ -6440,7 +6447,12 @@ function loadOpenMembers(gid){
         var rows=res.data||[];
         if(!rows.length){ box.innerHTML='<p class="small">'+TR('k1103','بدون عضو')+'.</p>'; return; }
         box.innerHTML=rows.map(function(m){
-          return '<div class="listrow"><div class="grow"><b>'+esc(m.display_name||m.username||"")+'</b>'+(m.username?' <span dir="ltr">@'+esc(m.username)+'</span>':'')+'<div class="small">'+esc(m.role||"")+'</div></div>'+(m.username?'<button class="btn ghost sm" onclick="removeGroupMemberByName(\''+esc(String(gid))+'\',\''+esc(m.username)+'\')">'+TR('k1132','حذف از گروه')+'</button>':'')+'</div>';
+          /* v10.4.31 (Threads 6+7): avatar/badge/title/color straight
+             from the row fields (this modal does not go through
+             OG.loadMembers, so the maps may be empty here). */
+          var _ti=m.custom_title||"";
+          var _co=(typeof m.name_color==="string"&&/^#[0-9a-fA-F]{6}$/.test(m.name_color))?m.name_color:"";
+          return '<div class="listrow">'+(typeof m.avatar_idx==="number"?avatarHTML(m.avatar_idx,32):"")+'<div class="grow"><b'+(_co?' style="color:'+_co+'"':'')+'>'+esc(m.display_name||m.username||"")+'</b>'+(m.is_super?supBadgeHTML():"")+(m.username?' <span dir="ltr">@'+esc(m.username)+'</span>':'')+(_ti?'<div class="small">'+esc(_ti)+'</div>':'')+'<div class="small">'+esc(m.role||"")+'</div></div>'+(m.username?'<button class="btn ghost sm" onclick="removeGroupMemberByName(\''+esc(String(gid))+'\',\''+esc(m.username)+'\')">'+TR('k1132','حذف از گروه')+'</button>':'')+'</div>';
         }).join("");
       });
     }).catch(function(){ box.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; });
@@ -6449,7 +6461,13 @@ function loadOpenMembers(gid){
   var ms=(typeof OG!=="undefined"&&(OG.members||[]))||[];
   if(!ms.length){ box.innerHTML='<p class="small">'+TR('k1103','بدون عضو')+'.</p>'; return; }
   box.innerHTML=ms.map(function(m){
-    return '<div class="listrow"><div class="grow"><b>'+esc(m.nickname||m.user_id||"")+'</b></div></div>';
+    /* v10.4.31 (Threads 6+7): same attributes as the member list, from
+       the server-provided maps (row fields as a second source). */
+    var _av=(typeof OG!=="undefined"&&OG.memberAvatar&&OG.memberAvatar[m.user_id]!=null)?OG.memberAvatar[m.user_id]:(typeof m.avatar_idx==="number"?m.avatar_idx:null);
+    var _ti=(typeof OG!=="undefined"&&OG.memberTitle&&OG.memberTitle[m.user_id])||m.custom_title||"";
+    var _co=(typeof OG!=="undefined"&&OG.memberColor&&OG.memberColor[m.user_id])||"";
+    if(!_co&&typeof m.name_color==="string"&&/^#[0-9a-fA-F]{6}$/.test(m.name_color)) _co=m.name_color;
+    return '<div class="listrow">'+(_av!=null?avatarHTML(_av,32):"")+'<div class="grow"><b'+(_co?' style="color:'+_co+'"':'')+'>'+esc(m.nickname||m.user_id||"")+'</b>'+supBadgeHTMLFor(m.user_id)+(_ti?'<div class="small">'+esc(_ti)+'</div>':'')+'</div></div>';
   }).join("");
 }
 function removeGroupMemberByName(gid,username){
@@ -6603,6 +6621,11 @@ function drawGroupChat(){
     h+=_visible.map(function(m){ return ogMsgHTML(m); }).join("");
     try{ var _inp=$("gChatInp"); if(_inp) _inp.disabled=_fort&&!(OG.isAdmin&&OG.isAdmin()); }catch(e){}
     box.innerHTML=h; box.scrollTop=box.scrollHeight;
+    /* v10.4.31 (Thread 1): the chat header badge is hardcoded «متصل» in
+       this template — an in-place redraw must repaint it truthfully
+       (offline readers saw a lying green badge). go() paints on
+       navigation; this covers every redraw in between. */
+    try{ if(typeof SB!=="undefined"&&SB.paintBadges) SB.paintBadges(); }catch(e){}
     try{ if(window.GFX&&GFX.playFresh) GFX.playFresh(box); }catch(e){}
     return;
   }
@@ -6611,6 +6634,10 @@ function drawGroupChat(){
     +'<p class="small">'+TR('k2435','هنوز وارد گروه آنلاینی نشده‌اید؛ از صفحه «برنامه‌ریزی گروهی» یک گروه بسازید یا با کد دعوت به گروه بپیوندید')+'.</p>'
     +'<div class="rowflex"><button class="btn" onclick="go(\'group\')">'+TR('k0279','برنامه‌ریزی گروهی')+'</button></div>';
   box.scrollTop=box.scrollHeight;
+  /* v10.4.31 (Thread 1): same repaint as the online branch above — this
+     redraw removes the chat badge, but badges elsewhere in the document
+     must still flip to the truthful offline state right now. */
+  try{ if(typeof SB!=="undefined"&&SB.paintBadges) SB.paintBadges(); }catch(e){}
 }
 function sendGroupChat(){
   var inp=$("gChatInp"); if(!inp) return;
@@ -6775,18 +6802,65 @@ function openProfileEdit(){
 function saveProfileEdit(){
   var n=$("peName").value.trim(); if(!n){ toast(TR('k1253','نام را بنویسید') + "."); return; }
   S.user.name=n; S.user.role=$("peRole").value.trim(); if($("peTitle")) S.user.customTitle=$("peTitle").value.trim(); S.user.bio=($("peBio").value||"").slice(0,120); if(typeof window._peAvatar==="number"){ S.user.avatar=window._peAvatar; } save(); try{ if(typeof refreshAvatarUI==="function") refreshAvatarUI(); }catch(e){}
-  var finish=function(){ closeModal(); enterApp(); go("settings"); toast(TR('k1254','پروفایل به‌روز شد') + "."); };
+  var finish=function(silent){ closeModal(); enterApp(); go("settings"); if(!silent) toast(TR('k1254','پروفایل به‌روز شد') + "."); };
   /* Server-first (v10.4.4): the success toast only fires after the server
-     confirms the title/color save. A server failure shows an error instead
-     of a false success (the local profile is still saved on this device). */
-  try{ if(typeof SB!=="undefined"&&SB.online&&typeof sbRpc==="function"){
-    var jobs=[];
-    if(typeof SB.syncProfile==="function"){ jobs.push(Promise.resolve().then(function(){ return SB.syncProfile(); })); }
-    jobs.push(sbRpc("set_custom_title",{p_title:(typeof S.user.customTitle==="string"?S.user.customTitle:null)}));
-    jobs.push(sbRpc("set_name_color",{p_color:(typeof S.user.nameColor==="string"?S.user.nameColor:null)}));
-    Promise.all(jobs).then(function(results){ var bad=results.some(function(r){ return r&&r.error; }); if(bad){ toast(TR('k2527','پروفایل روی این دستگاه ذخیره شد ولی روی سرور ثبت نشد؛ دوباره تلاش کنید')+"."); } finish(); }).catch(function(){ toast(TR('k2527','پروفایل روی این دستگاه ذخیره شد ولی روی سرور ثبت نشد؛ دوباره تلاش کنید')+"."); finish(); });
+     confirms the save. A server failure shows an error instead of a false
+     success (the local profile is still saved on this device).
+     v10.4.31 (Thread 6): the old block ran ONLY for Auth users
+     (SB.online) — key-only and owner sessions silently skipped the
+     server sync and still showed success, so nobody else ever saw the
+     new avatar. The identity sync (sync_identity: name + avatar into
+     `identities`, the store member RPCs read) now runs for ALL THREE
+     identity types; the gated profiles path stays Auth-only and
+     unchanged. A failed sync shows ONLY the error toast, never the
+     success toast on top of it. When no server attempt is possible at
+     all (no client/RPC layer), the honest local-only toast shows. */
+  var _syncAttempted=false;
+  try{ if(typeof SB!=="undefined"&&SB.client&&typeof sbRpc==="function"){
+    var _k6=null; try{ _k6=SB.keyForRpc(); }catch(e){}
+    var _hasId=!!(SB.online||_k6||(typeof ownerMode!=="undefined"&&ownerMode));
+    if(_hasId){
+      var jobs=[];
+      if(typeof SB.syncIdentity==="function"){ jobs.push(Promise.resolve().then(function(){ return SB.syncIdentity(); })); }
+      if(SB.online){
+        if(typeof SB.syncProfile==="function"){ jobs.push(Promise.resolve().then(function(){ return SB.syncProfile(); })); }
+        jobs.push(sbRpc("set_custom_title",{p_title:(typeof S.user.customTitle==="string"?S.user.customTitle:null)}));
+        jobs.push(sbRpc("set_name_color",{p_color:(typeof S.user.nameColor==="string"?S.user.nameColor:null)}));
+      } else if(_k6){
+        /* Key-only: the gated title/color RPCs resolve via p_key (the
+           same contract SB.syncProfile's gated calls use for Auth). */
+        if(typeof S.user.customTitle==="string") jobs.push(sbRpc("set_custom_title",{p_title:(S.user.customTitle===""?null:S.user.customTitle),p_key:_k6}));
+        if(typeof S.user.nameColor==="string") jobs.push(sbRpc("set_name_color",{p_color:(S.user.nameColor===""?null:S.user.nameColor),p_key:_k6}));
+      }
+      _syncAttempted=true;
+      Promise.all(jobs).then(function(results){
+        /* syncIdentity resolves a boolean; RPC jobs resolve {data,error}.
+           A refused identity sync (false) is a failed sync. */
+        var bad=results.some(function(r){ return r===false||(r&&r.error); });
+        if(bad){ toast(TR('k2527','پروفایل روی این دستگاه ذخیره شد ولی روی سرور ثبت نشد؛ دوباره تلاش کنید')+"."); finish(true); return; }
+        /* The server has the new identity: refresh this group's member
+           attributes at once (no restart, no re-enter needed) and
+           re-announce the new avatar on the live walkie channel. */
+        try{ if(typeof OG!=="undefined"&&OG.sel&&OG.loadMembers) OG.loadMembers(); }catch(e){}
+        try{
+          if(typeof WT!=="undefined"&&WT.joined&&SB.subs){
+            var _ch=SB.subs["wt-"+WT.groupId];
+            if(_ch) _ch.track({uid:WT.myUid(),name:(S.user.name||"—"),avatar:(typeof S.user.avatar==="number"?S.user.avatar:0),talking:!!WT.talking,joinedAt:WT._joinedAt||Date.now()});
+          }
+        }catch(e){}
+        finish();
+      }).catch(function(){ toast(TR('k2527','پروفایل روی این دستگاه ذخیره شد ولی روی سرور ثبت نشد؛ دوباره تلاش کنید')+"."); finish(true); });
+      return;
+    }
+    /* No server identity at all (no Auth session, no key, not owner):
+       the save is local-only — say so honestly, once. */
+    finish(true);
+    toast(TR('k4808','پروفایل فقط روی همین دستگاه ذخیره شد؛ برای اینکه بقیه آن را ببینند، وارد حساب سرور شوید یا کلید فعال کنید')+".");
     return;
   } }catch(e){}
+  /* No server attempt was possible (no client/RPC layer, or the sync
+     block threw before firing): the save is local-only — say so. */
+  if(!_syncAttempted){ finish(true); toast(TR('k4808','پروفایل فقط روی همین دستگاه ذخیره شد؛ برای اینکه بقیه آن را ببینند، وارد حساب سرور شوید یا کلید فعال کنید')+"."); return; }
   finish();
 }
 function applyFontSize(){ var s=S.fontSize||"normal"; document.body.style.fontSize=(s==="small"?"13.5px":s==="large"?"17px":"15px"); }
@@ -7427,7 +7501,14 @@ Object.assign(I18N_EN,{"k4721":"Focus Bingo — deal, toggle, line, blackout (te
 /* v10.4.28 (APP batch 2) — EN strings for the growth round (k3984+, k4336). */
 Object.assign(I18N_EN,{"k3984":"Ghost — phosphor moonlight","k3985":"Always-dark animated theme: a spectral night, rising fog columns and blinking spirit orbs","k3986":"The Ghost theme is always dark; day/night mode has no effect on it","k3987":"Fortress Outpost","k3988":"Soundscape Director","k3989":"Gear Sets","k3990":"Restoration Workshop","k3991":"Campaign","k3992":"Data Card","k3993":"Saga","k3994":"Chronotype Scheduling","k3995":"One-Task Lock","k3996":"Deep-Work Philosophy","k3997":"Wind-Down Protocol","k3998":"Living Theme Engine","k3999":"The background reacts to the Jalali season, the time of day and the weather you declare yourself — no internet, no location, no sensors","k4000":"Buildings level up, walls are placed, staff are assigned — all from the work you already do; no timers, no decay","k4001":"Buildings","k4002":"Upgrade","k4003":"Level","k4004":"Cost","k4005":"Not enough focus sessions yet — finish a pomodoro first","k4006":"Defences","k4007":"Wall piece","k4009":"Pick a piece, then tap the cell you want; tapping the same cell again removes the piece","k4010":"Staff","k4012":"Weekly drill","k4013":"Run drill","k4014":"This week's drill is done","k4015":"Drill report","k4016":"Rebuild the ruin","k4017":"The ruin was rebuilt","k4018":"No ruin to rebuild","k4019":"Focus sessions available to build with","k4020":"At maximum level","k4021":"Still locked","k4022":"Unassigned","k4023":"Focus hours","k4024":"Three living scenes built from events, not loops; every sound is made right here, with no files","k4025":"Scene","k4026":"Event density","k4027":"Sparse","k4028":"Normal","k4029":"Dense","k4030":"Volume","k4031":"Fade timer","k4032":"Off","k4033":"Start","k4034":"Stop","k4035":"Now playing","k4036":"If the screen locks, the mobile browser stops the sound; that is a browser limit, not the app","k4038":"App sound is muted; to hear the scene, unmute it in Settings","k4039":"Sound is not available on this device","k4040":"Pieces unlock from real achievements — no luck, no purchases; the set bonus is cosmetic only","k4041":"The set bonus only changes appearance: 2 pieces = aura, 4 pieces = aura + backdrop + title. No points, no power","k4044":"Wear","k4045":"Remove","k4046":"Still locked","k4048":"No set completed yet","k4050":"Aura active","k4055":"Pieces from different sets can be worn together freely","k4056":"Preview","k4059":"Completed sets","k4060":"Earn fragments from achievements, clean them, and set them in place; every fragment comes from a named source, with no luck","k4061":"Clean","k4062":"Cleaning…","k4063":"Pick a cleaned fragment, then tap its own cell","k4064":"This fragment does not fit here — gently, no penalty","k4065":"Relic completed","k4066":"Display gallery","k4067":"Fragment","k4068":"Cleaned","k4070":"Cracked","k4071":"Joined","k4072":"Polished","k4073":"Radiant","k4075":"of","k4076":"First pick a cleaned fragment","k4078":"Placed","k4079":"No relic completed yet","k4081":"Today's declared weather","k4083":"You told the app this weather yourself; the app does not check the sky","k4084":"Hold this look (stop the motion)","k4087":"Living engine on","k4088":"Living engine off","k4089":"Current conditions","k4095":"Solo version: one shared goal with yourself, an achievement ladder, no ranking","k4096":"Solo","k4097":"New campaign","k4098":"Unit","k4099":"Target","k4100":"Start campaign","k4101":"Achievement ladder","k4103":"Campaign complete","k4104":"Finish and re-run","k4105":"Progress","k4106":"Finished","k4107":"Past campaigns","k4108":"Worn","k4110":"Duration (weeks)","k4111":"Campaign story line (one sentence)","k4114":"If a campaign is not filled, the unlocked achievements stay and you can re-run it","k4115":"Arrange your own stats, build a card, and share it anywhere you like yourself — the app uploads nothing","k4116":"Period","k4121":"Stats (up to 4)","k4122":"Layout","k4123":"Download PNG","k4124":"Preview","k4125":"Maximum 4 stats","k4126":"Only these selected stats go on the card — no journal text, task titles or private content","k4129":"Card motto","k4131":"Card downloaded","k4132":"Could not build the image","k4133":"Accent colour","k4135":"A three-month story in three episodes; chapters never expire","k4137":"Episode","k4140":"Read chapter","k4141":"This chapter is still locked","k4142":"Episode recap","k4143":"Your choice","k4146":"Saga banner earned","k4147":"Saga complete","k4148":"Requirement","k4149":"In the previous episode","k4150":"Missed chapters stay readable later; no lock is time-based","k4151":"Read it","k4154":"Choice recorded","k4155":"Saga progress"});
 Object.assign(I18N_EN,{"k4156":"Outside-View Estimate","k4157":"Not enough history yet — at least 5 done tasks in this same category are needed; nothing is invented or shown","k4158":"Median","k4159":"Middle half","k4160":"80th percentile","k4161":"Your calibration factor in this category","k4162":"Use median","k4163":"Range: low","k4164":"Save range","k4165":"Range saved","k4166":"Sample size","k4167":"Estimate applied","k4168":"Based on pomodoro counts, not real time","k4169":"Unpack task","k4171":"Unpack this task","k4173":"Add step","k4174":"Unpacked total","k4175":"Your guess","k4176":"Apply and keep guess","k4177":"Apply and use unpacked total","k4178":"No step may exceed 45 minutes; unpack a bigger step again or split it","k4179":"Unpacking applied","k4180":"Unpacking helps most for multi-part work and least for simple tasks; use it whenever you want, never required","k4182":"First add at least one step","k4183":"Ready to Resume","k4184":"Where I stopped","k4185":"Next step on return","k4186":"Return: when?","k4187":"Today","k4188":"Tomorrow","k4189":"This week","k4190":"Save resume card","k4191":"Resume card saved","k4192":"Resume from here","k4193":"Clear card","k4194":"Switches today","k4195":"2-minute gap","k4196":"Gap over — back to work","k4197":"Yesterday","k4198":"A designed pause between two tasks; no content","k4199":"5 short questions, three peak patterns; you can edit the windows yourself","k4200":"Short questionnaire","k4202":"See result","k4203":"Result","k4207":"Trough","k4208":"Peak","k4209":"Answer again","k4210":"This is your self-declared preference, not a medical assessment or a biological diagnosis","k4211":"Week strip","k4212":"Hardest task of the day","k4213":"This hour is in your trough window","k4214":"Suggestion: peak hour","k4215":"This cell is taken; pick another hour","k4216":"Block placed in the timetable","k4217":"7-day check","k4218":"Did the windows feel right?","k4219":"Right, keep them","k4220":"Windows saved","k4221":"Ask later","k4222":"Edit windows","k4223":"Peak start, peak end, trough hour","k4224":"Answer all 5 questions","k4225":"WOOP drill","k4226":"WOOP drill","k4227":"Feasibility check","k4228":"Desirability","k4229":"Feasibility","k4230":"Wish","k4231":"Outcome","k4232":"Obstacle","k4233":"Plan","k4234":"Next","k4235":"Back","k4236":"Park the wish","k4237":"Wish parked; no penalty","k4238":"Continue with a revised wish","k4239":"What inside you stands in the way?","k4240":"This obstacle is about me, not outside circumstances","k4241":"If [obstacle situation], then I will [specific response]","k4242":"Finish drill","k4243":"Drill saved","k4244":"Already marked today","k4245":"WOOP summary","k4246":"Firings","k4247":"Step","k4248":"One sentence, challenging but doable","k4249":"One task, one count-up timer, nothing else; exit with a release word or a named reason","k4250":"Pick your task","k4251":"Start lock","k4253":"Release word","k4254":"Safety limit","k4255":"Release","k4256":"Wrong word — or pick a release reason","k4257":"Or a release reason","k4258":"Interrupted","k4259":"Stuck","k4260":"Finished early","k4261":"Park it","k4262":"Parked; the timer keeps running","k4263":"Short debrief","k4265":"Finished","k4266":"Parked","k4267":"Switched","k4268":"Safety limit reached; the lock released itself","k4269":"Past locks","k4270":"This lock only simplifies this screen; it does not block other apps on the phone. For phone-level blocking, use the operating system's focus mode","k4271":"Next step","k4272":"Lock started","k4273":"No open task","k4274":"Pick the philosophy that fits your life, not your wishes; the template builds real blocks","k4275":"Choice wizard","k4276":"Answer all 3 questions","k4277":"Suggestion","k4282":"Monastic fits almost nobody with a team; offered, not recommended","k4284":"Template applied","k4285":"Adherence","k4286":"Planned","k4287":"Real focus this week","k4288":"The app cannot know which minutes fell exactly inside deep blocks; this compares total weekly focus with total planned hours","k4289":"Rebuild template","k4290":"Gap hunter","k4291":"Free gap","k4292":"Start a deep session here","k4293":"Filled cells skipped","k4294":"Journalistic is the hardest and needs fast focus","k4295":"End the day deliberately: T-60, T-30, T-10","k4296":"Bedtime","k4297":"Bedtime saved","k4298":"T-60: reset the environment","k4299":"T-30: mental handover","k4300":"T-10: settle","k4302":"Brain dump","k4303":"Each line, one task for tomorrow","k4304":"Build tomorrow's tasks","k4305":"Tasks created","k4306":"Parked worries (private, only here)","k4307":"One line…","k4308":"Save worry","k4309":"Dim mode","k4310":"Set wind-down alarm","k4311":"Wind-down alarm set","k4312":"Current phase","k4313":"One laboratory sleep study showed writing a to-do list before bed made falling asleep slightly faster; this is one study, not a promise","k4314":"If you regularly struggle to fall asleep, talk to a doctor; this tool is not treatment","k4315":"Lights off, sound low, one calm breath; the app dims itself so it is not the brightest thing in the room","k4316":"Open ambient sound","k4318":"Not wind-down time yet","k4336":"Picture the best outcome and enjoy it; one line only","k4319":"Fortress — upgrade, wall, staff, drill, rebuild (test)","k4320":"Soundscape — scene switch, fade timer, density (test)","k4321":"Gear — unlock, equip, set bonus (test)","k4322":"Relics — fragment earned, stage, place, gallery (test)","k4323":"Living — season/phase/weather layers (test)","k4324":"Campaign — solo create, ladder, re-run (test)","k4325":"Portrait — SVG card, stats, layouts (test)","k4326":"Saga — gates, junction, read, banner (test)","k4327":"Estimator — quantile stats, save range (test)","k4328":"Unpacking — steps, 45-min cap, apply (test)","k4329":"Resume — card, switch count, 2-min gap (test)","k4330":"Chrono — score, windows, 7-day check (test)","k4331":"WOOP — drill, park, fire, summary (test)","k4332":"One-Task Lock — start, release word, park (test)","k4333":"Philosophy — wizard, template, gap hunter (test)","k4334":"Wind-Down — bedtime, checks, dump, alarm (test)","k4335":"Ghost theme — entry, dark flag, animation (test)"});
-var APP_VERSION="10.4.30";
+/* v10.4.31 — EN strings for the walkie-talkie key entry (Thread 2),
+   voice-connection states (Thread 5) and the local-only profile notice
+   (Thread 6): k4800–k4809. */
+Object.assign(I18N_EN,{"k4800":"Activate a key for walkie-talkie","k4801":"To join the channel, enter the key the owner sent you here; once it activates, you join the channel automatically","k4802":"Activate and join the channel","k4803":"Connecting voice…","k4804":"Voice connected","k4805":"Voice connection failed; leave the channel and rejoin, or try a different connection","k4806":"Retry voice connection","k4807":"Voice status","k4808":"Profile saved on this device only; sign in to the server account or activate a key so others can see it","k4809":"You are alone in the channel; voice connects when others join"});
+/* v10.4.31 — EN strings for the registration-request duration (Thread 4):
+   k4810–k4814. */
+Object.assign(I18N_EN,{"k4810":"Requested subscription duration","k4811":"The entry key stays valid for this long from the day it is activated","k4812":"Requested duration","k4813":"Confirmed duration","k4814":"Approve the registration request for"});
+var APP_VERSION="10.4.31";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -9005,6 +9086,16 @@ function finishKeyActivation(k,row){
   else { toast(TR('k1543','اشتراک «')+S.mySub.planName+TR('k1542','» فعال شد')+(exp2?(" — "+TR('k1209','تا')+" "+exp2+" "+TR('k1544','معتبر است')):"")+"."); }
   if(!SB.online){ try{ showServerAccountPrompt(); }catch(e){} }
   if($("app") && $("app").style.display==="block") go(curView);
+  /* v10.4.31 (Thread 2b): a join refused by the key gate retries now
+     that a valid key exists — only on the walkie view with a live Auth
+     session. A key-only activation still needs the server-credential
+     step first, so it must not auto-join behind that modal. */
+  try{
+    if(typeof WT!=="undefined"&&WT._pendingJoinGid){
+      var _pj=WT._pendingJoinGid; WT._pendingJoinGid=null;
+      if(curView==="walkie"&&typeof SB!=="undefined"&&SB.online&&!WT.joined) WT.join(_pj);
+    }
+  }catch(e){}
 }
 
 /* بخش فروش اشتراک در پنل مالک */
@@ -19657,16 +19748,22 @@ SB.refreshServer=function(btn){
    user-controlled role and fed the advisor-impersonation hole). Auth users
    resolve via their session; key users pass p_key; the owner passes p_sig. */
 SB.syncIdentity=function(){
-  if(!S.user) return;
+  /* v10.4.31 (Thread 6): returns a Promise<boolean> (true = the server
+     stored the name/avatar in `identities`, the store member RPCs read).
+     Existing callers ignore the return value; saveProfileEdit awaits it
+     so a failed identity sync can no longer look like success. */
+  if(!S.user) return Promise.resolve(false);
   var _nm=S.user.name||"—";
   var _av=(typeof S.user.avatar==="number"?S.user.avatar:0);
   if(typeof ownerMode!=="undefined"&&ownerMode){
-    ownerSig().then(function(sig){ if(sig) sbRpc("sync_identity",{p_display_name:_nm,p_avatar_idx:_av,p_sig:sig}).catch(function(){}); }).catch(function(){});
-    return;
+    return ownerSig().then(function(sig){
+      if(!sig) return false;
+      return sbRpc("sync_identity",{p_display_name:_nm,p_avatar_idx:_av,p_sig:sig});
+    }).then(function(res){ return !!(res&&res.data===true); }).catch(function(){ return false; });
   }
   var _k=null; try{ _k=SB.keyForRpc(); }catch(e){}
-  if(!SB.online&&!_k) return;
-  sbRpc("sync_identity",{p_display_name:_nm,p_avatar_idx:_av,p_key:_k}).then(function(res){ if(res.error) sbLog("identity sync: "+res.error.message); }).catch(function(){});
+  if(!SB.online&&!_k) return Promise.resolve(false);
+  return sbRpc("sync_identity",{p_display_name:_nm,p_avatar_idx:_av,p_key:_k}).then(function(res){ if(res.error) sbLog("identity sync: "+res.error.message); return !res.error&&res.data===true; }).catch(function(){ return false; });
 };
 SB.ensureOwnerSecret=function(){
   if(!ownerMode||!SB.client) return;
@@ -19953,6 +20050,7 @@ function openRegistrationModal(mode){
   +'<div class="field"><label>'+TR('k2846','رمز سرور')+'</label><input class="inp" id="rgPass" type="password" dir="ltr"></div>'
   +'<div class="field"><label>'+TR('k2991','نام نمایشی')+'</label><input class="inp" id="rgName" placeholder="'+TR('k1602','مثلاً: علی رضایی')+'"></div>'
   +'<div class="field"><label>'+TR('k2004','نقش')+'</label><select class="inp" id="rgRole"><option value="member">'+TR('k1104','عضو')+'</option><option value="advisor">'+TR('k2998','مشاور')+'</option><option value="super">'+TR('k2230','ابر کاربر')+'</option><option value="konkoori">'+TR('k3033','کنکوری')+'</option></select><div class="hint small">'+TR('k3030','نقش درخواستی شما؛ مالک هنگام تایید می‌تواند آن را تغییر دهد')+'.</div></div>'
+  +'<div class="field"><label>'+TR('k4810','مدت اشتراک درخواستی')+'</label><select class="inp" id="rgDays">'+SB.regDaysOptsHTML(30)+'</select><div class="hint small">'+TR('k4811','کلید ورود از روز فعال‌سازی به همین مدت معتبر است')+'.</div></div>'
   +'<div class="field"><label>'+TR('k2992','سؤال بازیابی')+'</label><input class="inp" id="rgQ"></div>'
   +'<div class="field"><label>'+TR('k2993','پاسخ بازیابی')+'</label><input class="inp" id="rgA"></div>'
   +'<div class="rowflex"><button class="btn grow" style="justify-content:center" onclick="doRegistrationSubmit()">'+TR('k2981','ثبت نام')+'</button><button class="btn ghost" onclick="closeModal()">'+TR('k0338','انصراف')+'</button></div>');
@@ -19969,12 +20067,15 @@ function doRegistrationSubmit(){
   var an=(($("rgA")||{}).value||"").trim();
   var role=(($("rgRole")||{}).value||"member");
   if(role!=="member"&&role!=="advisor"&&role!=="super"&&role!=="konkoori") role="member";
+  /* v10.4.31 (Thread 4): the requested duration — 30/90/365 only, never
+     unlimited; a missing or tampered control falls back to 30. */
+  var reqDays=SB.regDaysChoiceNorm(($("rgDays")||{}).value);
   if(!/^[A-Za-z][A-Za-z0-9_]{2,29}$/.test(un)){ toast(TR('k2719','نام کاربری باید با حرف انگلیسی شروع شود و فقط حرف و عدد و _ داشته باشد (۳ تا ۳۰ نویسه)')+"."); return; }
   if(!em||em.indexOf("@")<1){ toast(TR('k2324','ایمیل یا رمز درست نیست')+"."); return; }
   if(!pw||pw.length<6){ toast(TR('k2324','ایمیل یا رمز درست نیست')+"."); return; }
   if(!nm) nm=un;
   if(!SB.client){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
-  sbRpc("submit_registration_request",{p_username:un,p_email:em,p_password:pw,p_name:nm,p_question:q,p_answer:an,p_role:role}).then(function(res){
+  sbRpc("submit_registration_request",{p_username:un,p_email:em,p_password:pw,p_name:nm,p_question:q,p_answer:an,p_role:role,p_days:reqDays}).then(function(res){
     if(res.error){ toastErr(res.error); return; }
     var d=res.data; if(Array.isArray(d)) d=d[0];
     if(!d||d.ok!==true){
@@ -19987,7 +20088,7 @@ function doRegistrationSubmit(){
       return;
     }
     closeModal();
-    toast(TR('k2980','درخواست ثبت نام شما ارسال شد. پس از تایید مالک می‌توانید وارد شوید.')+".");
+    toast(TR('k2980','درخواست ثبت نام شما ارسال شد. پس از تایید مالک می‌توانید وارد شوید.')+" — "+TR('k4812','مدت درخواستی')+": "+fa(reqDays)+" "+TR('k0329','روز')+".");
   }).catch(function(e){ toastErr(e); });
 }
 SB.verifyServerCredentialsFromCard=function(){
@@ -20195,6 +20296,33 @@ SB.regRoleName=function(role){
   if(role&&String(role)!==n) return String(role);
   return TR('k1104','عضو');
 };
+/* v10.4.31 (Thread 4) — REGISTRATION DURATION (Parsa: registration keys
+   must be time-limited, in the server, in the app and in the request).
+   regReqDaysNorm: any stored/requested value -> a positive finite number
+   of days; missing, non-numeric or <1 (old rows, old server shape) -> 30,
+   the server default. Never 0, never null, never unlimited.
+   regDaysChoiceNorm: a duration CHOICE (request form) -> one of 30/90/365;
+   anything else -> 30. No unlimited option exists anywhere in this flow.
+   regDaysOptsHTML builds the picker options, pre-selecting the given
+   value; an exotic stored value (e.g. 45, from an older client) is offered
+   as its own selected option, so the approval default is exactly the
+   requested duration. */
+SB.regReqDaysNorm=function(v){
+  var n=parseInt(v,10);
+  if(!isFinite(n)||n<1) return 30;
+  return n;
+};
+SB.regDaysChoiceNorm=function(v){
+  var n=parseInt(v,10);
+  if(n===30||n===90||n===365) return n;
+  return 30;
+};
+SB.regDaysOptsHTML=function(sel){
+  var s=SB.regReqDaysNorm(sel);
+  var vals=[30,90,365];
+  if(vals.indexOf(s)<0) vals.unshift(s);
+  return vals.map(function(v){ return '<option value="'+v+'"'+(v===s?' selected':'')+'>'+fa(v)+' '+TR('k0329','روز')+'</option>'; }).join("");
+};
 /* v10.4.15 — owner-panel role categories (Parsa 19:01): the requests widget
    filters by role. The category list is DATA-DRIVEN: the four known roles
    first, then any other requested_role value actually present in the data,
@@ -20229,7 +20357,14 @@ SB.renderRegReqs=function(){
   if(SB.regReqCat&&SB.regReqCat!=="all") shown=rows.filter(function(r){ return rawRole(r)===SB.regReqCat; });
   if(!rows.length){ box.innerHTML='<p class="small">'+TR('k2997','درخواستی نیست')+'.</p>'; return; }
   if(!shown.length){ box.innerHTML='<p class="small">'+TR('k2997','درخواستی نیست')+'.</p>'; return; }
-  var plans=S.plans||[];
+  /* v10.4.31 (Thread 4): the approval plan picker offers ONLY plans with a
+     positive finite duration. A 0-day plan (creatable only by a direct
+     plan_save RPC — the app UI rejects days<=0 and plan_save rejects
+     NULL/negative, but allows 0) or a corrupt cached row must never be
+     selectable here; the duration itself comes from the separate duration
+     picker below, never from the plan. The direct owner key-creation
+     flows (incl. the SUP unlimited option) are untouched. */
+  var plans=(S.plans||[]).filter(function(p){ return p&&isFinite(+p.days)&&+p.days>0; });
   var planOpts=plans.map(function(p){ return '<option value="'+esc(String(p.id))+'">'+esc(p.name)+' — '+fa(p.days)+' '+TR('k0329','روز')+'</option>'; }).join("");
   box.innerHTML=shown.map(function(r){
     var isPend=r.status==="pending";
@@ -20238,10 +20373,15 @@ SB.renderRegReqs=function(){
        included) and pre-select it in the approval dropdown. */
     var reqRole=SB.regRoleNorm(r.requested_role);
     var reqRoleName=SB.regRoleName(r.requested_role);
-    var h='<div class="listrow"><div class="grow"><b>'+esc(r.username)+'</b> <span class="small">('+esc(r.email)+')</span><div class="small">'+esc(r.name||"")+' · '+esc((r.requested_at||"").slice(0,10))+' · '+esc(st)+' · '+TR('k3031','نقش درخواستی')+': '+reqRoleName+'</div>';
+    /* v10.4.31 (Thread 4): the requested duration, from the server's
+       requested_days field; a missing field (old rows / old server shape)
+       falls back to 30 without crashing. */
+    var reqDays=SB.regReqDaysNorm(r.requested_days);
+    var h='<div class="listrow"><div class="grow"><b>'+esc(r.username)+'</b> <span class="small">('+esc(r.email)+')</span><div class="small">'+esc(r.name||"")+' · '+esc((r.requested_at||"").slice(0,10))+' · '+esc(st)+' · '+TR('k3031','نقش درخواستی')+': '+reqRoleName+' · '+TR('k4812','مدت درخواستی')+': '+fa(reqDays)+' '+TR('k0329','روز')+'</div>';
     if(isPend){
       h+='<div class="rowflex" style="margin-top:6px"><select class="inp" id="rrRole-'+esc(r.id)+'" style="max-width:130px"><option value="member"'+(reqRole==="member"?" selected":"")+'>'+TR('k1104','عضو')+'</option><option value="advisor"'+(reqRole==="advisor"?" selected":"")+'>'+TR('k2998','مشاور')+'</option><option value="super"'+(reqRole==="super"?" selected":"")+'>'+TR('k2230','ابر کاربر')+'</option><option value="konkoori"'+(reqRole==="konkoori"?" selected":"")+'>'+TR('k3033','کنکوری')+'</option></select>'
       +'<select class="inp grow" id="rrPlan-'+esc(r.id)+'">'+(planOpts||'<option value="">—</option>')+'</select></div>'
+      +'<div class="rowflex" style="margin-top:6px;align-items:center"><span class="small">'+TR('k4810','مدت اشتراک درخواستی')+':</span><select class="inp grow" id="rrDays-'+esc(r.id)+'">'+SB.regDaysOptsHTML(reqDays)+'</select></div>'
       +'<div class="rowflex" style="margin-top:6px"><button class="btn sm" onclick="SB.approveRegReq(\''+esc(r.id)+'\')">'+TR('k2983','تایید')+'</button><button class="btn ghost sm" onclick="SB.rejectRegReq(\''+esc(r.id)+'\')">'+TR('k2984','رد')+'</button></div>';
     }
     if(r.status==="rejected"&&r.rejection_reason) h+='<div class="small">'+esc(r.rejection_reason)+'</div>';
@@ -20263,18 +20403,33 @@ SB.loadRegReqs=function(){
 };
 SB.approveRegReq=function(id){
   if(!id) return;
-  var roleEl=$("rrRole-"+id), planEl=$("rrPlan-"+id);
+  var roleEl=$("rrRole-"+id), planEl=$("rrPlan-"+id), daysEl=$("rrDays-"+id);
   var role=roleEl?roleEl.value:"member";
   var planId=planEl?planEl.value:"";
-  var plan=(S.plans||[]).filter(function(p){ return String(p.id)===String(planId); })[0]||null;
+  /* v10.4.31 (Thread 4): the plan lookup uses the same positive-duration
+     filter as the picker, so a 0-day plan contributes nothing here even
+     if a stale DOM option names it. The plan supplies id/name/price
+     metadata ONLY — never the duration. */
+  var plan=(S.plans||[]).filter(function(p){ return p&&String(p.id)===String(planId)&&isFinite(+p.days)&&+p.days>0; })[0]||null;
+  /* The duration comes from the duration picker, defaulting to the
+     requested duration — NEVER from the plan, never NULL/0/unlimited.
+     A missing or empty picker falls back to the request's stored
+     duration, itself defaulted to 30. */
+  var reqRow=(SB._regReqRows||[]).filter(function(x){ return String(x.id)===String(id); })[0]||null;
+  var reqDays=SB.regReqDaysNorm(reqRow&&reqRow.requested_days);
+  var days=reqDays;
+  if(daysEl&&daysEl.value!=null&&String(daysEl.value).trim()!==""){ var _d=parseInt(daysEl.value,10); if(isFinite(_d)&&_d>0) days=_d; }
+  var cTxt=TR('k4814','تایید درخواست ثبت نام برای')+' '+QO()+(reqRow?reqRow.username:"")+QC()+' — '+TR('k2004','نقش')+': '+SB.regRoleName(role)+' — '+TR('k4813','مدت تاییدشده')+': '+fa(days)+' '+TR('k0329','روز')+(plan?' — '+plan.name:'')+(LANG==="en"?"?":"؟");
+  if(typeof confirm==="function"&&!confirm(cTxt)) return;
   ownerSig().then(function(sig){
     if(!sig){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
-    return sbRpc("approve_registration_request",{p_id:id,p_sig:sig,p_role:role,p_plan_id:plan?String(plan.id):"",p_plan_name:plan?plan.name:"",p_price:plan?plan.price:0,p_days:plan?plan.days:30}).then(function(res){
+    return sbRpc("approve_registration_request",{p_id:id,p_sig:sig,p_role:role,p_plan_id:plan?String(plan.id):"",p_plan_name:plan?plan.name:"",p_price:plan?plan.price:0,p_days:days}).then(function(res){
       if(res.error){ toastErr(res.error); return; }
       var d=res.data; if(Array.isArray(d)) d=d[0];
       if(!d||d.ok!==true){ toast(TR('k2969','خطای سرور؛ دوباره تلاش کنید یا از مالک بخواهید حسابتان را تازه‌سازی کند')+"."); return; }
-      toast(TR('k2983','تایید')+" ✓ — "+TR('k2988','کلید ورود شما')+": "+(d.key_code||""));
+      toast(TR('k2983','تایید')+" ✓ — "+TR('k2988','کلید ورود شما')+": "+(d.key_code||"")+" — "+TR('k4813','مدت تاییدشده')+": "+fa(days)+" "+TR('k0329','روز'));
       SB.loadRegReqs(); SB.loadOwnerCreds();
+      try{ if(SB.loadOwnerKeysServer) SB.loadOwnerKeysServer(); }catch(e){}
     });
   }).catch(function(e){ toastErr(e); });
 };
@@ -21107,6 +21262,11 @@ OG.select=function(id){
      string of silent denials. */
   try{ SB.revalidateKeySoon(); }catch(e){}
   OG.sel=g; try{ OG._mapSelectedGroup=String(g.id); }catch(e){} OG.msgs=[]; OG.members=[]; OG.polls=[]; OG.tasks=[]; OG.events=[]; OG.ann=[]; OG.study=[]; OG.badges=[]; OG.locations=[];
+  /* v10.4.31 (Threads 6+7): member display attributes belong to the
+     group — entering a group drops the previous group's maps, or a
+     badge/avatar from group A leaks onto group B's members until the
+     fresh load lands. loadMembers rebuilds them right below. */
+  OG.memberAvatar={}; OG.memberSuper={}; OG.memberBio={}; OG.memberTitle={}; OG.memberColor={}; OG._attrsCovered=null; OG._attrsRpcUids={};
   SB_unsub("og-msgs"); SB_unsub("og-tasks"); SB_unsub("og-polls"); SB_unsub("og-members"); SB_unsub("og-ann"); SB_unsub("og-events");
   OG.loadMembers(); OG.loadMsgs(); OG.loadPolls(); OG.loadTasks(); OG.loadEvents(); OG.loadAnn(); OG.loadStudy(); OG.loadMemberSuper(); OG.loadLocations(); SB.refreshPresence();
   SB_sub("og-msgs",SB.client.channel("og-msgs-"+g.id),{changes:[{event:"INSERT",schema:"public",table:"messages",filter:"group_id=eq."+g.id}],onChange:function(p){ OG.onMsg(p.new); }});
@@ -21128,7 +21288,8 @@ OG.loadMembers=function(){
       if(!sig) return;
       sbRpc("owner_list_group_members",{p_group_id:OG.sel.id,p_sig:sig}).then(function(res){
         if(res.error||!res.data) return;
-        OG.members=(res.data||[]).map(function(m){ return {user_id:m.user_id,role:m.group_role||m.role||"member",nickname:m.display_name||"",username:m.username||""}; });
+        OG.applyMemberAttrs(res.data||[]);
+        OG.members=(res.data||[]).map(function(m){ var o={user_id:m.user_id,role:m.group_role||m.role||"member",nickname:m.display_name||"",username:m.username||""}; if("avatar_idx" in m) o.avatar_idx=m.avatar_idx; if("is_super" in m) o.is_super=!!m.is_super; if("custom_title" in m) o.custom_title=m.custom_title||""; if("name_color" in m) o.name_color=m.name_color||""; if("bio" in m) o.bio=m.bio||""; return o; });
         OG.loadMemberSuper();
         OG.refreshGroupCard();
       });
@@ -21150,33 +21311,121 @@ OG.loadMembers=function(){
     if(!keyForMembers) return;
     sbRpc("my_group_members",{p_group:OG.sel.id,p_key:keyForMembers}).then(function(res){
       if(!res.error){
-        OG.members=(res.data||[]).map(function(m){ return {user_id:m.user_id,role:m.role||"member",group_role:m.group_role||"",nickname:m.nickname||m.display_name||"",muted_until:m.muted_until,joined_at:m.joined_at,display_name:m.display_name||"",avatar_idx:(typeof m.avatar_idx==="number"?m.avatar_idx:null)}; });
-        OG.memberAvatar=OG.memberAvatar||{};
-        (res.data||[]).forEach(function(m){ if(m.avatar_idx!=null) OG.memberAvatar[m.user_id]=m.avatar_idx; });
+        OG.applyMemberAttrs(res.data||[]);
+        OG.members=(res.data||[]).map(function(m){ var o={user_id:m.user_id,role:m.role||"member",group_role:m.group_role||"",nickname:m.nickname||m.display_name||"",muted_until:m.muted_until,joined_at:m.joined_at,display_name:m.display_name||"",avatar_idx:(typeof m.avatar_idx==="number"?m.avatar_idx:null)}; if("is_super" in m) o.is_super=!!m.is_super; if("custom_title" in m) o.custom_title=m.custom_title||""; if("name_color" in m) o.name_color=m.name_color||""; if("bio" in m) o.bio=m.bio||""; return o; });
         OG.loadMemberSuper(); OG.refreshGroupCard();
       }
     });
     return;
   }
-  SB.client.from("group_members").select("user_id,role,group_role,nickname,muted_until").eq("group_id",OG.sel.id).then(function(res){ if(!res.error){ OG.members=res.data||[]; OG.loadMemberSuper(); OG.refreshGroupCard(); } });
+  SB.client.from("group_members").select("user_id,role,group_role,nickname,muted_until").eq("group_id",OG.sel.id).then(function(res){ if(!res.error){ OG.members=res.data||[]; OG.loadMemberAttrs(); OG.refreshGroupCard(); } });
 };
-/* Super flags + avatars for group members (profiles.is_super/avatar_idx are
-   public-readable): fills OG.memberSuper {uid:true} so the golden-skull badge
-   can show next to super-user names in chat + member lists, and
-   OG.memberAvatar {uid:idx} so the parade row shows each member's own
-   avatar instead of the same King for everyone. */
+/* v10.4.31 (Threads 6+7) — ONE member-attribute pipeline. The member RPC
+   rows are the source for per-user display attributes (avatar_idx,
+   is_super, custom_title, name_color, bio) for ALL identity types. The
+   maps are REBUILT wholesale on every member refresh, so a revoke,
+   expire or change can never leave a stale badge/avatar behind. Fields
+   the server row does not carry (older SQL) are recorded as uncovered,
+   so the profiles fallback may fill ONLY those fields — never overwrite
+   RPC truth. */
+OG.applyMemberAttrs=function(rows){
+  var av={}, sup={}, bio={}, tit={}, col={};
+  var covered={avatar:false,super:false,title:false,color:false,bio:false};
+  (rows||[]).forEach(function(m){
+    if(!m||!m.user_id) return;
+    if("avatar_idx" in m) covered.avatar=true;
+    if("is_super" in m) covered.super=true;
+    if("custom_title" in m) covered.title=true;
+    if("name_color" in m) covered.color=true;
+    if("bio" in m) covered.bio=true;
+    if(typeof m.avatar_idx==="number") av[m.user_id]=m.avatar_idx;
+    if(m.is_super) sup[m.user_id]=true;
+    if(typeof m.bio==="string"&&m.bio) bio[m.user_id]=m.bio;
+    if(typeof m.custom_title==="string"&&m.custom_title) tit[m.user_id]=m.custom_title;
+    if(typeof m.name_color==="string"&&/^#[0-9a-fA-F]{6}$/.test(m.name_color)) col[m.user_id]=m.name_color;
+  });
+  OG.memberAvatar=av; OG.memberSuper=sup; OG.memberBio=bio; OG.memberTitle=tit; OG.memberColor=col;
+  OG._attrsCovered=covered;
+  OG._attrsRpcUids={}; (rows||[]).forEach(function(m){ if(m&&m.user_id) OG._attrsRpcUids[m.user_id]=true; });
+  /* Self/other agreement: when the server says self is NOT super but the
+     local super key still claims active, revalidate through the existing
+     path (it toasts + drops a dead key) instead of showing two truths.
+     Throttled: at most once a minute, and only while self is a member
+     row in this refresh. */
+  try{
+    var _me=SB.myUid();
+    if(covered.super&&_me&&OG._attrsRpcUids[_me]&&!sup[_me]&&OG.isSuper()&&typeof SB.revalidateSuper==="function"){
+      var _now=Date.now();
+      if(!OG._superRevalAt||_now-OG._superRevalAt>60000){ OG._superRevalAt=_now; SB.revalidateSuper(); }
+    }
+  }catch(e){}
+};
+/* Auth branch: the direct group_members read carries no display
+   attributes, so fetch them from the member RPC (Auth-uid path, the
+   same RPC key users already use). Merges the attributes onto the
+   direct-read member rows, then runs the profiles fallback. */
+OG.loadMemberAttrs=function(){
+  if(!OG.sel||!SB.online) return;
+  sbRpc("my_group_members",{p_group:OG.sel.id}).then(function(res){
+    if(res.error||!res.data){ OG.loadMemberSuper(); return; }
+    OG.applyMemberAttrs(res.data||[]);
+    var byId={}; (res.data||[]).forEach(function(m){ if(m&&m.user_id) byId[m.user_id]=m; });
+    (OG.members||[]).forEach(function(m){
+      var r=byId[m.user_id]; if(!r) return;
+      if("avatar_idx" in r) m.avatar_idx=r.avatar_idx;
+      if("is_super" in r) m.is_super=!!r.is_super;
+      if("custom_title" in r) m.custom_title=r.custom_title||"";
+      if("name_color" in r) m.name_color=r.name_color||"";
+      if("bio" in r) m.bio=r.bio||"";
+    });
+    OG.loadMemberSuper(); OG.refreshGroupCard();
+  }).catch(function(){ try{ OG.loadMemberSuper(); }catch(e){} });
+};
+OG.loadMembersSoon=function(){
+  /* Throttled member refresh for the 30s presence cycle (Threads 6+7):
+     avatar/badge changes fire no group_members change, so Realtime
+     never re-fetches them — this refresh is what makes others see a
+     new avatar/badge promptly without re-entering the group. */
+  if(!OG.sel) return;
+  var now=Date.now();
+  if(OG._lastMembersRefresh&&now-OG._lastMembersRefresh<25000) return;
+  OG._lastMembersRefresh=now;
+  try{ OG.loadMembers(); }catch(e){}
+};
+/* Super flags + avatars for group members.
+   v10.4.31 (Threads 6+7): MERGE-ONLY fallback. The member RPC rows
+   (OG.applyMemberAttrs) are the source of truth; this direct profiles
+   read fills ONLY the fields the RPC did not cover (older SQL lacks
+   is_super/title/color/bio on member rows) and ONLY for uids the RPC
+   did not already supply — it never overwrites and never deletes, so
+   it cannot wipe key identities' RPC values (they have no profiles
+   row) or resurrect a revoked badge. On current SQL it adds nothing. */
 OG.loadMemberSuper=function(){
   OG.memberSuper=OG.memberSuper||{};
   OG.memberAvatar=OG.memberAvatar||{};
   OG.memberBio=OG.memberBio||{};
-  var ids=(OG.members||[]).map(function(m){ return m.user_id; }).filter(Boolean);
+  OG.memberTitle=OG.memberTitle||{};
+  OG.memberColor=OG.memberColor||{};
+  var ids=(OG.members||[]).map(function(m){ return m.user_id; }).filter(function(id){ return typeof id==="string"&&/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(id); });
+  /* v10.4.31 (Threads 6+7, SQL contract): profiles.user_id is uuid-typed
+     — a "key:..." id in the .in() list makes PostgREST return 400
+     22P02 and kills the WHOLE query, so NO avatars load in mixed groups
+     (proven live by the SQL agent). Key identities have no profiles
+     rows; filtering to valid UUIDs keeps the fallback working for Auth
+     members in mixed groups. The RPC rows remain the source of truth. */
   if(!ids.length||!SB.online) return;
-  SB.client.from("profiles").select("user_id,is_super,avatar_idx,bio").in("user_id",ids).then(function(res){
+  SB.client.from("profiles").select("user_id,is_super,avatar_idx,bio,custom_title,name_color").in("user_id",ids).then(function(res){
     if(res.error||!res.data) return;
-    var map={}; var av={}; var bio={};
-    res.data.forEach(function(p){ if(p.is_super) map[p.user_id]=true; if(p.avatar_idx!=null) av[p.user_id]=p.avatar_idx; if(p.bio) bio[p.user_id]=p.bio; });
-    OG.memberSuper=map; OG.memberAvatar=av; OG.memberBio=bio;
-    OG.refreshGroupCard();
+    var cov=OG._attrsCovered||{};
+    var changed=false;
+    res.data.forEach(function(p){
+      if(!cov.super&&p.is_super&&!OG.memberSuper[p.user_id]){ OG.memberSuper[p.user_id]=true; changed=true; }
+      if(!cov.avatar&&typeof p.avatar_idx==="number"&&OG.memberAvatar[p.user_id]==null){ OG.memberAvatar[p.user_id]=p.avatar_idx; changed=true; }
+      if(!cov.bio&&p.bio&&!OG.memberBio[p.user_id]){ OG.memberBio[p.user_id]=p.bio; changed=true; }
+      if(!cov.title&&typeof p.custom_title==="string"&&p.custom_title&&!OG.memberTitle[p.user_id]){ OG.memberTitle[p.user_id]=p.custom_title; changed=true; }
+      if(!cov.color&&typeof p.name_color==="string"&&/^#[0-9a-fA-F]{6}$/.test(p.name_color)&&!OG.memberColor[p.user_id]){ OG.memberColor[p.user_id]=p.name_color; changed=true; }
+    });
+    if(changed) OG.refreshGroupCard();
   }).catch(function(){});
 };
 OG.loadMsgs=function(){
@@ -22322,7 +22571,15 @@ function onlineGroupHTML(){
          _isSelf drives the self-nickname button (the server allows
          self-nickname; the owner never matches a member row). */
       var _isSelf=m.user_id===SB.myUid(); var _muted=!!(m.muted_until&&new Date(m.muted_until).getTime()>Date.now());
-      return '<div class="listrow gmember"><div class="mav">'+esc((who||'?').charAt(0))+'</div><div class="grow"><b class="latintok">'+esc(who)+(nm?' '+QO()+esc(nm)+QC():'')+supBadgeHTMLFor(m.user_id)+SB.presenceDot(m.user_id)+'</b>'+((OG.memberBio&&OG.memberBio[m.user_id])?'<div class="small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(OG.memberBio[m.user_id])+'</div>':'')+'<div class="small latintok">'+esc(m.role)+'</div></div>'
+      /* v10.4.31 (Threads 6+7): the member's own avatar, custom title
+         and name color from the server-provided attribute maps (row
+         fields as a second source). The first-letter disc is kept only
+         when no avatar is known at all. Colors are hex-validated. */
+      var _av=(OG.memberAvatar&&OG.memberAvatar[m.user_id]!=null)?OG.memberAvatar[m.user_id]:(typeof m.avatar_idx==="number"?m.avatar_idx:null);
+      var _ti=(OG.memberTitle&&OG.memberTitle[m.user_id])||m.custom_title||"";
+      var _co=(OG.memberColor&&OG.memberColor[m.user_id])||"";
+      if(!_co&&typeof m.name_color==="string"&&/^#[0-9a-fA-F]{6}$/.test(m.name_color)) _co=m.name_color;
+      return '<div class="listrow gmember"><div class="mav">'+(_av!=null?avatarHTML(_av,36):esc((who||'?').charAt(0)))+'</div><div class="grow"><b class="latintok"'+(_co?' style="color:'+_co+'"':'')+'>'+esc(who)+(nm?' '+QO()+esc(nm)+QC():'')+supBadgeHTMLFor(m.user_id)+SB.presenceDot(m.user_id)+'</b>'+(_ti?'<div class="small">'+esc(_ti)+'</div>':'')+((OG.memberBio&&OG.memberBio[m.user_id])?'<div class="small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(OG.memberBio[m.user_id])+'</div>':'')+'<div class="small latintok">'+esc(m.role)+'</div></div>'
       +(OG.isAdmin()&&!_isSelf?'<button class="btn ghost sm" onclick="var n=prompt(\''+TR('k2031','گذاشتن لقب')+'\'); if(n!==null) OG.setNickname(\''+m.user_id+'\',n)">'+TR('k2030','لقب')+'</button><button class="btn ghost sm" onclick="OG.roleSheet(\''+m.user_id+'\')">'+TR('k2147','انتخاب نقش')+'</button><button class="btn ghost sm" onclick="OG.setMemberRole(\''+m.user_id+'\',\''+(m.role==="admin"?"member":"admin")+'\')">'+TR('k2032','انتخاب ادمین')+'</button><button class="btn ghost sm" onclick="OG.muteMember(\''+m.user_id+'\''+(_muted?',0':'')+')">'+(_muted?TR('k3201','رفع بی‌صدایی'):TR('k2034','بی‌صدا کردن'))+'</button><button class="btn ghost sm" onclick="if(confirm(\''+TR('k2033','حذف عضو')+'?\'))OG.removeMember(\''+m.user_id+'\')">'+TR('k2033','حذف عضو')+'</button>':(_isSelf&&!ownerMode?'<button class="btn ghost sm" onclick="var n=prompt(\''+TR('k2031','گذاشتن لقب')+'\'); if(n!==null) OG.setNickname(\''+m.user_id+'\',n)">'+TR('k2030','لقب')+'</button>':''))
       +'</div>';
     }).join("")+'</div>';
@@ -22407,6 +22664,11 @@ OG.refreshGroupCard=function(){
     if(keep[id]!==undefined){ var inp=$(id); if(inp) inp.value=keep[id]; }
   });
   if(focusId){ var f=$(focusId); if(f){ try{ f.focus(); }catch(e){} } }
+  /* v10.4.31 (Thread 1): the fresh card HTML carries the static «قطع»
+     badge — repaint it now, or every in-place refresh (a loadMine
+     settle included) re-lies the badge until the next navigation or
+     serverOk flip. Loop-safe: paintBadges never calls refreshGroupCard. */
+  try{ if(typeof SB!=="undefined"&&SB.paintBadges) SB.paintBadges(); }catch(e){}
   return true;
 };
 function onlineOwnerCardHTML(){
@@ -23968,11 +24230,14 @@ var AU={headsetOut:null,headsetIn:null,hasHeadset:false,
  },
  applySink:function(){
    if(!AU.hasHeadset||WT.speakerOn) return;
+   /* v10.4.31 (Thread 5): setSinkId returns a promise — a rejection used
+      to go uncaught (and could leave audio routed nowhere). Fail OPEN
+      to the default sink ("") on rejection. */
    try{
-     if(SFX.ctx&&SFX.ctx.setSinkId) SFX.ctx.setSinkId(AU.headsetOut||"");
+     if(SFX.ctx&&SFX.ctx.setSinkId){ var _p=SFX.ctx.setSinkId(AU.headsetOut||""); if(_p&&_p.catch) _p.catch(function(){ try{ if(SFX.ctx&&SFX.ctx.setSinkId){ var _r=SFX.ctx.setSinkId(""); if(_r&&_r.catch) _r.catch(function(){}); } }catch(e){} }); }
    }catch(e){}
    document.querySelectorAll("audio[id^='wt-audio-']").forEach(function(a){
-     try{ if(a.setSinkId) a.setSinkId(AU.headsetOut||""); }catch(e){}
+     try{ if(a.setSinkId){ var _q=a.setSinkId(AU.headsetOut||""); if(_q&&_q.catch) _q.catch(function(){ try{ var _r=a.setSinkId(""); if(_r&&_r.catch) _r.catch(function(){}); }catch(e){} }); } }catch(e){}
    });
  },
  label:function(){
@@ -24535,7 +24800,7 @@ SB.presenceHeartbeat=function(){
 SB.presenceStart=function(){
   if(SB._presenceTimer) return;
   try{ SB.presenceHeartbeat(); }catch(e){}
-  SB._presenceTimer=setInterval(function(){ try{ if(typeof document!=="undefined"&&document.hidden) return; SB.presenceHeartbeat(); SB.refreshPresence(); if(OG.sel) OG.loadStudy(); }catch(e){} },30000);
+  SB._presenceTimer=setInterval(function(){ try{ if(typeof document!=="undefined"&&document.hidden) return; SB.presenceHeartbeat(); SB.refreshPresence(); if(OG.sel) OG.loadStudy(); /* v10.4.31 (Threads 6+7): throttled member refresh — the only trigger that re-fetches avatars/badges after another member changes them (Realtime fires no group_members change for that). */ if(OG.sel&&OG.loadMembersSoon) OG.loadMembersSoon(); }catch(e){} },30000);
   try{
     document.addEventListener("visibilitychange",function(){ if(!document.hidden){ try{ SB.presenceHeartbeat(); SB.refreshPresence(); }catch(e){} } });
   }catch(e){}
@@ -25696,7 +25961,22 @@ function keyUid(u){ if(!u) return u; u=String(u); if(u.indexOf("key:")===0) retu
    Locked-screen behavior CANNOT be fully verified here — Parsa must test it
    on his real phone. */
 var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speakerOn:false,wakeLock:null,speakTimer:null,_speakTimers:{},_joinSeq:0,
+ _iceQueue:{},_offerTimers:{},_offerTries:{},_pcSince:{},_joinUid:null,_joinedAt:0,_voiceFailed:false,_pendingJoinGid:null,
  STUN:"stun:stun.l.google.com:19302",
+ /* v10.4.31 (Thread 5): STUN-first, TURN-fallback. The TURN entry is
+    Metered Open Relay's PUBLISHED static endpoint — a shared public
+    demo credential from their public docs, intended for embedding in
+    client configs; NOT a private key, no account. No SLA, limits
+    unpublished, and allocation could NOT be verified from the build
+    environment (UDP blocked, browser offline) — Parsa's real-phone
+    test in Iran is the proof. If it ever dies, empty WT.TURN; STUN +
+    the voice-state UX below still stand. */
+ TURN:[{urls:["turn:staticauth.openrelay.metered.ca:80","turn:staticauth.openrelay.metered.ca:443"],username:"openrelayproject",credential:"openrelayprojectsecret"},{urls:["turns:staticauth.openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayprojectsecret"}],
+ iceServers:function(){
+   var s=[{urls:WT.STUN},{urls:"stun:stun1.l.google.com:19302"},{urls:"stun:global.stun.twilio.com:3478"}];
+   (WT.TURN||[]).forEach(function(t){ s.push(t); });
+   return s;
+ },
  /* v10.4.17 — ONE walkie identity (Parsa 2026-11-11: «انگار دوتا اتاق
     جداگانه است»). The walkie used SB.uid (the Auth uid) everywhere, and
     for a key user (valid key, NO Auth session) SB.uid is null — so every
@@ -25707,14 +25987,38 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
     'key:' + S.mySub.key. No identity at all -> null (join refuses via
     the k9028 gate). */
  myUid:function(){
+   /* v10.4.31 (Thread 5 ext #1): the uid is SNAPSHOT at join and reused
+      until leave — a mid-session identity change (SB.uid appearing
+      late, ownerMode toggling) used to break presence + signal routing
+      mid-call because every call re-read live state. */
+   if(WT._joinUid) return WT._joinUid;
    if(ownerMode) return "owner";
    if(typeof SB!=="undefined"&&SB.uid) return SB.uid;
    if(typeof S!=="undefined"&&S.mySub&&S.mySub.key) return "key:"+S.mySub.key;
    return null;
  },
+ /* v10.4.31 (Thread 5 ext #5): the mic is REALLY open only when joined,
+    talking, and at least one audio track is live AND enabled — never
+    from the hands-free checkbox alone. */
+ micLive:function(){
+   try{
+     if(!WT.joined||!WT.talking||!WT.stream) return false;
+     return WT.stream.getAudioTracks().some(function(t){ return t.readyState==="live"&&t.enabled; });
+   }catch(e){ return false; }
+ },
  join:function(gid){
    if(!SB.groupOnline()){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
-   if(!ownerMode&&!SB.keyOk()){ toast(TR('k9028','بدون کلید معتبر نمی‌توانید وارد برنامه شوید؛ کلید را از مالک بگیرید')+"."); return; }
+   if(!ownerMode&&!SB.keyOk()){
+     toast(TR('k9028','بدون کلید معتبر نمی‌توانید وارد برنامه شوید؛ کلید را از مالک بگیرید')+".");
+     /* v10.4.31 (Thread 2b): remember the join intent — a key activated
+        from the in-context card below (or the subscription flow)
+        retries this join automatically. The key-entry card is already
+        rendered on the walkie view; focus it so the toast is not a
+        dead end. The gate itself is unchanged. */
+     WT._pendingJoinGid=gid||null;
+     try{ var _kf=$("wtKeyInp"); if(_kf){ _kf.focus(); _kf.scrollIntoView({behavior:"smooth",block:"center"}); } }catch(e){}
+     return;
+   }
    if(!gid){ toast(TR('k2102','گروه آنلاین شما')+" — "+TR('k1105','هنوز گروهی نساخته‌اید')+"."); return; }
    if(WT.joined&&WT.groupId===gid) return;
    if(WT.joined) WT.leave();
@@ -25735,10 +26039,21 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    AU.refresh().then(function(){
      var constraints={audio:{echoCancellation:true,noiseSuppression:true}};
      if(AU.headsetIn) constraints.audio.deviceId={exact:AU.headsetIn};
-     return navigator.mediaDevices.getUserMedia(constraints);
+     /* v10.4.31 (Thread 5 ext #4): a stale headset id fails the WHOLE
+        join with OverconstrainedError. Retry once WITHOUT the exact
+        device constraint instead of failing the join. */
+     return navigator.mediaDevices.getUserMedia(constraints).catch(function(err){
+       if(constraints.audio.deviceId) return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+       throw err;
+     });
    }).then(function(st){
      if(token!==WT._joinSeq||WT.groupId!==gid){ st.getTracks().forEach(function(t){ try{ t.stop(); }catch(e){} }); return; }
      WT.stream=st;
+     /* v10.4.31 (Thread 5): snapshot the identity + join time NOW
+        (post-mic, pre-subscribe) — every presence/signal call after
+        this uses the snapshot, and start/stopTalk re-tracks the SAME
+        joinedAt so the capacity sort never mis-sorts a talker. */
+     WT._joinUid=WT.myUid(); WT._joinedAt=Date.now();
      st.getAudioTracks().forEach(function(t){ t.enabled=false; });
      var chName="wt-"+gid;
      SB_sub(chName,SB.client.channel(chName),{
@@ -25748,7 +26063,7 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
      var ch=SB.subs[chName];
      /* joinedAt: the N11a capacity rule needs join order — the newest
         joiner is the one who leaves when the room is full. */
-     if(ch) ch.track({uid:WT.myUid(),name:(S.user.name||"—"),avatar:(typeof S.user.avatar==="number"?S.user.avatar:0),talking:false,joinedAt:Date.now()});
+     if(ch) ch.track({uid:WT.myUid(),name:(S.user.name||"—"),avatar:(typeof S.user.avatar==="number"?S.user.avatar:0),talking:false,joinedAt:WT._joinedAt});
      WT.joined=true; OG.onWtCall(); WT.paintPill();
      if(WT.isHandsFree()) WT.startTalk();
      if(navigator.wakeLock&&navigator.wakeLock.request) navigator.wakeLock.request("screen").then(function(w){ WT.wakeLock=w; }).catch(function(){});
@@ -25778,8 +26093,24 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    if(WT.groupId) SB_unsub("wt-"+WT.groupId);
    if(window.GhostOpsBridge&&GhostOpsBridge.stopWalkieService) GhostOpsBridge.stopWalkieService();
    WT.joined=false; WT.groupId=null; WT.talking=false;
+   /* v10.4.31 (Thread 5): clear the join-session state too — the uid
+      snapshot, ICE queues, offer-retry timers and voice state must
+      never leak into the next join. */
+   WT._pendingJoinGid=null; WT._joinUid=null; WT._joinedAt=0; WT._iceQueue={}; WT._offerTries={}; WT._pcSince={}; WT._voiceFailed=false;
+   Object.keys(WT._offerTimers||{}).forEach(function(u){ try{ clearTimeout(WT._offerTimers[u]); }catch(e){} }); WT._offerTimers={};
    WT.paintPill();
    if(curView==="walkie") go("walkie");
+ },
+ /* v10.4.31 (Thread 2b): in-context key activation for the walkie
+    gate. Reuses the ONE canonical activation (activateSubKey ->
+    SB.activateKeyOnline -> finishKeyActivation: same p_device, same
+    S.mySub update, same save) and only adds the join intent; the gate
+    itself is unchanged. */
+ activateKeyAndJoin:function(){
+   var inp=$("wtKeyInp"); var k=inp?(inp.value||"").trim():"";
+   if(!k){ toast(TR('k1535','کلید ورود را بنویسید') + "."); return; }
+   var sel=$("wtGroupSel"); WT._pendingJoinGid=sel?sel.value:(WT.groupId||null);
+   if(typeof activateSubKey==="function") activateSubKey(k);
  },
  /* Speaker output ONLY on an explicit tap (Parsa, 2026-11-09 ~23:42):
     never forced. The native wrapper gets the same flag via the bridge. */
@@ -25823,49 +26154,151 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    all.slice(0,4).forEach(function(p){ if(p.uid!==me) seen[p.uid]=p; });
    Object.keys(seen).forEach(function(uid){
      if(!WT.peers[uid]){ WT.peers[uid]=seen[uid]; self.maybeOffer(uid); }
-     else WT.peers[uid]=seen[uid];
-     if(seen[uid].talking) WT.markSpeaking(uid,true); else WT.markSpeaking(uid,false);
+     else{
+       WT.peers[uid]=seen[uid];
+       /* v10.4.31 (Thread 5): a missed/timed-out offer is retried on
+          presence sync — a failed PC, or one stalled in new/checking
+          for >15s, gets a re-offer instead of silent dead air. */
+       var _pc=WT.pc[uid];
+       if(!_pc||_pc.connectionState==="failed"||_pc.iceConnectionState==="failed"||_pc.iceConnectionState==="disconnected") WT.scheduleReoffer(uid);
+       else if((_pc.iceConnectionState==="new"||_pc.iceConnectionState==="checking")&&WT._pcSince[uid]&&Date.now()-WT._pcSince[uid]>15000) WT.scheduleReoffer(uid);
+     }
    });
    Object.keys(WT.peers).forEach(function(uid){
-     if(!seen[uid]){ delete WT.peers[uid]; if(WT.pc[uid]){ try{ WT.pc[uid].close(); }catch(e){} delete WT.pc[uid]; } /* v10.4.18 (ChatGPT #36): stop this peer's speaking meter too. */ if(WT._speakTimers&&WT._speakTimers[uid]){ try{ clearInterval(WT._speakTimers[uid]); }catch(e){} delete WT._speakTimers[uid]; } var el=$("wt-peer-"+uid); if(el) el.remove(); }
+     if(!seen[uid]){ delete WT.peers[uid]; if(WT.pc[uid]){ try{ WT.pc[uid].close(); }catch(e){} delete WT.pc[uid]; } /* v10.4.18 (ChatGPT #36): stop this peer's speaking meter too. */ if(WT._speakTimers&&WT._speakTimers[uid]){ try{ clearInterval(WT._speakTimers[uid]); }catch(e){} delete WT._speakTimers[uid]; } if(WT._offerTimers&&WT._offerTimers[uid]){ try{ clearTimeout(WT._offerTimers[uid]); }catch(e){} delete WT._offerTimers[uid]; } delete WT._iceQueue[uid]; delete WT._offerTries[uid]; delete WT._pcSince[uid]; var el=$("wt-peer-"+uid); if(el) el.remove(); }
    });
    if(curView==="walkie") go("walkie");
+   /* v10.4.31 (Thread 5, confirmed defect): the re-render above rebuilds
+      the peer pills from WT.peers, with labels from p.talking at render
+      time — re-apply the speaking marks AFTER it, or the patch would
+      target the discarded DOM. Presence is the source of truth; the
+      meter (watchSpeaking) can only add, never clear, these marks. */
+   Object.keys(seen).forEach(function(uid){ WT.markSpeaking(uid,!!seen[uid].talking); });
+   WT.paintVoiceState();
  },
  maybeOffer:function(uid){
    if(!WT.stream) return;
    if(WT.myUid()>=uid) return; /* the lexicographically smaller uid initiates */
+   WT._offerTries[uid]=(WT._offerTries[uid]||0)+1;
    this.makePC(uid).then(function(pc){
      return pc.createOffer();
    }).then(function(offer){
      var pc=WT.pc[uid]; if(!pc) return;
      return pc.setLocalDescription(offer).then(function(){ WT.send({type:"offer",to:uid,from:WT.myUid(),sdp:offer}); });
-   }).catch(function(e){ sbLog("offer failed: "+e); });
+   }).catch(function(e){ sbLog("offer failed: "+e); WT.scheduleReoffer(uid); });
+ },
+ /* v10.4.31 (Thread 5): offer retry, ICE queueing, voice-state UX. */
+ scheduleReoffer:function(uid){
+   if(!WT.joined||!WT.peers[uid]) return;
+   if(WT._offerTimers[uid]) return;
+   var tries=WT._offerTries[uid]||0;
+   if(tries>=3) return; /* 3 attempts total — then the visible voice-state banner + manual retry take over, no infinite loop. */
+   WT._offerTimers[uid]=setTimeout(function(){
+     WT._offerTimers[uid]=null;
+     if(!WT.joined||!WT.peers[uid]) return;
+     var pc=WT.pc[uid];
+     if(pc&&(pc.connectionState==="connected"||pc.iceConnectionState==="connected"||pc.iceConnectionState==="completed")) return;
+     WT.maybeOffer(uid);
+   },2500);
+ },
+ reofferAll:function(){
+   /* Manual retry from the voice-state banner: reset the attempt budget
+      and re-offer to every peer through the same queueing path. */
+   WT._voiceFailed=false;
+   Object.keys(WT.peers||{}).forEach(function(uid){ WT._offerTries[uid]=0; WT.maybeOffer(uid); });
+   WT.paintVoiceState();
+ },
+ queueIce:function(uid,cand){
+   var pc=WT.pc[uid];
+   if(pc&&pc.remoteDescription&&pc.remoteDescription.type){ WT.addIce(uid,pc,cand); return; }
+   (WT._iceQueue[uid]=WT._iceQueue[uid]||[]).push(cand);
+ },
+ addIce:function(uid,pc,cand){
+   try{ var p=pc.addIceCandidate(new RTCIceCandidate(cand)); if(p&&p.catch) p.catch(function(e){ sbLog("ice add failed: "+e); }); }catch(e){ sbLog("ice add threw: "+e); }
+ },
+ flushIce:function(uid){
+   var pc=WT.pc[uid]; if(!pc||!pc.remoteDescription||!pc.remoteDescription.type) return;
+   var q=WT._iceQueue[uid]||[]; WT._iceQueue[uid]=[];
+   q.forEach(function(c){ WT.addIce(uid,pc,c); });
+ },
+ onVoiceState:function(uid,pc){
+   try{
+     var ics=pc.iceConnectionState||"", cs=pc.connectionState||"";
+     if(ics==="failed"||cs==="failed"){ WT._voiceFailed=true; WT.scheduleReoffer(uid); }
+     else if(ics==="connected"||ics==="completed"||cs==="connected"){ WT._voiceFailed=false; }
+     WT.paintVoiceState();
+   }catch(e){}
+ },
+ voiceState:function(){
+   if(!WT.joined) return "idle";
+   var uids=Object.keys(WT.peers||{});
+   if(!uids.length) return "alone";
+   var anyConnected=false, anyFailed=false, anyChecking=false;
+   uids.forEach(function(uid){ var pc=WT.pc[uid]; if(!pc){ anyChecking=true; return; } var s=pc.iceConnectionState||""; if(s==="connected"||s==="completed") anyConnected=true; else if(s==="failed") anyFailed=true; else anyChecking=true; });
+   if(anyConnected) return "connected";
+   if(anyFailed&&!anyChecking) return "failed";
+   if(anyFailed) return "degraded";
+   return "connecting";
+ },
+ paintVoiceState:function(){
+   var el=$("wtVoiceState"); if(!el) return;
+   var st=WT.voiceState();
+   if(st==="idle"){ el.innerHTML=""; return; }
+   var dot={connected:"#22c55e",connecting:"#f59e0b",failed:"#ef4444",degraded:"#f59e0b",alone:"#9ca3af"}[st]||"#9ca3af";
+   var txt=st==="connected"?TR('k4804','صدا وصل است'):st==="connecting"?TR('k4803','در حال وصل‌شدن صدا…'):st==="alone"?TR('k4809','در کانال تنها هستید؛ با پیوستن بقیه، صدا وصل می‌شود'):TR('k4805','اتصال صوتی برقرار نشد؛ از کانال خارج شوید و دوباره وارد شوید یا اینترنت را عوض کنید');
+   el.innerHTML='<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+dot+';margin-inline-end:6px"></span><b>'+TR('k4807','وضعیت صدا')+':</b> '+txt+((st==="failed"||st==="degraded")?' <button class="btn ghost sm" style="margin-inline-start:8px" onclick="WT.reofferAll()">🔄 '+TR('k4806','تلاش دوباره برای صدا')+'</button>':"");
  },
  makePC:function(uid){
    var self=this;
    return new Promise(function(resolve){
-     var pc=new RTCPeerConnection({iceServers:[{urls:WT.STUN}]});
+     /* A live PC already serves this peer (re-offer/renegotiation):
+        reuse it — recreating would kill a working connection and
+        re-add the same tracks. A dead PC is closed and replaced. */
+     var old=WT.pc[uid];
+     if(old){
+       if(old.connectionState==="connected"||old.iceConnectionState==="connected"||old.iceConnectionState==="completed"){ WT._pcSince[uid]=WT._pcSince[uid]||Date.now(); resolve(old); return; }
+       try{ old.close(); }catch(e){}
+     }
+     var pc=new RTCPeerConnection({iceServers:WT.iceServers()});
      WT.pc[uid]=pc;
+     WT._pcSince[uid]=Date.now();
+     WT._iceQueue[uid]=WT._iceQueue[uid]||[];
      if(WT.stream) WT.stream.getTracks().forEach(function(t){ pc.addTrack(t,WT.stream); });
      pc.onicecandidate=function(ev){ if(ev.candidate) WT.send({type:"ice",to:uid,from:WT.myUid(),candidate:ev.candidate}); };
+     pc.oniceconnectionstatechange=function(){ WT.onVoiceState(uid,pc); };
+     pc.onconnectionstatechange=function(){ WT.onVoiceState(uid,pc); };
      pc.ontrack=function(ev){
-       var box=$("wtAudioBox"); if(!box) return;
-       var a=document.createElement("audio");
-       a.id="wt-audio-"+uid; a.autoplay=true; a.playsInline=true;
-       a.srcObject=ev.streams[0]; box.appendChild(a);
+       var box=$("wtAudioBox");
+       if(!box){ sbLog("wt: track arrived but #wtAudioBox is missing for "+uid); return; }
+       /* Dedup: one audio element per peer — renegotiation re-fires
+          ontrack; replacing the stream beats stacking elements. */
+       var a=$("wt-audio-"+uid);
+       if(!a){ a=document.createElement("audio"); a.id="wt-audio-"+uid; a.autoplay=true; a.playsInline=true; box.appendChild(a); }
+       a.srcObject=ev.streams[0];
+       try{ var _pp=a.play(); if(_pp&&_pp.catch) _pp.catch(function(){}); }catch(e){}
        AU.applySink();
        self.watchSpeaking(uid,ev.streams[0]);
+       WT.paintVoiceState();
      };
      resolve(pc);
    });
  },
  onSignal:function(m){
-   if(!m||m.to!==WT.myUid()) return;
+   if(!m) return;
+   /* v10.4.31 (Thread 5): addressed signals only — EXCEPT the talking
+      broadcast (to:"*"), which the old filter dropped for everyone.
+      Presence remains the source of truth; the broadcast is redundancy.
+      Own broadcasts are ignored (Realtime echoes them back). */
+   if(m.to!==WT.myUid()&&!(m.type==="talking"&&m.to==="*")) return;
+   if(m.type==="talking"&&m.from===WT.myUid()) return;
    var self=this;
    if(m.type==="offer"){
      this.makePC(m.from).then(function(pc){
        return pc.setRemoteDescription(new RTCSessionDescription(m.sdp));
      }).then(function(){
+       /* Early ICE candidates queued while the offer was in flight are
+          flushed now that the remote description exists. */
+       WT.flushIce(m.from);
        var pc=WT.pc[m.from]; if(!pc) return;
        return pc.createAnswer();
      }).then(function(ans){
@@ -25873,9 +26306,12 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
        return pc.setLocalDescription(ans).then(function(){ WT.send({type:"answer",to:m.from,from:WT.myUid(),sdp:ans}); });
      }).catch(function(e){ sbLog("answer failed: "+e); });
    } else if(m.type==="answer"){
-     var pc=WT.pc[m.from]; if(pc&&m.sdp) pc.setRemoteDescription(new RTCSessionDescription(m.sdp)).catch(function(e){ sbLog("remote answer: "+e); });
+     var pc=WT.pc[m.from]; if(pc&&m.sdp) pc.setRemoteDescription(new RTCSessionDescription(m.sdp)).then(function(){ WT.flushIce(m.from); }).catch(function(e){ sbLog("remote answer: "+e); });
    } else if(m.type==="ice"){
-     var pc2=WT.pc[m.from]; if(pc2&&m.candidate) pc2.addIceCandidate(new RTCIceCandidate(m.candidate)).catch(function(){});
+     /* Candidates arriving before the remote description are QUEUED
+        (flushIce, above) instead of thrown away — the old direct call
+        silently lost them and could explain total silence alone. */
+     if(m.candidate) WT.queueIce(m.from,m.candidate);
    } else if(m.type==="talking"){
      WT.markSpeaking(m.from,!!m.on);
      if(WT.peers[m.from]) WT.peers[m.from].talking=!!m.on;
@@ -25887,10 +26323,14 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
  },
  startTalk:function(){
    if(!WT.joined||!WT.stream||WT.talking) return;
+   /* v10.4.31 (Thread 5 ext #5): never claim to be talking on a dead
+      mic — if no audio track is live, the join's mic is gone. */
+   var _live=WT.stream.getAudioTracks().some(function(t){ return t.readyState==="live"; });
+   if(!_live){ toast(TR('k2120','دسترسی میکروفون داده نشد؛ واکی‌تاکی بدون صدا کار نمی‌کند')+"."); return; }
    WT.talking=true;
    WT.stream.getAudioTracks().forEach(function(t){ t.enabled=true; });
    WT.send({type:"talking",to:"*",from:WT.myUid(),on:true});
-   var ch=SB.subs["wt-"+WT.groupId]; if(ch) ch.track({uid:WT.myUid(),name:(S.user.name||"—"),avatar:(typeof S.user.avatar==="number"?S.user.avatar:0),talking:true});
+   var ch=SB.subs["wt-"+WT.groupId]; if(ch) ch.track({uid:WT.myUid(),name:(S.user.name||"—"),avatar:(typeof S.user.avatar==="number"?S.user.avatar:0),talking:true,joinedAt:WT._joinedAt||Date.now()});
    SFX.play("wt_start");
    if(window.GhostOpsBridge&&GhostOpsBridge.onTalkingChanged) GhostOpsBridge.onTalkingChanged(true);
    var b=$("wtPtt"); if(b) b.classList.add("talking");
@@ -25901,7 +26341,7 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    WT.talking=false;
    if(WT.stream) WT.stream.getAudioTracks().forEach(function(t){ t.enabled=false; });
    WT.send({type:"talking",to:"*",from:WT.myUid(),on:false});
-   var ch=SB.subs["wt-"+WT.groupId]; if(ch) ch.track({uid:WT.myUid(),name:(S.user.name||"—"),avatar:(typeof S.user.avatar==="number"?S.user.avatar:0),talking:false});
+   var ch=SB.subs["wt-"+WT.groupId]; if(ch) ch.track({uid:WT.myUid(),name:(S.user.name||"—"),avatar:(typeof S.user.avatar==="number"?S.user.avatar:0),talking:false,joinedAt:WT._joinedAt||Date.now()});
    SFX.play("wt_end");
    if(window.GhostOpsBridge&&GhostOpsBridge.onTalkingChanged) GhostOpsBridge.onTalkingChanged(false);
    var b=$("wtPtt"); if(b) b.classList.remove("talking");
@@ -25924,7 +26364,13 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
        an.getByteTimeDomainData(buf);
        var sum=0; for(var i=0;i<buf.length;i++){ var v=(buf[i]-128)/128; sum+=v*v; }
        var rms=Math.sqrt(sum/buf.length);
-       WT.markSpeaking(uid,rms>0.04);
+       /* v10.4.31 (Thread 5 ext #2): presence is the server-driven
+          truth — the meter may only ADD a speaking highlight, never
+          clear a presence-talking label (with no audio flowing the
+          RMS stays 0 and would flip a talking peer to "listening"
+          within 250ms). */
+       var _pt=!!(WT.peers[uid]&&WT.peers[uid].talking);
+       WT.markSpeaking(uid,rms>0.04||_pt);
      },250);
    }catch(e){}
  },
@@ -25955,8 +26401,10 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
  },
  homeStatus:function(){
    if(!WT.joined) return TR('k2127','صدا زنده است؛ هرگز ضبط یا ذخیره نمی‌شود');
-   if(WT.talking) return TR('k2056','در حال حرف‌زدن');
-   if(WT.isHandsFree()) return TR('k2934','هندزفری فعال — میکروفون باز است');
+   /* v10.4.31 (Thread 5 ext #5): the status reflects the REAL mic state
+      (micLive) — the old hands-free branch claimed "mic open" from the
+      checkbox even when the user had tapped talk off. */
+   if(WT.micLive()) return TR('k2056','در حال حرف‌زدن');
    return TR('k2057','در حال گوش‌دادن');
  },
  paintHomeWalkie:function(){ var el=$("homeWalkieStatus"); if(el) el.textContent=WT.homeStatus(); },
@@ -25965,9 +26413,9 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    if(!WT.joined){ p.style.display="none"; }
    else{
      p.style.display="flex";
-     p.classList.toggle("talking",!!WT.talking);
+     p.classList.toggle("talking",WT.micLive());
      var t=$("wtPillTxt");
-     if(t) t.textContent="🎙️ "+TR('k2001','واکی‌تاکی')+" — "+(WT.talking?TR('k2056','در حال حرف‌زدن'):WT.isHandsFree()?TR('k2934','هندزفری فعال'):TR('k2057','در حال گوش‌دادن'));
+     if(t) t.textContent="🎙️ "+TR('k2001','واکی‌تاکی')+" — "+(WT.micLive()?TR('k2056','در حال حرف‌زدن'):TR('k2057','در حال گوش‌دادن'));
    }
    try{ WT.paintHomeWalkie(); }catch(e){}
  }
@@ -25984,23 +26432,45 @@ function renderWalkie(){
     +'</select></div>';
   if(!WT.joined){
     h+='<button class="btn" style="width:100%;padding:14px" onclick="WT.join($(\'wtGroupSel\').value)">🎙️ '+TR('k2130','ورود به کانال واکی‌تاکی')+'</button>';
+    /* v10.4.31 (Thread 2b): when this session has no valid key, the
+       join button above can only refuse — offer key entry IN PLACE
+       instead of a dead-end toast, plus the existing subscription
+       flow. Activation reuses activateSubKey; a successful activation
+       retries the join automatically (see finishKeyActivation). */
+    if(!ownerMode&&typeof SB!=="undefined"&&SB.keyOk&&!SB.keyOk()){
+      h+='<div class="card" id="wtKeyCard" style="margin-top:12px"><h3 style="margin-bottom:8px">🔑 '+TR('k4800','فعال‌سازی کلید برای واکی‌تاکی')+'</h3><p class="small">'+TR('k4801','برای ورود به کانال، کلیدی را که مالک برایتان فرستاده اینجا بنویسید؛ پس از فعال‌شدن، خودکار وارد کانال می‌شوید')+'.</p><div class="rowflex"><input class="inp grow subkey" id="wtKeyInp" dir="ltr" placeholder="PLN-XXXX-XXXX-XXXX" onkeydown="if(event.key===\'Enter\')WT.activateKeyAndJoin()"><button class="btn" onclick="WT.activateKeyAndJoin()">'+TR('k4802','فعال‌سازی و ورود به کانال')+'</button></div><div class="rowflex" style="margin-top:8px"><button class="btn ghost sm" onclick="openSubActivate()">'+TR('k0060','خرید یا فعال‌سازی اشتراک')+'</button></div></div>';
+    }
   } else {
+    /* v10.4.31 (Thread 7): self title/color on the own pill, from the
+       local profile (same values sync_identity/syncProfile publish). */
+    var _sc=(typeof S.user.nameColor==="string"&&/^#[0-9a-fA-F]{6}$/.test(S.user.nameColor))?S.user.nameColor:"";
+    var _st=S.user.customTitle||"";
     h+='<div class="wt-peers">'
-      +'<div class="wt-peer" id="wt-peer-me"><div class="wt-av">'+avatarHTML(typeof S.user.avatar==="number"?S.user.avatar:0,56)+'</div><b>'+esc(S.user.name||"—")+'</b>'+supBadgeHTMLFor(SB.uid)+'<span class="wt-speak">'+(WT.talking?TR('k2056','در حال حرف‌زدن'):TR('k2057','در حال گوش‌دادن'))+'</span>'+(SB.profile&&rankFor(SB.profile.points||0).key==="champion"||SB.profile&&rankFor(SB.profile.points||0).key==="legend"?'<span class="pill gold">🔊 '+TR('k2131','اولویت صحبت')+'</span>':'')+'</div>'
+      +'<div class="wt-peer" id="wt-peer-me"><div class="wt-av">'+avatarHTML(typeof S.user.avatar==="number"?S.user.avatar:0,56)+'</div><b'+(_sc?' style="color:'+_sc+'"':'')+'>'+esc(S.user.name||"—")+'</b>'+supBadgeHTMLFor(SB.uid)+(_st?' <span class="small">'+esc(_st)+'</span>':'')+'<span class="wt-speak">'+(WT.micLive()?TR('k2056','در حال حرف‌زدن'):TR('k2057','در حال گوش‌دادن'))+'</span>'+(SB.profile&&rankFor(SB.profile.points||0).key==="champion"||SB.profile&&rankFor(SB.profile.points||0).key==="legend"?'<span class="pill gold">🔊 '+TR('k2131','اولویت صحبت')+'</span>':'')+'</div>'
       +Object.keys(WT.peers).map(function(uid){
           var p=WT.peers[uid];
-          return '<div class="wt-peer" id="wt-peer-'+uid+'"><div class="wt-av">'+avatarHTML(typeof p.avatar==="number"?p.avatar:0,56)+'</div><b>'+esc(p.name||uid.slice(0,8))+'</b>'+supBadgeHTMLFor(uid)+'<span class="wt-speak">'+TR('k2057','در حال گوش‌دادن')+'</span></div>';
+          /* v10.4.31 (Thread 5, confirmed defect): the speaking label
+             renders from p.talking (server presence state) AT RENDER
+             TIME — the old code hardcoded «در حال گوش‌دادن» here, so
+             every re-render reset every peer to "listening" until the
+             next presence event. Title/color from the member maps. */
+          var _pc=(typeof OG!=="undefined"&&OG.memberColor&&OG.memberColor[uid])||"";
+          var _pt=(typeof OG!=="undefined"&&OG.memberTitle&&OG.memberTitle[uid])||"";
+          return '<div class="wt-peer'+(p.talking?' speaking':'')+'" id="wt-peer-'+uid+'"><div class="wt-av">'+avatarHTML(typeof p.avatar==="number"?p.avatar:0,56)+'</div><b'+(_pc?' style="color:'+_pc+'"':'')+'>'+esc(p.name||uid.slice(0,8))+'</b>'+supBadgeHTMLFor(uid)+(_pt?' <span class="small">'+esc(_pt)+'</span>':'')+'<span class="wt-speak">'+(p.talking?TR('k2056','در حال حرف‌زدن'):TR('k2057','در حال گوش‌دادن'))+'</span></div>';
         }).join("")
       +'</div>';
+    /* v10.4.31 (Thread 5): visible voice-connection state, filled by
+       WT.paintVoiceState after render + on every ICE state change. */
+    h+='<div id="wtVoiceState" style="margin-top:10px"></div>';
     /* v10.4.12 — HANDS-FREE (Parsa 2026-11-11): a toggle so the mic stays
        open without holding the button; in hands-free the button is a tap
        toggle (tap once to talk, tap again to stop). The audio box itself
        lives in the app shell now, so voices are heard on any page. */
     h+='<label class="rowflex" style="justify-content:space-between;width:100%;gap:10px;margin-top:10px"><span>'+TR('k2911','حالت هندزفری')+' — '+TR('k2910','بدون نگه‌داشتن دکمه حرف بزن')+'</span><input type="checkbox" id="wtHf"'+(WT.isHandsFree()?' checked':'')+' onchange="WT.setHandsFree(this.checked)"></label>';
     h+=(WT.isHandsFree()
-      ?'<button class="btn wt-ptt'+(WT.talking?' talking':'')+'" id="wtPtt" onclick="WT.toggleTalk()">🎙️ '+(WT.talking?TR('k2912','میکروفون باز است؛ برای قطع دوباره بزنید'):TR('k2910','بدون نگه‌داشتن دکمه حرف بزن'))+'</button>'
-      :'<button class="btn wt-ptt" id="wtPtt" onpointerdown="WT.startTalk()" onpointerup="WT.stopTalk()" onpointerleave="WT.stopTalk()" oncontextmenu="return false">🎙️ '+TR('k2132','نگه دار و حرف بزن')+'</button>');
-    h+='<p class="small" style="text-align:center;margin-top:8px">'+(WT.isHandsFree()?TR('k2912','میکروفون باز است؛ برای قطع دوباره بزنید'):TR('k2133','دکمه را نگه دارید تا صحبت کنید؛ رها کنید تا گوش دهید'))+'.</p>';
+      ?'<button class="btn wt-ptt'+(WT.micLive()?' talking':'')+'" id="wtPtt" onclick="WT.toggleTalk()">🎙️ '+(WT.micLive()?TR('k2912','میکروفون باز است؛ برای قطع دوباره بزنید'):TR('k2910','بدون نگه‌داشتن دکمه حرف بزن'))+'</button>'
+      :'<button class="btn wt-ptt'+(WT.micLive()?' talking':'')+'" id="wtPtt" onpointerdown="WT.startTalk()" onpointerup="WT.stopTalk()" onpointerleave="WT.stopTalk()" oncontextmenu="return false">🎙️ '+TR('k2132','نگه دار و حرف بزن')+'</button>');
+    h+='<p class="small" style="text-align:center;margin-top:8px">'+(WT.isHandsFree()?(WT.micLive()?TR('k2912','میکروفون باز است؛ برای قطع دوباره بزنید'):TR('k2910','بدون نگه‌داشتن دکمه حرف بزن')):TR('k2133','دکمه را نگه دارید تا صحبت کنید؛ رها کنید تا گوش دهید'))+'.</p>';
     h+='<div class="rowflex" style="margin-top:10px"><button class="btn ghost sm wt-spk'+(WT.speakerOn?' on':'')+'" onclick="WT.toggleSpeaker()">🔊 '+TR('k2251','بلندگو')+'</button><span class="small">'+TR('k2256','خروجی صدا')+': <b>'+esc(AU.label())+'</b></span></div>';
     h+='<button class="btn ghost" style="width:100%" onclick="WT.leave()">'+TR('k2134','خروج از کانال')+'</button>';
   }
@@ -26360,7 +26830,7 @@ var PW={uses:{},
    /* Banners: war_order / war_cry / anthem / sys_alert / plant_flag render as
       a real banner card, not a plain power card (sys_alert in alert red). */
    if(["war_order","war_cry","anthem","sys_alert","plant_flag"].indexOf(perm)>-1) cls+=" pw-banner"+(perm==="sys_alert"?" pw-banner-alert":"");
-   var h='<div class="'+cls+(fresh?" pw-fresh":"")+'" data-pw="'+esc(perm)+'" data-pw-id="'+esc(String(m.id==null?"":m.id))+'">'+GFX.markHTML(perm)+'<div class="pw-head">⚡ <b>'+esc(PW.powerTitle(perm))+'</b> <span class="small">— '+esc(m.sender_name||"—")+'</span></div>';
+   var h='<div class="'+cls+(fresh?" pw-fresh":"")+'" data-pw="'+esc(perm)+'" data-pw-id="'+esc(String(m.id==null?"":m.id))+'">'+GFX.markHTML(perm)+'<div class="pw-head">⚡ <b>'+esc(PW.powerTitle(perm))+'</b> <span class="small">— '+esc(m.sender_name||"—")+'</span>'+supBadgeHTMLFor(m.sender_uid)+'</div>';
    if(target) h+='<div class="pw-target">'+esc(PW.memberName(target))+'</div>';
    if(perm==="fortune") h+='<div class="pw-text">🔮 '+esc(PW.fortuneText(text))+'</div>';
    else if(perm==="surprise") h+='<div class="pw-text">🎁 '+TR('k2181','افکت غافلگیرکننده')+': '+esc(text)+'</div>';
@@ -26609,8 +27079,21 @@ var PW={uses:{},
      if(res.data!==true){ toast(TR('k2834','نقش شما قبلاً انتخاب شده است؛ تغییر آن فقط با مالک است')+"."); return; }
      toast(TR('k2835','نقش شما ثبت شد')+".");
      try{ SFX.play("role_"+roleKey); }catch(e){} /* v10.4.27: the new role's own hyper-realistic sound; falls back to chime for an unknown role */
+     /* v10.4.31 (Thread 3): the server confirmed the pick — record it in
+        the local member row NOW (so a later openSheet reads the role)
+        and render the picked role's abilities DIRECTLY. openSheet()
+        re-reads OG.members synchronously and loadMembers() below is
+        async, so it re-opened the picker on the stale row and a second
+        tap hit the server's one-pick refusal. The server refresh still
+        follows and corrects the row if it ever disagrees. */
+     try{
+       var _me=(OG.members||[]).filter(function(x){ return x.user_id===SB.myUid(); })[0];
+       if(_me) _me.group_role=roleKey;
+     }catch(e){}
      OG.loadMembers();
-     PW.openSheet();
+     var _def=roleDef(roleKey);
+     PW.loadUses().then(function(){ PW.renderSheet(_def,roleKey); });
+     PW.renderSheet(_def,roleKey);
    });
  },
  openSheetRole:function(role){
@@ -27647,7 +28130,7 @@ function revokeSuperKey(code){
    has loaded, so forward references to the online objects are safe. */
 
 /* ---------- Walkie-talkie view (RENDER wrapper) ---------- */
-function renderWalkieView(v){ v.innerHTML=renderWalkie(); }
+function renderWalkieView(v){ v.innerHTML=renderWalkie(); try{ WT.paintVoiceState(); }catch(e){} }
 
 /* ---------- One online message (group chat) ---------- */
 function ogMsgHTML(m){
@@ -27675,9 +28158,16 @@ function ogMsgHTML(m){
     else if(eff==="luck") frame="frame_star";
   }catch(e){}
   var av=(typeof m.sender_avatar==="number"?m.sender_avatar:0);
+  /* v10.4.31 (Thread 7): the sender's CURRENT name color + custom title
+     from the server-provided maps. The avatar stays the send-time
+     snapshot (correct — old messages keep the old avatar). A spell
+     frame color (d.color) still wins over the member color. */
+  var _mc=""; try{ if(typeof d!=="undefined"&&d&&d.color) _mc=d.color; }catch(e){}
+  if(!_mc&&typeof OG!=="undefined"&&OG.memberColor&&OG.memberColor[m.sender_uid]) _mc=OG.memberColor[m.sender_uid];
+  var _mt=(typeof OG!=="undefined"&&OG.memberTitle&&OG.memberTitle[m.sender_uid])||"";
   var when="";
   try{ when=fa(new Date(m.created_at).toLocaleTimeString("fa-IR",{hour:"2-digit",minute:"2-digit"})); }catch(e){ when=""; }
-  var h='<div class="msg '+(mine?"me":"")+(pinnedNow?" msg-pinned":"")+(bullNow?" msg-bullseye":"")+'"><div class="og-msg-head">'+avatarHTML(av,28)+'<b>'+(pinnedNow?"📌 ":"")+(bullNow?"🎯 ":"")+esc(m.sender_name||"—")+'</b>'+supBadgeHTMLFor(m.sender_uid)+'</div><div class="'+frame+'">'+EMOJI.render(t)+'</div><small>'+esc(when)+'</small>';
+  var h='<div class="msg '+(mine?"me":"")+(pinnedNow?" msg-pinned":"")+(bullNow?" msg-bullseye":"")+'"><div class="og-msg-head">'+avatarHTML(av,28)+'<b'+(_mc?' style="color:'+_mc+'"':'')+'>'+(pinnedNow?"📌 ":"")+(bullNow?"🎯 ":"")+esc(m.sender_name||"—")+'</b>'+(_mt?' <span class="small">'+esc(_mt)+'</span>':'')+supBadgeHTMLFor(m.sender_uid)+'</div><div class="'+frame+'">'+EMOJI.render(t)+'</div><small>'+esc(when)+'</small>';
   if(mine||OG.isAdmin()) h+='<button class="del" style="color:#fff;padding:0 3px;font-size:15px" onclick="OG.deleteMsg(\''+m.id+'\')" aria-label="'+TR('k1144','حذف پیام')+'">×</button>';
   h+='</div>';
   return h;
