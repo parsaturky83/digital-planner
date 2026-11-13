@@ -6435,7 +6435,7 @@ function loadOpenMembers(gid){
   if(ownerMode){
     ownerSig().then(function(sig){
       if(!sig){ box.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; return; }
-      sbRpc("owner_list_group_members",{p_group_id:String(gid),p_sig:sig}).then(function(res){
+      return sbRpc("owner_list_group_members",{p_group_id:String(gid),p_sig:sig}).then(function(res){
         if(res.error){ box.innerHTML='<p class="small">'+persianErr(res.error)+'</p>'; return; }
         var rows=res.data||[];
         if(!rows.length){ box.innerHTML='<p class="small">'+TR('k1103','بدون عضو')+'.</p>'; return; }
@@ -6443,7 +6443,7 @@ function loadOpenMembers(gid){
           return '<div class="listrow"><div class="grow"><b>'+esc(m.display_name||m.username||"")+'</b>'+(m.username?' <span dir="ltr">@'+esc(m.username)+'</span>':'')+'<div class="small">'+esc(m.role||"")+'</div></div>'+(m.username?'<button class="btn ghost sm" onclick="removeGroupMemberByName(\''+esc(String(gid))+'\',\''+esc(m.username)+'\')">'+TR('k1132','حذف از گروه')+'</button>':'')+'</div>';
         }).join("");
       });
-    }).catch(function(){});
+    }).catch(function(){ box.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; });
     return;
   }
   var ms=(typeof OG!=="undefined"&&(OG.members||[]))||[];
@@ -7427,7 +7427,7 @@ Object.assign(I18N_EN,{"k4721":"Focus Bingo — deal, toggle, line, blackout (te
 /* v10.4.28 (APP batch 2) — EN strings for the growth round (k3984+, k4336). */
 Object.assign(I18N_EN,{"k3984":"Ghost — phosphor moonlight","k3985":"Always-dark animated theme: a spectral night, rising fog columns and blinking spirit orbs","k3986":"The Ghost theme is always dark; day/night mode has no effect on it","k3987":"Fortress Outpost","k3988":"Soundscape Director","k3989":"Gear Sets","k3990":"Restoration Workshop","k3991":"Campaign","k3992":"Data Card","k3993":"Saga","k3994":"Chronotype Scheduling","k3995":"One-Task Lock","k3996":"Deep-Work Philosophy","k3997":"Wind-Down Protocol","k3998":"Living Theme Engine","k3999":"The background reacts to the Jalali season, the time of day and the weather you declare yourself — no internet, no location, no sensors","k4000":"Buildings level up, walls are placed, staff are assigned — all from the work you already do; no timers, no decay","k4001":"Buildings","k4002":"Upgrade","k4003":"Level","k4004":"Cost","k4005":"Not enough focus sessions yet — finish a pomodoro first","k4006":"Defences","k4007":"Wall piece","k4009":"Pick a piece, then tap the cell you want; tapping the same cell again removes the piece","k4010":"Staff","k4012":"Weekly drill","k4013":"Run drill","k4014":"This week's drill is done","k4015":"Drill report","k4016":"Rebuild the ruin","k4017":"The ruin was rebuilt","k4018":"No ruin to rebuild","k4019":"Focus sessions available to build with","k4020":"At maximum level","k4021":"Still locked","k4022":"Unassigned","k4023":"Focus hours","k4024":"Three living scenes built from events, not loops; every sound is made right here, with no files","k4025":"Scene","k4026":"Event density","k4027":"Sparse","k4028":"Normal","k4029":"Dense","k4030":"Volume","k4031":"Fade timer","k4032":"Off","k4033":"Start","k4034":"Stop","k4035":"Now playing","k4036":"If the screen locks, the mobile browser stops the sound; that is a browser limit, not the app","k4038":"App sound is muted; to hear the scene, unmute it in Settings","k4039":"Sound is not available on this device","k4040":"Pieces unlock from real achievements — no luck, no purchases; the set bonus is cosmetic only","k4041":"The set bonus only changes appearance: 2 pieces = aura, 4 pieces = aura + backdrop + title. No points, no power","k4044":"Wear","k4045":"Remove","k4046":"Still locked","k4048":"No set completed yet","k4050":"Aura active","k4055":"Pieces from different sets can be worn together freely","k4056":"Preview","k4059":"Completed sets","k4060":"Earn fragments from achievements, clean them, and set them in place; every fragment comes from a named source, with no luck","k4061":"Clean","k4062":"Cleaning…","k4063":"Pick a cleaned fragment, then tap its own cell","k4064":"This fragment does not fit here — gently, no penalty","k4065":"Relic completed","k4066":"Display gallery","k4067":"Fragment","k4068":"Cleaned","k4070":"Cracked","k4071":"Joined","k4072":"Polished","k4073":"Radiant","k4075":"of","k4076":"First pick a cleaned fragment","k4078":"Placed","k4079":"No relic completed yet","k4081":"Today's declared weather","k4083":"You told the app this weather yourself; the app does not check the sky","k4084":"Hold this look (stop the motion)","k4087":"Living engine on","k4088":"Living engine off","k4089":"Current conditions","k4095":"Solo version: one shared goal with yourself, an achievement ladder, no ranking","k4096":"Solo","k4097":"New campaign","k4098":"Unit","k4099":"Target","k4100":"Start campaign","k4101":"Achievement ladder","k4103":"Campaign complete","k4104":"Finish and re-run","k4105":"Progress","k4106":"Finished","k4107":"Past campaigns","k4108":"Worn","k4110":"Duration (weeks)","k4111":"Campaign story line (one sentence)","k4114":"If a campaign is not filled, the unlocked achievements stay and you can re-run it","k4115":"Arrange your own stats, build a card, and share it anywhere you like yourself — the app uploads nothing","k4116":"Period","k4121":"Stats (up to 4)","k4122":"Layout","k4123":"Download PNG","k4124":"Preview","k4125":"Maximum 4 stats","k4126":"Only these selected stats go on the card — no journal text, task titles or private content","k4129":"Card motto","k4131":"Card downloaded","k4132":"Could not build the image","k4133":"Accent colour","k4135":"A three-month story in three episodes; chapters never expire","k4137":"Episode","k4140":"Read chapter","k4141":"This chapter is still locked","k4142":"Episode recap","k4143":"Your choice","k4146":"Saga banner earned","k4147":"Saga complete","k4148":"Requirement","k4149":"In the previous episode","k4150":"Missed chapters stay readable later; no lock is time-based","k4151":"Read it","k4154":"Choice recorded","k4155":"Saga progress"});
 Object.assign(I18N_EN,{"k4156":"Outside-View Estimate","k4157":"Not enough history yet — at least 5 done tasks in this same category are needed; nothing is invented or shown","k4158":"Median","k4159":"Middle half","k4160":"80th percentile","k4161":"Your calibration factor in this category","k4162":"Use median","k4163":"Range: low","k4164":"Save range","k4165":"Range saved","k4166":"Sample size","k4167":"Estimate applied","k4168":"Based on pomodoro counts, not real time","k4169":"Unpack task","k4171":"Unpack this task","k4173":"Add step","k4174":"Unpacked total","k4175":"Your guess","k4176":"Apply and keep guess","k4177":"Apply and use unpacked total","k4178":"No step may exceed 45 minutes; unpack a bigger step again or split it","k4179":"Unpacking applied","k4180":"Unpacking helps most for multi-part work and least for simple tasks; use it whenever you want, never required","k4182":"First add at least one step","k4183":"Ready to Resume","k4184":"Where I stopped","k4185":"Next step on return","k4186":"Return: when?","k4187":"Today","k4188":"Tomorrow","k4189":"This week","k4190":"Save resume card","k4191":"Resume card saved","k4192":"Resume from here","k4193":"Clear card","k4194":"Switches today","k4195":"2-minute gap","k4196":"Gap over — back to work","k4197":"Yesterday","k4198":"A designed pause between two tasks; no content","k4199":"5 short questions, three peak patterns; you can edit the windows yourself","k4200":"Short questionnaire","k4202":"See result","k4203":"Result","k4207":"Trough","k4208":"Peak","k4209":"Answer again","k4210":"This is your self-declared preference, not a medical assessment or a biological diagnosis","k4211":"Week strip","k4212":"Hardest task of the day","k4213":"This hour is in your trough window","k4214":"Suggestion: peak hour","k4215":"This cell is taken; pick another hour","k4216":"Block placed in the timetable","k4217":"7-day check","k4218":"Did the windows feel right?","k4219":"Right, keep them","k4220":"Windows saved","k4221":"Ask later","k4222":"Edit windows","k4223":"Peak start, peak end, trough hour","k4224":"Answer all 5 questions","k4225":"WOOP drill","k4226":"WOOP drill","k4227":"Feasibility check","k4228":"Desirability","k4229":"Feasibility","k4230":"Wish","k4231":"Outcome","k4232":"Obstacle","k4233":"Plan","k4234":"Next","k4235":"Back","k4236":"Park the wish","k4237":"Wish parked; no penalty","k4238":"Continue with a revised wish","k4239":"What inside you stands in the way?","k4240":"This obstacle is about me, not outside circumstances","k4241":"If [obstacle situation], then I will [specific response]","k4242":"Finish drill","k4243":"Drill saved","k4244":"Already marked today","k4245":"WOOP summary","k4246":"Firings","k4247":"Step","k4248":"One sentence, challenging but doable","k4249":"One task, one count-up timer, nothing else; exit with a release word or a named reason","k4250":"Pick your task","k4251":"Start lock","k4253":"Release word","k4254":"Safety limit","k4255":"Release","k4256":"Wrong word — or pick a release reason","k4257":"Or a release reason","k4258":"Interrupted","k4259":"Stuck","k4260":"Finished early","k4261":"Park it","k4262":"Parked; the timer keeps running","k4263":"Short debrief","k4265":"Finished","k4266":"Parked","k4267":"Switched","k4268":"Safety limit reached; the lock released itself","k4269":"Past locks","k4270":"This lock only simplifies this screen; it does not block other apps on the phone. For phone-level blocking, use the operating system's focus mode","k4271":"Next step","k4272":"Lock started","k4273":"No open task","k4274":"Pick the philosophy that fits your life, not your wishes; the template builds real blocks","k4275":"Choice wizard","k4276":"Answer all 3 questions","k4277":"Suggestion","k4282":"Monastic fits almost nobody with a team; offered, not recommended","k4284":"Template applied","k4285":"Adherence","k4286":"Planned","k4287":"Real focus this week","k4288":"The app cannot know which minutes fell exactly inside deep blocks; this compares total weekly focus with total planned hours","k4289":"Rebuild template","k4290":"Gap hunter","k4291":"Free gap","k4292":"Start a deep session here","k4293":"Filled cells skipped","k4294":"Journalistic is the hardest and needs fast focus","k4295":"End the day deliberately: T-60, T-30, T-10","k4296":"Bedtime","k4297":"Bedtime saved","k4298":"T-60: reset the environment","k4299":"T-30: mental handover","k4300":"T-10: settle","k4302":"Brain dump","k4303":"Each line, one task for tomorrow","k4304":"Build tomorrow's tasks","k4305":"Tasks created","k4306":"Parked worries (private, only here)","k4307":"One line…","k4308":"Save worry","k4309":"Dim mode","k4310":"Set wind-down alarm","k4311":"Wind-down alarm set","k4312":"Current phase","k4313":"One laboratory sleep study showed writing a to-do list before bed made falling asleep slightly faster; this is one study, not a promise","k4314":"If you regularly struggle to fall asleep, talk to a doctor; this tool is not treatment","k4315":"Lights off, sound low, one calm breath; the app dims itself so it is not the brightest thing in the room","k4316":"Open ambient sound","k4318":"Not wind-down time yet","k4336":"Picture the best outcome and enjoy it; one line only","k4319":"Fortress — upgrade, wall, staff, drill, rebuild (test)","k4320":"Soundscape — scene switch, fade timer, density (test)","k4321":"Gear — unlock, equip, set bonus (test)","k4322":"Relics — fragment earned, stage, place, gallery (test)","k4323":"Living — season/phase/weather layers (test)","k4324":"Campaign — solo create, ladder, re-run (test)","k4325":"Portrait — SVG card, stats, layouts (test)","k4326":"Saga — gates, junction, read, banner (test)","k4327":"Estimator — quantile stats, save range (test)","k4328":"Unpacking — steps, 45-min cap, apply (test)","k4329":"Resume — card, switch count, 2-min gap (test)","k4330":"Chrono — score, windows, 7-day check (test)","k4331":"WOOP — drill, park, fire, summary (test)","k4332":"One-Task Lock — start, release word, park (test)","k4333":"Philosophy — wizard, template, gap hunter (test)","k4334":"Wind-Down — bedtime, checks, dump, alarm (test)","k4335":"Ghost theme — entry, dark flag, animation (test)"});
-var APP_VERSION="10.4.29";
+var APP_VERSION="10.4.30";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -7809,14 +7809,14 @@ function loadTopGroups(force){
 function loadHomeTopGroups(){
   if(!SB.client||typeof sbRpc!=="function") return;
   sbRpc("top_groups_week",{p_limit:10}).then(function(res){
-    if(res.error) return;
+    if(res.error){ var _b=$("hwTopGroups"); if(_b) _b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; return; }
     var rows=Array.isArray(res.data)?res.data:[];
     try{ OG._topGroups=rows; }catch(e){}
     var box=$("hwTopGroups"); if(!box) return;
     if(!rows.length || rows.every(function(r){ return +r.weekly_points===0; })){ box.innerHTML='<p class="small">'+TR('k2600','هنوز گروهی در این هفته امتیاز نگرفته است')+'.</p>'; return; }
     var medals=["🥇","🥈","🥉"];
     box.innerHTML=rows.slice(0,3).map(function(r,i){ return '<div class="listrow"><div class="grow"><b>'+(medals[i]||fa(i+1)+" — ")+esc(r.group_name||"—")+'</b><div class="small">'+fa(r.weekly_points||0)+' '+TR('k2533','امتیاز این هفته')+' · '+fa(r.member_count||0)+' '+TR('k2534','عضو')+'</div></div><span class="pill gold">'+fa(r.weekly_points||0)+'</span></div>'; }).join("");
-  }).catch(function(){});
+  }).catch(function(){ var _b=$("hwTopGroups"); if(_b) _b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; });
 }
 function paintTopGroups(rows){
   try{ OG._topGroups=Array.isArray(rows)?rows:[]; }catch(e){}
@@ -20128,7 +20128,7 @@ SB.loadOwnerCreds=function(){
   if(!ownerMode||!SB.client) return Promise.resolve(null);
   if(SB._credsLoading) return SB._credsPromise;
   var p=ownerSig().then(function(sig){
-    if(!sig) return null;
+    if(!sig){ var _b=$("owCredsList"); if(_b) _b.innerHTML='<p class="small">'+TR('k2763','آمار از سرور بارگذاری نشد')+'.</p>'; return null; }
     return sbRpc("owner_list_user_credentials",{p_sig:sig}).then(function(res){
       var box=$("owCredsList"); if(!box) return null;
       if(res.error||!Array.isArray(res.data)){ box.innerHTML='<p class="small">'+TR('k2763','آمار از سرور بارگذاری نشد')+'.</p>'; return null; }
@@ -20139,7 +20139,7 @@ SB.loadOwnerCreds=function(){
       }).join("");
       return rows;
     });
-  }).catch(function(){ return null; });
+  }).catch(function(){ var _b=$("owCredsList"); if(_b) _b.innerHTML='<p class="small">'+TR('k2763','آمار از سرور بارگذاری نشد')+'.</p>'; return null; });
   SB._credsLoading=true; SB._credsPromise=p;
   p.then(function(){ SB._credsLoading=false; },function(){ SB._credsLoading=false; });
   return p;
@@ -20251,7 +20251,7 @@ SB.renderRegReqs=function(){
 SB.loadRegReqs=function(){
   if(!ownerMode||!SB.client) return Promise.resolve(null);
   return ownerSig().then(function(sig){
-    if(!sig) return null;
+    if(!sig){ var _b=$("owRegReqsList"); if(_b) _b.innerHTML='<p class="small">'+TR('k2763','آمار از سرور بارگذاری نشد')+'.</p>'; return null; }
     return sbRpc("list_registration_requests",{p_sig:sig}).then(function(res){
       var box=$("owRegReqsList"); if(!box) return null;
       if(res.error||!Array.isArray(res.data)){ box.innerHTML='<p class="small">'+TR('k2763','آمار از سرور بارگذاری نشد')+'.</p>'; return null; }
@@ -20259,7 +20259,7 @@ SB.loadRegReqs=function(){
       SB.renderRegReqs();
       return SB._regReqRows;
     });
-  }).catch(function(){ return null; });
+  }).catch(function(){ var _b=$("owRegReqsList"); if(_b) _b.innerHTML='<p class="small">'+TR('k2763','آمار از سرور بارگذاری نشد')+'.</p>'; return null; });
 };
 SB.approveRegReq=function(id){
   if(!id) return;
@@ -20488,7 +20488,7 @@ SB.showOwnerGroupDetails=function(){
       h+='</div></div>';
       box.innerHTML=h;
     });
-  }).catch(function(){});
+  }).catch(function(){ box.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; });
 };
 SB.setOwnerMemberRole=function(gid,uid,role){
   if(!gid||!uid||!role) return;
@@ -20563,7 +20563,7 @@ SB.viewOwnerGroupChat=function(gid,name){
   openModal('<h3 style="margin-bottom:8px">'+TR('k2785','مشاهده چت')+' — '+esc(name||"")+'</h3><div id="owChatBox"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div><div class="rowflex" style="margin-top:10px"><button class="btn ghost grow" style="justify-content:center" onclick="closeModal()">'+TR('k0363','بستن')+'</button></div>');
   ownerSig().then(function(sig){
     if(!sig){ var b=$("owChatBox"); if(b) b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; return; }
-    sbRpc("owner_group_messages",{p_group_id:String(gid),p_sig:sig,p_limit:100}).then(function(res){
+    return sbRpc("owner_group_messages",{p_group_id:String(gid),p_sig:sig,p_limit:100}).then(function(res){
       var box=$("owChatBox"); if(!box) return;
       if(res.error){ box.innerHTML='<p class="small">'+persianErr(res.error)+'</p>'; return; }
       var rows=((res.data||[]).slice().reverse());
@@ -20572,7 +20572,7 @@ SB.viewOwnerGroupChat=function(gid,name){
         return '<div class="listrow"><div class="grow"><b>'+esc(m.sender_name||"—")+'</b> <span class="small">'+esc(m.created_at?String(m.created_at).slice(0,16):"")+'</span><div>'+esc(m.text||"")+'</div></div><button class="btn ghost sm" onclick="SB.deleteOwnerMessage(\''+esc(String(m.id))+'\',function(){SB.viewOwnerGroupChat(\''+esc(String(gid))+'\',\''+esc(name||"")+'\')})">'+TR('k2792','حذف پیام')+'</button></div>';
       }).join("");
     });
-  }).catch(function(){});
+  }).catch(function(){ var b=$("owChatBox"); if(b) b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; });
 };
 SB.deleteOwnerMessage=function(mid,after){
   ownerSig().then(function(sig){
@@ -20588,7 +20588,7 @@ SB.viewOwnerGroupPolls=function(gid,name){
   openModal('<h3 style="margin-bottom:8px">'+TR('k2787','مشاهده رأی‌گیری‌ها')+' — '+esc(name||"")+'</h3><div id="owPollBox"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div><div class="rowflex" style="margin-top:10px"><button class="btn ghost grow" style="justify-content:center" onclick="closeModal()">'+TR('k0363','بستن')+'</button></div>');
   ownerSig().then(function(sig){
     if(!sig){ var b=$("owPollBox"); if(b) b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; return; }
-    sbRpc("owner_group_polls",{p_group_id:String(gid),p_sig:sig}).then(function(res){
+    return sbRpc("owner_group_polls",{p_group_id:String(gid),p_sig:sig}).then(function(res){
       var box=$("owPollBox"); if(!box) return;
       if(res.error){ box.innerHTML='<p class="small">'+persianErr(res.error)+'</p>'; return; }
       var rows=res.data||[];
@@ -20598,7 +20598,7 @@ SB.viewOwnerGroupPolls=function(gid,name){
           +'<div class="rowflex"><button class="btn ghost sm" onclick="SB.closeOwnerPoll(\''+esc(String(p.id))+'\',\''+esc(String(gid))+'\',\''+esc(name||"")+'\')">'+TR('k2793','بستن رأی‌گیری')+'</button><button class="btn ghost sm" onclick="SB.deleteOwnerPoll(\''+esc(String(p.id))+'\',\''+esc(String(gid))+'\',\''+esc(name||"")+'\')">'+TR('k2794','حذف رأی‌گیری')+'</button></div></div>';
       }).join("");
     });
-  }).catch(function(){});
+  }).catch(function(){ var b=$("owPollBox"); if(b) b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; });
 };
 SB.closeOwnerPoll=function(pid,gid,name){
   ownerSig().then(function(sig){
@@ -20623,7 +20623,7 @@ SB.viewOwnerAdvisorThreads=function(){
   openModal('<h3 style="margin-bottom:8px">'+TR('k2786','مشاهده چت‌های مشاور')+'</h3><div id="owAdvBox"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div><div class="rowflex" style="margin-top:10px"><button class="btn ghost grow" style="justify-content:center" onclick="closeModal()">'+TR('k0363','بستن')+'</button></div>');
   ownerSig().then(function(sig){
     if(!sig){ var b=$("owAdvBox"); if(b) b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; return; }
-    sbRpc("owner_advisor_threads",{p_sig:sig}).then(function(res){
+    return sbRpc("owner_advisor_threads",{p_sig:sig}).then(function(res){
       var box=$("owAdvBox"); if(!box) return;
       if(res.error){ box.innerHTML='<p class="small">'+persianErr(res.error)+'</p>'; return; }
       var rows=res.data||[];
@@ -20632,13 +20632,13 @@ SB.viewOwnerAdvisorThreads=function(){
         return '<div class="listrow"><div class="grow"><b>'+esc(t.student_name||"")+'</b> <span class="small">↔ '+esc(t.advisor_name||"")+'</span><div class="small">'+esc(t.created_at?String(t.created_at).slice(0,10):"")+'</div></div><button class="btn ghost sm" onclick="SB.viewOwnerThread(\''+esc(String(t.id))+'\',\''+esc(t.student_name||"")+'\',\''+esc(t.advisor_name||"")+'\')">'+TR('k2165','باز کردن گفت‌وگو')+'</button></div>';
       }).join("");
     });
-  }).catch(function(){});
+  }).catch(function(){ var b=$("owAdvBox"); if(b) b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; });
 };
 SB.viewOwnerThread=function(tid,studentName,advisorName){
   openModal('<h3 style="margin-bottom:8px">'+esc(studentName||"")+' ↔ '+esc(advisorName||"")+'</h3><div id="owThreadBox"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div><div class="rowflex" style="margin-top:10px"><button class="btn ghost grow" style="justify-content:center" onclick="closeModal()">'+TR('k0363','بستن')+'</button></div>');
   ownerSig().then(function(sig){
     if(!sig){ var b=$("owThreadBox"); if(b) b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; return; }
-    sbRpc("owner_thread_messages",{p_thread_id:String(tid),p_sig:sig,p_limit:100}).then(function(res){
+    return sbRpc("owner_thread_messages",{p_thread_id:String(tid),p_sig:sig,p_limit:100}).then(function(res){
       var box=$("owThreadBox"); if(!box) return;
       if(res.error){ box.innerHTML='<p class="small">'+persianErr(res.error)+'</p>'; return; }
       var rows=res.data||[];
@@ -20647,7 +20647,7 @@ SB.viewOwnerThread=function(tid,studentName,advisorName){
         return '<div class="listrow"><div class="grow"><b>'+esc(m.sender_name||"—")+'</b> <span class="small">'+esc(m.created_at?String(m.created_at).slice(0,16):"")+'</span><div>'+esc(m.text||"")+'</div></div><button class="btn ghost sm" onclick="SB.deleteOwnerMessage(\''+esc(String(m.id))+'\',function(){SB.viewOwnerThread(\''+esc(String(tid))+'\',\''+esc(studentName||"")+'\',\''+esc(advisorName||"")+'\')})">'+TR('k2792','حذف پیام')+'</button></div>';
       }).join("");
     });
-  }).catch(function(){});
+  }).catch(function(){ var b=$("owThreadBox"); if(b) b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; });
 };
 SB.ownerGroupMembers=function(gid,name){
   openModal('<h3 style="margin-bottom:8px">'+TR('k1669','اعضا')+' — '+esc(name||"")+'</h3><div id="owGrpMemBox"><p class="small">'+TR('k2545','در حال بررسی…')+'</p></div>'
@@ -20655,7 +20655,7 @@ SB.ownerGroupMembers=function(gid,name){
     +'<div class="rowflex" style="margin-top:10px"><button class="btn ghost grow" style="justify-content:center" onclick="closeModal()">'+TR('k0363','بستن')+'</button></div>');
   ownerSig().then(function(sig){
     if(!sig){ var b=$("owGrpMemBox"); if(b) b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; return; }
-    sbRpc("owner_list_group_members",{p_group_id:String(gid),p_sig:sig}).then(function(res){
+    return sbRpc("owner_list_group_members",{p_group_id:String(gid),p_sig:sig}).then(function(res){
       var box=$("owGrpMemBox"); if(!box) return;
       if(res.error){ box.innerHTML='<p class="small">'+persianErr(res.error)+'</p>'; return; }
       var rows=res.data||[];
@@ -20668,7 +20668,7 @@ SB.ownerGroupMembers=function(gid,name){
           +'</div>';
       }).join("");
     });
-  }).catch(function(){});
+  }).catch(function(){ var b=$("owGrpMemBox"); if(b) b.innerHTML='<p class="small">'+TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+'.</p>'; });
 };
 SB.ownerGroupSearch=function(gid){
   var q=(($("ogmUser")||{}).value||"").trim();
@@ -20928,19 +20928,31 @@ OG.loadMine=function(){
   /* v10.4.11 — member groups come from the SERVER (my_groups RPC), never
      from a direct group_members read. Owner: group_list with the owner
      signature (lists ALL groups). In-flight guarded (concurrent callers
-     share one load) and change-guarded (re-renders only when the list
-     actually changed, so go("group") -> loadMine cannot loop). */
+     share one load) and state-change-guarded (re-renders only when the
+     list or the loading/error state actually changed, so go("group") ->
+     loadMine cannot loop). */
   if(OG._mineLoading) return OG._mineLoading;
   var done=function(rows,ok){
+    /* v10.4.30 — state-change-aware refresh: the v10.4.17 list-only guard
+       stranded the "loading" card whenever the load settled with an
+       unchanged list (an error/empty result on a previously-empty list):
+       the view kept showing "loading" forever although loading was over
+       (Parsa's v10.4.29 phone test). Capture the loading/error flags
+       BEFORE mutating them and refresh when the list OR either flag
+       changed, so a settled load can never leave a stale loading state.
+       Loop-safe: done() runs once per load, and refreshGroupCard() is an
+       in-place card repaint that never calls loadMine() or go(). A
+       members_count change alone still must NOT re-render (listSig). */
+    var prevLoading=!!OG._mineLoading;
+    var prevError=!!OG._mineError;
     OG._mineLoading=null;
     var prevSig=OG.listSig(OG.list||[]);
     OG.list=rows||[];
     OG._mineLoaded=!!ok;
     OG._mineError=!ok;
-    /* v10.4.17 — only refresh the card when the list REALLY changed
-       (meaningful fields only, via OG.listSig); a members_count change
-       alone must NOT re-render. In-place refresh, never a full go(). */
-    if(curView==="group"&&OG.listSig(OG.list)!==prevSig) OG.refreshGroupCard();
+    var listChanged=OG.listSig(OG.list)!==prevSig;
+    var stateChanged=(prevLoading!==!!OG._mineLoading)||(OG._mineError!==prevError);
+    if(curView==="group"&&(listChanged||stateChanged)) OG.refreshGroupCard();
     return OG.list;
   };
   if(ownerMode){
@@ -21075,7 +21087,9 @@ OG.leaveGroup=function(){
   var gid=OG.sel.id;
   try{ if(OG._locWatch!=null&&(!OG._liveGroupId||String(OG._liveGroupId)===String(gid))) OG.stopLiveLocation(true); }catch(e){}
   if(typeof SB==="undefined"||!SB.client){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
-  sbRpc("leave_group",{p_group:gid}).then(function(res){
+  /* v10.4.30 — key users have no Auth identity: pass p_key (same
+     keyForRpc pattern as OG.regenInvite); null for Auth users. */
+  sbRpc("leave_group",{p_group:gid,p_key:SB.keyForRpc()}).then(function(res){
     if(res.error||res.data===false){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return; }
     try{ SB_unsub("og-msgs"); SB_unsub("og-tasks"); SB_unsub("og-polls"); SB_unsub("og-members"); SB_unsub("og-ann"); SB_unsub("og-events"); }catch(e){}
     try{ OG.stopGroupPoll(); }catch(e){}
@@ -26748,10 +26762,17 @@ OG.myGroupRole=function(){
   if(!OG.sel) return "";
   var m=(OG.members||[]).filter(function(x){ return x.user_id===SB.myUid(); })[0];
   if(m&&(m.group_role||"")) return m.group_role;
-  /* v10.4.11 fallback — my_groups() returns my_role on the list row itself
-     (OG.sel comes from OG.list), so the role is known even before the
-     members read lands. */
-  return (OG.sel&&OG.sel.myRole)||"";
+  /* v10.4.30 — NO myRole fallback: my_groups().my_role is the MEMBERSHIP
+     role (group_members.role: "member"/"admin"), never the flavor
+     group_role. Returning it made PW.openSheet treat an unpicked member
+     as role-holding ("member" is truthy and not "soldier"), so the
+     one-time role picker never opened and the sheet showed only the
+     dead-end "no role yet" message — before the members read lands, on
+     a members-read failure, and permanently for the owner (whose
+     members mapping never sets group_role). Unknown means unpicked:
+     "" opens the picker (members) or the commander default (owner /
+     super users) in PW.openSheet. */
+  return "";
 };
 OG.isSuper=function(){
   var s=S.mySuper;
