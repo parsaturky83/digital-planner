@@ -8702,8 +8702,13 @@ Object.assign(I18N_EN,{"k9250":"Joining…","k9251":"Could not connect to the vo
 Object.assign(I18N_EN,{"k9481":"Channel mode","k9482":"Public — unauthenticated signaling; anyone with the group id can see presence","k9483":"Membership check","k9484":"Confirmed","k9485":"Not performed; continued with previous behaviour","k9486":"Disabled (server)","k9487":"You are not a member of this group","k9488":"Dropped signals","k9489":"Your key has been revoked or has expired; a valid key is required to join the channel","k9490":"Walkie-talkie has been disabled on the server","k9491":"Walkie-talkie — SB_sub and membership check (test)"});
 /* v10.4.35 (integration): EN string for the Y1/W2 PTT hold-timeout key k9500. No trailing period — the call site appends ".". */
 Object.assign(I18N_EN,{"k9500":"Microphone closed automatically; hold the button again to talk"});
-/* v10.4.34 (X5): bug-finder strings k9200–k9299 (k9250–k9254 above; k9267/k9272 already used in the base; k9297 now used by the integration D5 row (see next block)). */
+/* v10.4.34 (X5): bug-finder strings k9200–k9299 (k9250–k9254 above; k9267/k9272 allocated by Z5 (v10.4.36, see below); k9297 now used by the integration D5 row (see next block)). */
 Object.assign(I18N_EN,{"k9200":"Find the problem","k9201":"Checking…","k9202":"Stop checking","k9203":"You can find the problem without joining the channel.","k9204":"Server","k9205":"Network / DNS","k9206":"Relay (TURN)","k9207":"Microphone","k9208":"Audio output","k9209":"Signaling / presence","k9210":"Two-person readiness","k9211":"Speak now…","k9212":"Did you hear the chime?","k9213":"Yes, I heard it","k9214":"No, I didn't","k9215":"Play again","k9216":"Skip","k9217":"Show full report","k9218":"Copy report","k9219":"Share","k9220":"Download text file","k9221":"Report copied","k9222":"The server test is running; please wait","k9223":"A check is already running","k9224":"The server is reachable and its version is known.","k9225":"Nothing to do.","k9226":"The server is unreachable; the internet or the server has a problem.","k9227":"Check your internet (switch Wi-Fi/data) and check again.","k9228":"The entry key is not valid.","k9229":"Get a key from the owner or sign in again.","k9230":"The server is reachable but the account session has expired; the key is still valid.","k9231":"To be safe, sign in to the account again from settings.","k9232":"The server is reachable but its version could not be determined.","k9233":"Send the report; the version will be checked on the server.","k9234":"All voice servers were found.","k9235":"The phone cannot resolve the relay server addresses (DNS error); the problem is the network/internet, not the app.","k9236":"Switch Wi-Fi/data, or change the phone's DNS, and check again. If it works on another network, the problem is the previous network.","k9237":"No relay server is reachable.","k9238":"Switch networks and check again.","k9239":"Some servers are reachable, some are not.","k9240":"Send the report so the broken servers can be removed/replaced.","k9241":"A relay server connected.","k9242":"No relay server allocated; on strict networks, voice will not connect.","k9243":"Send the report; the relay servers need to be checked/replaced.","k9244":"Only the test server connected; the app's main servers did not connect.","k9245":"The microphone opened and your voice was heard.","k9246":"Microphone access was not granted.","k9247":"In the phone's settings, turn on microphone access for the app.","k9248":"The microphone opened but no sound comes from it.","k9249":"Unplug/replug the headset and check again.","k9255":"The microphone is open but no sound was heard in 5 seconds; you may not have spoken.","k9256":"Check again and speak loudly this time.","k9257":"The audio engine works and the sound was heard.","k9258":"The test sound played but was not heard; the problem is the phone's audio output.","k9259":"Turn the phone volume up, turn silent mode off, unplug the headset and check again.","k9260":"The audio engine did not start.","k9261":"Close the app and open it again.","k9262":"The app's sound is muted in settings; other people's voices will not be heard either.","k9263":"Turn the sound on in settings.","k9264":"Signaling works;","k9265":"other people are visible in the channel.","k9266":"Signaling works; nobody else is in the channel.","k9268":"Signaling was tested and works (without joining the channel).","k9269":"The message reached the server but did not come back; the live connection is broken.","k9270":"Leave the channel and rejoin; if that does not fix it, switch networks.","k9271":"The connection to the test channel could not be established.","k9273":"Check your internet and check again.","k9274":"No group is selected.","k9275":"Select a group first.","k9276":"The problem is the server (layer 1).","k9277":"The problem is that the relay server addresses cannot be found (layer 2 — DNS).","k9278":"The problem is the relay server (layer 3); it did not allocate.","k9279":"The problem is the microphone (layer 4).","k9280":"The problem is the audio output (layer 5).","k9281":"The problem is the signaling connection (layer 6).","k9282":"Everything is fine; you are alone in the channel.","k9283":"Two-person voice is ready.","k9284":"Connecting; wait a bit and check again.","k9285":"The connection is up but incomplete/unstable.","k9286":"All checks on this phone are fine but the connection to the other side did not establish; the other side must run the same check.","k9287":"This phone is ready; join the channel to check two-person voice.","k9288":"No definite result; layers","k9289":"could not be determined.","k9290":"Copy the full report and send it.","k9291":"(If a headset is connected, the sound plays through it)","k9292":"Waiting for your answer…","k9293":"Previous report","k9294":"Pending","k9295":"Cancelled","k9296":"Could not be determined.","k9298":"A relay server connected but very slowly (over 4 seconds).","k9299":"Signaling works but presence updates are slow."});
+/* v10.4.36 (Z5): bug-finder transient-drop strings. k9267/k9272 were
+   free: the X5 comment above claimed them "already used in the base",
+   but no TR call site and no EN entry existed (verified by grep: only
+   the comment itself + a base64 coincidence). Allocated here. */
+Object.assign(I18N_EN,{"k9267":"The live connection dropped briefly, but signs of recovery were seen.","k9272":"Wait a few seconds and check again; if it does not recover, leave the channel and rejoin."});
 /* v10.4.34 (integration, D5): English string for the expansion-counts self-test row. */
 Object.assign(I18N_EN,{"k9297":"Game-tools expansion \u2014 counts and share contracts (test)"});
 /* v10.4.20 (Batch A): N3/N13/M9/M11/item-34 strings + owner-panel test rows. */
@@ -8820,7 +8825,7 @@ Object.assign(I18N_EN,{"k4815":"Study tasks","k4816":"Personal tasks","k4817":"S
 Object.assign(I18N_EN,{"k9131":"App sounds are muted — unmute to hear the soundscape","k9133":"Sound events","k9134":"Effect events","k9135":"Delivery decisions","k9137":"No events recorded yet"});
 /* v10.4.35 (Y5): EN strings for the clock-skew banner (k3259–k3260). */
 Object.assign(I18N_EN,{"k3259":"Owner signature not verified, and the device clock differs from the server clock.","k3260":"This device's clock differs from the server clock by {n} minutes; fix the device clock. Password-based reset still works."});
-var APP_VERSION="10.4.35";
+var APP_VERSION="10.4.36";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -12122,6 +12127,17 @@ function SB_sub(name,channelOpts,handlers){
          to onStatus (join awaits SUBSCRIBED; failures reject). */
       try{ if(handlers&&handlers.onSubscribed) handlers.onSubscribed(); }catch(e){}
     }
+    else if(status==="CLOSED"){
+      /* v10.4.36 (Z2): CLOSED also arrives here when a LIVE channel
+         drops — realtime-js fires it on the SAME subscribe callback
+         (_onClose -> CLOSED). Log only: a deliberate removeChannel /
+         unsubscribe produces CLOSED too, so SB_sub must neither toast
+         nor recover. The WT layer tells a drop from a deliberate
+         close (joined + current-channel health check) in
+         WT._onChannelStatus. Every status is still forwarded to
+         onStatus below. */
+      sbLog("channel closed "+name);
+    }
     else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT"){ sbLog("subscribe failed "+name+": "+status); SB_liveLost(); }
     try{ if(handlers&&handlers.onStatus) handlers.onStatus(status); }catch(e){}
   });
@@ -13399,6 +13415,102 @@ SB.runOnlineFeaturesTest=function(){
           .then(function(){ return _step({data:{weird:true}},false,"degraded:bad-reply","bad-reply"); })
           .then(function(){ _cleanup(); return {st:'ok', detail:"SB_sub threads options into the subscribed channel; onSignal drops+counts malformed signals, keeps the diag-ping echo; membership check refuses non-members/revoked, degrades loudly on RPC failure/old SQL"}; })
           .catch(function(e){ _cleanup(); return {st:'fail', detail:String(e&&e.message||e)}; });
+      }],
+      [TR('k9665','واکی‌تاکی — بازیابی کانال بسته (تست)'), function(){
+        /* v10.4.36 (Z2): closed-channel recovery with a fake client.
+           (a) A CLOSED status while joined starts ONE recovery episode
+               (reconnecting flag + diagnostics) and resubscribes.
+           (b) The resubscribe re-tracks on the NEW channel, and its
+               SUBSCRIBED completes recovery (flag cleared, stamp set).
+           (c) A CLOSED while NOT joined starts nothing; a second CLOSED
+               during recovery starts no second episode.
+           (d) leave() cancels a pending recovery: no resubscribe
+               after leave. Backoffs are overridden to [5,5] (nonzero —
+               the production code treats 0 as unset) and the test
+               polls for the resubscribe instead of assuming timer
+               speed; the production table is restored afterwards.
+               The two-client harness (T1–T9) proves the same behavior
+               end to end. */
+        if(typeof SB_sub!=="function"||typeof WT==="undefined"||typeof WT._wtHandlers!=="function"||typeof WT._startRecovery!=="function") return {st:'fail', detail:"Z2 recovery machinery missing"};
+        var _client=SB.client, _subs=SB.subs, _joined=WT.joined, _gid=WT.groupId, _uid=WT._joinUid, _jat=WT._joinedAt, _rec=WT._reconnecting, _seq=WT._recoverSeq, _backs=WT._RECOVER_BACKOFFS, _verify=WT._verifyPresence, _toast=toast, _view=curView, _pc=WT.pc, _peers=WT.peers, _stream=WT.stream, _joining=WT._joining, _pres=(WT._diag&&WT._diag.presence)||null, _talking=WT.talking, _vt=WT._verifyTimer;
+        var chans=[], removed=0;
+        var mkCh=function(){
+          var ch={state:"joined",trackCalls:0,subCb:null,
+            on:function(){}, presenceState:function(){ return {}; },
+            track:function(){ ch.trackCalls++; }, send:function(){ return Promise.resolve("ok"); },
+            subscribe:function(cb){ ch.subCb=cb; }};
+          chans.push(ch); return ch;
+        };
+        SB.client={channel:function(){ return mkCh(); },removeChannel:function(){ removed++; }};
+        SB.subs={};
+        WT._RECOVER_BACKOFFS=[5,5];
+        WT._verifyPresence=function(){};
+        toast=function(){};
+        curView="today";
+        WT.pc={}; WT.peers={}; WT.stream=null; WT._joining=false; WT.talking=false;
+        WT.groupId="TESTZ2"; WT._joinUid="me"; WT._joinedAt=Date.now(); WT.joined=true; WT._reconnecting=false;
+        var _sleep=function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); };
+        var _waitFor=function(fn,ms){ var t0=Date.now(); return new Promise(function(res){ var tick=function(){ var ok=false; try{ ok=!!fn(); }catch(e){} if(ok||Date.now()-t0>ms) res(ok); else setTimeout(tick,25); }; tick(); }); };
+        var _cleanup=function(){
+          try{ if(WT._recoverTimer){ clearTimeout(WT._recoverTimer); WT._recoverTimer=null; } }catch(e){}
+          try{ if(WT._recoverAttemptTimer){ clearTimeout(WT._recoverAttemptTimer); WT._recoverAttemptTimer=null; } }catch(e){}
+          try{ if(WT._verifyTimer){ clearTimeout(WT._verifyTimer); } }catch(e){}
+          WT._verifyTimer=_vt;
+          SB.client=_client; SB.subs=_subs; WT._RECOVER_BACKOFFS=_backs; WT._verifyPresence=_verify; toast=_toast; curView=_view;
+          WT.joined=_joined; WT.groupId=_gid; WT._joinUid=_uid; WT._joinedAt=_jat; WT._reconnecting=_rec; WT.pc=_pc; WT.peers=_peers; WT.stream=_stream; WT._joining=_joining; WT.talking=_talking;
+          /* Invalidate the delayed presence re-read _completeRecovery
+             scheduled, so it cannot fire into restored state. */
+          WT._recoverSeq=(_seq||0)+1;
+          try{ if(WT._diag&&_pres) WT._diag.presence=_pres; }catch(e){}
+        };
+        var _fail=function(msg){ _cleanup(); return {st:'fail', detail:msg}; };
+        try{
+          SB_sub("wt-TESTZ2",null,WT._wtHandlers("wt-TESTZ2"));
+          if(chans.length!==1) return _fail("initial subscribe created "+chans.length+" channels, expected 1");
+          chans[0].subCb("SUBSCRIBED");
+          /* (c1) CLOSED while NOT joined starts nothing. */
+          WT.joined=false;
+          chans[0].state="closed"; chans[0].subCb("CLOSED");
+          if(WT._reconnecting) return _fail("CLOSED while not joined started recovery");
+          WT.joined=true;
+          /* (a) CLOSED while joined starts one episode; a second
+             CLOSED during the episode starts no second one. A stale
+             pending verify chain is cancelled by recovery start. */
+          var seq0=WT._recoverSeq;
+          WT._verifyTimer=setTimeout(function(){},60000);
+          chans[0].subCb("CLOSED");
+          if(WT._verifyTimer) return _fail("recovery start did not cancel the pending verify chain");
+          if(!WT._reconnecting) return _fail("CLOSED while joined did not start recovery");
+          var seq1=WT._recoverSeq;
+          if(seq1===seq0) return _fail("recovery did not bump the generation guard");
+          chans[0].subCb("CLOSED");
+          if(WT._recoverSeq!==seq1) return _fail("second CLOSED started a second episode");
+          if(!(WT._diag&&WT._diag.presence&&WT._diag.presence.reconnecting)) return _fail("diagnostics reconnecting flag not set");
+          return _waitFor(function(){ return chans.length===2; },5000).then(function(_ok){
+            /* (a2) one resubscribe: old channel removed, new created. */
+            if(!_ok) throw new Error("recovery created "+(chans.length-1)+" replacement channels, expected 1");
+            if(removed!==1) throw new Error("recovery removed "+removed+" old channels, expected 1");
+            /* (b) the new channel's SUBSCRIBED re-tracks + completes. */
+            chans[1].subCb("SUBSCRIBED");
+            if(WT._reconnecting) throw new Error("SUBSCRIBED did not complete recovery");
+            if(chans[1].trackCalls<1) throw new Error("resubscribe did not re-track (trackCalls="+chans[1].trackCalls+")");
+            if(!(WT._diag&&WT._diag.presence&&WT._diag.presence.lastRecoverAt>0)) throw new Error("diagnostics lastRecoverAt not stamped");
+            if(((WT._diag&&WT._diag.presence)||{}).reconnectAttempts!==1) throw new Error("diagnostics reconnectAttempts="+((WT._diag&&WT._diag.presence)||{}).reconnectAttempts+", expected 1");
+            /* (d) leave() cancels a pending recovery. */
+            chans[1].state="closed"; chans[1].subCb("CLOSED");
+            if(!WT._reconnecting) throw new Error("second CLOSED did not start recovery for the leave test");
+            var nBefore=chans.length;
+            WT.leave();
+            /* Absence needs a fixed wait long enough to catch a
+               leaked attempt timer even under timer throttling. */
+            return _sleep(1500).then(function(){
+              if(chans.length!==nBefore) throw new Error("a resubscribe fired after leave ("+nBefore+"->"+chans.length+")");
+              if(WT._reconnecting) throw new Error("leave did not clear the reconnecting flag");
+              _cleanup();
+              return {st:'ok', detail:"CLOSED starts one recovery episode; resubscribe re-tracks and SUBSCRIBED completes it; no recovery while unjoined; leave cancels a pending recovery"};
+            });
+          }).catch(function(e){ _cleanup(); return {st:'fail', detail:String(e&&e.message||e)}; });
+        }catch(e){ return _fail(String(e&&e.message||e)); }
       }],
       [TR('k3166','نقشه — نام یکسان، مکان درست (تست)'), function(){
         if(typeof groupMapMarkersFor!=="function") return {st:'fail', detail:"groupMapMarkersFor missing"};
@@ -22193,8 +22305,11 @@ SB.afterOnline=function(){
     toast(TR('k2093','اتصال آنلاین برقرار شد') + ".");
   }); }catch(e){ try{ sbLog("afterOnline checkSchema: "+e); }catch(e2){} }
   /* v10.4.34 (X2 F3): reconnect re-affirms walkie presence (no-op when
-     not joined; the onSubscribed handler covers the rejoin itself). */
-  try{ if(typeof WT!=="undefined") WT.retrack(); }catch(e){}
+     not joined; the onSubscribed handler covers the rejoin itself).
+     v10.4.36 (Z2): through _reaffirmOrRecover — a retrack alone
+     cannot revive a closed channel, so reconnect checks health and
+     recovers when the channel is dead. */
+  try{ if(typeof WT!=="undefined"){ if(typeof WT._reaffirmOrRecover==="function") WT._reaffirmOrRecover(); else WT.retrack(); } }catch(e){}
 };
 SB.checkSchema=function(){
   /* v10.4.17 — distinct results (Parsa 22:23): a TRANSIENT error
@@ -27485,7 +27600,7 @@ var DiarySync={
    any push — a reconnect could overwrite offline work. Reconnect now runs
    the full push-first SB.afterOnline() (guarded against double-runs inside
    SB.pushAll); the diary pull happens inside it, after the push. */
-window.addEventListener("online",function(){ try{ if(typeof SB!=="undefined"&&SB.afterOnline) SB.afterOnline(); else if(typeof DiarySync!=="undefined") DiarySync.pull(); }catch(e){} try{ if(typeof WT!=="undefined") WT.retrack(); }catch(e){} });
+window.addEventListener("online",function(){ try{ if(typeof SB!=="undefined"&&SB.afterOnline) SB.afterOnline(); else if(typeof DiarySync!=="undefined") DiarySync.pull(); }catch(e){} try{ if(typeof WT!=="undefined"){ if(typeof WT._reaffirmOrRecover==="function") WT._reaffirmOrRecover(); else WT.retrack(); } }catch(e){} });
 /* v10.4.33 (W3): the bare pull-on-visible could adopt a server diary
    before offline work was pushed. Now: debounced push-first — the full
    SB.afterOnline() sequence when available, else push-then-pull. */
@@ -29168,11 +29283,16 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
  _peerSince:{},_missingSince:{},_needOfferAt:{},_lateOfferSent:{},
  _presenceTimer:null,_joining:false,_verifyTimer:null,_verifyAttempts:0,_resubscribed:false,_emptySyncTimer:null,
  _lastPresenceSyncAt:0,
+ /* v10.4.36 (Z2): closed-channel recovery state — the reconnecting
+    flag (truthful UI), the backoff/attempt timers, the generation
+    guard (leave/completion invalidate pending attempts), and the
+    episode counters mirrored into _diag.presence. */
+ _reconnecting:false,_recoverTimer:null,_recoverAttemptTimer:null,_recoverSeq:0,_recoverAttempts:0,_recoverSince:0,_recoverReason:"",
  /* v10.4.32 (T9): in-app voice diagnostics store — ICE candidates
     gathered, relay obtained?, last error, mic/receiver levels, and
     autoplay-blocked peers. Painted by WT.paintDiag (targeted DOM
     updates only, never a re-render). Reset on every join/leave. */
- _diag:{cands:{host:0,srflx:0,relay:0,other:0},relay:false,lastErr:"",micRms:0,peerRms:{},playBlocked:{},droppedSignals:0,membershipCheck:"",presence:{lastSyncAt:0,trackCount:0,subscribed:false,lastSubscribeStatus:"",ownPresenceVerified:false,oldPeers:0}},
+ _diag:{cands:{host:0,srflx:0,relay:0,other:0},relay:false,lastErr:"",micRms:0,peerRms:{},playBlocked:{},droppedSignals:0,membershipCheck:"",presence:{lastSyncAt:0,trackCount:0,subscribed:false,lastSubscribeStatus:"",ownPresenceVerified:false,oldPeers:0,reconnecting:false,reconnectAttempts:0,lastRecoverAt:0}},
  STUN:"stun:stun.l.google.com:19302",
  /* v10.4.33 (W1): STUN-first, TURN-fallback, in legs. Leg 1 (no
     signup) is Metered static-auth with the CORRECT HMAC scheme
@@ -29181,22 +29301,24 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
     username)) — the old code sent the published demo secret RAW as
     the password, which Metered rejects; that was the W1 root cause.
     Legs 2-3 (Turnix / Metered account) arrive via the
-    mint_turn_credentials RPC and merge when present. WT.TURN below
-    holds ONLY leg 5 (LAST): the legacy openrelay.metered.ca static
-    pair, kept for one round, diagnostics-watched. The demo secret
+    mint_turn_credentials RPC and merge when present. The demo secret
     is a PUBLISHED credential from Metered's public docs, intended
     for embedding in client configs; NOT a private key, no account.
     No SLA; allocation is proven only by Parsa's real-phone test.
     v10.4.34 (X2 TURN §5.2): legs reordered — minted account legs
     (Turnix, Metered) FIRST, HMAC demoted below them, ExpressTURN
     (new, RPC-served static) after HMAC, Cloudflare slot reserved
-    (Phase 2, contributes nothing yet), legacy LAST. */
- TURN:[{urls:["turn:openrelay.metered.ca:80","turn:openrelay.metered.ca:443"],username:"openrelayproject",credential:"openrelayproject"},{urls:["turns:openrelay.metered.ca:443?transport=tcp"],username:"openrelayproject",credential:"openrelayproject"}],
+    (Phase 2, contributes nothing yet), legacy openrelay pair LAST.
+    v10.4.36 (Z4): the legacy openrelay.metered.ca static pair is
+    REMOVED — its one-round reprieve expired probe-dead (bug-finder
+    BF-76e7ea: host unreachable, 0/3 URLs allocated). The HMAC leg
+    (same Metered infra, correct scheme) stays as the no-signup leg;
+    do not re-add the static pair without fresh probe evidence. */
  iceServers:function(opts){
    var s=[{urls:WT.STUN},{urls:"stun:stun1.l.google.com:19302"},{urls:"stun:global.stun.twilio.com:3478"},{urls:"stun:stun.cloudflare.com:3478"}];
    /* v10.4.34 (X2 TURN §5.2): legs in order — STUN, minted Turnix,
       minted Metered, HMAC (demoted), ExpressTURN (static), Cloudflare
-      slot (reserved, inert), legacy (last). _urlProvider maps each
+      slot (reserved, inert). _urlProvider maps each
       TURN url to its leg for the diagnostics lines (provider + URL +
       expiry only — never credentials). */
    WT._urlProvider={};
@@ -29217,7 +29339,8 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
         is built. */
      if(WT._minted&&WT._minted.cloudflare&&WT._minted.cloudflare.until>now2&&WT._minted.cloudflare.entry){ s.push(WT._minted.cloudflare.entry); tag(WT._minted.cloudflare.entry,"cloudflare"); }
    }catch(e){}
-   (WT.TURN||[]).forEach(function(t){ s.push(t); tag(t,"legacy"); });
+   /* v10.4.36 (Z4): no legacy leg — the openrelay static pair was
+      removed (see the WT header note); nothing is appended here. */
    /* v10.4.35 (Y8): TCP/TLS-only mode (Claude idea 3). When the
       effective ICE mode is tcp-only, live calls use ONLY turns: /
       transport=tcp TURN URLs plus ONE STUN entry (the retained STUN
@@ -29328,20 +29451,18 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
          var done=false;
          var to=setTimeout(function(){ if(!done){ done=true; reject(new Error("subscribe timeout")); } },10000);
          try{
-           SB_sub(chName,null,{
-             presence:function(){ self.onPresence(); },
-             broadcast:function(pl){ self.onSignal(pl&&pl.payload?pl.payload:pl); },
-             onStatus:function(status){
-               try{ if(WT._diag&&WT._diag.presence) WT._diag.presence.lastSubscribeStatus=status; }catch(e){}
-               if(status==="SUBSCRIBED"&&!done){ done=true; clearTimeout(to); resolve(); }
-               else if((status==="CHANNEL_ERROR"||status==="TIMED_OUT")&&!done){ done=true; clearTimeout(to); reject(new Error("subscribe "+status)); }
-             },
-             /* v10.4.34 (X2 F2): EVERY subscribe — initial and rejoin —
-                re-affirms presence immediately, with the same payload
-                as WT.retrack(). A rejoin (already joined) also
-                re-verifies presence (F11). */
-             onSubscribed:function(){ try{ WT.retrack(); if(WT.joined) WT._verifyPresence(); }catch(e){} }
-           });
+           /* v10.4.36 (Z2): the handlers come from the ONE shared
+              factory (WT._wtHandlers) — the join, _verifyPresence and
+              recovery subscribes must all carry the persistent status
+              handler, or a post-join drop on any of them is invisible
+              again. The join-promise logic rides as onStatusExtra; the
+              factory records the status and forwards drops to
+              WT._onChannelStatus (a no-op while joining — the retry
+              loop above owns the subscribe until joined). */
+           SB_sub(chName,null,WT._wtHandlers(chName,{onStatusExtra:function(status){
+             if(status==="SUBSCRIBED"&&!done){ done=true; clearTimeout(to); resolve(); }
+             else if((status==="CHANNEL_ERROR"||status==="TIMED_OUT")&&!done){ done=true; clearTimeout(to); reject(new Error("subscribe "+status)); }
+           }}));
          }catch(e){ if(!done){ done=true; clearTimeout(to); reject(e); } }
        });
      };
@@ -29432,7 +29553,16 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
       timer, verify/empty-sync timers, peer clocks, need-offer/late
       guards, joining flag, and the presence-sync hook. */
    WT._joining=false; WT._peerSince={}; WT._missingSince={}; WT._needOfferAt={}; WT._lateOfferSent={};
+   /* v10.4.36 (Z1/Z3): clear the recovery state too — flow clocks,
+      outstanding-offer stamps, restart/rebuild budgets. */
+   WT._pairFlow={}; WT._discSince={}; WT._offerSentAt={}; WT._offerInFlight={}; WT._restartTries={}; WT._restartAt={}; WT._rebuildAt={}; WT._rebuildCount={};
    WT._verifyAttempts=0; WT._resubscribed=false; WT._lastPresenceSyncAt=0;
+   /* v10.4.36 (Z2): leave cancels any recovery episode — no
+      resubscribe may fire after leave, and the generation bump
+      invalidates every pending attempt timer. */
+   WT._reconnecting=false; WT._recoverSeq=(WT._recoverSeq||0)+1; WT._recoverAttempts=0; WT._recoverSince=0; WT._recoverReason="";
+   try{ if(WT._recoverTimer){ clearTimeout(WT._recoverTimer); WT._recoverTimer=null; } }catch(e){}
+   try{ if(WT._recoverAttemptTimer){ clearTimeout(WT._recoverAttemptTimer); WT._recoverAttemptTimer=null; } }catch(e){}
    try{ if(WT._verifyTimer){ clearTimeout(WT._verifyTimer); WT._verifyTimer=null; } }catch(e){}
    try{ if(WT._emptySyncTimer){ clearTimeout(WT._emptySyncTimer); WT._emptySyncTimer=null; } }catch(e){}
    try{ WT._stopVoiceTimer(); WT._stopStatsTimer(); WT._stopPresenceTimer(); }catch(e){}
@@ -29445,7 +29575,7 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
       (diagReset preserves them for join; leave must not keep stale
       "verified/subscribed" claims into the next session). The Y6
       membership-check result and drop count restart here too. */
-   try{ if(WT._diag){ WT._diag.presence={lastSyncAt:0,trackCount:0,subscribed:false,lastSubscribeStatus:"",ownPresenceVerified:false,oldPeers:0}; WT._diag.membershipCheck=""; WT._diag.droppedSignals=0; } }catch(e){}
+   try{ if(WT._diag){ WT._diag.presence={lastSyncAt:0,trackCount:0,subscribed:false,lastSubscribeStatus:"",ownPresenceVerified:false,oldPeers:0,reconnecting:false,reconnectAttempts:0,lastRecoverAt:0}; WT._diag.membershipCheck=""; WT._diag.droppedSignals=0; } }catch(e){}
    /* v10.4.34 (X5): leaving clears the bug-finder results — stale
       diagnostics must not follow into a new session. The sequence
       bump cancels any in-flight run; the state-object swap keeps its
@@ -29554,9 +29684,13 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
        delete WT._missingSince[uid];
        /* v10.4.31 (Thread 5): a missed/timed-out offer is retried on
           presence sync — a failed PC, or one stalled in new/checking
-          for >15s, gets a re-offer instead of silent dead air. */
+          for >15s, gets a re-offer instead of silent dead air.
+          v10.4.36 (Z1): "disconnected" is DELIBERATELY absent here —
+          a presence sync must never re-offer a flapping pair (the
+          watchdog owns disconnected with a grace period + ICE
+          restart); sync-triggered re-offers were killing live pairs. */
        var _pc=WT.pc[uid];
-       if(!_pc||_pc.connectionState==="failed"||_pc.iceConnectionState==="failed"||_pc.iceConnectionState==="disconnected") WT.scheduleReoffer(uid);
+       if(!_pc||_pc.connectionState==="failed"||_pc.iceConnectionState==="failed") WT.scheduleReoffer(uid);
        else if((_pc.iceConnectionState==="new"||_pc.iceConnectionState==="checking")&&WT._pcSince[uid]&&Date.now()-WT._pcSince[uid]>15000) WT.scheduleReoffer(uid);
      }
    });
@@ -29591,26 +29725,24 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
  maybeOffer:function(uid){
    if(!WT.stream) return;
    if(WT.myUid()>=uid) return; /* the lexicographically smaller uid initiates */
-   WT._offerTries[uid]=(WT._offerTries[uid]||0)+1;
-   this.makePC(uid).then(function(pc){
-     return pc.createOffer();
-   }).then(function(offer){
-     var pc=WT.pc[uid]; if(!pc) return;
-     return pc.setLocalDescription(offer).then(function(){ WT.send({type:"offer",to:uid,from:WT.myUid(),sdp:offer,wtv:2}); });
-   }).catch(function(e){ sbLog("offer failed: "+e); WT.scheduleReoffer(uid); });
+   /* v10.4.36 (Z1/Z3): the offer chain lives in _negotiate — guards,
+      single-flight, same-PC offers, stale-offer rollback. */
+   WT._negotiate(uid,{reason:"maybeOffer"});
  },
  /* v10.4.31 (Thread 5): offer retry, ICE queueing, voice-state UX. */
  scheduleReoffer:function(uid){
    if(!WT.joined||!WT.peers[uid]) return;
    if(WT._offerTimers[uid]) return;
-   var tries=WT._offerTries[uid]||0;
-   if(tries>=3) return; /* 3 attempts total — then the visible voice-state banner + manual retry take over, no infinite loop. */
+   /* v10.4.36 (Z1/Z3): the 2.5s delay + dedup stay; the tries>=3 gate
+      is GONE from here — it blocked ICE-restart recovery after 3
+      offers, which is how BF-76e7ea wedged (offers=3, no recovery
+      left). Budgets now live where the attempts happen: offer
+      attempts in _negotiate, restarts in _iceRestart, rebuilds in
+      _rebuildPc. The fire-time decision is _recoverPeer's. */
    WT._offerTimers[uid]=setTimeout(function(){
      WT._offerTimers[uid]=null;
      if(!WT.joined||!WT.peers[uid]) return;
-     var pc=WT.pc[uid];
-     if(pc&&(pc.connectionState==="connected"||pc.iceConnectionState==="connected"||pc.iceConnectionState==="completed")) return;
-     WT.maybeOffer(uid);
+     WT._recoverPeer(uid,"scheduleReoffer");
    },2500);
  },
  reofferAll:function(){
@@ -29631,7 +29763,14 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    }catch(e){}
    var _now=Date.now();
    Object.keys(WT.peers||{}).forEach(function(uid){
+     /* v10.4.36 (Z1/Z3): a live pair is never re-offered, even by the
+        manual retry — and its budgets are left alone. Only dead peers
+        get fresh budgets (offer + restart + rebuild) and a retry. */
+     if(WT._pcHealthy(uid)) return;
      WT._offerTries[uid]=0;
+     WT._restartTries[uid]=0; delete WT._restartAt[uid];
+     WT._rebuildCount[uid]=0; delete WT._rebuildAt[uid];
+     delete WT._offerSentAt[uid]; delete WT._discSince[uid];
      WT._peerSince[uid]=_now;
      delete WT._lateOfferSent[uid];
      if(WT.myUid()<uid) WT.maybeOffer(uid);
@@ -29657,6 +29796,17 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
      var ics=pc.iceConnectionState||"", cs=pc.connectionState||"";
      if(ics==="failed"||cs==="failed"){ WT._voiceFailed=true; WT.scheduleReoffer(uid); }
      else if(ics==="connected"||ics==="completed"||cs==="connected"){ WT._voiceFailed=false; }
+     /* v10.4.36 (Z1): connected clears the disconnect clock and the
+        restart budget (a fresh episode); disconnected arms the clock
+        (the watchdog owns the grace — this arms, never triggers
+        recovery). Generation-checked: a stale PC's events must not
+        touch the current generation's clocks. */
+     try{
+       if(WT.pc[uid]===pc){
+         if(ics==="connected"||ics==="completed"||cs==="connected"){ delete WT._discSince[uid]; WT._restartTries[uid]=0; }
+         else if(ics==="disconnected"||cs==="disconnected"){ if(!WT._discSince[uid]) WT._discSince[uid]=Date.now(); }
+       }
+     }catch(e){}
      /* v10.4.33 (W1): connect-timeout bookkeeping — the voiceState()
         timeout below flips "connecting" to the true failure state. */
      if(ics==="connected"||ics==="completed"||cs==="connected"){ WT._connectSince=0; WT._voiceTimeout=false; try{ WT._statsTick(); }catch(e){} }
@@ -29671,6 +29821,10 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
  },
  voiceState:function(){
    if(!WT.joined) return "idle";
+   /* v10.4.36 (Z2): a dead signaling channel outranks the media
+      state — even a connected pair cannot signal while the channel
+      is down, and stale presence must never read as healthy. */
+   if(WT._reconnecting) return "reconnecting";
    var uids=Object.keys(WT.peers||{});
    if(!uids.length) return "alone";
    var anyConnected=false, anyFailed=false, anyChecking=false;
@@ -29696,8 +29850,8 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    var el=$("wtVoiceState"); if(!el) return;
    var st=WT.voiceState();
    if(st==="idle"){ el.innerHTML=""; return; }
-   var dot={connected:"#22c55e",connecting:"#f59e0b",failed:"#ef4444",degraded:"#f59e0b",alone:"#9ca3af"}[st]||"#9ca3af";
-   var txt=st==="connected"?TR('k4804','صدا وصل است'):st==="connecting"?TR('k4803','در حال وصل‌شدن صدا…'):st==="alone"?TR('k4809','در کانال تنها هستید؛ با پیوستن بقیه، صدا وصل می‌شود'):(st==="failed"&&WT._voiceTimeout)?TR('k9136','اتصال صوتی برقرار نشد؛ سرورهای رله در دسترس نیستند — تلاش دوباره، سرورها را از نو آزمایش می‌کند'):TR('k4805','اتصال صوتی برقرار نشد؛ از کانال خارج شوید و دوباره وارد شوید یا اینترنت را عوض کنید');
+   var dot={connected:"#22c55e",connecting:"#f59e0b",failed:"#ef4444",degraded:"#f59e0b",alone:"#9ca3af",reconnecting:"#f59e0b"}[st]||"#9ca3af";
+   var txt=st==="reconnecting"?TR('k9664','اتصال کانال قطع شد؛ در حال وصل‌شدن دوباره…'):st==="connected"?TR('k4804','صدا وصل است'):st==="connecting"?TR('k4803','در حال وصل‌شدن صدا…'):st==="alone"?TR('k4809','در کانال تنها هستید؛ با پیوستن بقیه، صدا وصل می‌شود'):(st==="failed"&&WT._voiceTimeout)?TR('k9136','اتصال صوتی برقرار نشد؛ سرورهای رله در دسترس نیستند — تلاش دوباره، سرورها را از نو آزمایش می‌کند'):TR('k4805','اتصال صوتی برقرار نشد؛ از کانال خارج شوید و دوباره وارد شوید یا اینترنت را عوض کنید');
    el.innerHTML='<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+dot+';margin-inline-end:6px"></span><b>'+TR('k4807','وضعیت صدا')+':</b> '+txt+((st==="failed"||st==="degraded"||st==="connecting")?' <button class="btn ghost sm" style="margin-inline-start:8px" onclick="WT.reofferAll()">🔄 '+TR('k4806','تلاش دوباره برای صدا')+'</button>':"");
  },
  /* v10.4.32 (T9) — IN-APP VOICE DIAGNOSTICS. Everything the next
@@ -29835,13 +29989,26 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    return new Promise(function(resolve){
      /* A live PC already serves this peer (re-offer/renegotiation):
         reuse it — recreating would kill a working connection and
-        re-add the same tracks. A dead PC is closed and replaced. */
+        re-add the same tracks. A dead PC is closed and replaced.
+        v10.4.36 (Z1): "live" also covers a recently-transferring pair
+        and a pair inside its disconnect grace — makePC never closes
+        those, whatever the caller asked for. */
      var old=WT.pc[uid];
      var _replaced=false;
      if(old){
-       if(old.connectionState==="connected"||old.iceConnectionState==="connected"||old.iceConnectionState==="completed"){ WT._pcSince[uid]=WT._pcSince[uid]||Date.now(); resolve(old); return; }
+       var _prot=false;
+       try{
+         _prot=(old.connectionState==="connected"||old.iceConnectionState==="connected"||old.iceConnectionState==="completed")
+           ||WT._pairTransferring(uid)
+           ||((old.iceConnectionState==="disconnected"||old.connectionState==="disconnected")&&WT._discSince[uid]&&(Date.now()-WT._discSince[uid]<WT._Z36_DISC_GRACE_MS));
+       }catch(e){ _prot=false; }
+       if(_prot){ WT._pcSince[uid]=WT._pcSince[uid]||Date.now(); resolve(old); return; }
        try{ old.close(); }catch(e){}
        _replaced=true;
+       /* Fresh generation: per-generation recovery state restarts
+          (offer budget + rebuild cap live outside makePC and are
+          reset only by the paced rebuild path). */
+       try{ delete WT._offerSentAt[uid]; delete WT._discSince[uid]; delete WT._pairFlow[uid]; WT._restartTries[uid]=0; delete WT._restartAt[uid]; delete WT._offerInFlight[uid]; }catch(e){}
      }
      var pc=new RTCPeerConnection({iceServers:WT.iceServers()});
      WT.pc[uid]=pc;
@@ -29918,7 +30085,15 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
         local offer outstanding (my late offer as the larger uid) and
         the SMALLER uid's offer arrives, roll mine back — the smaller
         uid's offer wins. If I am the smaller uid, my offer wins and
-        the late offer is ignored. */
+        the late offer is ignored.
+        v10.4.36 (Z1/Z3): an incoming offer NEVER rebuilds a live pair.
+        The existing PC answers on itself whenever it can (stable
+        state, any ICE state — including a flapping one); makePC runs
+        only when there is no PC or the PC is closed. A duplicate
+        offer while one is being processed is ignored. The PC object
+        is captured once and re-verified at every step, so a
+        generation change mid-chain abandons instead of corrupting
+        the new generation's handshake. */
      (function(){
        var ex=WT.pc[m.from];
        if(ex&&ex.signalingState==="have-local-offer"){
@@ -29927,30 +30102,43 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
          try{ _rb=ex.setLocalDescription({type:"rollback"}); }catch(e){ return Promise.resolve(ex); }
          return ((_rb&&_rb.then)?_rb:Promise.resolve()).then(function(){ return ex; });
        }
+       if(ex&&ex.signalingState==="have-remote-offer") return Promise.resolve(null);
+       if(ex&&ex.signalingState!=="closed") return Promise.resolve(ex);
        return self.makePC(m.from);
      })().then(function(pc){
-       if(!pc) return null;
+       if(!pc||WT.pc[m.from]!==pc) return null;
        return pc.setRemoteDescription(new RTCSessionDescription(m.sdp)).then(function(){ return pc; });
      }).then(function(pc){
-       if(!pc) return null;
+       if(!pc||WT.pc[m.from]!==pc) return null;
        /* Early ICE candidates queued while the offer was in flight are
           flushed now that the remote description exists. */
        WT.flushIce(m.from);
-       var pc2=WT.pc[m.from]; if(!pc2) return null;
-       return pc2.createAnswer();
-     }).then(function(ans){
-       if(!ans) return;
-       var pc=WT.pc[m.from]; if(!pc) return;
-       return pc.setLocalDescription(ans).then(function(){ WT.send({type:"answer",to:m.from,from:WT.myUid(),sdp:ans,wtv:2}); });
+       return pc.createAnswer().then(function(ans){ return {pc:pc,ans:ans}; });
+     }).then(function(r){
+       if(!r) return;
+       if(WT.pc[m.from]!==r.pc) return;
+       return r.pc.setLocalDescription(r.ans).then(function(){ WT.send({type:"answer",to:m.from,from:WT.myUid(),sdp:r.ans,wtv:2}); });
      }).catch(function(e){ sbLog("answer failed: "+e); });
    } else if(m.type==="need-offer"){
      /* v10.4.34 (X2 F5b): a receiver whose 20s offer-wait expired asks
         for an offer. Reset the attempt budget, then maybeOffer — the
-        initiator guard inside it enforces who may offer. */
+        initiator guard inside it enforces who may offer.
+        v10.4.36 (Z3): a need-offer NEVER resets the budget or re-offers
+        a live pair or a fresh outstanding offer — that reset+re-offer
+        was the churn engine (3 offers in 90s in BF-76e7ea). */
+     try{
+       if(WT._pcHealthy(m.from)||WT._offerOutstanding(m.from)) return;
+     }catch(e){}
      WT._offerTries[m.from]=0;
      WT.maybeOffer(m.from);
    } else if(m.type==="answer"){
-     var pc=WT.pc[m.from]; if(pc&&m.sdp) pc.setRemoteDescription(new RTCSessionDescription(m.sdp)).then(function(){ WT.flushIce(m.from); }).catch(function(e){ sbLog("remote answer: "+e); });
+     /* v10.4.36 (Z3): an answer applies ONLY to the PC generation that
+        has a local offer outstanding. A late answer for a superseded
+        generation is dropped, never forced onto a fresh PC (whose
+        setRemoteDescription would reject it and wedge the handshake). */
+     var pc=WT.pc[m.from];
+     if(pc&&m.sdp&&pc.signalingState==="have-local-offer") pc.setRemoteDescription(new RTCSessionDescription(m.sdp)).then(function(){ WT.flushIce(m.from); }).catch(function(e){ sbLog("remote answer: "+e); });
+     else if(pc&&m.sdp){ try{ sbLog("wt-z36: stale answer dropped for "+m.from+" (sig="+(pc.signalingState||"?")+")"); }catch(e){} }
    } else if(m.type==="ice"){
      /* Candidates arriving before the remote description are QUEUED
         (flushIce, above) instead of thrown away — the old direct call
@@ -30077,7 +30265,7 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
      p.style.display="flex";
      p.classList.toggle("talking",WT.micLive());
      var t=$("wtPillTxt");
-     if(t) t.textContent="🎙️ "+TR('k2001','واکی‌تاکی')+" — "+(WT.micLive()?TR('k2056','در حال حرف‌زدن'):TR('k2057','در حال گوش‌دادن'));
+     if(t) t.textContent="🎙️ "+TR('k2001','واکی‌تاکی')+" — "+(WT._reconnecting?TR('k9664','اتصال کانال قطع شد؛ در حال وصل‌شدن دوباره…'):(WT.micLive()?TR('k2056','در حال حرف‌زدن'):TR('k2057','در حال گوش‌دادن')));
    }
    try{ WT.paintHomeWalkie(); }catch(e){}
  }
@@ -30150,8 +30338,9 @@ function wtHmacSha1Base64(key,data){
 /* ================= v10.4.33 (W1) — TURN legs, minting, probe, pairs =================
    Leg 1 (no signup): Metered static-auth with the CORRECT HMAC scheme.
    Legs 2-3: Turnix / Metered account via the mint_turn_credentials RPC
-   (shared contract with the SQL builder). Leg 5 (last): the legacy
-   openrelay.metered.ca pair in WT.TURN. Diagnostics show provider +
+   (shared contract with the SQL builder). The legacy openrelay pair
+   was REMOVED in v10.4.36 (Z4, probe-dead — see the WT header note).
+   Diagnostics show provider +
    URL + expiry ONLY — full minted credentials are never logged,
    screenshotted, or persisted anywhere. Real TURN allocation is
    phone-only and UNPROVEN until Parsa's test. */
@@ -30190,12 +30379,18 @@ WT._startPresenceTimer=function(){
 WT._stopPresenceTimer=function(){ if(WT._presenceTimer){ clearInterval(WT._presenceTimer); WT._presenceTimer=null; } };
 WT._dropPeer=function(uid){
   try{
+    /* v10.4.36 (Z1): a peer whose pair is STILL TRANSFERRING media is
+       audibly present — presence loss alone never drops it. Defer by
+       re-arming the 8s grace; the watchdog re-checks after it. The 8s
+       rule itself is unchanged for silent peers. */
+    if(WT._pairTransferring(uid)){ WT._missingSince[uid]=Date.now(); try{ sbLog("wt-z36: drop deferred for "+uid+" (pair transferring)"); }catch(e){} return; }
     delete WT.peers[uid];
     if(WT.pc[uid]){ try{ WT.pc[uid].close(); }catch(e){} delete WT.pc[uid]; }
     if(WT._speakTimers&&WT._speakTimers[uid]){ try{ clearInterval(WT._speakTimers[uid]); }catch(e){} delete WT._speakTimers[uid]; }
     if(WT._offerTimers&&WT._offerTimers[uid]){ try{ clearTimeout(WT._offerTimers[uid]); }catch(e){} delete WT._offerTimers[uid]; }
     delete WT._iceQueue[uid]; delete WT._offerTries[uid]; delete WT._pcSince[uid];
     delete WT._peerSince[uid]; delete WT._missingSince[uid]; delete WT._needOfferAt[uid]; delete WT._lateOfferSent[uid];
+    delete WT._pairFlow[uid]; delete WT._discSince[uid]; delete WT._offerSentAt[uid]; delete WT._offerInFlight[uid]; delete WT._restartTries[uid]; delete WT._restartAt[uid]; delete WT._rebuildAt[uid]; delete WT._rebuildCount[uid];
     var el=$("wt-peer-"+uid); if(el) el.remove();
   }catch(e){}
 };
@@ -30320,6 +30515,244 @@ if(!WT._pttNetInstalled){
     });
   }catch(_){}
 }
+/* ============ v10.4.36 (Z1/Z3) — stability: grace + ICE restart + offer guards ============
+   Root cause (measured, BF-76e7ea + FakePC harness): a connected pair
+   that flapped to "disconnected" was KILLED by the app itself — the 1s
+   watchdog re-offered any non-connected PC older than 10s, and a
+   presence sync re-offered on "disconnected" with no grace at all, and
+   every re-offer closed the PC (makePC) and sent a fresh offer. The
+   10-20s of audio, then silence, is that kill: the flap is transient
+   (consent/NAT gap — the ICE agent recovers on its own), the teardown
+   is permanent. The re-offers also replaced the outstanding offer
+   while its answer was in flight, so the fresh PC wedged at
+   have-local-offer/ice=new with the 3-attempt budget consumed and no
+   recovery path left (offers=3, pc_age=90s, STALE pair in BF-76e7ea).
+   Rules enforced here, by EVERY offer/recovery trigger:
+   (1) NEVER close, rebuild, or re-offer a pair that is connected or
+       transferring media (byte growth in the stats snapshots).
+   (2) NEVER re-offer while a fresh local offer is outstanding.
+   (3) A disconnected pair gets a grace period; a dead pair recovers
+       via ICE restart (createOffer({iceRestart:true}) on the SAME PC),
+       never a rebuild; a rebuild is the paced, capped last resort.
+   (4) One offer chain per peer at a time; answers apply only to the
+       generation that has a local offer outstanding.
+   Thresholds are overridable (WT._PTT_MAX_MS precedent) so the harness
+   can prove the behavior without 30s waits. X2 machinery is untouched:
+   15s re-affirm + re-track, join awaits subscribe + presence verify,
+   per-peer offer-wait 20s, peer grace 8s, empty-sync ignore, need-offer
+   1/5s/peer, wtv:2. PTT hold logic is untouched. */
+WT._Z36_DISC_GRACE_MS=10000;
+WT._Z36_OFFER_STALE_MS=20000;
+WT._Z36_RESTART_MIN_MS=10000;
+WT._Z36_RESTART_MAX=3;
+WT._Z36_REBUILD_MIN_MS=30000;
+WT._Z36_REBUILD_MAX=2;
+WT._Z36_FLOW_WINDOW_MS=15000;
+WT._pairFlow={};
+WT._discSince={};
+WT._offerSentAt={};
+WT._offerInFlight={};
+WT._restartTries={};
+WT._restartAt={};
+WT._rebuildAt={};
+WT._rebuildCount={};
+/* Flow note: called from _pairSnapshot (the ONE stats reader) on every
+   successful nominated-pair snapshot. grewAt advances ONLY when the
+   byte total grows between snapshots, so a dead pair's old byte total
+   never protects it forever — protection lapses on its own. */
+WT._z36FlowNote=function(uid,bytes){
+  try{
+    var prev=WT._pairFlow[uid];
+    var now=Date.now();
+    if(prev&&typeof prev.bytes==="number"&&bytes>prev.bytes){
+      WT._pairFlow[uid]={bytes:bytes,at:now,grewAt:now};
+    } else if(!prev){
+      WT._pairFlow[uid]={bytes:bytes,at:now,grewAt:0};
+    } else {
+      prev.bytes=bytes; prev.at=now;
+    }
+  }catch(e){}
+};
+/* Transferring = byte growth observed within the flow window. */
+WT._pairTransferring=function(uid){
+  try{
+    var f=WT._pairFlow[uid];
+    if(!f||!f.grewAt) return false;
+    return (Date.now()-f.grewAt)<WT._Z36_FLOW_WINDOW_MS;
+  }catch(e){ return false; }
+};
+/* Healthy = connected/completed, or transferring media. A healthy pair
+   is never touched by any recovery trigger. */
+WT._pcHealthy=function(uid){
+  try{
+    var pc=WT.pc[uid];
+    if(!pc) return false;
+    var ics=pc.iceConnectionState||"", cs=pc.connectionState||"";
+    if(ics==="connected"||ics==="completed"||cs==="connected") return true;
+    return WT._pairTransferring(uid);
+  }catch(e){ return false; }
+};
+/* A local offer is outstanding-and-fresh while signalingState is
+   have-local-offer and the offer was sent within the stale horizon
+   (the X2 20s offer-wait horizon, shared deliberately: the receiver
+   asks for a re-offer only after 20s, so the initiator's guard and
+   the receiver's request expire together). */
+WT._offerOutstanding=function(uid){
+  try{
+    var pc=WT.pc[uid];
+    if(!pc||pc.signalingState!=="have-local-offer") return false;
+    var sent=WT._offerSentAt[uid]||WT._pcSince[uid]||0;
+    return (Date.now()-sent)<WT._Z36_OFFER_STALE_MS;
+  }catch(e){ return false; }
+};
+/* _negotiate: THE single offer path (maybeOffer, _offerAnyway, recovery,
+   rebuild all funnel here). Guards, in order: joined/peer/stream,
+   single-flight, healthy pair, fresh outstanding offer, answering in
+   progress, attempt budget. A stale outstanding offer is rolled back
+   so the fresh offer starts from stable, on the SAME PC — never a
+   rebuild. The PC object is captured once and re-verified before
+   setLocalDescription, so a generation change mid-chain abandons
+   instead of corrupting the new generation's handshake. Genuine
+   operation failures (not guard-skips) schedule one retry via
+   scheduleReoffer; the attempt budget bounds the loop. Resolves true
+   only when an offer was actually sent. Never rejects. */
+WT._negotiate=function(uid,opts){
+  opts=opts||{};
+  var iceRestart=!!opts.iceRestart, late=!!opts.late;
+  try{
+    if(!WT.joined||!WT.peers[uid]||!WT.stream) return Promise.resolve(false);
+    if(WT._offerInFlight[uid]) return Promise.resolve(false);
+    var pc0=WT.pc[uid];
+    if(pc0&&WT._pcHealthy(uid)) return Promise.resolve(false);
+    if(pc0&&WT._offerOutstanding(uid)) return Promise.resolve(false);
+    if(pc0&&pc0.signalingState==="have-remote-offer") return Promise.resolve(false);
+    if(!iceRestart&&!late&&(WT._offerTries[uid]||0)>=3) return Promise.resolve(false);
+    if(iceRestart&&(WT._restartTries[uid]||0)>=WT._Z36_RESTART_MAX) return Promise.resolve(false);
+  }catch(e){ return Promise.resolve(false); }
+  WT._offerInFlight[uid]=true;
+  if(iceRestart){ WT._restartTries[uid]=(WT._restartTries[uid]||0)+1; WT._restartAt[uid]=Date.now(); }
+  else { WT._offerTries[uid]=(WT._offerTries[uid]||0)+1; }
+  var _opFailed=false;
+  var _needFresh=false;
+  try{
+    var _ex=WT.pc[uid];
+    if(!_ex) _needFresh=true;
+    else if(_ex.signalingState==="closed"){ try{ _ex.close(); }catch(e){} delete WT.pc[uid]; _needFresh=true; }
+  }catch(e){ _needFresh=true; }
+  var _pcP=_needFresh?WT.makePC(uid):Promise.resolve(WT.pc[uid]);
+  return _pcP.then(function(pc){
+    if(!pc||WT.pc[uid]!==pc) return null;
+    if(pc.signalingState==="have-remote-offer") return null;
+    if(pc.signalingState==="closed") return null;
+    if(pc.signalingState==="have-local-offer"){
+      var rb=null;
+      try{ rb=pc.setLocalDescription({type:"rollback"}); }catch(e){ _opFailed=true; return null; }
+      return ((rb&&rb.then)?rb:Promise.resolve()).then(function(){ return pc; }).catch(function(){ _opFailed=true; return null; });
+    }
+    return pc;
+  }).then(function(pc){
+    if(!pc||WT.pc[uid]!==pc) return false;
+    if(pc.signalingState!=="stable"&&pc.signalingState!=="have-local-offer") return false;
+    var _offerP;
+    try{ _offerP=iceRestart?pc.createOffer({iceRestart:true}):pc.createOffer(); }
+    catch(e){ _opFailed=true; return false; }
+    return Promise.resolve(_offerP).then(function(offer){
+      if(WT.pc[uid]!==pc) return false;
+      if(pc.signalingState!=="stable"&&pc.signalingState!=="have-local-offer") return false;
+      return pc.setLocalDescription(offer).then(function(){
+        if(WT.pc[uid]!==pc) return false;
+        WT._offerSentAt[uid]=Date.now();
+        try{ sbLog("wt-z36: offer sent to "+uid+(iceRestart?" (ice-restart)":"")); }catch(e){}
+        WT.send({type:"offer",to:uid,from:WT.myUid(),sdp:offer,wtv:2});
+        return true;
+      });
+    }).catch(function(e){ _opFailed=true; try{ sbLog("wt-z36: offer failed: "+e); }catch(e2){} return false; });
+  }).then(function(v){
+    try{ delete WT._offerInFlight[uid]; }catch(e){}
+    if(_opFailed){ try{ WT.scheduleReoffer(uid); }catch(e){} }
+    return v;
+  },function(){
+    try{ delete WT._offerInFlight[uid]; }catch(e){}
+    try{ WT.scheduleReoffer(uid); }catch(e){}
+    return false;
+  });
+};
+/* ICE restart on the SAME PC: re-gathers candidates (fresh ufrag/pwd,
+   new srflx/relay) without dropping the DTLS/SRTP session or the
+   remote audio element. Paced + capped per episode; exhaustion
+   escalates to the paced rebuild. */
+WT._iceRestart=function(uid){
+  try{
+    if(!WT.joined||!WT.peers[uid]) return Promise.resolve(false);
+    var pc=WT.pc[uid];
+    if(!pc) return WT._negotiate(uid,{reason:"restart-no-pc"});
+    if(WT._pcHealthy(uid)) return Promise.resolve(false);
+    if(WT._offerOutstanding(uid)) return Promise.resolve(false);
+    if(pc.signalingState==="have-remote-offer") return Promise.resolve(false);
+    if(pc.signalingState==="closed") return WT._rebuildPc(uid,"closed");
+    if((WT._restartTries[uid]||0)>=WT._Z36_RESTART_MAX) return WT._rebuildPc(uid,"restart-budget");
+    if(WT._restartAt[uid]&&Date.now()-WT._restartAt[uid]<WT._Z36_RESTART_MIN_MS) return Promise.resolve(false);
+  }catch(e){ return Promise.resolve(false); }
+  return WT._negotiate(uid,{iceRestart:true,reason:"ice-restart"});
+};
+/* Forced rebuild: the LAST resort, paced (30s) and capped (2 per peer
+   per join without ever connecting; manual retry resets). Never runs
+   on a healthy pair or a fresh outstanding offer. The fresh
+   generation gets a fresh offer budget — the old code kept the
+   consumed budget across rebuilds, which is how BF-76e7ea wedged
+   with offers=3 and no recovery path left. */
+WT._rebuildPc=function(uid,reason){
+  try{
+    if(!WT.joined||!WT.peers[uid]||!WT.stream) return Promise.resolve(false);
+    if(WT._pcHealthy(uid)) return Promise.resolve(false);
+    if(WT._offerOutstanding(uid)) return Promise.resolve(false);
+    if(WT._offerInFlight[uid]) return Promise.resolve(false);
+    if(WT._rebuildAt[uid]&&Date.now()-WT._rebuildAt[uid]<WT._Z36_REBUILD_MIN_MS) return Promise.resolve(false);
+    if((WT._rebuildCount[uid]||0)>=WT._Z36_REBUILD_MAX) return Promise.resolve(false);
+  }catch(e){ return Promise.resolve(false); }
+  WT._rebuildAt[uid]=Date.now();
+  WT._rebuildCount[uid]=(WT._rebuildCount[uid]||0)+1;
+  try{
+    var old=WT.pc[uid];
+    if(old){ try{ old.close(); }catch(e){} }
+    delete WT.pc[uid];
+    delete WT._pcSince[uid];
+    delete WT._offerSentAt[uid];
+    delete WT._discSince[uid];
+    delete WT._pairFlow[uid];
+    WT._restartTries[uid]=0; delete WT._restartAt[uid];
+    WT._offerTries[uid]=0;
+    try{ sbLog("wt-z36: rebuild pc for "+uid+" ("+(reason||"")+")"); }catch(e){}
+  }catch(e){}
+  return WT._negotiate(uid,{reason:"rebuild"});
+};
+/* _recoverPeer: the ONE recovery dispatcher. Every recovery trigger
+   (watchdog, presence, ICE-state handler, manual retry internals)
+   funnels here; the trigger decides WHEN, this decides WHAT:
+   healthy/outstanding/answering -> nothing; failed -> ICE restart;
+   disconnected -> grace, then ICE restart; new/checking stall ->
+   same-PC (re-)offer; closed -> paced rebuild. Never rejects. */
+WT._recoverPeer=function(uid,reason){
+  try{
+    if(!WT.joined||!WT.peers[uid]) return Promise.resolve(false);
+    var pc=WT.pc[uid];
+    if(!pc) return WT._negotiate(uid,{reason:reason||"recover-no-pc"});
+    if(WT._pcHealthy(uid)) return Promise.resolve(false);
+    if(WT._offerOutstanding(uid)) return Promise.resolve(false);
+    if(pc.signalingState==="have-remote-offer") return Promise.resolve(false);
+    if(pc.signalingState==="closed") return WT._rebuildPc(uid,"closed");
+    var ics=pc.iceConnectionState||"", cs=pc.connectionState||"";
+    if(ics==="failed"||cs==="failed") return WT._iceRestart(uid);
+    if(ics==="disconnected"||cs==="disconnected"){
+      var now=Date.now();
+      if(!WT._discSince[uid]) WT._discSince[uid]=now;
+      if(now-WT._discSince[uid]<WT._Z36_DISC_GRACE_MS) return Promise.resolve(false);
+      if(WT._pairTransferring(uid)){ delete WT._discSince[uid]; return Promise.resolve(false); }
+      return WT._iceRestart(uid);
+    }
+    return WT._negotiate(uid,{reason:reason||"recover-stall"});
+  }catch(e){ return Promise.resolve(false); }
+};
 WT._sendNeedOffer=function(uid){
   try{
     var now=Date.now();
@@ -30331,13 +30764,11 @@ WT._sendNeedOffer=function(uid){
 };
 WT._offerAnyway=function(uid){
   /* F5c: after 40s without an offer, the receiver offers itself. The
-     offer branch (onSignal) resolves glare: the smaller uid wins. */
+     offer branch (onSignal) resolves glare: the smaller uid wins.
+     v10.4.36 (Z3): routed through _negotiate (the late-offer budget
+     exemption is preserved) — same guards as every other offer path. */
   if(!WT.stream) return;
-  WT._offerTries[uid]=(WT._offerTries[uid]||0)+1;
-  WT.makePC(uid).then(function(pc){ return pc.createOffer(); }).then(function(offer){
-    var pc=WT.pc[uid]; if(!pc) return;
-    return pc.setLocalDescription(offer).then(function(){ WT.send({type:"offer",to:uid,from:WT.myUid(),sdp:offer,wtv:2}); });
-  }).catch(function(e){ sbLog("late offer failed: "+e); });
+  WT._negotiate(uid,{late:true,reason:"late-offer"});
 };
 WT._verifyPresence=function(){
   try{ if(WT._verifyTimer){ clearTimeout(WT._verifyTimer); WT._verifyTimer=null; } }catch(e){}
@@ -30345,6 +30776,12 @@ WT._verifyPresence=function(){
   var check=function(){
     WT._verifyTimer=null;
     if(!WT.joined||!WT.groupId) return;
+    /* v10.4.36 (Z2): while a channel recovery is running, recovery
+       owns the channel — a stale verify chain must neither
+       resubscribe (racing the recovery attempts and consuming a
+       subscribe outcome) nor fail-leave. The recovery's SUBSCRIBED
+       re-verifies fresh via onSubscribed. */
+    if(WT._reconnecting) return;
     var ok=false;
     try{
       var ch=SB.subs["wt-"+WT.groupId];
@@ -30370,12 +30807,11 @@ WT._verifyPresence=function(){
       try{
         var gid=WT.groupId, chName="wt-"+gid;
         SB_unsub(chName);
-        SB_sub(chName,null,{
-          presence:function(){ WT.onPresence(); },
-          broadcast:function(pl){ WT.onSignal(pl&&pl.payload?pl.payload:pl); },
-          onStatus:function(status){ try{ if(WT._diag&&WT._diag.presence) WT._diag.presence.lastSubscribeStatus=status; }catch(e){} },
-          onSubscribed:function(){ try{ WT.retrack(); if(WT.joined) WT._verifyPresence(); }catch(e){} }
-        });
+        /* v10.4.36 (Z2): shared handlers (WT._wtHandlers) — the old
+           inline onStatus only recorded the status, so a drop AFTER
+           this resubscribe was invisible too. Same bindings, same
+           onSubscribed re-track + re-verify as before. */
+        SB_sub(chName,null,WT._wtHandlers(chName));
         /* Fallback if the resubscribe never reports SUBSCRIBED: restart
            verification after 10s. A healthy resubscribe re-verifies
            from onSubscribed, which clears this timer first. */
@@ -30389,11 +30825,40 @@ WT._verifyPresence=function(){
 };
 WT._verifyFail=function(){
   try{ if(WT._diag&&WT._diag.presence) WT._diag.presence.ownPresenceVerified=false; }catch(e){}
+  /* v10.4.36 (integration, Z1/Z2 reconciliation): presence-verify
+     failure must never kill a media-live session. _verifyFail used
+     to leave() unconditionally — closing every PC — even while a
+     pair was connected or transferring, bypassing every Z1 guard:
+     Z2's stand-down only covers verify chains WHILE a recovery
+     runs, and a joined-state channel with self absent from
+     presence never starts a recovery (_channelDead is
+     state-based), so the chain reached here unopposed. With a
+     healthy pair present, defer instead: re-arm verification and
+     let the call live; the next terminal check leaves once no
+     pair is healthy (the re-arm keeps the one-resubscribe budget
+     spent — _resubscribed is untouched). No healthy pair → the
+     original toast + leave path below, unchanged. */
+  try{
+    var _live=false;
+    Object.keys(WT.pc||{}).forEach(function(uid){
+      try{
+        if(typeof WT._pcHealthy==="function"){ if(WT._pcHealthy(uid)) _live=true; }
+        else{ var _pc=WT.pc[uid]; if(_pc&&(_pc.connectionState==="connected"||_pc.iceConnectionState==="connected"||_pc.iceConnectionState==="completed")) _live=true; }
+      }catch(e){}
+    });
+    if(_live){ try{ sbLog("wt-z36: verify-fail deferred, media-live pair present"); }catch(e){} WT._verifyPresence(); return; }
+  }catch(e){}
   toast(TR('k9252','حضور شما در کانال ثبت نشد؛ دوباره وارد شوید')+".");
   WT.leave();
 };
 WT._watchdogSweep=function(){
   if(!WT.joined) return;
+  /* v10.4.36 (Z2): channel-health backstop — a drop the subscribe
+     callback missed (or a stuck channel) is caught here within ~1s.
+     State-based ONLY: sync quiet alone never triggers, so a healthy
+     quiet room never resubscribes. Never touches peers or PCs;
+     recovery preserves both. */
+  try{ WT._recheckChannel("watchdog"); }catch(e){}
   var now=Date.now(), me=WT.myUid(), dropped=false;
   Object.keys(WT.peers||{}).forEach(function(uid){
     if(WT._missingSince[uid]&&now-WT._missingSince[uid]>=8000){
@@ -30410,9 +30875,22 @@ WT._watchdogSweep=function(){
       return;
     }
     var ics=pc.iceConnectionState||"", cs=pc.connectionState||"";
-    if(ics==="connected"||ics==="completed"||cs==="connected") return;
+    if(ics==="connected"||ics==="completed"||cs==="connected"){ try{ delete WT._discSince[uid]; }catch(e){} return; }
+    /* v10.4.36 (Z1/Z3): a transferring pair is alive whatever the state
+       label says; a disconnected pair gets its grace; only failed /
+       grace-expired / stalled pairs schedule recovery (via
+       _recoverPeer: ICE restart first, paced rebuild last). The old
+       rule — any non-connected PC older than 10s re-offers, rebuilding
+       the PC — killed flapping pairs mid-call: the BF-76e7ea drop. */
+    try{ if(WT._pairTransferring(uid)){ delete WT._discSince[uid]; return; } }catch(e){}
     var since=WT._pcSince[uid]||0;
     if(!since) return;
+    if(ics==="failed"||cs==="failed"){ WT.scheduleReoffer(uid); return; }
+    if(ics==="disconnected"||cs==="disconnected"){
+      if(!WT._discSince[uid]) WT._discSince[uid]=now;
+      if(now-WT._discSince[uid]>=WT._Z36_DISC_GRACE_MS) WT.scheduleReoffer(uid);
+      return;
+    }
     if(now-since>10000) WT.scheduleReoffer(uid);
   });
   if(dropped){
@@ -30421,10 +30899,289 @@ WT._watchdogSweep=function(){
   }
 };
 /* F3: returning to the tab re-affirms presence (no-op when not joined;
-   the onSubscribed handler covers the rejoin itself). */
+   the onSubscribed handler covers the rejoin itself).
+   v10.4.36 (Z2): re-affirm through _reaffirmOrRecover — a retrack
+   alone cannot revive a closed channel (the push buffers forever),
+   so a visible-again tab first checks channel health and recovers
+   when the channel is dead. */
 try{
-  document.addEventListener("visibilitychange",function(){ try{ if(!document.hidden&&typeof WT!=="undefined") WT.retrack(); }catch(e){} });
+  document.addEventListener("visibilitychange",function(){ try{ if(!document.hidden&&typeof WT!=="undefined"){ if(typeof WT._reaffirmOrRecover==="function") WT._reaffirmOrRecover(); else WT.retrack(); } }catch(e){} });
 }catch(e){}
+/* ============ v10.4.36 (Z2) — closed-channel recovery ============
+   ROOT CAUSE (bug-finder run BF-76e7ea, 2026-11-15, two real phones):
+   the Realtime channel dropped to CLOSED mid-session while the app
+   kept displaying stale presence (159s old) and believing itself
+   joined; the self-addressed echo timed out. Measured in the 2-client
+   fake-Realtime harness (z2-repro.js T1/T1b): joined=true, channel
+   state closed, peer still listed, NO resubscribe, L6 fault with the
+   same signature — including a hands-free peer transmitting into the
+   void while the 15s re-affirm fired track() calls at the closed
+   channel. Four cooperating defects, all in this file:
+     (1) The drop WAS reported and ignored. realtime-js 2.119.0 fires
+         CLOSED on the SAME subscribe callback (_onClose -> CLOSED),
+         and the join handler recorded it (lastSubscribeStatus) — but
+         its `done` flag made every post-join status a dead end, and
+         the _verifyPresence resubscribe's onStatus only recorded.
+         SB_sub itself never even logged CLOSED.
+     (2) Nothing ever polled channel state. _verifyPresence runs only
+         at join / onSubscribed, so its one resubscribe was
+         unreachable after a mid-session drop; the 1s watchdog swept
+         peers/PCs only; online/visible handlers merely retracked.
+     (3) track() cannot detect or fix a dead channel. On a
+         non-joined channel the push buffers silently (never
+         delivered, never an error), and presenceState() returns the
+         LOCAL cache, which a close does not clear — so self-in-
+         presence stayed "yes" and the watchdog never marked peers
+         missing (no sync ever arrived to mark them).
+     (4) No truthful UI: the voice banner kept showing the media
+         state as if signaling were healthy.
+   FIX (this block + the call sites noted below):
+     - ONE shared handler factory (_wtHandlers) for the join,
+       _verifyPresence and recovery subscribes: every subscribe
+       carries the persistent status handler, so no subscribe path
+       can go deaf again. The X2 onSubscribed contract (re-track +
+       re-verify) is unchanged inside it.
+     - Detection has three triggers, ONE decision (_channelDead,
+       always re-reading live state, so stale callbacks can never
+       start a recovery for a healthy channel): the subscribe
+       status callback (CLOSED/CHANNEL_ERROR/TIMED_OUT), the 1s
+       watchdog backstop (catches drops the callback missed), and
+       the online/visible re-affirm paths. Heartbeat age is NOT a
+       trigger: the PostgREST heartbeat was FRESH (21s) while the
+       channel was dead — it cannot see a Realtime drop. Sync quiet
+       alone is NOT a trigger either: a healthy quiet room has no
+       syncs to arrive, and resubscribing on quiet would flap
+       presence (proven stable by harness T9).
+     - Recovery (_startRecovery/_recoverAttempt) re-subscribes
+       with backoff (1s grace so the library's own rejoinTimer can
+       win transient drops, then 2s/5s/10s/30s capped, 10s per
+       attempt), re-tracks on every (re)subscribe via onSubscribed,
+       refreshes presence after rejoin, and NEVER touches WT.peers
+       or WT.pc: a working media pair survives (same PC objects, no
+       offer storm). Attempts stand down the moment the channel is
+       healthy again, coalesce into one episode, and are cancelled
+       by leave(). Each attempt resets _resubscribed so the fresh
+       channel gets _verifyPresence's one resubscribe budget.
+       Recovery owns the channel while running: _startRecovery
+       cancels any pending _verifyPresence chain, and the verify
+       check stands down while recovering, so the two resubscribe
+       mechanisms can never race (a stale join-time chain firing
+       mid-recovery was measured in harness T2).
+     - Truthful UI: while recovering, voiceState() is
+       "reconnecting" (banner + pill), outranking the media state.
+   OUT OF SCOPE (held): private-channel / signed signaling (Y6) and
+   bug-finder echo semantics (Z5) — this recovery never depends on
+   the echo. A "zombie" channel (state stuck at joined while the
+   socket is dead, no callback, no sync) is NOT auto-resubscribed:
+   only an echo/liveness probe can tell it from a quiet room, and
+   that probe is Z5's gap to close. See REPORT.md §5. */
+Object.assign(I18N_EN,{"k9664":"Channel connection lost; reconnecting…","k9665":"Walkie-talkie — closed-channel recovery (test)"});
+/* Backoff table for recovery attempts: [grace, ...retries], last
+   value repeats forever while joined. Overridable (like
+   WT._PTT_MAX_MS) so the self-test can run without long waits. */
+WT._RECOVER_BACKOFFS=[1000,2000,5000,10000,30000];
+WT._RECOVER_SUBSCRIBE_TIMEOUT_MS=10000;
+WT._channelState=function(){
+  /* Live adapter state of the CURRENT walkie channel, normalized.
+     Real realtime-js channels always expose .state (closed /
+     joining / joined / leaving / errored); the joined/_state
+     fallbacks exist for older mocks. _state is accepted ONLY as a
+     string — fake channels use _state for the presence cache
+     object, which must never be read as a state name. */
+  try{
+    if(!WT.groupId) return {present:false,state:""};
+    var ch=SB.subs["wt-"+WT.groupId];
+    if(!ch) return {present:false,state:""};
+    var st="";
+    if(typeof ch.state==="string") st=ch.state;
+    else if(ch.joined===true) st="joined";
+    else if(typeof ch._state==="string") st=ch._state;
+    return {present:true,state:String(st||"").toLowerCase()};
+  }catch(e){ return {present:false,state:""}; }
+};
+WT._channelDead=function(statusHint){
+  /* THE decision: is the current channel dead? Always re-reads live
+     state — a stale CLOSED for a replaced channel must not recover
+     a healthy one. Missing / closed / errored = dead. joining /
+     leaving = dead only when stuck (no sync for 30s — a healthy
+     rejoin completes in ~1s and produces a sync via retrack).
+     Unreadable state = dead ONLY when a dead status just fired
+     (the callback is the evidence then); otherwise conservative
+     (unknown state + silence is a quiet room, not a drop). */
+  try{
+    if(!WT.joined||!WT.groupId) return {dead:false,reason:""};
+    var cs=WT._channelState();
+    if(!cs.present) return {dead:true,reason:"missing"};
+    var st=cs.state;
+    if(st==="closed"||st==="errored") return {dead:true,reason:"state:"+st};
+    if(st==="joining"||st==="leaving"){
+      var base=WT._lastPresenceSyncAt||WT._joinedAt||0;
+      var age=base?Date.now()-base:0;
+      if(base&&age>30000) return {dead:true,reason:"stuck:"+st};
+      return {dead:false,reason:""};
+    }
+    if(!st&&(statusHint==="CLOSED"||statusHint==="CHANNEL_ERROR"||statusHint==="TIMED_OUT")) return {dead:true,reason:"status:"+statusHint+"+unknown-state"};
+    return {dead:false,reason:""};
+  }catch(e){ return {dead:false,reason:""}; }
+};
+WT._wtHandlers=function(chName,opts){
+  /* ONE handler set for every walkie subscribe (join, _verifyPresence
+     resubscribe, recovery attempts). onStatus records the status,
+     forwards it to the persistent drop handler, then runs the
+     caller's extra (join-promise resolve/reject, recovery attempt
+     completion). onSubscribed keeps the X2 F2 contract exactly:
+     re-affirm presence on EVERY subscribe, re-verify when joined. */
+  var extra=(opts&&opts.onStatusExtra)||null;
+  return {
+    presence:function(){ WT.onPresence(); },
+    broadcast:function(pl){ WT.onSignal(pl&&pl.payload?pl.payload:pl); },
+    onStatus:function(status){
+      try{ if(WT._diag&&WT._diag.presence) WT._diag.presence.lastSubscribeStatus=status; }catch(e){}
+      try{ WT._onChannelStatus(status,chName); }catch(e){}
+      try{ if(extra) extra(status); }catch(e){}
+    },
+    onSubscribed:function(){ try{ WT.retrack(); if(WT.joined) WT._verifyPresence(); }catch(e){} }
+  };
+};
+WT._onChannelStatus=function(status,chName){
+  /* Persistent status handling for a LIVE channel. The subscribe
+     callback keeps firing for the life of the channel — this is the
+     handler the join's `done` flag used to swallow. */
+  try{
+    if(chName&&WT.groupId&&chName!=="wt-"+WT.groupId) return;
+    if(status==="SUBSCRIBED"){
+      /* Stand down: the library healed the channel (auto-rejoin) or
+         a recovery attempt landed. Only when the CURRENT channel is
+         verifiably joined — a late SUBSCRIBED for a replaced
+         channel must not clear a live recovery. */
+      if(WT._reconnecting){
+        var cs=WT._channelState();
+        if(cs.present&&cs.state==="joined") WT._completeRecovery("subscribed");
+      }
+      return;
+    }
+    if(status==="CLOSED"||status==="CHANNEL_ERROR"||status==="TIMED_OUT"){
+      if(!WT.joined||WT._joining) return;
+      WT._recheckChannel("status:"+status,status);
+    }
+  }catch(e){}
+};
+WT._recheckChannel=function(reason,statusHint){
+  /* Cheap synchronous health check; the watchdog, online/visible and
+     status-callback triggers all funnel here. Starts at most one
+     recovery episode; returns whether one started. */
+  try{
+    if(!WT.joined||WT._joining||WT._reconnecting) return false;
+    var d=WT._channelDead(statusHint);
+    if(!d.dead) return false;
+    return WT._startRecovery(reason||d.reason);
+  }catch(e){ return false; }
+};
+WT._startRecovery=function(reason){
+  if(!WT.joined||WT._joining||WT._reconnecting) return false;
+  /* Cancel any pending _verifyPresence chain: a stale join-time
+     chain must not fire its own resubscribe mid-recovery (measured
+     race in harness T2 — it consumed a subscribe outcome and
+     completed recovery with the wrong attempt count). The fresh
+     verify re-arms from the recovered channel's onSubscribed. */
+  try{ if(WT._verifyTimer){ clearTimeout(WT._verifyTimer); WT._verifyTimer=null; } }catch(e){}
+  WT._reconnecting=true;
+  WT._recoverSeq=(WT._recoverSeq||0)+1;
+  WT._recoverAttempts=0;
+  WT._recoverSince=Date.now();
+  WT._recoverReason=String(reason||"");
+  try{ if(WT._diag&&WT._diag.presence){ WT._diag.presence.reconnecting=true; WT._diag.presence.reconnectAttempts=0; } }catch(e){}
+  try{ sbLog("wt: channel recovery started ("+WT._recoverReason+")"); }catch(e){}
+  /* One toast per episode — attempts stay silent (banner + diag
+     carry the progress), so a long outage does not spam toasts. */
+  try{ toast(TR('k9664','اتصال کانال قطع شد؛ در حال وصل‌شدن دوباره…')+"."); }catch(e){}
+  try{ WT.paintVoiceState(); WT.paintPill(); }catch(e){}
+  WT._scheduleRecoverAttempt(WT._recoverSeq,(WT._RECOVER_BACKOFFS&&WT._RECOVER_BACKOFFS[0])||1000);
+  return true;
+};
+WT._scheduleRecoverAttempt=function(seq,delayMs){
+  try{ if(WT._recoverTimer){ clearTimeout(WT._recoverTimer); WT._recoverTimer=null; } }catch(e){}
+  WT._recoverTimer=setTimeout(function(){
+    WT._recoverTimer=null;
+    WT._recoverAttempt(seq);
+  },delayMs);
+};
+WT._recoverAttempt=function(seq){
+  try{
+    if(seq!==WT._recoverSeq||!WT._reconnecting||!WT.joined||!WT.groupId) return;
+    /* Stand down if the channel healed while we waited (library
+       auto-rejoin): no resubscribe churn. */
+    var cs=WT._channelState();
+    if(cs.present&&cs.state==="joined"){ WT._completeRecovery("already-joined"); return; }
+    var gid=WT.groupId, chName="wt-"+gid;
+    WT._recoverAttempts=(WT._recoverAttempts||0)+1;
+    try{ if(WT._diag&&WT._diag.presence) WT._diag.presence.reconnectAttempts=WT._recoverAttempts; }catch(e){}
+    /* Fresh verify budget for the new channel: _verifyPresence's one
+       resubscribe must not be pre-spent by the join. */
+    WT._resubscribed=false;
+    var done=false;
+    var to=setTimeout(function(){
+      if(done) return; done=true;
+      WT._recoverNext(seq);
+    },WT._RECOVER_SUBSCRIBE_TIMEOUT_MS||10000);
+    WT._recoverAttemptTimer=to;
+    var finish=function(ok){
+      if(done) return; done=true;
+      try{ clearTimeout(to); }catch(e){}
+      if(WT._recoverAttemptTimer===to) WT._recoverAttemptTimer=null;
+      if(ok) WT._completeRecovery("resubscribed");
+      else WT._recoverNext(seq);
+    };
+    try{
+      /* Same resubscribe shape as _verifyPresence: replace the
+         channel, keep the mic, keep every peer and PC. */
+      SB_unsub(chName);
+      SB_sub(chName,null,WT._wtHandlers(chName,{onStatusExtra:function(status){
+        if(status==="SUBSCRIBED") finish(true);
+        else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT"||status==="CLOSED") finish(false);
+      }}));
+    }catch(e){ finish(false); }
+  }catch(e){ try{ WT._recoverNext(seq); }catch(e2){} }
+};
+WT._recoverNext=function(seq){
+  /* Next backoff step (last value repeats while joined — the user is
+     in a call, so recovery never gives up silently; the banner stays
+     truthful until the channel is back or the user leaves). */
+  try{
+    if(seq!==WT._recoverSeq||!WT._reconnecting||!WT.joined) return;
+    var backs=WT._RECOVER_BACKOFFS||[1000,2000,5000,10000,30000];
+    var idx=Math.min(WT._recoverAttempts||0,backs.length-1);
+    WT._scheduleRecoverAttempt(seq,backs[idx]||30000);
+  }catch(e){}
+};
+WT._completeRecovery=function(how){
+  if(!WT._reconnecting) return false;
+  WT._reconnecting=false;
+  WT._recoverSeq=(WT._recoverSeq||0)+1;
+  try{ if(WT._recoverTimer){ clearTimeout(WT._recoverTimer); WT._recoverTimer=null; } }catch(e){}
+  try{ if(WT._recoverAttemptTimer){ clearTimeout(WT._recoverAttemptTimer); WT._recoverAttemptTimer=null; } }catch(e){}
+  try{ if(WT._diag&&WT._diag.presence){ WT._diag.presence.reconnecting=false; WT._diag.presence.lastRecoverAt=Date.now(); } }catch(e){}
+  try{ sbLog("wt: channel recovery complete ("+String(how||"")+")"); }catch(e){}
+  /* Presence refresh: the rejoin sync repaints via onPresence; one
+     explicit re-read covers a sync that landed before our track. */
+  try{ WT.retrack(); }catch(e){}
+  try{
+    var seq=WT._recoverSeq;
+    setTimeout(function(){ try{ if(WT.joined&&seq===WT._recoverSeq) WT.onPresence(); }catch(e){} },500);
+  }catch(e){}
+  try{ WT.paintVoiceState(); WT.paintPill(); WT.paintDiag(); }catch(e){}
+  return true;
+};
+WT._reaffirmOrRecover=function(){
+  /* Online/visible re-affirm: check health first, retrack only when
+     not recovering (a retrack into a dead channel buffers forever;
+     the recovery's onSubscribed re-tracks on the live channel). */
+  try{
+    if(!WT.joined) return;
+    WT._recheckChannel("reaffirm");
+    if(!WT._reconnecting) WT.retrack();
+  }catch(e){}
+};
 /* ============ v10.4.35 (Y8) — ICE TCP/TLS-only mode (Claude idea 3) ============
    Bug-finder-driven, reversible, never silent. Preference (persisted in
    S.settings.wtIceMode, mirroring wtHandsFree): "auto" (default),
@@ -30664,7 +31421,15 @@ WT.refreshIceServers=function(){
       }
       if(!d.apiKey||!d.domain||typeof fetch!=="function") return null;
       return fetch("https://"+d.domain+"/api/v1/turn/credentials?apiKey="+encodeURIComponent(d.apiKey)).then(function(r){ return r.json(); }).then(function(j){
-        var list=(j&&j.v&&j.v.iceServers)||(j&&j.iceServers)||[];
+        /* v10.4.36 (Z4): Metered's documented response is a BARE ARRAY
+           of iceServer entries (metered.ca TURN docs, "Get TURN
+           Credential" example, verified 2026-11-15); the old parse
+           accepted only wrapped {v:{iceServers}} / {iceServers}
+           shapes, so the bare array yielded [] and the Metered leg
+           could never activate. Accept the bare array FIRST, keep
+           both wrapped shapes as fallback. String-form urls
+           ("turn:...") are handled by the filter below. */
+        var list=Array.isArray(j)?j:((j&&j.v&&j.v.iceServers)||(j&&j.iceServers)||[]);
         var turns=[];
         list.forEach(function(e){
           if(!e) return;
@@ -30692,52 +31457,95 @@ WT.refreshIceServers=function(){
    explicit approval + a rebuild. DoH is diagnostics-only: WT.dohLookup
    below is used by the bug-finder, never by the live config. */
 WT.DOH_IP_FALLBACK_ENABLED=false;
+/* v10.4.36 (Z5 gap b): DoH failure classification — PURE. Maps a
+   dohLookup error string (+ optional HTTP status) to the fixed
+   vocabulary the report may print. The raw error text is NEVER
+   printed (it could carry endpoint internals); only this class.
+   Vocabulary: timeout | no-fetch | network | http | parse |
+   illegal-invocation | unknown. WT.bugFind.classifyDohError
+   delegates here so there is exactly one implementation. */
+WT.dohErrorClass=function(errorText,httpStatus){
+  var t=String(errorText||"");
+  if(/^\s*timeout\s*$/i.test(t)||/timed?\s*out/i.test(t)) return "timeout";
+  if(/no-fetch/i.test(t)) return "no-fetch";
+  if(/illegal invocation/i.test(t)) return "illegal-invocation";
+  if(typeof httpStatus==="number"&&httpStatus>0) return "http";
+  if(/^http-\d+/i.test(t)) return "http";
+  if(/unexpected token|is not valid json|json.*position|failed to parse/i.test(t)) return "parse";
+  if(/failed to fetch|networkerror|network error|load failed|net::|enotfound|eai_|econn|ehostunreach|socket/i.test(t)) return "network";
+  return "unknown";
+};
 WT.dohLookup=function(host,opts){
   /* Diagnostics-only DNS-over-HTTPS. provider: "auto" (Cloudflare A+AAAA,
-     Google fallback on transport failure), "cloudflare" (A+AAAA), or
-     "google" (A only — the bug-finder's single-endpoint rule). 3s per
-     query. opts.fetchFn injects the fetch implementation (the bug-finder
-     passes its seam fetch so simulations control DoH; default: global
-     fetch). Returns {provider,host,ok,status,addrs,error} — never throws. */
+     Google fallback on transport failure), "cloudflare" (A+AAAA),
+     "cloudflare-a" (single A query — the bug-finder fallback leg),
+     or "google" (A only — the bug-finder's primary endpoint). 3s per
+     query unless opts.timeoutMs says otherwise. opts.fetchFn injects
+     the fetch implementation (the bug-finder passes its seam fetch so
+     simulations control DoH; default: global fetch). Returns
+     {provider,host,ok,status,addrs,error,errorClass,httpStatus} — never
+     throws. errorClass is the WT.dohErrorClass vocabulary; the raw
+     error string is NEVER printed in any report (class only).
+     v10.4.36 (Z5 gap b): (1) fetchFn is invoked with the window as
+     receiver (fetchFn.call) — an unbound window.fetch throws
+     "Illegal invocation" in strict/WebView contexts, which would
+     fail EVERY query identically; the seam entry itself stays
+     unbound so the === integrity check still holds. (2) HTTP
+     failures (ok===false, e.g. a filter block page) are reported as
+     class http with the status, and JSON parse failures as class
+     parse — previously both collapsed into one opaque failure. */
   opts=opts||{};
   var timeoutMs=opts.timeoutMs||3000;
   var provider=opts.provider||"auto";
   var fetchFn=opts.fetchFn||((typeof fetch==="function")?fetch:null);
+  if(typeof fetchFn!=="function") fetchFn=null;
+  var win=(typeof window!=="undefined")?window:undefined;
+  var clsOf=function(errStr,httpStatus){
+    try{ if(typeof WT!=="undefined"&&WT.dohErrorClass) return WT.dohErrorClass(errStr,httpStatus); }catch(e){}
+    return "unknown";
+  };
   var queryOne=function(base,type){
     var url=base+"?name="+encodeURIComponent(host)+"&type="+type;
     return new Promise(function(resolve){
       var done=false;
-      var to=setTimeout(function(){ if(!done){ done=true; resolve({ok:false,error:"timeout",addrs:[]}); } },timeoutMs);
-      if(!fetchFn){ clearTimeout(to); resolve({ok:false,error:"no-fetch",addrs:[]}); return; }
+      var to=setTimeout(function(){ if(!done){ done=true; resolve({ok:false,error:"timeout",errorClass:"timeout",httpStatus:null,addrs:[]}); } },timeoutMs);
+      if(!fetchFn){ clearTimeout(to); resolve({ok:false,error:"no-fetch",errorClass:"no-fetch",httpStatus:null,addrs:[]}); return; }
       try{
-        fetchFn(url,{headers:{Accept:"application/dns-json"}}).then(function(r){ return r.json(); }).then(function(j){
-          if(done) return; done=true; clearTimeout(to);
+        fetchFn.call(win,url,{headers:{Accept:"application/dns-json"}}).then(function(r){
+          if(r&&r.ok===false){ if(done) return null; done=true; clearTimeout(to); var st=(typeof r.status==="number")?r.status:0; resolve({ok:false,error:"http-"+st,errorClass:"http",httpStatus:st,addrs:[]}); return null; }
+          return r.json();
+        }).then(function(j){
+          if(done||j==null) return; done=true; clearTimeout(to);
           var addrs=[];
           try{ (j.Answer||[]).forEach(function(a){ if(a&&(a.type===1||a.type===28)&&a.data) addrs.push(String(a.data)); }); }catch(e){}
-          resolve({ok:true,status:j.Status,addrs:addrs});
-        }).catch(function(e){ if(!done){ done=true; clearTimeout(to); resolve({ok:false,error:String((e&&e.message)||e),addrs:[]}); } });
-      }catch(e){ if(!done){ done=true; clearTimeout(to); resolve({ok:false,error:String(e),addrs:[]}); } }
+          resolve({ok:true,status:j.Status,addrs:addrs,error:null,errorClass:null,httpStatus:null});
+        }).catch(function(e){ if(!done){ done=true; clearTimeout(to); var es=String((e&&e.name?e.name+": ":"")+((e&&e.message)||e)); resolve({ok:false,error:es,errorClass:clsOf(es,null),httpStatus:null,addrs:[]}); } });
+      }catch(e){ if(!done){ done=true; clearTimeout(to); var es2=String((e&&e.name?e.name+": ":"")+((e&&e.message)||e)); resolve({ok:false,error:es2,errorClass:clsOf(es2,null),httpStatus:null,addrs:[]}); } }
     });
   };
   var runProvider=function(name){
     if(name==="google"){
       return queryOne("https://dns.google/resolve","A").then(function(r){ r.provider="google"; r.host=host; return r; });
     }
+    if(name==="cloudflare-a"){
+      return queryOne("https://cloudflare-dns.com/dns-query","A").then(function(r){ r.provider="cloudflare"; r.host=host; return r; });
+    }
     return queryOne("https://cloudflare-dns.com/dns-query","A").then(function(a){
       return queryOne("https://cloudflare-dns.com/dns-query","AAAA").then(function(aaaa){
-        return {provider:"cloudflare",host:host,ok:!!(a.ok||aaaa.ok),status:(typeof a.status==="number"?a.status:aaaa.status),addrs:(a.addrs||[]).concat(aaaa.addrs||[]),error:a.ok?null:(a.error||aaaa.error)};
+        return {provider:"cloudflare",host:host,ok:!!(a.ok||aaaa.ok),status:(typeof a.status==="number"?a.status:aaaa.status),addrs:(a.addrs||[]).concat(aaaa.addrs||[]),error:a.ok?null:(a.error||aaaa.error),errorClass:a.ok?null:(a.errorClass||aaaa.errorClass||"unknown"),httpStatus:a.ok?null:(a.httpStatus||aaaa.httpStatus||null)};
       });
     });
   };
   if(provider==="google") return runProvider("google");
   if(provider==="cloudflare") return runProvider("cloudflare");
+  if(provider==="cloudflare-a") return runProvider("cloudflare-a");
   return runProvider("cloudflare").then(function(r){
     if(r.ok) return r;
     return runProvider("google");
   });
 };
 WT._freshDiag=function(){
-  return {cands:{host:0,srflx:0,relay:0,other:0},relay:false,lastErr:"",micRms:0,peerRms:{},playBlocked:{},droppedSignals:0,membershipCheck:"",perUrl:{},pairs:{},pairsAt:{},presence:{lastSyncAt:0,trackCount:0,subscribed:false,lastSubscribeStatus:"",ownPresenceVerified:false,oldPeers:0}};
+  return {cands:{host:0,srflx:0,relay:0,other:0},relay:false,lastErr:"",micRms:0,peerRms:{},playBlocked:{},droppedSignals:0,membershipCheck:"",perUrl:{},pairs:{},pairsAt:{},presence:{lastSyncAt:0,trackCount:0,subscribed:false,lastSubscribeStatus:"",ownPresenceVerified:false,oldPeers:0,reconnecting:false,reconnectAttempts:0,lastRecoverAt:0}};
 };
 WT._diagInitUrls=function(){
   if(!WT._diag) return;
@@ -30824,6 +31632,10 @@ WT._pairSnapshot=function(uid,budgetMs){
       var rec={localType:lc.candidateType||"?",remoteType:rc.candidateType||"?",rtt:(typeof pair.currentRoundTripTime==="number"?Math.round(pair.currentRoundTripTime*1000):null),bytes:(pair.bytesSent||0)+(pair.bytesReceived||0),packetsLost:(typeof pair.packetsLost==="number"?pair.packetsLost:null)};
       try{
         if(WT._diag){ WT._diag.pairs=WT._diag.pairs||{}; WT._diag.pairs[uid]={localType:rec.localType,remoteType:rec.remoteType,rtt:rec.rtt,bytes:rec.bytes}; WT._diag.pairsAt=WT._diag.pairsAt||{}; WT._diag.pairsAt[uid]=Date.now(); }
+        /* v10.4.36 (Z1): the same snapshot feeds the media-transfer
+           guard — byte growth here is what protects a live pair from
+           every teardown path. */
+        if(typeof WT._z36FlowNote==="function") WT._z36FlowNote(uid,rec.bytes);
       }catch(e){}
       resolve(rec);
     }).catch(function(){ if(!done){ done=true; clearTimeout(to); resolve(null); } });
@@ -31108,6 +31920,54 @@ WT.bugFind={
     if(code===437||code===438||/allocation/i.test(t)) return "allocation";
     if(code===500||code===501||code===508||/server error/i.test(t)) return "server";
     return "ice-error";
+  },
+  /* v10.4.36 (Z5 gap b): delegate — one implementation (WT.dohErrorClass). */
+  classifyDohError:function(errorText,httpStatus){
+    try{ if(typeof WT!=="undefined"&&WT.dohErrorClass) return WT.dohErrorClass(errorText,httpStatus); }catch(e){}
+    return "unknown";
+  },
+  /* v10.4.36 (Z5 gap c): channel-drop classification — PURE, sync, no
+     I/O. Consulted ONLY when the joined-path round-trip already
+     failed (echo dead, self absent, or channel missing); it never
+     upgrades a healthy round-trip and never touches signaling.
+     Rules (first match wins):
+       none          echo ok + self present + channel present (no drop)
+       transient     recovery observed in the re-sample, OR the channel
+                     is joining/rejoining right now, OR (sync recent
+                     AND heartbeat fresh AND channel present, not
+                     closed AND self present) — a single lost echo
+                     while everything else flows.
+       dead          echo dead AND sync stale-or-never AND (channel
+                     closed/missing OR self absent) AND no recovery.
+                     A fresh heartbeat does NOT rescue this: the
+                     heartbeat is an HTTPS RPC, independent of the
+                     Realtime socket — fresh heartbeat + dead channel
+                     means "server reachable, live socket dead".
+       indeterminate anything else — the caller keeps the existing
+                     fault verdict (never downgrade on thin evidence).
+     Thresholds: sync stale >60s (same as the existing L6 stale-sync
+     warn); heartbeat fresh <=60s (the timer beats every 30s).
+     Returns {kind, reason} with reason from a fixed token vocabulary
+     (safe for the report verbatim). */
+  classifyChannelDrop:function(ev){
+    ev=ev||{};
+    var echoDead=(ev.echoMs==null);
+    var syncStale=(ev.syncAgeS==null||ev.syncAgeS>60);
+    var syncRecent=(ev.syncAgeS!=null&&ev.syncAgeS<=60);
+    var hbFresh=(ev.heartbeatAgeS!=null&&ev.heartbeatAgeS<=60);
+    var st=String(ev.channelState||"").toLowerCase();
+    var stateClosed=/closed|errored|leaving|timed?\s*out|channel_error/.test(st);
+    var stateUnknown=(!st||st==="unknown");
+    var lastSub=String(ev.lastSubscribeStatus||"").toUpperCase();
+    var subFailed=(lastSub==="CHANNEL_ERROR"||lastSub==="TIMED_OUT"||lastSub==="CLOSED"||lastSub==="ERRORED");
+    var channelClosed=(!ev.channelPresent)||stateClosed||(stateUnknown&&subFailed);
+    var rejoining=(/joining|subscribing|connecting|reconnecting/.test(st))||!!ev.joining;
+    if(!echoDead&&ev.selfPresent&&ev.channelPresent) return {kind:"none",reason:"round-trip-ok"};
+    if(ev.recovered) return {kind:"transient",reason:"resample-recovered"};
+    if(rejoining) return {kind:"transient",reason:"channel-rejoining"};
+    if(echoDead&&syncRecent&&hbFresh&&ev.channelPresent&&!channelClosed&&ev.selfPresent) return {kind:"transient",reason:"recent-and-fresh"};
+    if(echoDead&&syncStale&&(channelClosed||!ev.selfPresent)) return {kind:"dead",reason:(!ev.channelPresent)?"missing-stale-echo-dead":(!ev.selfPresent?"self-absent-stale-echo-dead":"closed-stale-echo-dead")};
+    return {kind:"indeterminate",reason:"insufficient-evidence"};
   },
   /* §3c rule 3 — forbidden-value sanitizer. Checks the LIVE secret values
      (presence-checked, never logged) + pattern redaction + ICE candidate
@@ -31528,18 +32388,71 @@ WT.bugFind.layerDns=async function(){
     if(r.isStun) hosts[h].stunUrls++; else hosts[h].turnUrls++;
   });
   var doh={ok:0,failed:0,notQueried:0}, dohDeadline=Date.now()+15000;
+  /* v10.4.36 (Z5 gap b): endpoint-aware DoH. BF-76e7ea showed 0 ok / 7
+     failed with every host "doh: unknown" and no failure class — the
+     corroboration learned nothing. The first host now PROBES the
+     endpoint: Google first; on transport failure, ONE Cloudflare
+     fallback query (diagnostics-only, same hostnames, no live leg —
+     D-434-3 unchanged). If both fail, the endpoint is dead: the
+     remaining hosts are not-queried (no point burning the budget)
+     and the report says so with both failure classes. If an endpoint
+     works, all hosts use it. DoH NEVER changes a host verdict
+     (fenced, as designed) — it only annotates. failed counts
+     QUERIES (a host may cost two when the fallback fires);
+     notQueried counts HOSTS. */
+  var dohEndpoint={status:"unknown",provider:null,googleErrorClass:null,cloudflareErrorClass:null,fallbackUsed:false,reason:null};
+  var dohProvider=null, endpointDead=false;
+  var dohQueryOne=async function(host,provider,timeoutMs){
+    var res=null;
+    try{ res=await WT.dohLookup(host,{provider:provider,fetchFn:WT._bugFindDeps.fetch,timeoutMs:timeoutMs}); }catch(e){ res=null; }
+    if(res&&res.ok){ doh.ok++; return res; }
+    doh.failed++;
+    return res;
+  };
+  var dohClassOf=function(res){
+    if(!res) return "unknown";
+    if(res.errorClass) return res.errorClass;
+    try{ if(WT.bugFind&&WT.bugFind.classifyDohError) return WT.bugFind.classifyDohError(res.error||"",res.httpStatus); }catch(e){}
+    return "unknown";
+  };
   for(var i=0;i<order.length;i++){
     var h=order[i];
-    if(Date.now()>dohDeadline){ hosts[h].doh="not-queried"; doh.notQueried++; continue; }
+    if(Date.now()>dohDeadline){ hosts[h].doh="not-queried"; doh.notQueried++; if(!dohEndpoint.reason) dohEndpoint.reason="budget"; continue; }
+    if(endpointDead){ hosts[h].doh="not-queried"; doh.notQueried++; continue; }
     var res=null;
-    try{ res=await WT.dohLookup(h,{provider:"google",fetchFn:WT._bugFindDeps.fetch,timeoutMs:5000}); }catch(e){ res=null; }
-    if(res&&res.ok){
-      doh.ok++;
-      if(res.status===3) hosts[h].doh="nxdomain";
-      else if(res.addrs&&res.addrs.length) hosts[h].doh="exists";
-      else hosts[h].doh="unknown";
-    } else { hosts[h].doh="unknown"; doh.failed++; }
+    if(i===0){
+      res=await dohQueryOne(h,"google",5000);
+      if(res&&res.ok){
+        dohProvider="google"; dohEndpoint.status="google"; dohEndpoint.provider="google";
+        if(res.status===3) hosts[h].doh="nxdomain";
+        else if(res.addrs&&res.addrs.length) hosts[h].doh="exists";
+        else hosts[h].doh="unknown";
+      } else {
+        dohEndpoint.googleErrorClass=dohClassOf(res);
+        var fb=null;
+        if(Date.now()<dohDeadline-500){ fb=await dohQueryOne(h,"cloudflare-a",3000); }
+        if(fb&&fb.ok){
+          dohProvider="cloudflare"; dohEndpoint.status="cloudflare-fallback"; dohEndpoint.provider="cloudflare"; dohEndpoint.fallbackUsed=true;
+          if(fb.status===3) hosts[h].doh="nxdomain";
+          else if(fb.addrs&&fb.addrs.length) hosts[h].doh="exists";
+          else hosts[h].doh="unknown";
+        } else {
+          dohEndpoint.cloudflareErrorClass=fb?dohClassOf(fb):"unknown";
+          endpointDead=true; dohEndpoint.status="unreachable";
+          hosts[h].doh="unknown";
+        }
+      }
+    } else {
+      res=await dohQueryOne(h,dohProvider==="cloudflare"?"cloudflare-a":"google",5000);
+      if(res&&res.ok){
+        if(res.status===3) hosts[h].doh="nxdomain";
+        else if(res.addrs&&res.addrs.length) hosts[h].doh="exists";
+        else hosts[h].doh="unknown";
+      } else { hosts[h].doh="unknown"; }
+    }
   }
+  if(!order.length){ dohEndpoint.status="not-queried"; dohEndpoint.reason="no hosts"; }
+  else if(dohEndpoint.status==="unknown"){ dohEndpoint.status="not-queried"; dohEndpoint.reason="budget"; }
   var hostList=order.map(function(h){
     var g=hosts[h];
     var tested=g.urls.filter(function(r){ return r.state!=="not-tested"; });
@@ -31550,13 +32463,21 @@ WT.bugFind.layerDns=async function(){
       return !(r.errorsSeen||[]).some(function(e){ return WT.bugFind.classifyIceError(e.errorText,e.errorCode)==="dns"; });
     });
     var dnsFails=tested.filter(function(r){ return r.state==="error"&&(r.errorClass==="dns"||WT.bugFind.classifyIceError(r.errorText,r.errorCode)==="dns"); });
+    /* Z5 gap b: dns-error vs timeout vs other-error are distinct
+       verdict classes — record the breakdown, never one blur. */
+    var timeouts=tested.filter(function(r){ return r.state==="timeout"; }).length;
+    var _clsOf=function(r){ return r.errorClass||WT.bugFind.classifyIceError(r.errorText,r.errorCode); };
+    var otherRecs=tested.filter(function(r){ return r.state==="error"&&_clsOf(r)!=="dns"; });
+    var otherErrors=otherRecs.length;
+    var _cc={}; otherRecs.forEach(function(r){ var c=_clsOf(r); _cc[c]=(_cc[c]||0)+1; });
+    var dominantOtherClass=null, _best=0; Object.keys(_cc).forEach(function(c){ if(_cc[c]>_best){ _best=_cc[c]; dominantOtherClass=c; } });
     var verdict;
     if(!tested.length) verdict="not-tested";
     else if(resolved&&dnsFails.length) verdict="mixed";
     else if(resolved) verdict="resolves";
     else if(dnsFails.length===tested.length) verdict="dns-fault";
     else verdict="unreachable";
-    return {host:h,verdict:verdict,ok:okCount,total:g.urls.length,tested:tested.length,dnsErrors:dnsFails.length,doh:g.doh,isControl:g.isControl,stunUrls:g.stunUrls,turnUrls:g.turnUrls};
+    return {host:h,verdict:verdict,ok:okCount,total:g.urls.length,tested:tested.length,dnsErrors:dnsFails.length,timeouts:timeouts,otherErrors:otherErrors,dominantOtherClass:dominantOtherClass,doh:g.doh,isControl:g.isControl,stunUrls:g.stunUrls,turnUrls:g.turnUrls};
   });
   var turnHosts=hostList.filter(function(x){ return x.turnUrls>0; });
   var stunHosts=hostList.filter(function(x){ return x.stunUrls>0; });
@@ -31566,6 +32487,17 @@ WT.bugFind.layerDns=async function(){
   var allStunDns=stunHosts.length>0&&stunHosts.every(function(x){ return x.verdict==="dns-fault"; });
   var anyTurnResolves=turnHosts.some(function(x){ return x.verdict==="resolves"; });
   var allStunResolve=stunHosts.length===0||stunHosts.every(function(x){ return x.verdict==="resolves"; });
+  /* Z5 gap b: when the L2 fault is unreachable-class, name WHICH
+     unreachable: all-timeout vs all-error vs mixed. R-precedence
+     in L7 is unchanged (only faultClass==="dns" takes R2). */
+  var unreachableClass=null;
+  if(turnTested&&turnHosts.length&&turnHosts.every(function(x){ return x.verdict==="unreachable"||x.verdict==="not-tested"; })){
+    var _tu=0,_te=0,_dn=0;
+    turnHosts.forEach(function(x){ _tu+=(x.timeouts||0); _te+=(x.otherErrors||0); _dn+=(x.dnsErrors||0); });
+    if(_tu>0&&_te===0&&_dn===0) unreachableClass="timeout";
+    else if(_te>0&&_tu===0&&_dn===0) unreachableClass="error";
+    else unreachableClass="mixed";
+  }
   var status, key, fa, actionKey=null, actionFa=null, faultClass=null;
   if(allTurnDns||allStunDns){ status="fault"; key="k9235"; fa="گوشی نمی‌تواند آدرس سرورهای رله را پیدا کند (خطای DNS)؛ مشکل از شبکه/اینترنت است، نه از برنامه."; actionKey="k9236"; actionFa="وای‌فای/دیتا را عوض کنید، یا DNS گوشی را عوض کنید، و دوباره بررسی کنید. اگر با شبکهٔ دیگر درست شد، مشکل از شبکهٔ قبلی است."; faultClass="dns"; }
   else if(anyTurnResolves&&allStunResolve){ status="ok"; key="k9234"; fa="همهٔ سرورهای صوتی پیدا شدند."; }
@@ -31573,7 +32505,7 @@ WT.bugFind.layerDns=async function(){
   else if(!anySignal||!turnTested){ status="unknown"; key="k9296"; fa="مشخص نشد."; }
   else if(turnHosts.every(function(x){ return x.verdict==="unreachable"||x.verdict==="not-tested"; })){ status="fault"; key="k9237"; fa="هیچ سرور رله‌ای در دسترس نیست."; actionKey="k9238"; actionFa="شبکه را عوض کنید و دوباره بررسی کنید."; faultClass="unreachable"; }
   else { status="warn"; key="k9239"; fa="بعضی سرورها در دسترس‌اند، بعضی نه."; actionKey="k9240"; actionFa="گزارش را بفرستید تا سرورهای خراب حذف/جایگزین شوند."; }
-  return WT.bugFind._result(status,key,fa,{hosts:hostList,dohQueries:doh,faultClass:faultClass},startedAt,Date.now()-t0,{actionKey:actionKey,actionFa:actionFa});
+  return WT.bugFind._result(status,key,fa,{hosts:hostList,dohQueries:doh,faultClass:faultClass,dohEndpoint:dohEndpoint,unreachableClass:unreachableClass},startedAt,Date.now()-t0,{actionKey:actionKey,actionFa:actionFa});
 };
 
 /* --- L3 relay (§2.3) — consumes the joint pass (TURN + control only).
@@ -31653,18 +32585,25 @@ WT.bugFind.layerRelay=async function(seq){
   return WT.bugFind._result(status,key,fa,{urls:urls,mint:pass.mint||{},budgetExhausted:!!pass.budgetExhausted,allocatedCount:allocated.length,listedCount:urls.length,appAllocated:appAllocated.length,controlAllocated:controlAllocated.length,udpBlocked:udpBlocked,relayLoop:relayLoop,iceMode:iceModeSnap},startedAt,Date.now()-t0,extra);
 };
 
-/* --- L4 microphone (§2.4). Reuses the live stream when joined; else a
-   temporary stream with the SAME constraints + retry as WT.join. The
-   20-sample window reuses startMicMeter's math exactly. A reused stream
-   whose track is disabled (PTT off) cannot hear anything — the window
-   is skipped and the layer reports unknown with the fact recorded
-   (the design forbids touching PTT track state, so no measurement is
-   possible there; a false flatline fault would be worse). --- */
+/* --- L4 microphone (§2.4). Reuses the live stream when joined AND its
+   track is enabled and unmuted; else a temporary stream with the SAME
+   constraints + retry as WT.join. The 20-sample window reuses
+   startMicMeter's math exactly. v10.4.36 (Z5 gap a): when the PTT
+   track exists but is DISABLED (PTT off) or MUTED, the layer measures
+   an INDEPENDENT fresh stream instead of reporting unknown — the PTT
+   track is never enabled, disabled, or otherwise touched, and the
+   independent stream is stopped in finally. "unknown" is reported
+   only when no measurement was possible (independent attempt failed
+   without proving denial, or no gUM API at all). The queried
+   permission state (prompt/granted/denied) is always reported as
+   queried; a successfully opened stream is the ground truth that
+   the permission is effectively granted. --- */
 WT.bugFind.layerMic=async function(seq){
   var Deps=WT._bugFindDeps;
   var startedAt=new Date().toISOString(), t0=Date.now();
-  var detail={permission:"unknown",gumApi:!!Deps.getUserMedia,audioinputs:"unknown",stream:"none",attempt:"",trackState:"none",trackEnabled:null,trackMuted:null,trackLabelPresent:null,peakRms:0,meanRms:0,samplesAbove:0,samplesTotal:0,flatline:null,cleanup:"none",gumErrorName:null,reusedLive:false,analyser:false,overconstrainedFallback:false};
+  var detail={permission:"unknown",gumApi:!!Deps.getUserMedia,audioinputs:"unknown",stream:"none",attempt:"",trackState:"none",trackEnabled:null,trackMuted:null,trackLabelPresent:null,peakRms:0,meanRms:0,samplesAbove:0,samplesTotal:0,flatline:null,cleanup:"none",gumErrorName:null,reusedLive:false,analyser:false,overconstrainedFallback:false,measurement:"none",pttTrackState:null,pttTrackEnabled:null,pttTrackMuted:null,independentReason:null,independentErrorName:null,independentAttempt:null,trackDisabledSkipped:false};
   var stream=null, reused=false, gumError=null, overconstrainedFallback=false;
+  var pttTrack=null, pttExisted=false, independentFailed=false, independentError=null;
   var samples=[], peakRms=0, above=0, flatline=true, sampled=false;
   var ctx=null, ownedCtx=false, analyser=null, source=null, trackEnabled=null;
   try{
@@ -31681,46 +32620,75 @@ WT.bugFind.layerMic=async function(seq){
         if(Array.isArray(devs)) detail.audioinputs=devs.filter(function(d){ return d&&d.kind==="audioinput"; }).length;
       }
     }catch(e){}
-    var liveTrack=null;
+    /* Z5 gap a: detect the PTT track, but NEVER gate measurement on it. */
     try{
       if(WT.joined&&WT.stream){
         var ats=WT.stream.getAudioTracks?WT.stream.getAudioTracks():[];
-        if(ats.length&&ats[0].readyState==="live") liveTrack=ats[0];
+        if(ats.length&&ats[0].readyState==="live") pttTrack=ats[0];
       }
     }catch(e){}
-    if(liveTrack){ stream=WT.stream; reused=true; detail.stream="reused-live"; detail.reusedLive=true; detail.attempt="reused-live-stream"; }
-    else if(Deps.getUserMedia){
+    if(pttTrack){
+      pttExisted=true;
+      try{ detail.pttTrackState=pttTrack.readyState||"unknown"; }catch(e){}
+      try{ detail.pttTrackEnabled=!!pttTrack.enabled; }catch(e){}
+      try{ detail.pttTrackMuted=!!pttTrack.muted; }catch(e){}
+    }
+    /* Shared acquisition: SAME constraints + retry as WT.join, with the
+       3s lost-guard (a late stream is stopped, never leaked). Used by
+       both the temporary path and the independent-measurement path. */
+    var acquireStream=async function(){
+      var c1={audio:{echoCancellation:true,noiseSuppression:true}}, hadHeadsetId=false;
+      try{ if(typeof AU!=="undefined"&&AU.headsetIn){ c1.audio.deviceId={exact:AU.headsetIn}; hadHeadsetId=true; } }catch(e){}
+      var out={stream:null,attempt:"",error:null,overconstrained:false};
       var lost=false;
-      var acquire=async function(){
-        var c1={audio:{echoCancellation:true,noiseSuppression:true}}, hadHeadsetId=false;
-        try{ if(typeof AU!=="undefined"&&AU.headsetIn){ c1.audio.deviceId={exact:AU.headsetIn}; hadHeadsetId=true; } }catch(e){}
-        var stopLate=function(st){ try{ st.getTracks().forEach(function(t){ try{ t.stop(); }catch(e){} }); }catch(e){} };
+      var stopLate=function(st){ try{ st.getTracks().forEach(function(t){ try{ t.stop(); }catch(e){} }); }catch(e){} };
+      var runAcq=async function(){
         try{
           var st1=await Deps.getUserMedia(c1);
           if(lost){ stopLate(st1); return; }
-          stream=st1;
-          detail.attempt=hadHeadsetId?"headset-exact":"plain (headset-exact: skipped, no headset id)";
+          out.stream=st1;
+          out.attempt=hadHeadsetId?"headset-exact":"plain (headset-exact: skipped, no headset id)";
           return;
         }catch(e1){
-          gumError=e1;
-          if(e1&&e1.name==="OverconstrainedError") overconstrainedFallback=true;
+          out.error=e1;
+          if(e1&&e1.name==="OverconstrainedError") out.overconstrained=true;
           if(hadHeadsetId&&!lost){
             try{
               var st2=await Deps.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
               if(lost){ stopLate(st2); return; }
-              stream=st2;
-              detail.attempt="headset-exact-failed-then-plain";
+              out.stream=st2;
+              out.attempt="headset-exact-failed-then-plain";
               return;
-            }catch(e2){ gumError=e2; }
+            }catch(e2){ out.error=e2; }
           }
         }
       };
       await new Promise(function(resolve){
         var to=setTimeout(function(){ lost=true; resolve(); },3000);
-        acquire().then(function(){ if(!lost){ clearTimeout(to); resolve(); } },function(){ if(!lost){ clearTimeout(to); resolve(); } });
+        runAcq().then(function(){ if(!lost){ clearTimeout(to); resolve(); } },function(){ if(!lost){ clearTimeout(to); resolve(); } });
       });
-      if(!stream&&!gumError) gumError={name:"TimeoutError",message:"timeout"};
-      detail.stream=stream?"temporary":"none";
+      if(!out.stream&&!out.error) out.error={name:"TimeoutError",message:"timeout"};
+      return out;
+    };
+    if(pttExisted&&detail.pttTrackEnabled===true&&detail.pttTrackMuted===false){
+      stream=WT.stream; reused=true; detail.stream="reused-live"; detail.reusedLive=true; detail.attempt="reused-live-stream"; detail.measurement="reused";
+    } else if(pttExisted&&Deps.getUserMedia){
+      /* Independent measurement: the PTT track is disabled or muted.
+         Open a FRESH stream, measure IT, stop it. The live PTT stream
+         and its track state are left exactly as found. */
+      detail.independentReason=(detail.pttTrackEnabled===false)?"ptt-track-disabled":"ptt-track-muted";
+      var ind=await acquireStream();
+      overconstrainedFallback=ind.overconstrained;
+      if(ind.stream){ stream=ind.stream; detail.stream="independent"; detail.attempt=ind.attempt; detail.independentAttempt=ind.attempt; detail.measurement="independent"; }
+      else{ independentFailed=true; independentError=ind.error; gumError=ind.error; detail.independentErrorName=(ind.error&&(ind.error.name||String(ind.error)))||"error"; detail.measurement="none"; }
+    } else if(pttExisted){
+      /* No gUM API: no independent measurement is possible. */
+      detail.measurement="none"; detail.trackDisabledSkipped=true;
+    } else if(Deps.getUserMedia){
+      var tmp=await acquireStream();
+      overconstrainedFallback=tmp.overconstrained;
+      if(tmp.stream){ stream=tmp.stream; detail.stream="temporary"; detail.attempt=tmp.attempt; detail.measurement="temporary"; }
+      else{ gumError=tmp.error; detail.measurement="none"; }
     }
     if(gumError) detail.gumErrorName=gumError.name||String(gumError);
     detail.overconstrainedFallback=overconstrainedFallback;
@@ -31737,8 +32705,9 @@ WT.bugFind.layerMic=async function(seq){
       try{ detail.trackMuted=!!track.muted; }catch(e){}
       try{ detail.trackLabelPresent=!!(track.label); }catch(e){}
     }
-    var trackDisabled=reused&&trackEnabled===false;
-    if(stream&&track&&track.readyState==="live"&&!trackDisabled){
+    /* Z5: sample the MEASUREMENT stream (independent when the PTT track
+       is disabled/muted) — PTT state never gates measurement. */
+    if(stream&&track&&track.readyState==="live"){
       try{
         var AC=Deps.AudioContext;
         if(AC){
@@ -31776,7 +32745,7 @@ WT.bugFind.layerMic=async function(seq){
     detail.meanRms=samples.length?(Math.round((samples.reduce(function(a,b){ return a+b; },0)/samples.length)*1000)/1000):0;
     detail.samplesAbove=above; detail.samplesTotal=samples.length;
     detail.flatline=sampled?flatline:null;
-    detail.trackDisabledSkipped=!!trackDisabled;
+    detail.trackDisabledSkipped=!!(pttExisted&&!sampled&&detail.measurement==="none");
   }catch(e){
     if(!gumError) gumError=e;
     detail.gumErrorName=(gumError&&(gumError.name||String(gumError)))||"error";
@@ -31795,9 +32764,14 @@ WT.bugFind.layerMic=async function(seq){
   }
   var status, key, fa, actionKey=null, actionFa=null;
   var hasSpeech=sampled&&peakRms>=0.04&&above>=2;
+  /* Z5 gap a verdict order: a proven fresh denial is a fault even when
+     a PTT track exists; an unmeasurable PTT track with no independent
+     evidence is unknown, never a false flatline fault. */
   if(hasSpeech){ status="ok"; key="k9245"; fa="میکروفون باز شد و صدای شما شنیده شد."; }
-  else if(!stream&&detail.permission==="denied"){ status="fault"; key="k9246"; fa="دسترسی میکروفون داده نشده است."; actionKey="k9247"; actionFa="در تنظیمات گوشی، دسترسی میکروفون به برنامه را روشن کنید."; }
-  else if(!stream&&gumError&&(gumError.name==="NotAllowedError")){ status="fault"; key="k9246"; fa="دسترسی میکروفون داده نشده است."; actionKey="k9247"; actionFa="در تنظیمات گوشی، دسترسی میکروفون به برنامه را روشن کنید."; }
+  else if(pttExisted&&independentFailed&&independentError&&independentError.name==="NotAllowedError"){ status="fault"; key="k9246"; fa="دسترسی میکروفون داده نشده است."; actionKey="k9247"; actionFa="در تنظیمات گوشی، دسترسی میکروفون به برنامه را روشن کنید."; }
+  else if(!pttExisted&&!stream&&detail.permission==="denied"){ status="fault"; key="k9246"; fa="دسترسی میکروفون داده نشده است."; actionKey="k9247"; actionFa="در تنظیمات گوشی، دسترسی میکروفون به برنامه را روشن کنید."; }
+  else if(!pttExisted&&!stream&&gumError&&(gumError.name==="NotAllowedError")){ status="fault"; key="k9246"; fa="دسترسی میکروفون داده نشده است."; actionKey="k9247"; actionFa="در تنظیمات گوشی، دسترسی میکروفون به برنامه را روشن کنید."; }
+  else if(pttExisted&&detail.measurement==="none"){ status="unknown"; key="k9296"; fa="مشخص نشد."; }
   else if(!stream){ status="fault"; key="k9248"; fa="میکروفون باز شد ولی هیچ صدایی از آن نمی‌آید."; actionKey="k9249"; actionFa="هندزفری را جدا/وصل کنید و دوباره بررسی کنید."; }
   else if(sampled&&flatline){ status="fault"; key="k9248"; fa="میکروفون باز شد ولی هیچ صدایی از آن نمی‌آید."; actionKey="k9249"; actionFa="هندزفری را جدا/وصل کنید و دوباره بررسی کنید."; }
   else if(detail.trackDisabledSkipped){ status="unknown"; key="k9296"; fa="مشخص نشد."; }
@@ -31944,7 +32918,10 @@ WT.bugFind.layerSignaling=async function(seq){
       ch=(typeof SB!=="undefined"&&WT.groupId)?SB.subs["wt-"+WT.groupId]:null;
       chPresent=!!ch;
       if(ch){
-        if(typeof ch.state==="string") chState=ch.state;
+        /* Z5 gap c: read .state ONCE (see resample note below). */
+        var _cs=null;
+        try{ _cs=ch.state; }catch(e){}
+        if(typeof _cs==="string") chState=_cs;
         else if(ch.joined) chState="joined";
         else if(ch._state) chState=String(ch._state);
       }
@@ -31991,9 +32968,67 @@ WT.bugFind.layerSignaling=async function(seq){
       if(echoAt!=null) echoMs=echoAt-tSend;
     }
     detail.echoMs=echoMs; detail.echoSent=echoSent;
+    /* v10.4.36 (Z5 gap c): read-only recovery evidence + one 2s
+       re-sample, ONLY when the round-trip already failed. Nothing
+       is sent; the channel is never re-subscribed here
+       (diagnostics only — signaling behavior belongs to Z2).
+       The re-sample re-reads the channel state (single .state
+       read), the presence state via the seam, and the sync
+       timestamp; the pure classifier then decides transient vs
+       dead vs indeterminate. A stale seq (cancel / new run)
+       skips the re-reads; the classifier then runs on the
+       original evidence. */
+    var hbErrAge=null, lastSubStatus=null, joiningNow=false, resubbed=false, verifyAttempts=null, ownVerified=null;
+    try{ if(typeof SB!=="undefined"&&SB._lastHeartbeatErrAt) hbErrAge=Math.round((Date.now()-SB._lastHeartbeatErrAt)/1000); }catch(e){}
+    try{ var _dgp=(WT._diag&&WT._diag.presence)||{}; lastSubStatus=_dgp.lastSubscribeStatus||null; if(typeof _dgp.ownPresenceVerified==="boolean") ownVerified=_dgp.ownPresenceVerified; }catch(e){}
+    try{ joiningNow=!!WT._joining; }catch(e){}
+    try{ resubbed=!!WT._resubscribed; }catch(e){}
+    try{ verifyAttempts=(typeof WT._verifyAttempts==="number")?WT._verifyAttempts:null; }catch(e){}
+    var roundTripFailed=(!chPresent||!selfPresent||echoMs==null);
+    var recovered=false, resampleOutcome="not-resampled", selfPresentAfter=selfPresent;
+    var resampleState=null, resampleSyncAge=null;
+    if(roundTripFailed){
+      await WT.bugFind._sleep(2000);
+      if(seq===WT._bugFindSeq){
+        var chState2=chState, syncAge2=syncAge, selfPresent2=selfPresent;
+        try{
+          var ch2=(typeof SB!=="undefined"&&WT.groupId)?SB.subs["wt-"+WT.groupId]:null;
+          if(ch2){
+            var _cs2=null;
+            try{ _cs2=ch2.state; }catch(e){}
+            if(typeof _cs2==="string") chState2=_cs2;
+            else if(ch2.joined) chState2="joined";
+            else if(ch2._state) chState2=String(ch2._state);
+          } else chState2="missing";
+        }catch(e){}
+        try{ if(WT._lastPresenceSyncAt) syncAge2=Math.round((Date.now()-WT._lastPresenceSyncAt)/1000); }catch(e){}
+        try{
+          var state2=Deps.presenceState()||{};
+          var me2=WT.myUid();
+          Object.keys(state2).forEach(function(k){ (state2[k]||[]).forEach(function(p){ if(p&&p.uid===me2) selfPresent2=true; }); });
+        }catch(e){}
+        var stateImproved=(/^(joined|subscribed)$/i.test(String(chState2)))&&!/^(joined|subscribed)$/i.test(String(chState));
+        var syncRefreshed=(syncAge2!=null&&syncAge!=null&&syncAge2<syncAge-1)||(syncAge==null&&syncAge2!=null);
+        var selfReappeared=(!selfPresent&&selfPresent2);
+        recovered=!!(stateImproved||syncRefreshed||selfReappeared);
+        resampleOutcome=recovered?"recovered":"still-dead";
+        selfPresentAfter=selfPresent2;
+        resampleState=chState2; resampleSyncAge=syncAge2;
+      }
+    }
+    var _drop=WT.bugFind.classifyChannelDrop({echoMs:echoMs,channelPresent:chPresent,channelState:chState,selfPresent:selfPresent,syncAgeS:syncAge,heartbeatAgeS:hbAge,heartbeatErrAgeS:hbErrAge,lastSubscribeStatus:lastSubStatus,joining:joiningNow,resubscribed:resubbed,verifyAttempts:verifyAttempts,ownPresenceVerified:ownVerified,recovered:recovered});
+    detail.channelDrop=_drop.kind; detail.channelDropReason=_drop.reason;
+    detail.resampleOutcome=resampleOutcome; detail.selfPresentAfter=selfPresentAfter;
+    detail.resampleChannelState=resampleState; detail.resampleSyncAgeS=resampleSyncAge;
+    detail.heartbeatErrAgeS=hbErrAge; detail.lastSubscribeStatus=lastSubStatus;
+    detail.joiningNow=joiningNow; detail.resubscribed=resubbed;
+    detail.verifyAttempts=verifyAttempts; detail.ownPresenceVerified=ownVerified;
     var status, key, fa, actionKey=null, actionFa=null, extra={};
     var staleSync=(syncAge!=null&&syncAge>60), staleHb=(hbAge!=null&&hbAge>300);
-    if(!chPresent||!selfPresent||echoMs==null){ status="fault"; key="k9269"; fa="پیام به سرور رفت ولی برنگشت؛ اتصال زنده قطع است."; actionKey="k9270"; actionFa="از کانال خارج شوید و دوباره وارد شوید؛ اگر درست نشد، شبکه را عوض کنید."; }
+    if(!chPresent||!selfPresent||echoMs==null){
+      if(_drop.kind==="transient"){ status="warn"; key="k9267"; fa="اتصال زنده برای لحظه‌ای افتاد، ولی نشانه‌های بازگشت دیده می‌شود."; actionKey="k9272"; actionFa="چند ثانیه صبر کنید و دوباره بررسی کنید؛ اگر درست نشد، از کانال خارج شوید و دوباره وارد شوید."; }
+      else { status="fault"; key="k9269"; fa="پیام به سرور رفت ولی برنگشت؛ اتصال زنده قطع است."; actionKey="k9270"; actionFa="از کانال خارج شوید و دوباره وارد شوید؛ اگر درست نشد، شبکه را عوض کنید."; }
+    }
     else if(staleSync||staleHb){ status="warn"; key="k9299"; fa="سیگنالینگ کار می‌کند ولی به‌روزرسانی حضور کند است."; }
     else if(peersVisible>0){ status="ok"; key="k9264"; fa="سیگنالینگ کار می‌کند؛"; extra={summaryExtraNums:[peersVisible],summaryExtraKey:"k9265",summaryExtraFa:"نفر دیگر در کانال دیده می‌شوند."}; }
     else { status="ok"; key="k9266"; fa="سیگنالینگ کار می‌کند؛ کسی دیگری در کانال نیست."; }
@@ -32069,11 +33104,13 @@ WT.bugFind.layerReadiness=async function(){
   for(var i=0;i<peerUids.length;i++){
     var uid=peerUids[i], pc=null;
     try{ pc=WT.pc?WT.pc[uid]:null; }catch(e){}
-    var entry={label:"peer-"+(i+1),pc:!!pc,ice:"none",conn:"none",sig:"none",pcAgeS:0,offers:0,iceQueued:0,pair:null,pairStale:false,media:false,noMediaYet:false,connected:false};
+    var entry={label:"peer-"+(i+1),pc:!!pc,ice:"none",conn:"none",sig:"none",pcAgeS:0,offers:0,restarts:0,iceQueued:0,pair:null,pairStale:false,media:false,noMediaYet:false,connected:false};
     if(pc){
       try{ entry.ice=pc.iceConnectionState||"unknown"; entry.conn=pc.connectionState||"unknown"; entry.sig=pc.signalingState||"unknown"; }catch(e){}
       try{ if(WT._pcSince&&WT._pcSince[uid]) entry.pcAgeS=Math.max(0,Math.round((Date.now()-WT._pcSince[uid])/1000)); }catch(e){}
       try{ entry.offers=WT._offerTries?WT._offerTries[uid]||0:0; }catch(e){}
+      /* Z5 (cross-thread Z1+Z3): restarts live in WT._restartTries[uid]; absent map -> 0. */
+      try{ entry.restarts=WT._restartTries?WT._restartTries[uid]||0:0; }catch(e){}
       try{ entry.iceQueued=(WT._iceQueue&&WT._iceQueue[uid])?WT._iceQueue[uid].length:0; }catch(e){}
       var snap=null;
       try{ snap=await WT._pairSnapshot(uid,3000); }catch(e){ snap=null; }
@@ -32308,7 +33345,16 @@ WT.bugFind.buildReport=function(st){
     (d2.hosts||[]).forEach(function(hh){
       var det;
       if(hh.verdict==="dns-fault") det=hh.ok+"/"+hh.total+" urls dns-error";
-      else if(hh.verdict==="unreachable") det=hh.ok+"/"+hh.total+" urls timeout, cause undetermined";
+      else if(hh.verdict==="unreachable"){
+        /* Z5 gap b: dns-error vs timeout vs other-error are
+           distinct classes — name the mix; "cause undetermined"
+           only when no record explains the failure. */
+        var _parts=[];
+        if(hh.dnsErrors>0) _parts.push(hh.dnsErrors+" dns-error");
+        if(hh.timeouts>0) _parts.push(hh.timeouts+" timeout");
+        if(hh.otherErrors>0) _parts.push(hh.otherErrors+" error/"+(hh.dominantOtherClass||"ice-error"));
+        det=hh.ok+"/"+hh.total+" urls "+(_parts.length?_parts.join(", "):"timeout, cause undetermined");
+      }
       else if(hh.verdict==="mixed") det=hh.ok+"/"+hh.total+" urls ok; "+hh.dnsErrors+" dns-error";
       else if(hh.verdict==="not-tested") det=hh.ok+"/"+hh.total+" urls not-tested";
       else if(hh.ok===0) det=hh.ok+"/"+hh.total+" urls gathered";
@@ -32317,6 +33363,21 @@ WT.bugFind.buildReport=function(st){
     });
     var dq=d2.dohQueries||{ok:0,failed:0,notQueried:0};
     lines.push("doh_queries: "+(dq.ok||0)+" ok, "+(dq.failed||0)+" failed, "+(dq.notQueried||0)+" not-queried");
+    /* Z5 gap b: endpoint status + failure CLASSES (never raw error
+       text) + the L2 fault class, so dns vs timeout vs error are
+       distinct verdict classes in the shared report. */
+    var _dep=d2.dohEndpoint||null;
+    if(_dep){
+      var _depTxt="doh_endpoint: "+(_dep.status||"unknown");
+      if(_dep.status==="unreachable") _depTxt+=" (google: "+(_dep.googleErrorClass||"unknown")+", cloudflare: "+(_dep.cloudflareErrorClass||"unknown")+")";
+      else if(_dep.status==="cloudflare-fallback") _depTxt+=" (google failed: "+(_dep.googleErrorClass||"unknown")+"; cloudflare ok)";
+      else if(_dep.status==="not-queried"&&_dep.reason) _depTxt+=" ("+_dep.reason+")";
+      lines.push(_depTxt);
+    } else { lines.push("doh_endpoint: unknown"); }
+    var _lfc="none";
+    if(d2.faultClass==="dns") _lfc="dns";
+    else if(d2.faultClass==="unreachable") _lfc="unreachable-"+(d2.unreachableClass||"mixed");
+    lines.push("l2_fault_class: "+_lfc);
   }
   lines.push("");
   /* [3 relay/turn] */
@@ -32359,7 +33420,15 @@ WT.bugFind.buildReport=function(st){
     var streamLine="none";
     if(d4.stream==="reused-live") streamLine="reused-live";
     else if(d4.stream==="temporary") streamLine="temporary, attempt: "+unk(d4.attempt);
+    else if(d4.stream==="independent") streamLine="independent, attempt: "+unk(d4.attempt);
+    else if(d4.measurement==="none"&&d4.independentErrorName) streamLine="none (independent attempt failed: "+unk(d4.independentErrorName)+")";
     lines.push("stream: "+streamLine);
+    /* Z5 gap a: PTT track facts + independent-attempt error (name
+       only, never a message that could carry internals). */
+    if(d4.measurement==="independent"||d4.independentErrorName){
+      lines.push("ptt_track: "+unk(d4.pttTrackState)+", enabled="+yn(d4.pttTrackEnabled)+", muted="+yn(d4.pttTrackMuted)+(d4.independentReason?(" ("+d4.independentReason+")"):""));
+    }
+    if(d4.independentErrorName) lines.push("independent_error: "+unk(d4.independentErrorName));
     var trackLine="none";
     if(d4.trackState&&d4.trackState!=="none") trackLine=d4.trackState+", enabled="+yn(d4.trackEnabled)+", muted="+yn(d4.trackMuted);
     lines.push("track: "+trackLine);
@@ -32370,7 +33439,8 @@ WT.bugFind.buildReport=function(st){
     } else if(d4.trackDisabledSkipped){
       lines.push("peak_rms: unknown");
       lines.push("mean_rms: unknown");
-      lines.push("samples_above_speech: skipped (track disabled)");
+      if(d4.independentErrorName) lines.push("samples_above_speech: skipped (independent attempt failed: "+unk(d4.independentErrorName)+")");
+      else lines.push("samples_above_speech: skipped (track disabled)");
     } else {
       lines.push("peak_rms: unknown");
       lines.push("mean_rms: unknown");
@@ -32416,6 +33486,7 @@ WT.bugFind.buildReport=function(st){
     lines.push("peers_visible: unknown (not joined)");
     lines.push("group_selected: "+yn(d6.groupSelected));
     lines.push("heartbeat_age_s: "+unk(d6.heartbeatAgeS));
+    lines.push("channel_drop: n/a (not joined)");
   }
   else{
     lines.push("path: joined");
@@ -32429,6 +33500,13 @@ WT.bugFind.buildReport=function(st){
     lines.push("presence_sync_age_s: "+unk(d6.presenceSyncAgeS));
     lines.push("heartbeat_age_s: "+unk(d6.heartbeatAgeS));
     lines.push("peers_in_wt_peers: "+unk(d6.peersInWtPeers));
+    /* Z5 gap c: drop classification + resample outcome + recovery
+       signals (class tokens, counts, status words, ages only —
+       the sanitizer still runs over the whole report). */
+    lines.push("channel_drop: "+unk(d6.channelDrop));
+    lines.push("resample_after_echo_fail: "+unk(d6.resampleOutcome));
+    var _rs="resample="+(d6.resampleOutcome||"unknown")+"; heartbeat_err_age_s="+unk(d6.heartbeatErrAgeS)+"; last_subscribe="+unk(d6.lastSubscribeStatus)+"; joining="+yn(d6.joiningNow)+"; resubscribed="+yn(d6.resubscribed)+"; verify_attempts="+unk(d6.verifyAttempts)+"; own_verified="+yn(d6.ownPresenceVerified);
+    lines.push("recovery_signals: "+_rs);
   }
   lines.push("");
   /* [7 readiness] — the report ends with the readiness line. */
@@ -32439,14 +33517,14 @@ WT.bugFind.buildReport=function(st){
     lines.push("peers: "+((d7.peers||[]).length));
     if(!(d7.peers||[]).length){ lines.push("pairs: none"); }
     (d7.peers||[]).forEach(function(pp){
-      if(!pp.pc){ lines.push(pp.label+": pc=none ice=none conn=none sig=none pc_age_s=0 offers=0 ice_queued=0 pair=none rtt_ms=unknown bytes=unknown media=no"); return; }
+      if(!pp.pc){ lines.push(pp.label+": pc=none ice=none conn=none sig=none pc_age_s=0 offers=0 restarts=0 ice_queued=0 pair=none rtt_ms=unknown bytes=unknown media=no"); return; }
       var pairTxt="pair=none rtt_ms=unknown bytes=unknown media=no";
       if(pp.pair){
         pairTxt="pair="+pp.pair.localType+"->"+pp.pair.remoteType+" rtt_ms="+unk(pp.pair.rtt)+" bytes="+unk(pp.pair.bytes)+" media="+(pp.media?"yes":"no");
         if(pp.pairStale) pairTxt+=" stale";
       }
       if(pp.noMediaYet) pairTxt+=" no-media-yet";
-      lines.push(pp.label+": ice="+pp.ice+" conn="+pp.conn+" sig="+pp.sig+" pc_age_s="+pp.pcAgeS+" offers="+pp.offers+" ice_queued="+pp.iceQueued+" "+pairTxt);
+      lines.push(pp.label+": ice="+pp.ice+" conn="+pp.conn+" sig="+pp.sig+" pc_age_s="+pp.pcAgeS+" offers="+pp.offers+" restarts="+(pp.restarts||0)+" ice_queued="+pp.iceQueued+" "+pairTxt);
     });
     var cc=d7.cands||{host:0,srflx:0,relay:0,other:0};
     lines.push("cands: host="+(cc.host||0)+" srflx="+(cc.srflx||0)+" relay="+(cc.relay||0)+" other="+(cc.other||0));
@@ -32516,7 +33594,7 @@ WT.bugFind.paint=function(){
     var d=res.detail||{};
     try{
       if(num===1) return ["server_version: "+(d.version||(d.versionSkipped?"skipped: "+d.versionSkipped:"unknown")),"identity: "+(d.identity||"unknown")+", key_gate: "+(d.keyGate||"unknown"),"session: "+(d.session||"unknown")];
-      if(num===2) return (d.hosts||[]).map(function(hh){ return hh.host+" → "+hh.verdict+" (doh: "+(hh.doh||"unknown")+")"+(hh.isControl?" [control]":""); });
+      if(num===2){ var l2arr=(d.hosts||[]).map(function(hh){ return hh.host+" → "+hh.verdict+" (doh: "+(hh.doh||"unknown")+")"+(hh.isControl?" [control]":""); }); if(d.faultClass) l2arr.unshift("fault_class: "+d.faultClass+(d.unreachableClass?" ("+d.unreachableClass+")":"")); if(d.dohEndpoint) l2arr.push("doh_endpoint: "+(d.dohEndpoint.status||"unknown")+(d.dohEndpoint.googleErrorClass?(" (google: "+d.dohEndpoint.googleErrorClass+(d.dohEndpoint.cloudflareErrorClass?", cloudflare: "+d.dohEndpoint.cloudflareErrorClass:"")+")"):"")); return l2arr; }
       if(num===3){
         var arr2=["allocated: "+(d.appAllocated||0)+" app / "+(d.allocatedCount||0)+" total, listed: "+(d.listedCount||0)];
         if(d.mint) arr2.push("mint: turnix "+(d.mint.turnix||"?")+", metered "+(d.mint.metered||"?")+", expressturn "+(d.mint.expressturn||"?"));
@@ -32527,11 +33605,14 @@ WT.bugFind.paint=function(){
         if(d.iceMode) arr2.push("ice_mode: "+(d.iceMode.effective||"?")+" ("+(d.iceMode.source||"?")+")");
         return arr2;
       }
-      if(num===4) return ["peak_rms: "+(d.samplesTotal>0?d.peakRms:"unknown")+", samples: "+(d.samplesTotal>0?(d.samplesAbove+"/"+d.samplesTotal):"none"),"stream: "+(d.stream||"none")+", permission: "+(d.permission||"unknown")];
+      if(num===4){ var l4arr=["peak_rms: "+(d.samplesTotal>0?d.peakRms:"unknown")+", samples: "+(d.samplesTotal>0?(d.samplesAbove+"/"+d.samplesTotal):"none"),"stream: "+(d.stream||"none")+", permission: "+(d.permission||"unknown")]; if(d.measurement==="independent"||d.independentErrorName) l4arr.push("ptt_track: "+(d.pttTrackState||"unknown")+", enabled="+(d.pttTrackEnabled==null?"unknown":(d.pttTrackEnabled?"yes":"no"))+(d.independentReason?(" ("+d.independentReason+")"):"")); if(d.independentErrorName) l4arr.push("independent_error: "+d.independentErrorName); return l4arr; }
       if(num===5) return ["heard: "+(d.heard||"unknown")+", slot: "+(d.slot||"unknown"),"muted: "+(d.sfxMuted==null?"unknown":(d.sfxMuted?"yes":"no"))+", routing: "+(d.routing||"unknown")];
       if(num===6){
         if(d.path==="probe-channel") return ["subscribed: "+(d.subscribed==null?"unknown":(d.subscribed?"yes":"no"))+", readback: "+(d.selfReadback==null?"unknown":(d.selfReadback?"yes":"no"))+", cleaned: "+(d.cleanedUp==null?"unknown":(d.cleanedUp?"yes":"no")),"group_selected: "+(d.groupSelected==null?"unknown":(d.groupSelected?"yes":"no"))];
-        return ["peers: "+(d.peersVisible==null?"unknown":d.peersVisible)+", echo: "+(d.echoMs==null?"timeout":d.echoMs+"ms"),"sync_age: "+(d.presenceSyncAgeS==null?"unknown":d.presenceSyncAgeS+"s")+", heartbeat: "+(d.heartbeatAgeS==null?"unknown":d.heartbeatAgeS+"s")];
+        var l6arr=["peers: "+(d.peersVisible==null?"unknown":d.peersVisible)+", echo: "+(d.echoMs==null?"timeout":d.echoMs+"ms"),"sync_age: "+(d.presenceSyncAgeS==null?"unknown":d.presenceSyncAgeS+"s")+", heartbeat: "+(d.heartbeatAgeS==null?"unknown":d.heartbeatAgeS+"s")];
+        if(d.channelDrop) l6arr.push("channel_drop: "+d.channelDrop+(d.channelDropReason?(" ("+d.channelDropReason+")"):""));
+        if(d.resampleOutcome) l6arr.push("resample: "+d.resampleOutcome);
+        return l6arr;
       }
       if(num===7){
         var pr=(d.peers||[]).map(function(pp){ return pp.label+":"+pp.ice+"/"+(pp.pair?(pp.pair.localType+"->"+pp.pair.remoteType):"none"); }).join(", ");
