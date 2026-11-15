@@ -1848,12 +1848,8 @@ body[data-theme="haker"] .srv-note.warn,body[data-theme="solo"] .srv-note.warn,b
 .pw-card{margin:8px 0;padding:12px;border-radius:14px;border:1px solid var(--acc);background-color:var(--accSoft);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 6px 18px rgba(0,0,0,.18)}
 .pw-head{font-size:14px;font-weight:800;margin-bottom:4px}
 .pw-text{font-size:13px;line-height:1.8}
-.pw-text.pw-encoded{font-family:monospace;direction:ltr;text-align:left;letter-spacing:2px;background:rgba(0,0,0,.25);padding:8px;border-radius:8px;overflow-x:auto}
 .pw-target{font-size:13px;font-weight:700}
 .pw-claim{border-color:#f59e0b;background-color:rgba(245,158,11,.18)}
-.pw-letter{border:1px dashed var(--acc);border-radius:12px;padding:10px;margin:8px 0;font-size:13px;line-height:1.8;background:var(--accSoft)}
-.pw-letters{margin:8px 0}
-.pw-poem{font-style:italic;line-height:2;padding:10px;border-inline-start:3px solid var(--acc);background:var(--accSoft);border-radius:10px}
 .pw-song{font-size:18px;letter-spacing:6px;text-align:center}
 .pw-march,.pw-parade-row{display:flex;gap:6px;overflow:hidden;padding:6px 0}
 /* v10.4.34 (X1 F1): march was infinite; now finite (2.6s) and gated
@@ -1914,15 +1910,9 @@ body[data-theme="haker"] .srv-note.warn,body[data-theme="solo"] .srv-note.warn,b
 @keyframes flagWave{0%,100%{transform:skewX(0) rotate(0)}25%{transform:skewX(-6deg) rotate(-4deg)}75%{transform:skewX(6deg) rotate(4deg)}}
 .pw-card.pw-fresh.pw-banner[data-pw="sys_alert"]{animation:alertPulse .5s ease-in-out 3}
 @keyframes alertPulse{0%,100%{opacity:1}50%{opacity:.62}}
-.pw-fortress{position:relative}
-.pw-fortress::before{content:"▓▓▓";position:absolute;bottom:2px;inset-inline-start:10px;font-size:12px;letter-spacing:4px;color:#64748b}
-.pw-card.pw-fresh.pw-fortress::before{animation:wallRise 1.2s ease-out 1}
-@keyframes wallRise{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
 .pw-dance .pw-fx-mark{display:inline-block}
 .pw-card.pw-fresh.pw-dance .pw-fx-mark{animation:danceBounce .5s ease-in-out 4}
 @keyframes danceBounce{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-6px) rotate(6deg)}}
-.pw-card.pw-fresh.pw-poem .pw-text{animation:poemFade 1.8s ease-out 1}
-@keyframes poemFade{from{opacity:0}to{opacity:1}}
 .pw-card.pw-fresh.pw-halloween{animation:pumpkinGlow .6s ease-in-out 3}
 @keyframes pumpkinGlow{0%,100%{opacity:1}50%{opacity:.7}}
 /* Chat-wide derived states (applied to the messages container) */
@@ -1991,9 +1981,6 @@ body[data-theme="haker"] .srv-note.warn,body[data-theme="solo"] .srv-note.warn,b
 
 /* ===== New frames (23:45 game rules) + super user + audio routing ===== */
 .frame_frog{box-shadow:0 0 0 2px #4ade80,0 0 12px rgba(74,222,128,.7)}
-.frame_bat{box-shadow:0 0 0 2px #7c3aed,0 0 14px rgba(124,58,237,.75)}
-.frame_survivor{box-shadow:0 0 0 2px #f97316,0 0 14px rgba(249,115,22,.75)}
-.frame_defeated{box-shadow:0 0 0 2px #64748b,0 0 10px rgba(100,116,139,.6);filter:grayscale(.6)}
 .super-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;color:#1a1207;background:linear-gradient(135deg,#fbbf24,#f59e0b);border:1px solid #fde68a;box-shadow:0 0 10px rgba(251,191,36,.5)}
 .sup-badge{width:16px;height:20px;border-radius:4px;object-fit:cover;vertical-align:-4px;margin-inline-start:4px;flex:none;box-shadow:0 0 6px rgba(251,191,36,.35)}
 .super-card{border-color:#f59e0b;background:linear-gradient(135deg,rgba(245,158,11,.12),transparent 70%)}
@@ -2049,8 +2036,6 @@ body[data-theme="haker"] .srv-note.warn,body[data-theme="solo"] .srv-note.warn,b
 .pw-banner-alert .pw-head{color:#ef4444}
 .pw-card.pw-fresh.pw-crash{animation:crashShake .45s ease-in-out 2}
 @keyframes crashShake{0%,100%{transform:none}20%{transform:translateX(-8px) rotate(-2deg)}40%{transform:translateX(7px) rotate(2deg)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
-.pw-card.pw-fresh.pw-takeoff{animation:takeoffUp 1.6s ease-in}
-@keyframes takeoffUp{0%{transform:translateY(14px);opacity:.4}100%{transform:translateY(-6px);opacity:1}}
 .pw-turbo{position:relative;overflow:hidden}
 .pw-turbo::after{content:"";position:absolute;top:0;bottom:0;left:-32px;width:calc(100% + 64px);background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(255,255,255,.35) 14px 16px);pointer-events:none}
 .pw-card.pw-fresh.pw-turbo::after{animation:turboStreak .5s linear 4}
@@ -2066,8 +2051,14 @@ body[data-theme="haker"] .srv-note.warn,body[data-theme="solo"] .srv-note.warn,b
 .pw-shield-chat{box-shadow:inset 0 0 0 2px rgba(59,130,246,.55),inset 0 0 40px rgba(59,130,246,.18)}
 .pw-magic-chat{box-shadow:inset 0 0 40px rgba(168,85,247,.28)}
 .pw-night-chat{box-shadow:inset 0 0 60px rgba(0,0,0,.55)}
-.pw-fortress{border:2px solid #64748b}
-.pw-fortress-banner{margin:0 0 10px;padding:10px 12px;border-radius:12px;text-align:center;font-weight:700;background:#f1f5f9;border:1px solid #64748b;color:#334155}
+/* v10.4.38 — replacement-power chat overlays (static inset glows,
+   same style as pw-magic-chat) + shadow avatar state. */
+.pw-rune-chat{box-shadow:inset 0 0 40px rgba(167,139,250,.28)}
+.pw-glint-chat{box-shadow:inset 0 0 40px rgba(16,185,129,.28)}
+.pw-beacon-chat{box-shadow:inset 0 0 50px rgba(45,212,191,.25)}
+.pw-grid-chat{box-shadow:inset 0 0 40px rgba(34,211,238,.22)}
+.pw-crimson-chat{box-shadow:inset 0 0 50px rgba(225,29,72,.28)}
+.msg-shadow .og-msg-head svg,.msg-shadow .og-msg-head img{filter:brightness(.22) saturate(.4) drop-shadow(0 0 6px rgba(0,0,0,.7))}
 .frame_heart{box-shadow:0 0 0 2px #f472b6,0 0 16px rgba(244,114,182,.8)}
 .msg-pinned{border:2px solid var(--acc2);box-shadow:0 0 14px rgba(201,162,39,.45)}
 .msg-bullseye{outline:2px dashed #ef4444;outline-offset:2px}
@@ -3603,7 +3594,7 @@ var S={
      S.tasks; ledger flashcards ride S.flashDecks). No new server code. */
   b5Bingo:{size:3,cards:{},seq:0}, b5Sudoku:{diff:"easy",puzzle:null,solution:null,grid:null,notes:{},mistakes:0,seed:0,daily:false,solved:{}}, b5SigWord:{lang:"fa",hard:false,day:"",target:"",guesses:[],done:false,won:false,stats:{played:0,won:0,streak:0}}, b5Nono:{size:5,pat:0,grid:{},marks:{},solved:{},daily:false,seed:0}, b5Set:{deck:[],table:[],found:0,selected:[],wrong:0,started:false}, b5Code:{secret:[],guesses:[],daily:false,seed:0,cur:[],done:false,won:false}, b5Riddle:{dayOff:0,state:{},streak:0,lastSolved:null}, b5Numbers:{day:"",revealed:{},done:false}, b5Repeat:{best:0,strict:false,reverse:false}, b5Mock:{exams:[],active:null,results:[]}, b5Ledger:{entries:[]}, b5Grades:{courses:[]}, b5Rev:{plans:[]}, b5Queue:{items:[],idx:0,mode:"manual",breakMin:5,running:false,left:0}, b5Formulas:{entries:[],sheet:[]}, b5Zettel:{notes:[],links:[]}, b5Ivy:{lists:{},draft:[]}, b5Matrix:{matrices:[]}, b5DecJournal:{entries:[]},
   weekDecisions:{}, supporterNotes:[""], challenge:"", strategy:"",
-  calCursor:null, calSel:null, theme:"zomorod", mode:"light", plans:[], subKeys:[], mySub:null, mySuper:null, superKeys:[], onlineLastSeen:{}, loggedIn:false, keyGateShown:false, permMic:false, permNotif:false, permBg:false, permCal:false, permLoc:false, permStorage:false, ghostMode:false, ghostUntil:0, onlineStats:null, sfxMute:false, sfxVol:0.6, avUnlockSeen:[], homeLayout:null, customWidgets:[], subSales:{telegramOn:true,telegramId:"Albakorov",gatewayOn:false,gatewayName:"",merchantId:"",payLink:""}
+  calCursor:null, calSel:null, theme:"zomorod", mode:"light", plans:[], subKeys:[], mySub:null, mySuper:null, superKeys:[], onlineLastSeen:{}, loggedIn:false, keyGateShown:false, permMic:false, permNotif:false, permBg:false, permCal:false, permLoc:false, permStorage:false, onlineStats:null, sfxMute:false, sfxVol:0.6, avUnlockSeen:[], homeLayout:null, customWidgets:[], subSales:{telegramOn:true,telegramId:"Albakorov",gatewayOn:false,gatewayName:"",merchantId:"",payLink:""}
 };
 /* v10.4.18 — fresh-state snapshot (per-account state, #27): captured here,
    immediately after the S literal, before boot() or any login mutates it.
@@ -4981,7 +4972,7 @@ var GFX={
      timers so a played card ends identical to a stale-rendered one;
      _playGen coalesces delayed confetti bursts (a new trigger replaces
      the previous sequence instead of stacking with it). */
-  _FRESH_CLASSES:["pw-fire","pw-lantern","pw-bat","pw-halloween","pw-scare","pw-storm","pw-quake","pw-matrix","pw-fireworks","pw-laser","pw-coins","pw-meteor","pw-pumpkin","pw-fog-card","pw-lullaby","pw-song","pw-dance","pw-poem","pw-parade","pw-patrol","pw-fly","pw-rest","pw-takeoff","pw-turbo","pw-crash","pw-confetti","pw-loot","pw-ping","pw-tower","pw-fortress"],
+  _FRESH_CLASSES:["pw-fire","pw-lantern","pw-bat","pw-halloween","pw-scare","pw-storm","pw-quake","pw-matrix","pw-fireworks","pw-laser","pw-coins","pw-meteor","pw-pumpkin","pw-fog-card","pw-lullaby","pw-song","pw-dance","pw-parade","pw-patrol","pw-fly","pw-rest","pw-turbo","pw-crash","pw-confetti","pw-loot","pw-ping","pw-tower"],
   _playGen:0,
   _reduce:function(){ try{ return !!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches); }catch(e){ return false; } },
   _gsap:function(){ return (typeof window.gsap!=="undefined")?window.gsap:null; },
@@ -4989,66 +4980,69 @@ var GFX={
   FX:{
   summon_all:["📯","burst",["#f59e0b","#ef4444","#22c55e"]],
   crown:["👑","pulse","#fbbf24"],
-  prophecy:["🔮","breathe","#a78bfa"],
+  rune_circle:["🧿","breathe","#a78bfa"],
   blessing:["🙏","breathe","#fbbf24"],
-  dream_riddle:["💭","float","#a78bfa"],
-  focus_duel:["⚔️","shake","#ef4444"],
+  spirit_drum:["🥁","pulse","#f59e0b"],
+  spartan_charge:["⚔️","shake","#ef4444"],
+  war_ballad:["🎶","float","#fbbf24"],
   bullseye:["🎯","pulse","#ef4444"],
   crosshair:["◎","pulse","#f97316"],
-  night_vision:["👁️","breathe","#22c55e"],
-  one_shot:["🔫","shake","#ef4444"],
+  scope_glint:["🔆","breathe","#22c55e"],
+  deadeye_flash:["💥","shake","#f97316"],
   ambush:["🥷","sweep","#64748b"],
-  encrypted_msg:["🔐","sweep","#38bdf8"],
-  subchannel:["📻","float","#38bdf8"],
+  glitch_wave:["👾","sweep","#38bdf8"],
+  signal_burst:["📡","burst",["#38bdf8","#22d3ee"]],
   hack_color:["🎨","burst",["#ff2ea6","#22d3ee"]],
   revive:["💫","breathe","#4ade80"],
   adrenaline:["💉","pulse","#ef4444"],
   big_heart:["❤️","pulse","#f472b6"],
-  wellness_poll:["📊","float","#22c55e"],
-  eagle_eye:["🦅","sweep","#38bdf8"],
-  treasure_hunt:["🗺️","sweep","#f59e0b"],
-  streak_post:["🔥","flame","#f97316"],
-  binoculars:["🔭","float","#38bdf8"],
-  robot_msg:["🤖","float","#94a3b8"],
+  medic_beacon:["🔦","breathe","#4ade80"],
+  falcon_swoop:["🦅","sweep","#38bdf8"],
+  gold_vein:["⛏️","breathe","#f59e0b"],
+  trail_blaze:["🔥","flame","#f97316"],
+  horizon_scan:["🔭","float","#38bdf8"],
+  arc_welder:["🔌","burst",["#38bdf8","#fde047"]],
   golden_border:["✨","pulse","#f59e0b"],
-  fun_dossier:["📁","float","#f59e0b"],
-  secret_mission:["🕵️","sweep","#64748b"],
-  activity_listen:["🎧","float","#a78bfa"],
-  private_letter:["💌","float","#f472b6"],
-  secret_code:["🔢","sweep","#38bdf8"],
+  marked_agent:["🎖️","pulse","#94a3b8"],
+  smoke_screen:["🌫️","breathe","#94a3b8"],
+  static_hum:["🔊","float","#a78bfa"],
+  sealed_wax:["🕯️","pulse","#ef4444"],
+  cipher_spark:["✨","sweep","#22d3ee"],
   shield:["🛡️","pulse","#3b82f6"],
+  bastion_glow:["🏰","pulse","#3b82f6"],
   armor_frame:["🛡️","pulse","#94a3b8"],
-  adventure_card:["🗺️","float","#22c55e"],
-  race_game:["🏁","shake","#f59e0b"],
+  ranger_banner:["🌲","float","#22c55e"],
+  swift_wind:["💨","float","#38bdf8"],
   journey:["🧭","float","#22c55e"],
-  chess_move:["♟️","float","#94a3b8"],
-  bet_top:["🏆","burst",["#f59e0b","#fde047"]],
-  task_swap:["🔄","sweep","#38bdf8"],
+  afterburner:["✈️","float","#38bdf8"],
+  tactical_grid:["📐","float","#38bdf8"],
+  golden_gambit:["🌟","burst",["#f59e0b","#fde047"]],
+  flanking_glow:["🧊","pulse","#38bdf8"],
   surprise:["🎁","burst",["#f59e0b","#ec4899","#22c55e"]],
   trap:["🪤","shake","#65a30d"],
   chest:["🧰","burst",["#f59e0b","#b45309"]],
-  lottery:["🎰","burst",["#f59e0b","#ef4444","#22c55e"]],
-  caravan:["🐫","float","#d97706"],
+  supply_drop:["📦","burst",["#f59e0b","#b45309"]],
+  lantern_convoy:["🏮","float","#f59e0b"],
   avatar_swap:["🔄","sweep","#a78bfa"],
-  ghost_mode:["👻","breathe","#a78bfa"],
-  msg_anonymous:["🎭","sweep","#64748b"],
+  phantom_mist:["👻","breathe","#a78bfa"],
+  wraith_glide:["🌀","sweep","#818cf8"],
   shadow:["🌑","breathe","#64748b"],
-  session_midnight:["🌙","breathe","#818cf8"],
-  phase:["🌗","breathe","#818cf8"],
+  midnight_bell:["🌙","breathe","#818cf8"],
+  phase_shimmer:["🌗","breathe","#818cf8"],
   name_color_spell:["🌈","burst",["#f472b6","#facc15","#38bdf8"]],
-  magic_room:["🪄","breathe","#a78bfa"],
-  fortune:["🍀","breathe","#22c55e"],
+  arcane_circle:["🪄","breathe","#a78bfa"],
+  star_charm:["⭐","burst",["#fde047","#22c55e"]],
   luck_potion:["🍀","burst",["#22c55e","#fde047"]],
   night_mode:["🌃","breathe","#818cf8"],
-  night_hunt:["🦇","sweep","#7c3aed"],
-  immortality:["♾️","breathe","#fbbf24"],
+  crimson_moon:["🌕","breathe","#e11d48"],
+  eternal_dusk:["🌇","breathe","#f97316"],
   bite:["🧛","shake","#ef4444"],
-  infection:["🧟","shake","#65a30d"],
-  comeback:["💪","pulse","#f97316"],
-  survival_challenge:["⛺","pulse","#f97316"],
-  shelter:["🏠","breathe","#38bdf8"],
+  toxic_spores:["☣️","breathe","#65a30d"],
+  risen_glow:["🧟","pulse","#65a30d"],
+  barricade_glow:["🧱","pulse","#f59e0b"],
+  safehouse_lights:["💡","breathe","#fbbf24"],
   candy:["🍬","burst",["#ec4899","#f59e0b"]],
-  trick_or_treat:["🎃","burst",["#f97316","#a855f7"]]
+  candy_shower:["🍭","burst",["#ec4899","#f59e0b"]]
   },
   markHTML:function(perm){
     var f=this.FX[perm]; var em=f?f[0]:"\u26a1";
@@ -5133,13 +5127,13 @@ var GFX={
     var isClaim=false; try{ isClaim=el.hasAttribute("data-pw-claim"); }catch(e){}
     if(perm==="celebrate_event"||perm==="emergency_landing"){ this._celebrate(el,_gen); return; }
     if(perm==="coin_rain"){ this._coins(el,_gen); return; }
-    if(perm==="lottery"||perm==="chest"){ this._win(el); return; }
+    if(perm==="chest"){ this._win(el); return; }
     if(perm==="storm"){ this._storm(el,gs); return; }
     if(perm==="fire"||perm==="sacred_fire"||perm==="war_cry"||perm==="rage"){ this._flame(el,gs,color); return; }
     if(perm==="fog"){ this._fog(el,gs); return; }
     if(perm==="rest"||perm==="lullaby"){ this._breathe(el,gs,color,0.85,2); return; }
     if(perm==="matrix_rain"){ this._matrix(el,gs); return; }
-    if(isClaim&&(perm==="surprise"||perm==="bet_top"||perm==="treasure_hunt"||perm==="secret_code"||perm==="dream_riddle")){ this._win(el); return; }
+    if(isClaim&&(perm==="surprise")){ this._win(el); return; }
     if(motion==="burst"){ this.burst(el,{particleCount:12,spread:80,colors:palette}); }
     else if(motion==="sweep"){ this._sweep(el,gs); }
     else if(motion==="pulse"){ if(gs){ gs.fromTo(el,{scale:1},{scale:1.035,duration:0.4,yoyo:true,repeat:3,ease:"power2.inOut",clearProps:"scale"}); } }
@@ -8576,8 +8570,6 @@ function drawGroupChat(){
       try{ if(PW._expTimer) clearTimeout(PW._expTimer); }catch(e){}
       PW._expTimer=setTimeout(function(){ if(curView==="chat") drawGroupChat(); }, Math.max(500,Math.min(_nextExp-_now+500,120000)));
     }
-    var _fort=false;
-    try{ _fort=PW.fortressActive&&PW.fortressActive(); }catch(e){}
     /* v10.4.32 (T4): the group header — with the three role/chat buttons —
        lives in the FIXED #gChatHead bar above the scrollable chatbox, NOT
        inside #gChatBox: drawGroupChat scrolls the box to the newest
@@ -8585,15 +8577,13 @@ function drawGroupChat(){
        whenever messages existed. Same HTML, same handlers, new home.
        Fallback: if #gChatHead is absent (a bare-box render), the header
        still renders inside the box as before. */
-    var _ghead='<div class="ghead" style="justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div><b>'+esc(OG.sel.name)+'</b> <span class="on-badge" data-onbadge><span class="dot"></span>'+TR('k2066','متصل')+'</span></div><div class="rowflex"><button class="btn ghost sm" onclick="PW.openSheet()">⚡ '+TR('k2139','قدرت‌های چت')+'</button><button class="btn ghost sm" onclick="openModal(PW.lettersHTML())">✉️ '+TR('k2326','نامه‌های خصوصی من')+'</button><button class="btn ghost sm" onclick="go(\'pchatlist\')">💬 '+TR('k3002','چت شخصی')+'</button></div></div>';
+    var _ghead='<div class="ghead" style="justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div><b>'+esc(OG.sel.name)+'</b> <span class="on-badge" data-onbadge><span class="dot"></span>'+TR('k2066','متصل')+'</span></div><div class="rowflex"><button class="btn ghost sm" onclick="PW.openSheet()">⚡ '+TR('k2139','قدرت‌های چت')+'</button><button class="btn ghost sm" onclick="go(\'pchatlist\')">💬 '+TR('k3002','چت شخصی')+'</button></div></div>';
     var _gh=$("gChatHead");
     if(_gh){ _gh.innerHTML=_ghead; }
     var h=_gh?"":_ghead;
-    if(_fort) h+='<div class="pw-fortress-banner">🔒 '+TR('k9032','قلعه فعال است — چت فقط برای مدیران باز است')+'</div>';
     h+='<p class="small" style="margin:0 0 10px">'+TR('k2830','سابقه چت گروهی هر هفته پاک می‌شود؛ پیام‌های قدیمی‌تر از ۷ روز حذف می‌شوند')+'.</p>';
     if(OG._msgsLoading&&!_visible.length) h+='<p class="small">'+TR('k2843','در حال بارگذاری پیام‌ها…')+'.</p>';
     h+=_visible.map(function(m){ return ogMsgHTML(m); }).join("");
-    try{ var _inp=$("gChatInp"); if(_inp) _inp.disabled=_fort&&!(OG.isAdmin&&OG.isAdmin()); }catch(e){}
     box.innerHTML=h;
     /* v10.4.34 (X1 F5): scroll follows ONLY when the user was already
        near the bottom (<=120px); a user reading older messages keeps
@@ -8603,7 +8593,7 @@ function drawGroupChat(){
       if(_prevMax-_prevTop<=120){ box.scrollTop=box.scrollHeight; }
       else { box.scrollTop=Math.min(_prevTop,_newMax); }
     }catch(e){ try{ box.scrollTop=box.scrollHeight; }catch(e2){} }
-    try{ OG._chatRendered={groupId:OG.sel.id,count:_visible.length,lastId:_visible.length?_visible[_visible.length-1].id:null,fort:_fort,cls:box.className}; }catch(e){}
+    try{ OG._chatRendered={groupId:OG.sel.id,count:_visible.length,lastId:_visible.length?_visible[_visible.length-1].id:null,cls:box.className}; }catch(e){}
     /* v10.4.31 (Thread 1): the chat header badge is hardcoded «متصل» in
        this template — an in-place redraw must repaint it truthfully
        (offline readers saw a lying green badge). go() paints on
@@ -9451,7 +9441,7 @@ Object.assign(I18N_EN,{"k3194":"You do not have permission to do this in this gr
    diagnosis strings; owner-panel test rows k3212–k3227. k3208/k3209
    (sounds meanings split off k2522/k2523, K3) live in the v10.4.12
    block above. */
-Object.assign(I18N_EN,{"k2459":"Online","k2460":"Offline","k3210":"Table access was not granted on the server (permission error); run the complete server file in the Supabase SQL Editor","k3211":"Server access was denied; you are not allowed to read this data","k3212":"Group badges with key — RPC (test)","k3213":"Group badge award — RPC (test)","k3214":"Join requests with key — RPC (test)","k3215":"Message flags — RPC (test)","k3216":"Poll close without a key — no direct call (test)","k3217":"Admin poll-close button (test)","k3218":"Key gate — non-active statuses (test)","k3219":"Super key — revoked/expired is loud (test)","k3220":"Group event — Jalali picker, no Gregorian input (test)","k3221":"Group event at 01:00 — same day on the calendar (test)","k3222":"Dateless task from the server — once only (test)","k3223":"Goal without progress — 0%, never undefined (test)","k3224":"Map — nickname-less member still shown (test)","k3225":"Error diagnosis — grants/forbidden distinct from schema (test)","k3226":"Auto badge — user_uid column (test)","k3227":"Translations — ghost k2522/k2523 split from sounds; k2459/k2460 English (test)"});
+Object.assign(I18N_EN,{"k2459":"Online","k2460":"Offline","k3210":"Table access was not granted on the server (permission error); run the complete server file in the Supabase SQL Editor","k3211":"Server access was denied; you are not allowed to read this data","k3212":"Group badges with key — RPC (test)","k3213":"Group badge award — RPC (test)","k3214":"Join requests with key — RPC (test)","k3215":"Message flags — RPC (test)","k3216":"Poll close without a key — no direct call (test)","k3217":"Admin poll-close button (test)","k3218":"Key gate — non-active statuses (test)","k3219":"Super key — revoked/expired is loud (test)","k3220":"Group event — Jalali picker, no Gregorian input (test)","k3221":"Group event at 01:00 — same day on the calendar (test)","k3222":"Dateless task from the server — once only (test)","k3223":"Goal without progress — 0%, never undefined (test)","k3224":"Map — nickname-less member still shown (test)","k3225":"Error diagnosis — grants/forbidden distinct from schema (test)","k3226":"Auto badge — user_uid column (test)","k3227":"Translations — sounds on k3208/k3209; k2459/k2460 English (test)"});
 /* v10.4.22 (APP batch, audit-fix loop round 2): #2b group-task toggle
    refusal message, #4 key-gate Telegram lead-in, owner-panel test rows
    k3230–k3233. */
@@ -9527,7 +9517,7 @@ Object.assign(I18N_EN,{"k3916":"One vertical line for the day: blocks, reminders
 Object.assign(I18N_EN,{"k3936":"Ronin theme: in the theme list, always-dark, 27 themes (test)","k3937":"Theme Studio: black/white contrast 21, one-colour palette build, contrast fix (test)","k3938":"Juice layer: burst returns, dose and reduced-motion respected (test)","k3939":"Festival operations: Nowruz/Yalda/Mehregan windows and inactive state (test)","k3940":"Lore codex: 13 documents, founding document always open (test)","k3941":"Morse trainer: SOS encoding, Koch pool 2 to 36 (test)","k3942":"Milestone drops: 8 drops, metrics are numeric (test)","k3943":"Prestige stars: thresholds 6000/26000, cap 5, nothing wiped (test)","k3944":"Cloze card: {{c1::}} parsing, multi-idea and thin-context warnings (test)","k3945":"Why-chain: prompt text for level 0 and deeper levels (test)","k3946":"Focus dashboard: pulse 0–100 with components, 8x7 heatmap (test)","k3947":"Distraction log: park without stopping, session close, label (test)","k3948":"Dependencies: loop refused, same-category rule, open warning (test)","k3949":"Gantt: bar length from estimate, SVG render with today line (test)","k3950":"Timeline: items sorted, render includes the vertical line (test)","k3951":"12-week cycle: week number, execution score, 85% line with caveat (test)","k3952":"Morse quiz: terminates at Koch 0, 1 and 2, options only from the learned pool, and correct answers advance it (test)"});
 /* v10.4.28 (APP batch 1): EN strings for the #5 idempotency + #2/#3/#4/#6
    shape-verification owner test rows (k3978–k3983). */
-Object.assign(I18N_EN,{"k3978":"Quest chest — stable request ids, response-lost retry grants once (test)","k3979":"Pomodoro award — per-block request ids survive the points queue (test)","k3980":"Owner tasks — new RPC shape drives raid/star/skip via created_by (test)","k3981":"Owner messages — expiry, pin and freshness use the new shape (test)","k3982":"Advisor people — map labels show @username from the new shape (test)","k3983":"Owner inbox — replier name from reply_by in the new shape (test)"});
+Object.assign(I18N_EN,{"k3978":"Quest chest — stable request ids, response-lost retry grants once (test)","k3979":"Pomodoro award — per-block request ids survive the points queue (test)","k3980":"Owner tasks — new RPC shape drives raid/skip via created_by (test)","k3981":"Owner messages — expiry, pin and freshness use the new shape (test)","k3982":"Advisor people — map labels show @username from the new shape (test)","k3983":"Owner inbox — replier name from reply_by in the new shape (test)"});
 /* v10.4.29 (APP batch 1): EN string for the monotonic-points owner test row (k4337). */
 Object.assign(I18N_EN,{"k4337":"Points display — a replayed add_points row never moves points/rank backward (test)"});
 /* v10.4.29 (APP batch 2) — EN strings for the growth round (k4338–k4742). */
@@ -9555,7 +9545,7 @@ Object.assign(I18N_EN,{"k4815":"Study tasks","k4816":"Personal tasks","k4817":"S
 Object.assign(I18N_EN,{"k9131":"App sounds are muted — unmute to hear the soundscape","k9133":"Sound events","k9134":"Effect events","k9135":"Delivery decisions","k9137":"No events recorded yet"});
 /* v10.4.35 (Y5): EN strings for the clock-skew banner (k3259–k3260). */
 Object.assign(I18N_EN,{"k3259":"Owner signature not verified, and the device clock differs from the server clock.","k3260":"This device's clock differs from the server clock by {n} minutes; fix the device clock. Password-based reset still works."});
-var APP_VERSION="10.4.37";
+var APP_VERSION="10.4.38";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -12676,25 +12666,25 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    task-skip pass). */
 var ROLES={};
 ROLES["commander"]={key:"commander",fa:"فرمانده",en:"Commander",icon:"⭐",flavor:"Call of Duty / Battlefield",flavorEn:"Call of Duty / Battlefield",abilities:[{perm:"parade",fa:"رژه (آواتارها از وسط چت رژه می‌روند)",en:"Parade (avatars march across the chat)"}, {perm:"war_order",fa:"دستور جنگ (بنر + صدا)",en:"War order (banner + sound)"}, {perm:"summon_all",fa:"احضار همه (صدای شیپور)",en:"Summon all (fanfare ping)"}, {perm:"crown",fa:"تاج‌گذاری عضو روز (قاب تاج ۱ ساعت)",en:"Crown a member (crown frame 1h)"}, {perm:"celebrate_event",fa:"جشن (بارش کانفتی)",en:"Celebration (confetti)"}]};
-ROLES["shaman"]={key:"shaman",fa:"شمن",en:"Shaman",icon:"🔮",flavor:"Viking mystic",flavorEn:"Viking mystic",abilities:[{perm:"prophecy",fa:"پیشگویی (نمایش برترین عضو هفته در چت)",en:"Prophecy (reveal week's top member)"}, {perm:"blessing",fa:"طلسم برکت (نام یک عضو ۳ ساعت می‌درخشد)",en:"Blessing spell (a member's name glows 3h)"}, {perm:"sacred_fire",fa:"آتش مقدس (افکت آتش در چت ۳ ساعت)",en:"Sacred fire (fire effect 3h)"}, {perm:"dream_riddle",fa:"معمای رؤیا در چت",en:"Dream riddle in chat"}, {perm:"meteor_shower",fa:"بارش شهابی (افکت شهاب در چت)",en:"Meteor shower effect"}]};
-ROLES["berserker"]={key:"berserker",fa:"برزرکر",en:"Berserker",icon:"🪓",flavor:"God of War Spartan Rage",flavorEn:"God of War Spartan Rage",abilities:[{perm:"war_cry",fa:"فریاد جنگ (بنر + صدا)",en:"War cry (banner + sound)"}, {perm:"rage",fa:"خشم (پیام‌هایم ۱۰ دقیقه افکت آتش می‌گیرند)",en:"Rage (my messages get fire effect 10 min)"}, {perm:"focus_duel",fa:"چالش دوئل تمرکز (برنده قاب قهرمان ۱ ساعت)",en:"Focus duel challenge (winner gets champion frame 1h)"}, {perm:"storm",fa:"طوفان تصویری (برق و باران + صدا)",en:"Visual storm effect (lightning + rain + sound)"}, {perm:"earthquake",fa:"زلزله (لرزش چت)",en:"Earthquake (chat shake effect)"}]};
-ROLES["skald"]={key:"skald",fa:"اسکالد",en:"Skald",icon:"🎵",flavor:"Valhalla / The Witcher bard",flavorEn:"Valhalla / The Witcher bard",abilities:[{perm:"anthem",fa:"سرود پیروزی (صدا + بنر)",en:"Victory anthem (sound + banner)"}, {perm:"song",fa:"آهنگ (نت‌های موسیقی در چت شناور می‌شوند)",en:"Song (music notes float across chat)"}, {perm:"poem",fa:"شعر (پیام شعر با استایل ویژه)",en:"Poem (styled poem message)"}, {perm:"dance",fa:"رقص (آواتارها در چت می‌رقصند)",en:"Dance (avatars dance in chat)"}, {perm:"lullaby",fa:"لالایی (صدای نرم + افکت تیره‌شدن)",en:"Lullaby (soft sound + dim effect)"}]};
-ROLES["sniper"]={key:"sniper",fa:"تک‌تیرانداز",en:"Sniper",icon:"🎯",flavor:"Call of Duty / Valorant",flavorEn:"Call of Duty / Valorant",abilities:[{perm:"bullseye",fa:"هدف‌گیری یک پیام (نشانه وسط پیام)",en:"Bullseye on a message"}, {perm:"crosshair",fa:"قاب دوربین تفنگ روی آواتار یک عضو (۱ ساعت)",en:"Crosshair frame on a member's avatar (1h)"}, {perm:"night_vision",fa:"دید در شب (چه کسی الان دارد مطالعه می‌کند)",en:"Night vision (reveal who's studying now)"}, {perm:"one_shot",fa:"یک شلیک (یک پیام بزرگ سنجاق‌شده ۳ ساعت)",en:"One-shot big pinned message (3h)"}, {perm:"ambush",fa:"کمین (پیام غافلگیرکننده + صدا)",en:"Ambush (surprise pop-up message + sound)"}]};
-ROLES["hacker"]={key:"hacker",fa:"هکر",en:"Hacker",icon:"💻",flavor:"Watch Dogs / Cyberpunk 2077 / Matrix",flavorEn:"Watch Dogs / Cyberpunk 2077 / Matrix",abilities:[{perm:"matrix_rain",fa:"باران ماتریکس در چت",en:"Matrix rain effect in chat"}, {perm:"encrypted_msg",fa:"پیام رمزگذاری‌شده (بقیه باید رمزگشایی‌اش کنند)",en:"Encrypted message (others decode it)"}, {perm:"subchannel",fa:"زیرکانال مخفی (۱۰ دقیقه)",en:"Secret sub-channel (10 min)"}, {perm:"sys_alert",fa:"بنر هشدار سیستم",en:"System alert banner"}, {perm:"hack_color",fa:"هک رنگ چت (تغییر رنگ چت ۱ ساعت)",en:"Hack the chat accent color (1h)"}]};
-ROLES["medic"]={key:"medic",fa:"امدادگر",en:"Medic",icon:"🩺",flavor:"Battlefield",flavorEn:"Battlefield",abilities:[{perm:"revive",fa:"احیا (افکت بازگشت برای عضو غایب)",en:"Revive welcome-back effect"}, {perm:"adrenaline",fa:"آدرنالین (قاب برقی روی یک عضو)",en:"Adrenaline lightning frame on a member"}, {perm:"emergency_ping",fa:"پینگ اضطراری برای کمک فوری",en:"Emergency ping for urgent help"}, {perm:"big_heart",fa:"قلب بزرگ برای یک عضو",en:"Big heart effect to a member"}, {perm:"wellness_poll",fa:"نظرسنجی حال‌وهوا (وضعیت امروز اعضا)",en:"Wellness check-up poll"}]};
-ROLES["scout"]={key:"scout",fa:"دیده‌بان",en:"Scout",icon:"🔭",flavor:"PUBG / Fortnite / LOTR Legolas",flavorEn:"PUBG / Fortnite / LOTR Legolas",abilities:[{perm:"eagle_eye",fa:"چشم عقاب (آمار بامزه گروه در چت)",en:"Eagle eye fun group stat reveal"}, {perm:"lantern",fa:"فانوس (افکت روشن در چت ۳ ساعت)",en:"Lantern bright effect (3h)"}, {perm:"treasure_hunt",fa:"شکار گنج (سرنخ پنهان در چت؛ اولین یابنده قاب طلایی ۱ ساعت)",en:"Treasure hunt (hidden clue; first finder gets golden frame 1h)"}, {perm:"streak_post",fa:"پست پیگیری زنجیره",en:"Streak tracking post"}, {perm:"binoculars",fa:"دوربین (نمایش یک واقعیت بامزه درباره یک عضو تصادفی)",en:"Binoculars (reveal a fun fact about a random member)"}]};
-ROLES["engineer"]={key:"engineer",fa:"مهندس",en:"Engineer",icon:"🔧",flavor:"Clash of Clans / Iron Man",flavorEn:"Clash of Clans / Iron Man",abilities:[{perm:"robot_msg",fa:"پیام ربات",en:"Robot message"}, {perm:"fireworks",fa:"آتش‌بازی",en:"Fireworks effect"}, {perm:"laser_show",fa:"نمایش لیزر",en:"Laser show"}, {perm:"paper_plane",fa:"پیام هواپیمای کاغذی (پرواز در چت)",en:"Paper plane flying message"}, {perm:"golden_border",fa:"ارتقای قاب طلایی چت (۱ ساعت)",en:"Golden chat border upgrade (1h)"}]};
-ROLES["intel"]={key:"intel",fa:"افسر اطلاعات",en:"Intel",icon:"🕵️",flavor:"Rainbow Six / Mission Impossible",flavorEn:"Rainbow Six / Mission Impossible",abilities:[{perm:"fun_dossier",fa:"پرونده بامزه درباره یک عضو",en:"Fun dossier on a member"}, {perm:"secret_mission",fa:"مأموریت مخفی (کار غافلگیرکننده برای یک عضو تصادفی)",en:"Secret mission to a random member"}, {perm:"activity_listen",fa:"خلاصه فعالیت چت",en:"Activity summary"}, {perm:"private_letter",fa:"نامه خصوصی به یک عضو (فقط او می‌بیند)",en:"Private letter to a member (only they see it)"}, {perm:"secret_code",fa:"بازی کد مخفی (اولین نفری که رمزش را بشکند قاب طلایی می‌گیرد)",en:"Secret code game (first to crack it gets a golden frame)"}]};
-ROLES["guardian"]={key:"guardian",fa:"محافظ",en:"Guardian",icon:"🛡️",flavor:"Overwatch Reinhardt",flavorEn:"Overwatch Reinhardt",abilities:[{perm:"shield",fa:"سپر (افکت سپر روی چت)",en:"Shield effect on chat"}, {perm:"fortress",fa:"قلعه (قفل چت فقط برای مدیران، ۱۰ دقیقه)",en:"Fortress (lock chat to admins only 10 min)"}, {perm:"plant_flag",fa:"کاشت پرچم (بنر پرچم)",en:"Plant a flag banner"}, {perm:"armor_frame",fa:"قاب زره روی آواتار خودم (۱ ساعت)",en:"Armor frame on my avatar (1h)"}, {perm:"patrol",fa:"گشت‌زنی (نگهبان از وسط چت رد می‌شود)",en:"Patrol (guard walks across chat)"}]};
-ROLES["ranger"]={key:"ranger",fa:"تکاور",en:"Ranger",icon:"🏹",flavor:"WoW / LOTR Aragorn",flavorEn:"WoW / LOTR Aragorn",abilities:[{perm:"adventure_card",fa:"کارت ماجراجویی (چالش بامزه گروهی)",en:"Adventure card (fun group challenge)"}, {perm:"loot",fa:"غنیمت (افکت هنگام کامل‌شدن مأموریت)",en:"Loot effect on completion"}, {perm:"rest",fa:"استراحت (درخشش آبی آرام + صدای نرم ۱۰ دقیقه)",en:"Rest (calm blue glow + soft sound 10 min)"}, {perm:"race_game",fa:"مسابقه (اولین نفری که واکنش نشان دهد قاب طلایی می‌گیرد)",en:"Race game (first to react wins a golden frame)"}, {perm:"journey",fa:"سفر (تم چت ۱ ساعت به یک مقصد سفر تغییر می‌کند)",en:"Journey (chat theme changes to a travel destination 1h)"}]};
-ROLES["pilot"]={key:"pilot",fa:"خلبان",en:"Pilot",icon:"✈️",flavor:"Top Gun / Battlefield",flavorEn:"Top Gun / Battlefield",abilities:[{perm:"takeoff",fa:"برخاست (افکت شروع جلسه گروهی)",en:"Takeoff effect"}, {perm:"emergency_landing",fa:"فرود اضطراری (افکت خنده‌دار سقوط + کانفتی)",en:"Emergency landing (funny crash effect + confetti)"}, {perm:"turbo",fa:"توربو (افکت سرعت)",en:"Turbo speed effect"}, {perm:"loop_plane",fa:"لوپ هوایی (هواپیما از وسط چت رد می‌شود)",en:"Loop-de-loop plane flying across chat"}, {perm:"control_tower",fa:"برج مراقبت (وقتی عضوی آنلاین شود شیپور می‌زند)",en:"Control tower (fanfare when a member comes online)"}]};
-ROLES["strategist"]={key:"strategist",fa:"استراتژیست",en:"Strategist",icon:"♟️",flavor:"StarCraft / Queen's Gambit",flavorEn:"StarCraft / Queen's Gambit",abilities:[{perm:"chess_move",fa:"حرکت شطرنج (پست نقطه عطف بعدی)",en:"Chess move post"}, {perm:"bet_top",fa:"شرط‌بندی روی برترین عضو هفته (برنده قاب طلایی می‌گیرد)",en:"Bet on the week's top member (winner gets golden frame)"}, {perm:"task_swap",fa:"مبادله کار (کار خودت را با کار یک عضو دیگر عوض کن؛ هر دو موافق باشند) — فقط این نقش",en:"TASK SWAP (swap your task with another member's task, both agree — ONLY this role)"}, {perm:"surprise",fa:"غافلگیری (یک افکت بامزه تصادفی روی یک عضو تصادفی)",en:"Surprise (random fun effect on a random member)"}, {perm:"trap",fa:"تله (پیام‌رسان بعدی یک افکت بامزه می‌گیرد)",en:"Trap (next messenger gets a fun effect)"}]};
-ROLES["quartermaster"]={key:"quartermaster",fa:"تدارکات",en:"Quartermaster",icon:"📦",flavor:"WoW / Clash of Clans",flavorEn:"WoW / Clash of Clans",abilities:[{perm:"chest",fa:"صندوق غنیمت (به هر عضو آنلاین یک قاب آواتار بامزه تصادفی می‌دهد)",en:"Loot chest (every online member gets a random fun avatar frame)"}, {perm:"lottery",fa:"قرعه‌کشی (یک عضو آنلاین تصادفی برنده گذر حذف کار می‌شود)",en:"Lottery (a random online member wins a task-skip pass)"}, {perm:"caravan",fa:"کاروان (فهرست متنی بسته منابع)",en:"Caravan resource pack (text list)"}, {perm:"coin_rain",fa:"بارش سکه",en:"Coin rain effect"}, {perm:"avatar_swap",fa:"مبادله آواتار (آواتارت را با یک عضو ۱ ساعت عوض کن)",en:"Avatar swap (swap avatars with a member for 1h)"}]};
-ROLES["ghost"]={key:"ghost",fa:"شبح",en:"Ghost",icon:"👻",flavor:"Call of Duty Ghost",flavorEn:"Call of Duty Ghost",abilities:[{perm:"ghost_mode",fa:"حالت شبح (آفلاین دیده‌شدن با اینکه آنلاینی)",en:"Ghost mode (appear offline while online)"}, {perm:"msg_anonymous",fa:"پیام ناشناس (با تأیید مدیر)",en:"Anonymous message (with admin approval)"}, {perm:"shadow",fa:"سایه (آواتارت ۱ ساعت سایه می‌شود)",en:"Shadow (your avatar becomes a shadow 1h)"}, {perm:"session_midnight",fa:"جلسه نیمه‌شب",en:"Midnight session"}, {perm:"phase",fa:"محو (پیام پس از ۱ دقیقه ناپدید می‌شود)",en:"Phase (message disappears after 1 min)"}]};
-ROLES["witch"]={key:"witch",fa:"جادوگر",en:"Witch",icon:"🧙",flavor:"Harry Potter / The Witcher",flavorEn:"Harry Potter / The Witcher",abilities:[{perm:"name_color_spell",fa:"طلسم رنگ نام روی یک عضو (۱ ساعت)",en:"Name-color spell on a member (1h)"}, {perm:"magic_room",fa:"اتاق جادویی (اتاق تمرکز با تم جادویی)",en:"Magic room (themed focus room)"}, {perm:"fortune",fa:"فال (یک فال بامزه تصادفی برای یک عضو)",en:"Fortune (random fun fortune for a member)"}, {perm:"luck_potion",fa:"معجون شانس (پیام بعدی یک عضو افکت جرقه می‌گیرد)",en:"Luck potion (a member's next message gets a sparkle effect)"}, {perm:"wandering_spirit",fa:"روح سرگردان (افکت روح که در چت شناور می‌شود)",en:"Wandering spirit effect floating through chat"}]};
-ROLES["vampire"]={key:"vampire",fa:"خون‌آشام",en:"Vampire",icon:"🧛",flavor:"Blade / Dracula",flavorEn:"Blade / Dracula",abilities:[{perm:"night_mode",fa:"حالت شب",en:"Night mode"}, {perm:"bat_effect",fa:"خفاش پرنده در چت",en:"Bat flying across chat"}, {perm:"night_hunt",fa:"شکار شب (چالش نیمه‌شب)",en:"Night hunt (midnight challenge)"}, {perm:"immortality",fa:"جاودانگی (یک بار زنجیره‌ات را از شکستن نجات می‌دهد)",en:"Immortality (one-time streak freeze)"}, {perm:"fog",fa:"مه (افکت مه روی چت ۱ ساعت)",en:"Fog effect on chat (1h)"}]};
-ROLES["zombie"]={key:"zombie",fa:"زامبی",en:"Zombie",icon:"🧟",flavor:"The Walking Dead / Left 4 Dead",flavorEn:"The Walking Dead / Left 4 Dead",abilities:[{perm:"bite",fa:"گاز (قاب زامبی بازیگوش روی یک عضو ۳ ساعت)",en:"Bite (playful zombie frame on a member for 3h)"}, {perm:"infection",fa:"سرایت (عضو گازگرفته‌شده می‌تواند ظرف ۱ ساعت دیگری را گاز بگیرد — زنجیره)",en:"Infection (the bitten member can bite another within 1h — chain)"}, {perm:"comeback",fa:"بازگشت از مرگ (یک بار زنجیره شکسته را برمی‌گرداند)",en:"Comeback (restore a broken streak once)"}, {perm:"survival_challenge",fa:"چالش بقا",en:"Survival challenge"}, {perm:"shelter",fa:"پناهگاه (زیرکانال بازماندگان)",en:"Shelter (survivors sub-channel)"}]};
-ROLES["jack"]={key:"jack",fa:"جک کدو",en:"Jack-o'-Lantern",icon:"🎃",flavor:"Nightmare Before Christmas",flavorEn:"Nightmare Before Christmas",abilities:[{perm:"pumpkin_bomb",fa:"بمب کدو (افکت انفجار کدو)",en:"Pumpkin bomb effect"}, {perm:"scare",fa:"ترساندن (افکت ترسناک + صدا)",en:"Scare (spooky effect + sound)"}, {perm:"candy",fa:"آب‌نبات (قاب آب‌نبات/کدو + افکت بامزه برای یک عضو)",en:"Candy (candy/pumpkin frame + fun effect on a member)"}, {perm:"trick_or_treat",fa:"حقه یا جایزه (یک عضو تصادفی یا یک ترس بامزه می‌گیرد یا یک قاب جایزه)",en:"Trick or treat (a random member gets a trick scare or a treat frame)"}, {perm:"theme_halloween",fa:"تم هالووین گروه (۳ ساعت)",en:"Halloween group theme (3h)"}]};
+ROLES["shaman"]={key:"shaman",fa:"شمن",en:"Shaman",icon:"🔮",flavor:"Viking mystic",flavorEn:"Viking mystic",abilities:[{perm:"rune_circle",fa:"حلقه رون‌ها (هاله بنفش رون روی چت ۱ ساعت)",en:"Rune circle (violet rune halo on chat 1h)"}, {perm:"blessing",fa:"طلسم برکت (نام یک عضو ۳ ساعت می‌درخشد)",en:"Blessing spell (a member's name glows 3h)"}, {perm:"sacred_fire",fa:"آتش مقدس (افکت آتش در چت ۳ ساعت)",en:"Sacred fire (fire effect 3h)"}, {perm:"spirit_drum",fa:"طبل روح (ضرب‌آهنگ + موج نور روی کارت)",en:"Spirit drum (drumbeat + light wave on the card)"}, {perm:"meteor_shower",fa:"بارش شهابی (افکت شهاب در چت)",en:"Meteor shower effect"}]};
+ROLES["berserker"]={key:"berserker",fa:"برزرکر",en:"Berserker",icon:"🪓",flavor:"God of War Spartan Rage",flavorEn:"God of War Spartan Rage",abilities:[{perm:"war_cry",fa:"فریاد جنگ (بنر + صدا)",en:"War cry (banner + sound)"}, {perm:"rage",fa:"خشم (پیام‌هایم ۱۰ دقیقه افکت آتش می‌گیرند)",en:"Rage (my messages get fire effect 10 min)"}, {perm:"spartan_charge",fa:"یورش اسپارتی (موج شوک + لرزش کارت)",en:"Spartan charge (shockwave + card shake)"}, {perm:"storm",fa:"طوفان تصویری (برق و باران + صدا)",en:"Visual storm effect (lightning + rain + sound)"}, {perm:"earthquake",fa:"زلزله (لرزش چت)",en:"Earthquake (chat shake effect)"}]};
+ROLES["skald"]={key:"skald",fa:"اسکالد",en:"Skald",icon:"🎵",flavor:"Valhalla / The Witcher bard",flavorEn:"Valhalla / The Witcher bard",abilities:[{perm:"anthem",fa:"سرود پیروزی (صدا + بنر)",en:"Victory anthem (sound + banner)"}, {perm:"song",fa:"آهنگ (نت‌های موسیقی در چت شناور می‌شوند)",en:"Song (music notes float across chat)"}, {perm:"war_ballad",fa:"ترانه حماسی (نت‌های موسیقی شناور + صدا)",en:"War ballad (floating music notes + sound)"}, {perm:"dance",fa:"رقص (آواتارها در چت می‌رقصند)",en:"Dance (avatars dance in chat)"}, {perm:"lullaby",fa:"لالایی (صدای نرم + افکت تیره‌شدن)",en:"Lullaby (soft sound + dim effect)"}]};
+ROLES["sniper"]={key:"sniper",fa:"تک‌تیرانداز",en:"Sniper",icon:"🎯",flavor:"Call of Duty / Valorant",flavorEn:"Call of Duty / Valorant",abilities:[{perm:"bullseye",fa:"هدف‌گیری یک پیام (نشانه وسط پیام)",en:"Bullseye on a message"}, {perm:"crosshair",fa:"قاب دوربین تفنگ روی آواتار یک عضو (۱ ساعت)",en:"Crosshair frame on a member's avatar (1h)"}, {perm:"scope_glint",fa:"برق دوربین (درخشش سبز روی چت ۱ ساعت)",en:"Scope glint (green shimmer overlay 1h)"}, {perm:"deadeye_flash",fa:"فلاش دید دقیق (فلاش + لرزش کارت)",en:"Deadeye flash (flash + card shake)"}, {perm:"ambush",fa:"کمین (پیام غافلگیرکننده + صدا)",en:"Ambush (surprise pop-up message + sound)"}]};
+ROLES["hacker"]={key:"hacker",fa:"هکر",en:"Hacker",icon:"💻",flavor:"Watch Dogs / Cyberpunk 2077 / Matrix",flavorEn:"Watch Dogs / Cyberpunk 2077 / Matrix",abilities:[{perm:"matrix_rain",fa:"باران ماتریکس در چت",en:"Matrix rain effect in chat"}, {perm:"glitch_wave",fa:"موج گلیچ (موج دیجیتالی روی کارت + صدا)",en:"Glitch wave (digital wave on the card + sound)"}, {perm:"signal_burst",fa:"انفجار سیگنال (بارش کد + موج سایبری)",en:"Signal burst (code rain + cyber wave)"}, {perm:"sys_alert",fa:"بنر هشدار سیستم",en:"System alert banner"}, {perm:"hack_color",fa:"هک رنگ چت (تغییر رنگ چت ۱ ساعت)",en:"Hack the chat accent color (1h)"}]};
+ROLES["medic"]={key:"medic",fa:"امدادگر",en:"Medic",icon:"🩺",flavor:"Battlefield",flavorEn:"Battlefield",abilities:[{perm:"revive",fa:"احیا (افکت بازگشت برای عضو غایب)",en:"Revive welcome-back effect"}, {perm:"adrenaline",fa:"آدرنالین (قاب برقی روی یک عضو)",en:"Adrenaline lightning frame on a member"}, {perm:"emergency_ping",fa:"پینگ اضطراری برای کمک فوری",en:"Emergency ping for urgent help"}, {perm:"big_heart",fa:"قلب بزرگ برای یک عضو",en:"Big heart effect to a member"}, {perm:"medic_beacon",fa:"فانوس امداد (هاله آرام روی چت ۱ ساعت)",en:"Medic beacon (calm halo overlay 1h)"}]};
+ROLES["scout"]={key:"scout",fa:"دیده‌بان",en:"Scout",icon:"🔭",flavor:"PUBG / Fortnite / LOTR Legolas",flavorEn:"PUBG / Fortnite / LOTR Legolas",abilities:[{perm:"falcon_swoop",fa:"پرواز شاهین (شاهین از وسط چت رد می‌شود)",en:"Falcon swoop (a falcon sweeps across the chat)"}, {perm:"lantern",fa:"فانوس (افکت روشن در چت ۳ ساعت)",en:"Lantern bright effect (3h)"}, {perm:"gold_vein",fa:"رگ طلا (درخشش طلایی روی چت ۱ ساعت)",en:"Gold vein (golden shimmer overlay 1h)"}, {perm:"trail_blaze",fa:"رد آتش (شعله‌های کوچک روی کارت)",en:"Trail blaze (small flames on the card)"}, {perm:"horizon_scan",fa:"اسکن افق (موج اسکن آبی روی کارت)",en:"Horizon scan (blue scan wave on the card)"}]};
+ROLES["engineer"]={key:"engineer",fa:"مهندس",en:"Engineer",icon:"🔧",flavor:"Clash of Clans / Iron Man",flavorEn:"Clash of Clans / Iron Man",abilities:[{perm:"arc_welder",fa:"جوش قوس (جرقه‌های آبی + صدا)",en:"Arc welder (blue sparks + sound)"}, {perm:"fireworks",fa:"آتش‌بازی",en:"Fireworks effect"}, {perm:"laser_show",fa:"نمایش لیزر",en:"Laser show"}, {perm:"paper_plane",fa:"پیام هواپیمای کاغذی (پرواز در چت)",en:"Paper plane flying message"}, {perm:"golden_border",fa:"ارتقای قاب طلایی چت (۱ ساعت)",en:"Golden chat border upgrade (1h)"}]};
+ROLES["intel"]={key:"intel",fa:"افسر اطلاعات",en:"Intel",icon:"🕵️",flavor:"Rainbow Six / Mission Impossible",flavorEn:"Rainbow Six / Mission Impossible",abilities:[{perm:"marked_agent",fa:"مأمور نشان‌دار (قاب زره روی یک عضو ۱ ساعت)",en:"Marked agent (armor frame on a member 1h)"}, {perm:"smoke_screen",fa:"پرده دود (مه خاکستری روی چت ۱ ساعت)",en:"Smoke screen (grey haze overlay 1h)"}, {perm:"static_hum",fa:"زمزمه استاتیک (موج استاتیک روی کارت + صدا)",en:"Static hum (static wave on the card + sound)"}, {perm:"sealed_wax",fa:"مهر موم (قاب سرخ روی یک عضو ۱ ساعت)",en:"Sealed wax (red frame on a member 1h)"}, {perm:"cipher_spark",fa:"جرقه رمز (جرقه‌های فیروزه‌ای روی کارت)",en:"Cipher spark (cyan sparks on the card)"}]};
+ROLES["guardian"]={key:"guardian",fa:"محافظ",en:"Guardian",icon:"🛡️",flavor:"Overwatch Reinhardt",flavorEn:"Overwatch Reinhardt",abilities:[{perm:"shield",fa:"سپر (افکت سپر روی چت)",en:"Shield effect on chat"}, {perm:"bastion_glow",fa:"درخشش دژ (هاله آبی فولادی روی چت ۱ ساعت)",en:"Bastion glow (steel-blue halo overlay 1h)"}, {perm:"plant_flag",fa:"کاشت پرچم (بنر پرچم)",en:"Plant a flag banner"}, {perm:"armor_frame",fa:"قاب زره روی آواتار خودم (۱ ساعت)",en:"Armor frame on my avatar (1h)"}, {perm:"patrol",fa:"گشت‌زنی (نگهبان از وسط چت رد می‌شود)",en:"Patrol (guard walks across chat)"}]};
+ROLES["ranger"]={key:"ranger",fa:"تکاور",en:"Ranger",icon:"🏹",flavor:"WoW / LOTR Aragorn",flavorEn:"WoW / LOTR Aragorn",abilities:[{perm:"ranger_banner",fa:"پرچم تکاور (بنر سبز جنگل + صدا)",en:"Ranger banner (forest-green banner + sound)"}, {perm:"loot",fa:"غنیمت (کارت غنیمت + بارش سکه)",en:"Loot (loot card + coin burst)"}, {perm:"rest",fa:"استراحت (درخشش آبی آرام + صدای نرم ۱۰ دقیقه)",en:"Rest (calm blue glow + soft sound 10 min)"}, {perm:"swift_wind",fa:"باد تند (موج باد روی کارت + صدا)",en:"Swift wind (wind wave on the card + sound)"}, {perm:"journey",fa:"سفر (تم چت ۱ ساعت به یک مقصد سفر تغییر می‌کند)",en:"Journey (chat theme changes to a travel destination 1h)"}]};
+ROLES["pilot"]={key:"pilot",fa:"خلبان",en:"Pilot",icon:"✈️",flavor:"Top Gun / Battlefield",flavorEn:"Top Gun / Battlefield",abilities:[{perm:"afterburner",fa:"پس‌سوز (شعله آبی + موج سرعت)",en:"Afterburner (blue flame + speed wave)"}, {perm:"emergency_landing",fa:"فرود اضطراری (افکت خنده‌دار سقوط + کانفتی)",en:"Emergency landing (funny crash effect + confetti)"}, {perm:"turbo",fa:"توربو (افکت سرعت)",en:"Turbo speed effect"}, {perm:"loop_plane",fa:"لوپ هوایی (هواپیما از وسط چت رد می‌شود)",en:"Loop-de-loop plane flying across chat"}, {perm:"control_tower",fa:"برج مراقبت (کارت برج + صدای شیپور)",en:"Control tower (tower card + horn sound)"}]};
+ROLES["strategist"]={key:"strategist",fa:"استراتژیست",en:"Strategist",icon:"♟️",flavor:"StarCraft / Queen's Gambit",flavorEn:"StarCraft / Queen's Gambit",abilities:[{perm:"tactical_grid",fa:"شبکه تاکتیکی (شبکه نورانی روی چت ۱ ساعت)",en:"Tactical grid (glowing grid overlay 1h)"}, {perm:"golden_gambit",fa:"گامبیت طلایی (قاب طلایی روی یک عضو ۱ ساعت)",en:"Golden gambit (gold frame on a member 1h)"}, {perm:"flanking_glow",fa:"درخشش جناحی (قاب یخی روی یک عضو ۱ ساعت)",en:"Flanking glow (ice frame on a member 1h)"}, {perm:"surprise",fa:"غافلگیری (یک افکت بامزه تصادفی روی یک عضو تصادفی)",en:"Surprise (random fun effect on a random member)"}, {perm:"trap",fa:"تله (پیام‌رسان بعدی یک افکت بامزه می‌گیرد)",en:"Trap (next messenger gets a fun effect)"}]};
+ROLES["quartermaster"]={key:"quartermaster",fa:"تدارکات",en:"Quartermaster",icon:"📦",flavor:"WoW / Clash of Clans",flavorEn:"WoW / Clash of Clans",abilities:[{perm:"chest",fa:"صندوق غنیمت (به هر عضو آنلاین یک قاب آواتار بامزه تصادفی می‌دهد)",en:"Loot chest (every online member gets a random fun avatar frame)"}, {perm:"supply_drop",fa:"محموله تدارکات (بارش جعبه و سکه روی کارت)",en:"Supply drop (crate + coin burst on the card)"}, {perm:"lantern_convoy",fa:"کاروان فانوس (فانوس‌های شناور در چت)",en:"Lantern convoy (floating lanterns in chat)"}, {perm:"coin_rain",fa:"بارش سکه",en:"Coin rain effect"}, {perm:"avatar_swap",fa:"مبادله آواتار (آواتارت را با یک عضو ۱ ساعت عوض کن)",en:"Avatar swap (swap avatars with a member for 1h)"}]};
+ROLES["ghost"]={key:"ghost",fa:"شبح",en:"Ghost",icon:"👻",flavor:"Call of Duty Ghost",flavorEn:"Call of Duty Ghost",abilities:[{perm:"phantom_mist",fa:"مه شبح (مه بنفش روی چت ۱ ساعت)",en:"Phantom mist (violet mist overlay 1h)"}, {perm:"wraith_glide",fa:"پرواز شبح (شبح از وسط چت رد می‌شود)",en:"Wraith glide (a wraith glides across the chat)"}, {perm:"shadow",fa:"سایه (آواتارت ۱ ساعت سایه می‌شود)",en:"Shadow (your avatar becomes a shadow 1h)"}, {perm:"midnight_bell",fa:"زنگ نیمه‌شب (زنگ + موج آبی شبانه روی کارت)",en:"Midnight bell (bell + night-blue wave on the card)"}, {perm:"phase_shimmer",fa:"سوسوی فاز (سوسوی نقره‌ای روی کارت)",en:"Phase shimmer (silver shimmer on the card)"}]};
+ROLES["witch"]={key:"witch",fa:"جادوگر",en:"Witch",icon:"🧙",flavor:"Harry Potter / The Witcher",flavorEn:"Harry Potter / The Witcher",abilities:[{perm:"name_color_spell",fa:"طلسم رنگ نام روی یک عضو (۱ ساعت)",en:"Name-color spell on a member (1h)"}, {perm:"arcane_circle",fa:"دایره جادویی (حلقه نورانی بنفش روی چت ۱ ساعت)",en:"Arcane circle (violet glowing ring overlay 1h)"}, {perm:"star_charm",fa:"طلسم ستاره (قاب ستاره روی یک عضو ۱ ساعت)",en:"Star charm (star frame on a member 1h)"}, {perm:"luck_potion",fa:"معجون شانس (پیام بعدی یک عضو افکت جرقه می‌گیرد)",en:"Luck potion (a member's next message gets a sparkle effect)"}, {perm:"wandering_spirit",fa:"روح سرگردان (افکت روح که در چت شناور می‌شود)",en:"Wandering spirit effect floating through chat"}]};
+ROLES["vampire"]={key:"vampire",fa:"خون‌آشام",en:"Vampire",icon:"🧛",flavor:"Blade / Dracula",flavorEn:"Blade / Dracula",abilities:[{perm:"night_mode",fa:"حالت شب",en:"Night mode"}, {perm:"bat_effect",fa:"خفاش پرنده در چت",en:"Bat flying across chat"}, {perm:"crimson_moon",fa:"ماه زرشکی (هاله زرشکی روی چت ۱ ساعت)",en:"Crimson moon (crimson halo overlay 1h)"}, {perm:"eternal_dusk",fa:"غروب ابدی (درخشش نارنجی-بنفش روی کارت)",en:"Eternal dusk (orange-violet glow on the card)"}, {perm:"fog",fa:"مه (افکت مه روی چت ۱ ساعت)",en:"Fog effect on chat (1h)"}]};
+ROLES["zombie"]={key:"zombie",fa:"زامبی",en:"Zombie",icon:"🧟",flavor:"The Walking Dead / Left 4 Dead",flavorEn:"The Walking Dead / Left 4 Dead",abilities:[{perm:"bite",fa:"گاز (قاب زامبی بازیگوش روی یک عضو ۳ ساعت)",en:"Bite (playful zombie frame on a member for 3h)"}, {perm:"toxic_spores",fa:"هاگ‌های سمی (ابر سبز کوچک روی کارت)",en:"Toxic spores (small green cloud on the card)"}, {perm:"risen_glow",fa:"درخشش برخاسته (هاله سبز روی چت ۱۰ دقیقه)",en:"Risen glow (green halo overlay 10 min)"}, {perm:"barricade_glow",fa:"درخشش سنگر (هاله کهربایی روی چت ۱ ساعت)",en:"Barricade glow (amber halo overlay 1h)"}, {perm:"safehouse_lights",fa:"چراغ‌های پناهگاه (درخشش گرم روی چت ۱ ساعت)",en:"Safehouse lights (warm glow overlay 1h)"}]};
+ROLES["jack"]={key:"jack",fa:"جک کدو",en:"Jack-o'-Lantern",icon:"🎃",flavor:"Nightmare Before Christmas",flavorEn:"Nightmare Before Christmas",abilities:[{perm:"pumpkin_bomb",fa:"بمب کدو (افکت انفجار کدو)",en:"Pumpkin bomb effect"}, {perm:"scare",fa:"ترساندن (افکت ترسناک + صدا)",en:"Scare (spooky effect + sound)"}, {perm:"candy",fa:"آب‌نبات (قاب آب‌نبات/کدو + افکت بامزه برای یک عضو)",en:"Candy (candy/pumpkin frame + fun effect on a member)"}, {perm:"candy_shower",fa:"بارش آب‌نبات (بارش آب‌نبات روی کارت + صدا)",en:"Candy shower (candy burst on the card + sound)"}, {perm:"theme_halloween",fa:"تم هالووین گروه (۳ ساعت)",en:"Halloween group theme (3h)"}]};
 var ROLE_ORDER=["commander","shaman","berserker","skald","sniper","hacker","medic","scout","engineer","intel","guardian","ranger","pilot","strategist","quartermaster","ghost","witch","vampire","zombie","jack"];
 function roleDef(k){ return ROLES[k]||null; }
 function roleName(k){ var r=ROLES[k]; if(!r) return k; return LANG==='en'?r.en:r.fa; }
@@ -15704,15 +15694,13 @@ SB.runOnlineFeaturesTest=function(){
         if(src.indexOf('personal_badges").insert({user_id:SB.uid')!==-1) return {st:'fail', detail:"personal_badges insert still uses the rejected user_id column"};
         return {st:'ok', detail:"auto-badge insert uses the user_uid column (42703 fixed)"};
       }],
-      [TR('k3227','ترجمه — k2522/k2523 شبح جدا از صداها؛ k2459/k2460 انگلیسی (تست)'), function(){
+      [TR('k3227','ترجمه — صداها k3208/k3209 جدا؛ k2459/k2460 انگلیسی (تست)'), function(){
         if(typeof I18N_EN==="undefined"||typeof testAlarmSound!=="function") return {st:'fail', detail:"I18N_EN/testAlarmSound missing"};
-        if(I18N_EN["k2522"]!=="Others see you as offline") return {st:'fail', detail:"EN k2522 is not the ghost text: '"+I18N_EN["k2522"]+"'"};
-        if(I18N_EN["k2523"]!=="Turn off ghost mode") return {st:'fail', detail:"EN k2523 is not the ghost text: '"+I18N_EN["k2523"]+"'"};
         if(!I18N_EN["k3208"]||I18N_EN["k3208"].indexOf("muted")===-1) return {st:'fail', detail:"EN k3208 (sounds-muted) missing: '"+I18N_EN["k3208"]+"'"};
         if(!I18N_EN["k3209"]||I18N_EN["k3209"].indexOf("before saving")===-1) return {st:'fail', detail:"EN k3209 (hear-before-saving) missing: '"+I18N_EN["k3209"]+"'"};
         if(testAlarmSound.toString().indexOf("k3208")===-1||testAlarmSound.toString().indexOf("k2522")!==-1) return {st:'fail', detail:"testAlarmSound does not use k3208"};
         if(I18N_EN["k2459"]!=="Online"||I18N_EN["k2460"]!=="Offline") return {st:'fail', detail:"EN k2459/k2460 missing: '"+I18N_EN["k2459"]+"'/'"+I18N_EN["k2460"]+"'"};
-        return {st:'ok', detail:"ghost keys keep ghost text; sounds moved to k3208/k3209; presence titles have EN"};
+        return {st:'ok', detail:"sounds moved to k3208/k3209; presence titles have EN"};
       }],
       [TR('k2941','همگام‌سازی چیدمان خانه با سرور (تست)'), function(){
         return sbRpc("owner_load_user_settings",{p_sig:sig}).then(function(res){
@@ -15942,7 +15930,7 @@ SB.runOnlineFeaturesTest=function(){
                 var d4=Array.isArray(r4.data)?r4.data[0]:r4.data;
                 if(r4.error) return {st:'fail', detail:persianErr(r4.error)};
                 if(!d4||d4.ok!==false||d4.reason!=="limit") return {st:'fail', detail:"4th use was not refused with limit"};
-                return sbRpc("owner_simulate_power_use",{p_group_id:groupId,p_user_id:uid,p_perm:"one_shot",p_sig:sig}).then(function(r5){
+                return sbRpc("owner_simulate_power_use",{p_group_id:groupId,p_user_id:uid,p_perm:"storm",p_sig:sig}).then(function(r5){
                   var d5=Array.isArray(r5.data)?r5.data[0]:r5.data;
                   if(r5.error) return {st:'fail', detail:persianErr(r5.error)};
                   if(!d5||d5.ok!==false||d5.reason!=="no-perm") return {st:'fail', detail:"wrong-perm use was not refused with no-perm"};
@@ -18171,7 +18159,7 @@ SB.runOnlineFeaturesTest=function(){
            excluded (pomoFinish owns its aggregate floater). */
         if(typeof SB==="undefined"||typeof SB.addPoints!=="function"||typeof OG==="undefined") return {st:'fail', detail:"SB.addPoints/OG missing"};
         var wait=function(ms){ return new Promise(function(res){ setTimeout(res,ms); }); };
-        var _rpc=sbRpc, _toast=toast, _sfx=SFX.play, _xf=GameFX.xpFloater, _on=SB.online, _uid=SB.uid, _prof=SB.profile, _srv=SB.serverOk, _sel=OG.sel, _cab=OG.checkAutoBadges, _pwc=(typeof PW!=="undefined")?PW.checkDuel:null, _ap=SB.addPoints, _os=S.onlineStats;
+        var _rpc=sbRpc, _toast=toast, _sfx=SFX.play, _xf=GameFX.xpFloater, _on=SB.online, _uid=SB.uid, _prof=SB.profile, _srv=SB.serverOk, _sel=OG.sel, _cab=OG.checkAutoBadges, _ap=SB.addPoints, _os=S.onlineStats;
         var _queue=null; try{ _queue=localStorage.getItem("go-points-queue"); }catch(e){}
         var shape="ok", floaters=[], toasts=[], fanfares=0;
         sbRpc=function(n,p){
@@ -18188,8 +18176,7 @@ SB.runOnlineFeaturesTest=function(){
         GameFX.xpFloater=function(n){ floaters.push(n); return true; };
         SB.online=true; SB.uid="TEST-UID-3299"; SB.serverOk=true; SB.profile={points:100,rank:"warrior"}; OG.sel={id:"TEST-GROUP-3299"};
         OG.checkAutoBadges=function(){};
-        if(typeof PW!=="undefined") PW.checkDuel=function(){};
-        var cleanup=function(){ sbRpc=_rpc; toast=_toast; SFX.play=_sfx; GameFX.xpFloater=_xf; SB.online=_on; SB.uid=_uid; SB.profile=_prof; SB.serverOk=_srv; OG.sel=_sel; OG.checkAutoBadges=_cab; if(typeof PW!=="undefined"&&_pwc) PW.checkDuel=_pwc; SB.addPoints=_ap; S.onlineStats=_os; try{ if(_queue===null) localStorage.removeItem("go-points-queue"); else localStorage.setItem("go-points-queue",_queue); }catch(e){} try{ save(); }catch(e){} };
+        var cleanup=function(){ sbRpc=_rpc; toast=_toast; SFX.play=_sfx; GameFX.xpFloater=_xf; SB.online=_on; SB.uid=_uid; SB.profile=_prof; SB.serverOk=_srv; OG.sel=_sel; OG.checkAutoBadges=_cab; SB.addPoints=_ap; S.onlineStats=_os; try{ if(_queue===null) localStorage.removeItem("go-points-queue"); else localStorage.setItem("go-points-queue",_queue); }catch(e){} try{ save(); }catch(e){} };
         var failAt=function(detail){ cleanup(); return {st:'fail', detail:detail}; };
         var resetCase=function(){ floaters=[]; toasts=[]; fanfares=0; SB.profile={points:100,rank:"warrior"}; };
         resetCase();
@@ -22330,11 +22317,10 @@ SB.runOnlineFeaturesTest=function(){
          returns the NEW shape (assignee_uid/created_by/group_id/
          created_at) and the production consumers use created_by:
          raidCalc counts the creator, the skip pass allows the
-         creator's own unassigned task, and the adventure star frame
-         fires for the creator. TEST data only; stubbed RPC. */
-      [TR('k3980','کارهای مالک — شکل تازه RPC، رد/ستاره/گذر را با created_by می‌راند (تست)'), function(){
-        if(typeof raidCalc!=="function"||typeof OG==="undefined"||typeof OG.loadTasks!=="function"||typeof PW==="undefined"||typeof PW.derivedFor!=="function") return {st:'fail', detail:"raid/skip/star helpers missing"};
-        var _mode=ownerMode, _sig=ownerSig, _rpc=sbRpc, _sel=OG.sel, _tasks=OG.tasks, _members=OG.members, _msgs=OG.msgs, _study=OG.study, _refresh=OG.refreshGroupCard, _toast=toast, _sfx=SFX.play, _advDone=PW._advDone, _uid=SB.uid, _prof=SB.profile, _ols=S.onlineLastSeen;
+         creator's own unassigned task. TEST data only; stubbed RPC. */
+      [TR('k3980','کارهای مالک — شکل تازه RPC، رد/گذر را با created_by می‌راند (تست)'), function(){
+        if(typeof raidCalc!=="function"||typeof OG==="undefined"||typeof OG.loadTasks!=="function"||typeof PW==="undefined"||typeof PW.derivedFor!=="function") return {st:'fail', detail:"raid/skip helpers missing"};
+        var _mode=ownerMode, _sig=ownerSig, _rpc=sbRpc, _sel=OG.sel, _tasks=OG.tasks, _members=OG.members, _msgs=OG.msgs, _study=OG.study, _refresh=OG.refreshGroupCard, _toast=toast, _sfx=SFX.play, _uid=SB.uid, _prof=SB.profile, _ols=S.onlineLastSeen;
         var noon=new Date(); noon.setHours(12,0,0,0);
         var nowISO=new Date().toISOString();
         var rows=[
@@ -22346,7 +22332,7 @@ SB.runOnlineFeaturesTest=function(){
         sbRpc=function(n,p){ if(n==="owner_group_tasks") return Promise.resolve({data:rows}); return Promise.resolve({error:{message:"TEST-NO-RPC"}}); };
         OG.refreshGroupCard=function(){}; toast=function(){}; SFX.play=function(){};
         OG.sel={id:"g-test-3980",name:"TEST"}; OG.members=[{user_id:"u-self"},{user_id:"u2"}]; OG.study=[];
-        var cleanup=function(){ ownerMode=_mode; ownerSig=_sig; sbRpc=_rpc; OG.sel=_sel; OG.tasks=_tasks; OG.members=_members; OG.msgs=_msgs; OG.study=_study; OG.refreshGroupCard=_refresh; toast=_toast; SFX.play=_sfx; PW._advDone=_advDone; SB.uid=_uid; SB.profile=_prof; S.onlineLastSeen=_ols; try{ save(); }catch(e){} };
+        var cleanup=function(){ ownerMode=_mode; ownerSig=_sig; sbRpc=_rpc; OG.sel=_sel; OG.tasks=_tasks; OG.members=_members; OG.msgs=_msgs; OG.study=_study; OG.refreshGroupCard=_refresh; toast=_toast; SFX.play=_sfx; SB.uid=_uid; SB.profile=_prof; S.onlineLastSeen=_ols; try{ save(); }catch(e){} };
         var failAt=function(d){ cleanup(); return {st:'fail', detail:d}; };
         var wait=function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); };
         try{
@@ -22369,22 +22355,8 @@ SB.runOnlineFeaturesTest=function(){
             ownerMode=false; SB.uid="u-self"; SB.profile={points:0,rank:"recruit",skip_passes:2};
             if(!OG.canUseSkipPass(rows[0])) throw new Error("skip pass must allow the creator's own unassigned task");
             if(OG.canUseSkipPass(rows[2])) throw new Error("skip pass must refuse another member's task");
-            /* Star frame: the adventure-card branch counts a task
-               whose created_by (not assignee) is the member. */
-            OG.members=[{user_id:"u-self"}];
-            var msgAt=new Date(Date.now()-60000).toISOString();
-            OG.msgs=[{id:"m-adv-3980",text:"⚡POWER|adventure_card|x",created_at:msgAt,sender_uid:"u2"}];
-            OG.tasks=[{id:"t-adv",kind:"study",done:true,done_at:nowISO,assignee_uid:null,assignee_name:"",created_by:"u-self",group_id:"g-test-3980",created_at:nowISO}];
-            PW._advDone={};
-            var d=PW.derivedFor("u-self");
-            if(!d||d.frame!=="frame_star") throw new Error("adventure star frame did not fire for the creator: "+JSON.stringify(d&&d.frame));
-            OG.msgs=[{id:"m-adv-3980b",text:"⚡POWER|adventure_card|x",created_at:msgAt,sender_uid:"u2"}];
-            OG.tasks=[{id:"t-adv",kind:"study",done:true,done_at:nowISO,assignee_uid:null,assignee_name:"",created_by:"u-other",group_id:"g-test-3980",created_at:nowISO}];
-            PW._advDone={};
-            var d2=PW.derivedFor("u-self");
-            if(d2&&d2.frame==="frame_star") throw new Error("star frame fired without a created_by/assignee match");
             cleanup();
-            return {st:'ok', detail:"owner rows keep all 4 new columns; raidCalc 2 contributors via created_by (1 without it); skip allows the creator's task only; adventure star fires for created_by only"};
+            return {st:'ok', detail:"owner rows keep all 4 new columns; raidCalc 2 contributors via created_by (1 without it); skip allows the creator's task only"};
           }).catch(function(e){ return failAt("threw: "+String(e&&e.message||e)); });
         }catch(e){ return failAt("threw: "+String(e&&e.message||e)); }
       }],
@@ -24933,7 +24905,7 @@ OG.select=function(id){
      the polling fallback; Auth users keep Realtime only. */
   try{ OG.startGroupPoll(); }catch(e){}
   if(curView==="chat") go("chat"); else if(curView==="group") OG.refreshGroupCard();
-  try{ PW.loadUses(); PW.loadMyLetters(); }catch(e){}
+  try{ PW.loadUses(); }catch(e){}
 };
 OG.loadMembers=function(){
   if(!OG.sel) return;
@@ -25205,14 +25177,11 @@ OG._appendChatMsg=function(m){
     try{ st=PW.derivedFor(SB.uid)||st; }catch(e){}
     var cls="chatbox"+(st.cls&&st.cls.length?" "+st.cls.join(" "):"");
     if(cls!==prev.cls) return false;
-    var fort=false;
-    try{ fort=!!(PW.fortressActive&&PW.fortressActive()); }catch(e){}
-    if(fort!==!!prev.fort) return false;
     /* Near-bottom check BEFORE the append (appending never moves
        scrollTop by itself; follow only when already near the bottom). */
     var nearBottom=(box.scrollHeight-box.clientHeight-box.scrollTop)<=120;
     box.insertAdjacentHTML("beforeend",ogMsgHTML(m));
-    OG._chatRendered={groupId:OG.sel.id,count:vis.length,lastId:m.id,fort:fort,cls:cls};
+    OG._chatRendered={groupId:OG.sel.id,count:vis.length,lastId:m.id,cls:cls};
     if(nearBottom){ try{ box.scrollTop=box.scrollHeight; }catch(e){} }
     try{
       if(window.GFX&&GFX.playFresh){
@@ -25371,12 +25340,6 @@ OG.sendGroupMsg=function(t){
      server accepted the message — so the caller clears the input only
      after success and keeps the typed text on failure. */
   if(!OG.sel||!SB.groupOnline()){ toast(TR('k2422','سرور در دسترس نیست؛ اینترنت را بررسی کنید و دوباره تلاش کنید')+"."); return Promise.resolve(false); }
-  /* Fortress (Guardian, 10 min): only admins may send while it is active. */
-  try{
-    if(PW.fortressActive&&PW.fortressActive()&&!(OG.isAdmin&&OG.isAdmin())){
-      toast(TR('k9031','چت قفل است؛ فقط مدیران می‌توانند پیام بفرستند')+"."); SFX.play("denied"); return Promise.resolve(false);
-    }
-  }catch(e){}
   /* v10.4.10 — the owner runs as anon and the messages RLS policies
      are authenticated-only, so a direct insert raises "new row violates
      row-level security policy for table messages". The owner sends via
@@ -27151,33 +27114,33 @@ var PROFX={
   },
   NOTE_SCALE:["C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C7","D7","E7","F7","G7","A7","B7"],
   SOUND_GROUPS:{
-    horn:["war_cry","war_order","summon_all","plant_flag","race_game","parade","patrol","anthem","control_tower"],
-    fanfare:["celebrate_event","adventure_card","lottery","chess_move","bet_top","crown"],
-    thunder:["storm","emergency_landing","fortress"],
+    horn:["war_cry","war_order","summon_all","plant_flag","swift_wind","parade","patrol","anthem","control_tower"],
+    fanfare:["celebrate_event","ranger_banner","supply_drop","tactical_grid","golden_gambit","crown"],
+    thunder:["storm","emergency_landing","bastion_glow"],
     quake:["earthquake"],
-    coin:["coin_rain","loot","treasure_hunt","chest","golden_border","caravan"],
-    pop:["ambush","pumpkin_bomb","one_shot","bullseye","crosshair","trap","bite","infection"],
-    ghost:["ghost_mode","night_mode","shadow","phase","session_midnight","night_hunt","scare","msg_anonymous","wandering_spirit","bat_effect","fog","immortality"],
-    magic:["fortune","luck_potion","surprise","magic_room","prophecy","blessing","name_color_spell","dream_riddle","secret_code","secret_mission","fun_dossier","private_letter","activity_listen"],
-    whoosh:["loop_plane","paper_plane","takeoff","turbo","broom_flight"],
-    lullaby:["lullaby","rest","song","poem","dance","big_heart","revive","wellness_poll"],
+    coin:["coin_rain","loot","gold_vein","chest","golden_border","lantern_convoy"],
+    pop:["ambush","pumpkin_bomb","deadeye_flash","bullseye","crosshair","trap","bite","toxic_spores"],
+    ghost:["phantom_mist","night_mode","shadow","phase_shimmer","midnight_bell","crimson_moon","scare","wraith_glide","wandering_spirit","bat_effect","fog","eternal_dusk"],
+    magic:["star_charm","luck_potion","surprise","arcane_circle","rune_circle","blessing","name_color_spell","spirit_drum","cipher_spark","smoke_screen","marked_agent","sealed_wax","static_hum"],
+    whoosh:["loop_plane","paper_plane","afterburner","turbo","broom_flight"],
+    lullaby:["lullaby","rest","song","war_ballad","dance","big_heart","revive","medic_beacon"],
     ping:["emergency_ping","sys_alert"],
-    chime:["shelter","streak_post"],
-    power:["focus_duel","adrenaline","shield","armor_frame","eagle_eye","lantern","binoculars","robot_msg","laser_show","fireworks","subchannel","encrypted_msg","matrix_rain","hack_color","night_vision","journey","task_swap","avatar_swap","candy","trick_or_treat","theme_halloween","comeback","survival_challenge","sacred_fire","rage","meteor_shower"]
+    chime:["safehouse_lights","trail_blaze"],
+    power:["spartan_charge","adrenaline","shield","armor_frame","falcon_swoop","lantern","horizon_scan","arc_welder","laser_show","fireworks","signal_burst","glitch_wave","matrix_rain","hack_color","scope_glint","journey","flanking_glow","avatar_swap","candy","candy_shower","theme_halloween","risen_glow","barricade_glow","sacred_fire","rage","meteor_shower"]
   },
   BURST_GROUPS:{
     meteor:["meteor_shower"],
-    fireworks:["fireworks","celebrate_event","lottery","adventure_card"],
-    coins:["coin_rain","loot","treasure_hunt","chest","caravan"],
-    matrix:["matrix_rain","hack_color","encrypted_msg","robot_msg","night_vision","eagle_eye","binoculars","sys_alert","subchannel"],
-    fog:["fog","ghost_mode","night_mode","shadow","phase","night_hunt","session_midnight","scare","msg_anonymous"],
-    flame:["rage","sacred_fire","streak_post","comeback","immortality"],
-    lightning:["storm","fortress","emergency_landing"],
-    sparkle:["magic_room","fortune","luck_potion","surprise","prophecy","blessing","crown","dream_riddle","secret_code","secret_mission","fun_dossier","private_letter","activity_listen","name_color_spell","golden_border"],
-    shake:["focus_duel","one_shot","ambush","bullseye","crosshair","trap","pumpkin_bomb","bite","infection"],
+    fireworks:["fireworks","celebrate_event","supply_drop","ranger_banner"],
+    coins:["coin_rain","loot","gold_vein","chest","lantern_convoy"],
+    matrix:["matrix_rain","hack_color","glitch_wave","arc_welder","scope_glint","falcon_swoop","horizon_scan","sys_alert","signal_burst"],
+    fog:["fog","phantom_mist","night_mode","shadow","phase_shimmer","crimson_moon","midnight_bell","scare","wraith_glide"],
+    flame:["rage","sacred_fire","trail_blaze","risen_glow","eternal_dusk"],
+    lightning:["storm","bastion_glow","emergency_landing"],
+    sparkle:["arcane_circle","star_charm","luck_potion","surprise","rune_circle","blessing","crown","spirit_drum","cipher_spark","smoke_screen","marked_agent","sealed_wax","static_hum","name_color_spell","golden_border"],
+    shake:["spartan_charge","deadeye_flash","ambush","bullseye","crosshair","trap","pumpkin_bomb","bite","toxic_spores"],
     shockwave:["earthquake"],
-    fly:["loop_plane","paper_plane","takeoff","turbo","bat_effect","wandering_spirit"],
-    burst:["war_cry","war_order","summon_all","plant_flag","race_game","parade","patrol","anthem","control_tower","song","poem","dance","lullaby","rest","big_heart","revive","adrenaline","emergency_ping","wellness_poll","shield","armor_frame","lantern","laser_show","chess_move","bet_top","task_swap","avatar_swap","candy","trick_or_treat","theme_halloween","survival_challenge","shelter","journey"]
+    fly:["loop_plane","paper_plane","afterburner","turbo","bat_effect","wandering_spirit"],
+    burst:["war_cry","war_order","summon_all","plant_flag","swift_wind","parade","patrol","anthem","control_tower","song","war_ballad","dance","lullaby","rest","big_heart","revive","adrenaline","emergency_ping","medic_beacon","shield","armor_frame","lantern","laser_show","tactical_grid","golden_gambit","flanking_glow","avatar_swap","candy","candy_shower","theme_halloween","barricade_glow","safehouse_lights","journey"]
   },
   /* Tone.js must start from a user gesture (login tap / ability tap):
      browsers block all audio until then. Idempotent; safe to call often. */
@@ -27946,25 +27909,25 @@ var PROFX={
      are NOT here — they keep their existing renderers (see soundFor). */
   HR_AB:{
     parade:[0,7,3,2,1],war_order:[0,1,4,2,1],summon_all:[5,5,2,1,1],crown:[7,3,5,7,1.25],celebrate_event:[0,3,6,4,1],
-    prophecy:[0,4,5,6,1.25],blessing:[5,3,2,7,1],sacred_fire:[0,9,9,4,1],dream_riddle:[-5,2,1,11,1.25],
-    war_cry:[0,10,8,8,1],rage:[0,9,9,8,1],focus_duel:[-2,6,7,2,1],storm:[0,11,0,5,1.25],
-    anthem:[0,7,3,1,1.25],song:[5,3,2,0,1],poem:[-2,2,5,0,1.25],dance:[0,1,6,10,1],lullaby:[-5,2,8,0,1.25],
-    bullseye:[0,0,0,10,0.8],crosshair:[0,0,7,0,0.8],night_vision:[7,10,8,11,1],one_shot:[0,11,0,2,0.8],ambush:[0,6,1,3,0.8],
-    encrypted_msg:[0,9,7,9,1],subchannel:[-7,2,5,6,1],sys_alert:[0,0,2,10,0.8],hack_color:[5,5,6,9,1],
-    revive:[-5,1,5,7,1.25],adrenaline:[7,10,6,2,0.8],emergency_ping:[0,0,2,10,1],big_heart:[0,3,1,0,1.25],wellness_poll:[2,7,2,1,1],
-    eagle_eye:[7,10,0,11,1],lantern:[0,3,8,7,1.25],treasure_hunt:[5,7,6,7,1],streak_post:[0,1,2,4,1],binoculars:[0,0,7,10,0.8],
-    robot_msg:[0,9,7,9,0.8],laser_show:[12,10,3,1,0.8],paper_plane:[0,1,8,3,1.25],golden_border:[7,3,5,7,1.25],
-    fun_dossier:[0,2,2,10,1],secret_mission:[-5,11,8,11,1.25],activity_listen:[0,0,1,0,1],private_letter:[2,4,5,0,1.25],secret_code:[0,9,6,9,1],
-    shield:[0,0,0,2,1],fortress:[-7,2,3,8,1.25],plant_flag:[0,5,2,1,1],armor_frame:[0,7,4,10,1],patrol:[0,7,3,2,1],
-    adventure_card:[0,3,2,7,1],loot:[7,5,6,7,0.8],rest:[-5,2,8,11,1.25],race_game:[0,1,4,10,0.8],journey:[0,1,8,3,1.25],
-    takeoff:[0,10,8,3,1.25],emergency_landing:[0,11,0,4,1],turbo:[5,10,6,3,0.8],loop_plane:[2,3,8,3,1.25],control_tower:[7,5,2,1,1],
-    chess_move:[0,0,1,10,0.8],bet_top:[5,6,2,7,1],task_swap:[0,4,1,3,1],surprise:[7,5,0,4,0.8],trap:[0,11,7,2,0.8],
-    chest:[-2,6,1,2,1],lottery:[0,9,6,7,1],caravan:[0,7,4,10,1.25],coin_rain:[12,7,6,7,0.8],avatar_swap:[0,4,2,3,1],
-    ghost_mode:[-7,11,8,11,1.25],msg_anonymous:[-5,2,5,11,1],shadow:[-7,2,8,6,1.25],session_midnight:[-12,0,8,6,1.25],phase:[0,11,0,3,0.8],
-    name_color_spell:[7,3,2,7,1],magic_room:[5,4,5,6,1.25],fortune:[0,9,6,1,1],luck_potion:[12,5,2,7,0.8],wandering_spirit:[0,4,8,11,1.25],
-    night_mode:[-7,2,8,6,1.25],bat_effect:[12,9,7,11,0.8],night_hunt:[-5,6,4,8,1],immortality:[0,1,5,7,1.25],fog:[-12,0,8,11,1.25],
-    bite:[0,6,7,4,0.8],infection:[-5,9,6,4,1],comeback:[-7,1,5,8,1.25],survival_challenge:[0,1,4,2,1],shelter:[-7,2,8,6,1.25],
-    pumpkin_bomb:[0,11,0,2,0.8],scare:[7,6,7,11,0.8],candy:[12,7,6,7,0.8],trick_or_treat:[5,9,2,4,1],theme_halloween:[-2,3,5,11,1.25]
+    rune_circle:[0,4,5,6,1.25],blessing:[5,3,2,7,1],sacred_fire:[0,9,9,4,1],spirit_drum:[-5,2,1,11,1.25],
+    war_cry:[0,10,8,8,1],rage:[0,9,9,8,1],spartan_charge:[-2,6,7,2,1],storm:[0,11,0,5,1.25],
+    anthem:[0,7,3,1,1.25],song:[5,3,2,0,1],war_ballad:[-2,2,5,0,1.25],dance:[0,1,6,10,1],lullaby:[-5,2,8,0,1.25],
+    bullseye:[0,0,0,10,0.8],crosshair:[0,0,7,0,0.8],scope_glint:[7,10,8,11,1],deadeye_flash:[0,11,0,2,0.8],ambush:[0,6,1,3,0.8],
+    glitch_wave:[0,9,7,9,1],signal_burst:[-7,2,5,6,1],sys_alert:[0,0,2,10,0.8],hack_color:[5,5,6,9,1],
+    revive:[-5,1,5,7,1.25],adrenaline:[7,10,6,2,0.8],emergency_ping:[0,0,2,10,1],big_heart:[0,3,1,0,1.25],medic_beacon:[2,7,2,1,1],
+    falcon_swoop:[7,10,0,11,1],lantern:[0,3,8,7,1.25],gold_vein:[5,7,6,7,1],trail_blaze:[0,1,2,4,1],horizon_scan:[0,0,7,10,0.8],
+    arc_welder:[0,9,7,9,0.8],laser_show:[12,10,3,1,0.8],paper_plane:[0,1,8,3,1.25],golden_border:[7,3,5,7,1.25],
+    marked_agent:[0,2,2,10,1],smoke_screen:[-5,11,8,11,1.25],static_hum:[0,0,1,0,1],sealed_wax:[2,4,5,0,1.25],cipher_spark:[0,9,6,9,1],
+    shield:[0,0,0,2,1],bastion_glow:[-7,2,3,8,1.25],plant_flag:[0,5,2,1,1],armor_frame:[0,7,4,10,1],patrol:[0,7,3,2,1],
+    ranger_banner:[0,3,2,7,1],loot:[7,5,6,7,0.8],rest:[-5,2,8,11,1.25],swift_wind:[0,1,4,10,0.8],journey:[0,1,8,3,1.25],
+    afterburner:[0,10,8,3,1.25],emergency_landing:[0,11,0,4,1],turbo:[5,10,6,3,0.8],loop_plane:[2,3,8,3,1.25],control_tower:[7,5,2,1,1],
+    tactical_grid:[0,0,1,10,0.8],golden_gambit:[5,6,2,7,1],flanking_glow:[0,4,1,3,1],surprise:[7,5,0,4,0.8],trap:[0,11,7,2,0.8],
+    chest:[-2,6,1,2,1],supply_drop:[0,9,6,7,1],lantern_convoy:[0,7,4,10,1.25],coin_rain:[12,7,6,7,0.8],avatar_swap:[0,4,2,3,1],
+    phantom_mist:[-7,11,8,11,1.25],wraith_glide:[-5,2,5,11,1],shadow:[-7,2,8,6,1.25],midnight_bell:[-12,0,8,6,1.25],phase_shimmer:[0,11,0,3,0.8],
+    name_color_spell:[7,3,2,7,1],arcane_circle:[5,4,5,6,1.25],star_charm:[0,9,6,1,1],luck_potion:[12,5,2,7,0.8],wandering_spirit:[0,4,8,11,1.25],
+    night_mode:[-7,2,8,6,1.25],bat_effect:[12,9,7,11,0.8],crimson_moon:[-5,6,4,8,1],eternal_dusk:[0,1,5,7,1.25],fog:[-12,0,8,11,1.25],
+    bite:[0,6,7,4,0.8],toxic_spores:[-5,9,6,4,1],risen_glow:[-7,1,5,8,1.25],barricade_glow:[0,1,4,2,1],safehouse_lights:[-7,2,8,6,1.25],
+    pumpkin_bomb:[0,11,0,2,0.8],scare:[7,6,7,11,0.8],candy:[12,7,6,7,0.8],candy_shower:[5,9,2,4,1],theme_halloween:[-2,3,5,11,1.25]
   },
   HR_CONTOUR:[
     [1,1,1,1,1,1],[1,1.06,1.12,1.19,1.26,1.33],[1.33,1.26,1.19,1.12,1.06,1],
@@ -28049,6 +28012,11 @@ var PROFX={
       return true;
     }catch(e){ return false; }
   },
+  /* v10.4.38 — sound-slot remap: the 41 replacement powers reuse
+     the retired powers' recorded bundle slots 1:1, so the
+     157-slot bundle stays byte-identical. The retired names
+     below are SLOT KEYS ONLY — no retired behavior remains. */
+  SLOT_ALIAS:{rune_circle:"prophecy",spirit_drum:"dream_riddle",spartan_charge:"focus_duel",war_ballad:"poem",scope_glint:"night_vision",deadeye_flash:"one_shot",glitch_wave:"encrypted_msg",signal_burst:"subchannel",medic_beacon:"wellness_poll",falcon_swoop:"eagle_eye",gold_vein:"treasure_hunt",trail_blaze:"streak_post",horizon_scan:"binoculars",arc_welder:"robot_msg",marked_agent:"fun_dossier",smoke_screen:"secret_mission",static_hum:"activity_listen",sealed_wax:"private_letter",cipher_spark:"secret_code",bastion_glow:"fortress",ranger_banner:"adventure_card",swift_wind:"race_game",afterburner:"takeoff",tactical_grid:"chess_move",golden_gambit:"bet_top",flanking_glow:"task_swap",supply_drop:"lottery",lantern_convoy:"caravan",phantom_mist:"ghost_mode",wraith_glide:"msg_anonymous",midnight_bell:"session_midnight",phase_shimmer:"phase",arcane_circle:"magic_room",star_charm:"fortune",crimson_moon:"night_hunt",eternal_dusk:"immortality",toxic_spores:"infection",risen_glow:"comeback",barricade_glow:"survival_challenge",safehouse_lights:"shelter",candy_shower:"trick_or_treat"},
   _hrPlay:function(perm){
     /* v10.4.32 (T3): recorded ability slot. Returns true when the
        slot exists (played, or suppressed by mute) so soundFor never
@@ -28057,7 +28025,8 @@ var PROFX={
     if(typeof perm!=="string"||!perm) return false;
     try{
       if(typeof SFX==="undefined"||!SFX.playSlot) return false;
-      return !!SFX.playSlot("ability_"+perm);
+      var _slot="ability_"+(PROFX.SLOT_ALIAS[perm]||perm);
+      return !!SFX.playSlot(_slot);
     }catch(e){ return false; }
   },
   roleSound:function(role){
@@ -28147,8 +28116,8 @@ function myLevel(){ try{ return levelFor(SB.profile?SB.profile.points:0); }catch
 function rankName(k){ var r=RANKS.filter(function(x){ return x.key===k; })[0]; if(!r) return k; return LANG==='en'?r.en:r.fa; }
 var RANK_ABILITIES={
  recruit:[["create_group_1","ساختن ۱ گروه","Create 1 group"],["pick_avatar","انتخاب آواتار","Pick an avatar"],["chat_vote","چت متنی + رأی","Text chat + vote"],["log_tasks","ثبت کارها","Log tasks"],["view_record","دیدن رکورد خودم","View own record"]],
- warrior:[["create_group_3","ساختن ۳ گروه","Create 3 groups"],["poll_multi","رأی‌گیری چندگزینه‌ای","Multi-choice polls"],["custom_title","عنوان ویژه زیر نام","Special title under name"],["frame_silver","قاب نقره‌ای آواتار","Silver avatar frame"],["ghost_mode_rank","حالت شبح (آفلاین دیده‌شدن)","Ghost mode (appear offline)"]],
- elite:[["create_group_5","ساختن ۵ گروه","Create 5 groups"],["create_challenge","ساختن چالش گروهی","Create group challenges"],["name_color","رنگ دلخواه نام در چت","Custom name color in chat"],["frame_gold","قاب طلایی آواتار","Gold avatar frame"],["anon_rank","پیام ناشناس (با تأیید مدیر)","Anonymous message (admin approval)"]],
+ warrior:[["create_group_3","ساختن ۳ گروه","Create 3 groups"],["poll_multi","رأی‌گیری چندگزینه‌ای","Multi-choice polls"],["custom_title","عنوان ویژه زیر نام","Special title under name"],["frame_silver","قاب نقره‌ای آواتار","Silver avatar frame"],["phantom_mist_rank","مه شبح (افکت مه بنفش در چت)","Phantom mist (violet mist effect in chat)"]],
+ elite:[["create_group_5","ساختن ۵ گروه","Create 5 groups"],["create_challenge","ساختن چالش گروهی","Create group challenges"],["name_color","رنگ دلخواه نام در چت","Custom name color in chat"],["frame_gold","قاب طلایی آواتار","Gold avatar frame"],["wraith_glide_rank","پرواز شبح (شبح از وسط چت رد می‌شود)","Wraith glide (a wraith glides across the chat)"]],
  champion:[["create_group_inf","ساختن نامحدود گروه","Unlimited groups"],["create_event","ساختن رویداد گروهی","Create group events"],["theme_champion","تم اختصاصی قهرمان","Champion-exclusive theme"],["priority_speaker","اولویت صحبت در واکی‌تاکی","Priority speaker in walkie-talkie"],["mult_2x","ضریب ۲× امتیاز زنجیره","2× streak-points multiplier"]],
  legend:[["avatar_golden","آواتار اختصاصی پادشاه","King exclusive avatar"],["frame_legend","قاب افسانه‌ای متحرک","Legendary animated avatar frame"],["title_legend","عنوان افسانه زیر نام","Legend title under name"],["create_mission","ساختن مأموریت ویژه گروهی","Create special group missions"],["stats_adv","آمار پیشرفته شخصی + تم افسانه","Advanced personal stats + Legend theme"]]
 };
@@ -28893,13 +28862,11 @@ SB.loadUserData=function(){
     return true;
   });
 };
-/* v10.4 (J2): server-side presence. Heartbeat every 30s while signed in
-   (+ on sign-in and when the tab becomes visible). Ghost mode is a
-   WARRIOR-rank ability; there is NO switch for it in the profile editor —
-   `ghost_mode_rank` in the warrior RANK_ABILITIES list is
-   display-only with no code path, and the ghost_mode power is the only
-   way to turn it on. Dots: green online / grey offline;
-   no presence row (or stale/ghost) shows offline. */
+/* v10.4 (J2): server-side presence — this writes ME_PRESENCE into
+   group_members via rpc_presence (upsert), so the member list does NOT
+   depend on Realtime. Rows expire after ~2 minutes of silence.
+   v10.4.38: the ghost-mode toggle power was retired; p_ghost is
+   always false here, and the server check stays dormant. */
 SB.presenceMap={};
 SB.presenceDot=function(uid){
   if(!uid) return "";
@@ -28914,9 +28881,7 @@ SB.presenceHeartbeat=function(){
      only honours p_ghost for a caller holding the 'ghost' group role. */
   var _k=null; try{ _k=(typeof SB.keyForRpc==="function")?SB.keyForRpc():null; }catch(e){}
   if(!SB.uid&&!_k) return Promise.resolve(false);
-  /* Ghost mode lasts 1 hour from the ability use, then expires by itself. */
-  if(S.ghostMode&&S.ghostUntil&&S.ghostUntil<=Date.now()){ S.ghostMode=false; S.ghostUntil=0; try{ save(); }catch(e){} }
-  return sbRpc("presence_heartbeat",{p_ghost:!!S.ghostMode,p_key:_k}).then(function(res){ var _ok=!res.error&&!!res.data; try{ if(_ok) SB._lastHeartbeatOkAt=Date.now(); else SB._lastHeartbeatErrAt=Date.now(); }catch(e){} return _ok; }).catch(function(){ try{ SB._lastHeartbeatErrAt=Date.now(); }catch(e){} return false; });
+  return sbRpc("presence_heartbeat",{p_ghost:false,p_key:_k}).then(function(res){ var _ok=!res.error&&!!res.data; try{ if(_ok) SB._lastHeartbeatOkAt=Date.now(); else SB._lastHeartbeatErrAt=Date.now(); }catch(e){} return _ok; }).catch(function(){ try{ SB._lastHeartbeatErrAt=Date.now(); }catch(e){} return false; });
 };
 SB.presenceStart=function(){
   if(SB._presenceTimer) return;
@@ -35056,45 +35021,47 @@ var PW={uses:{},
    return fa(m)+" "+TR('k2091','دقیقه');
  },
  sfxFor:function(perm){
-   if(perm==="war_cry"||perm==="control_tower"||perm==="war_order"||perm==="summon_all"||perm==="plant_flag"||perm==="race_game") return "horn";
+   if(perm==="war_cry"||perm==="control_tower"||perm==="war_order"||perm==="summon_all"||perm==="plant_flag"||perm==="swift_wind") return "horn";
    if(perm==="scare") return "ghost";
-   if(perm==="anthem"||perm==="celebrate_event"||perm==="checkmate"||perm==="fireworks"||perm==="lottery") return "fanfare";
+   if(perm==="anthem"||perm==="celebrate_event"||perm==="checkmate"||perm==="fireworks"||perm==="supply_drop") return "fanfare";
    if(perm==="storm") return "thunder";
    if(perm==="earthquake") return "quake";
    if(perm==="coin_rain") return "coin"; /* loot shares this branch below */
-   if(perm==="ambush"||perm==="pumpkin_bomb"||perm==="emergency_landing"||perm==="one_shot"||perm==="bullseye") return "pop";
+   if(perm==="ambush"||perm==="pumpkin_bomb"||perm==="emergency_landing"||perm==="deadeye_flash"||perm==="bullseye") return "pop";
    if(perm==="trap") return "ribbit";
-   if(perm==="loop_plane"||perm==="broom_flight"||perm==="bat_effect"||perm==="wandering_spirit"||perm==="paper_plane"||perm==="takeoff"||perm==="turbo"||perm==="phase") return "whoosh";
-   if(perm==="fortune"||perm==="luck_potion"||perm==="surprise"||perm==="laser_show"||perm==="magic_room") return "magic";
+   if(perm==="loop_plane"||perm==="broom_flight"||perm==="bat_effect"||perm==="wandering_spirit"||perm==="paper_plane"||perm==="afterburner"||perm==="turbo"||perm==="phase_shimmer") return "whoosh";
+   if(perm==="star_charm"||perm==="luck_potion"||perm==="surprise"||perm==="laser_show"||perm==="arcane_circle") return "magic";
    if(perm==="lullaby"||perm==="rest") return "lullaby";
    if(perm==="emergency_ping"||perm==="sys_alert") return "ping";
    if(perm==="coin_rain"||perm==="loot") return "coin";
    if(perm==="revive"||perm==="big_heart") return "chime";
-   if(perm==="adventure_card") return "fanfare";
-   if(perm==="night_mode"||perm==="ghost_mode") return "ghost";
-   if(perm==="song"||perm==="dance"||perm==="poem") return "chime";
+   if(perm==="ranger_banner") return "fanfare";
+   if(perm==="night_mode"||perm==="phantom_mist") return "ghost";
+   if(perm==="song"||perm==="dance"||perm==="war_ballad") return "chime";
    return "power";
  },
- NEEDS_TARGET:["candy","crosshair","adrenaline","big_heart","blessing","crown","bite","revive","fun_dossier","private_letter","name_color_spell","fortune","luck_potion","avatar_swap","task_swap","focus_duel","bet_top"],
+ NEEDS_TARGET:["candy","crosshair","adrenaline","big_heart","blessing","crown","bite","revive","name_color_spell","luck_potion","avatar_swap","marked_agent","sealed_wax","golden_gambit","flanking_glow","star_charm"],
  needsTarget:function(perm){ return PW.NEEDS_TARGET.indexOf(perm)>-1; },
- /* Caesar shift (+3) for the code games: the stored text is shifted so a
-    casual reader cannot see the word; the solver types the plain word and
-    the client shifts it to compare. A casual game, not security. */
- caesar:function(s,shift){
-   return (s||"").split("").map(function(c){
-     var n=c.charCodeAt(0);
-     if(n>=97&&n<=122) return String.fromCharCode(((n-97+shift)%26+26)%26+97);
-     if(n>=65&&n<=90) return String.fromCharCode(((n-65+shift)%26+26)%26+65);
-     return c;
-   }).join("");
+ /* v10.4.38 (G1) — p_text carries ONLY whitelisted structured visual
+    params. Every other power sends "". renderPowerMsg never renders
+    raw p_text, so no power card can display sender-typed text.
+    bullseye carries its message id in p_target, not p_text. */
+ TEXT_PARAM:{hack_color:"hex",name_color_spell:"hex",journey:"dest",surprise:"frame",avatar_swap:"avatarIdx"},
+ sanitizeText:function(perm,text){
+   var kind=PW.TEXT_PARAM[perm]; if(!kind) return "";
+   var t=String(text||"");
+   if(kind==="hex") return /^#[0-9a-fA-F]{6}$/.test(t)?t:"";
+   if(kind==="dest") return ["beach","mountain","desert","forest"].indexOf(t)>-1?t:"";
+   if(kind==="frame") return ["frame_gold","frame_sparkle","frame_fire","frame_rainbow"].indexOf(t)>-1?t:"";
+   if(kind==="avatarIdx") return /^\d+$/.test(t)?t:"0";
+   return "";
  },
- use:function(perm,target,text){
+  use:function(perm,target,text){
    /* v10.4.17 — key user (valid key, no Auth session) may use powers too;
       only a user with NO identity at all is refused here. */
    if((!SB.online&&!SB.keyOk())||!OG.sel){ toast(TR('k2052','آنلاین وصل نیست؛ تغییرات روی همین دستگاه می‌ماند')+"."); return; }
-   if(perm==="ghost_mode"&&S.ghostMode&&(!S.ghostUntil||S.ghostUntil>Date.now())){ PW.ghostOff(); return; }
    if(PW.left(perm)<=0){ toast(TR('k2169','این قدرت برای این هفته تمام شد')+"."); SFX.play("denied"); return; }
-   if(perm==="secret_code"||perm==="encrypted_msg") text=PW.caesar(text||"",3);
+   text=PW.sanitizeText(perm,text);
    /* v10.4.17 — pass p_key (null for Auth users: the server uses
       auth.uid()); a bare PLN-/SUP- target code becomes 'key:'+code. */
    sbRpc("use_power",{p_group:OG.sel.id,p_perm:perm,p_target:keyUid(target||""),p_text:text||"",p_key:SB.keyForRpc()}).then(function(res){
@@ -35108,11 +35075,6 @@ var PW={uses:{},
      }
      PW.uses[perm]=(PW.uses[perm]||0)+1;
      PROFX.soundFor(perm); PROFX.burst(perm);
-     if(perm==="msg_anonymous") toast(TR('k2137','پیام ناشناس شما در انتظار تأیید مدیر است')+".");
-     if(perm==="ghost_mode"){ OG.checkAutoBadges("ghost"); S.ghostMode=true; S.ghostUntil=Date.now()+3600*1000; save(); try{ if(typeof SB!=="undefined") SB.presenceHeartbeat(); }catch(e){} }
-     if(perm==="session_midnight"||perm==="night_hunt") OG.checkAutoBadges("night");
-     if(perm==="comeback") OG.checkAutoBadges("survivor");
-     if(perm==="subchannel"||perm==="shelter") toast(TR('k2138','زیرکانال ساخته شد؛ کد دعوت')+": "+(row.extra||""));
      OG.loadMsgs(); PW.loadUses(); PW.refreshSheetCounts();
      /* v10.4.32 (T12): CLOSE the sheet on a successful send — the old
         code re-rendered it (openSheet), so the dimmed sheet covered
@@ -35120,168 +35082,6 @@ var PW={uses:{},
         the animation IN THE GROUP. Counts refresh above still runs;
         the sheet re-opens fresh via the chat header button. */
      var sh=$("pwSheet"); if(sh) sh.style.display="none";
-   });
- },
- /* Ghost mode OFF (local only — turning it off costs no weekly use).
-    The presence heartbeat then tells the server the member is visible again. */
- ghostOff:function(){
-   S.ghostMode=false; S.ghostUntil=0; save();
-   try{ if(typeof SB!=="undefined") SB.presenceHeartbeat(); }catch(e){}
-   toast(TR('k2524','حالت شبح خاموش شد')+".");
-   try{ if($("pwSheet")&&$("pwSheet").style.display!=="none") PW.openSheet(); }catch(e){}
- },
- /* Claim a game with a winner (first valid claim wins, server-side).
-    For secret_code the caller must type the decoded word first. */
- claim:function(msgId,perm){
-   /* v10.4.17 — key user (valid key, no Auth session) may claim too. */
-   if((!SB.online&&!SB.keyOk())||!OG.sel) return;
-   if(perm==="secret_code"){
-     var m=(OG.msgs||[]).filter(function(x){ return String(x.id)===String(msgId); })[0];
-     if(!m){ toast(TR('k2171','اطلاعات قدرت درست نیست؛ دوباره بررسی کنید')+"."); return; }
-     var stored=(m.text||"").split("|").slice(3).join("|");
-     var box=$("pwClaimBox");
-     if(!box) return;
-     box.style.display="block";
-     box.innerHTML='<div class="field"><label>'+TR('k2172','کد رمزگشایی‌شده را بنویسید')+'</label><div class="rowflex"><input class="inp grow" id="pwClaimAns" placeholder="…"><button class="btn sm" onclick="PW.claimAnswer(\''+msgId+'\',\''+perm+'\')">'+TR('k2173','ثبت')+'</button></div></div>';
-     var inp=$("pwClaimAns"); if(inp) inp.focus();
-     return;
-   }
-   if(perm==="dream_riddle"){
-     var box2=$("pwClaimBox");
-     if(!box2) return;
-     box2.style.display="block";
-     box2.innerHTML='<div class="field"><label>'+TR('k2271','پاسخ معما')+'</label><div class="rowflex"><input class="inp grow" id="pwClaimAns" placeholder="'+TR('k2272','پاسخ را بنویسید')+'"><button class="btn sm" onclick="PW.claimAnswer(\'+msgId+\',\'+perm+\')">'+TR('k2173','ثبت')+'</button></div></div>';
-     var inp2=$("pwClaimAns"); if(inp2) inp2.focus();
-     return;
-   }
-   PW.doClaim(msgId,perm);
- },
- claimAnswer:function(msgId,perm){
-   var m=(OG.msgs||[]).filter(function(x){ return String(x.id)===String(msgId); })[0];
-   var inp=$("pwClaimAns"); if(!m||!inp) return;
-   if(perm==="dream_riddle"){
-     var ans=inp.value.trim();
-     if(!ans){ toast(TR('k2272','پاسخ را بنویسید')+"."); return; }
-     PW.doClaim(msgId,perm,ans);
-     return;
-   }
-   var stored=(m.text||"").split("|").slice(3).join("|");
-   var guess=PW.caesar(inp.value.trim(),3);
-   if(!guess||guess!==stored){ toast(TR('k2174','کد درست نیست؛ دوباره تلاش کن')+"."); SFX.play("denied"); return; }
-   PW.doClaim(msgId,perm);
- },
- doClaim:function(msgId,perm,answer){
-   /* v10.4.17 — key user (no Auth session): pass p_key. */
-   sbRpc("claim_power",{p_msg:msgId,p_answer:answer||null,p_key:SB.keyForRpc()}).then(function(res){
-     if(res.error){ toast(toastErr(res.error)); SFX.play("denied"); return; }
-     var row=(res.data&&res.data[0])||null; if(!row) return;
-     if(!row.ok){
-       if(row.reason==="taken") toast(TR('k2175','کسی زودتر برنده شد')+".");
-       else if(row.reason==="expired") toast(TR('k2176','زمان این بازی تمام شد')+".");
-       else if(row.reason==="not-won") toast(TR('k2177','هنوز برنده نشده‌ای؛ اول باید پیشگویی برترین عضو هفته بیاید')+".");
-       else if(row.reason==="too-early") toast(TR('k2284','هنوز ۳ روز کامل نشده است')+".");
-       else if(row.reason==="not-active") toast(TR('k2285','فعالیت کافی در این روزها ثبت نشده است')+".");
-       else if(row.reason==="wrong-answer") toast(TR('k2286','پاسخ درست نیست؛ دوباره تلاش کن')+".");
-       else if(row.reason==="too-late") toast(TR('k2287','شرط‌بندی فقط تا قبل از جمعه ممکن است')+".");
-       else toast(TR('k2136','این قدرت برای نقش شما نیست')+".");
-       SFX.play("denied"); return;
-     }
-     SFX.play("fanfare");
-     toast("🏆 "+TR('k2178','برنده شدی! قاب طلایی / قهرمان ۱ ساعت مال توست'));
-     OG.loadMsgs();
-   });
- },
- /* Accept a task exchange (only the member it was offered to sees the button). */
- acceptSwap:function(msgId){
-   /* v10.4.17 — key user (no Auth session): pass p_key. */
-   sbRpc("accept_task_swap",{p_msg:msgId,p_key:SB.keyForRpc()}).then(function(res){
-     if(res.error){ toast(toastErr(res.error)); return; }
-     if(res.data===false){ toast(TR('k2179','این مبادله دیگر قابل قبول نیست')+"."); return; }
-     SFX.play("chime");
-     toast("🤝 "+TR('k2180','مبادله کار انجام شد'));
-     OG.loadMsgs(); OG.loadTasks();
-   });
- },
- /* Focus duel flow (Parsa, 2026-11-09 ~23:45): the Berserker challenges a
-    member with a duration (15/25/45 min) and a goal (finish N tasks, or stay
-    focused the whole time). The challenged member accepts or declines. Both
-    start the focus timer together; the server tracks completed tasks (in the
-    duel window) and reported focus minutes. Whoever reaches the goal first —
-    or has more progress when time runs out — wins the champion frame (1h);
-    the loser gets a "defeated" effect. Leaving early = forfeit (loss).
-    The duel RPCs take the power MESSAGE id. PW._duelDone skips duels the
-    server already closed (finished / declined). */
- _duelDone:{},
- myDuels:function(){
-   /* v10.4.17 — key user (valid key, no Auth session) has duels too;
-      identity is SB.myUid() ('key:'+code), not SB.uid (null). */
-   if((!SB.online&&!SB.keyOk())||!OG.sel) return [];
-   var now=Date.now();
-   return (OG.msgs||[]).filter(function(m){
-     if(!m.text||m.text.indexOf("⚡POWER|focus_duel|")!==0) return false;
-     if(PW._duelDone[m.id]) return false;
-     if(now-new Date(m.created_at).getTime()>3*3600*1000) return false;
-     var parts=m.text.split("|");
-     if(m.sender_uid!==SB.myUid()&&parts[2]!==SB.myUid()) return false;
-     var claimed=(OG.msgs||[]).some(function(c){
-       return c.text&&c.text.indexOf("⚡CLAIM|focus_duel|")===0&&(c.text.split("|")[3]||"")===String(m.id);
-     });
-     return !claimed;
-   });
- },
- acceptDuel:function(msgId){
-   /* v10.4.17 — key user (no Auth session): pass p_key. */
-   sbRpc("accept_duel",{p_msg:msgId,p_key:SB.keyForRpc()}).then(function(res){
-     if(res.error){ toast(toastErr(res.error)); return; }
-     if(res.data===false){ toast(TR('k2171','اطلاعات قدرت درست نیست؛ دوباره بررسی کنید')+"."); return; }
-     SFX.play("horn"); toast("⚔️ "+TR('k2288','دوئل قبول شد — تایمر شروع شد!'));
-     OG.loadMsgs();
-   });
- },
- declineDuel:function(msgId){
-   /* v10.4.17 — key user (no Auth session): pass p_key. */
-   sbRpc("decline_duel",{p_msg:msgId,p_key:SB.keyForRpc()}).then(function(res){
-     if(res.error){ toast(toastErr(res.error)); return; }
-     if(res.data===false){ toast(TR('k2171','اطلاعات قدرت درست نیست؛ دوباره بررسی کنید')+"."); return; }
-     PW._duelDone[msgId]=true;
-     toast("🚫 "+TR('k2289','دوئل رد شد')); OG.loadMsgs();
-   });
- },
- forfeitDuel:function(msgId){
-   /* v10.4.17 — key user (no Auth session): pass p_key. */
-   sbRpc("forfeit_duel",{p_msg:msgId,p_key:SB.keyForRpc()}).then(function(res){
-     if(res.error){ toast(toastErr(res.error)); return; }
-     if(res.data===false){ toast(TR('k2171','اطلاعات قدرت درست نیست؛ دوباره بررسی کنید')+"."); return; }
-     PW._duelDone[msgId]=true;
-     SFX.play("denied"); toast(TR('k2270','شکست خورده')+"."); OG.loadMsgs();
-   });
- },
- /* Report my focus minutes to every duel I am in (called from
-    OG.onFocusDone), then check whether anyone won. */
- reportDuelFocus:function(min){
-   PW.myDuels().forEach(function(m){
-     /* Server-first (v10.4.4): the duel focus report is retried once on
-        failure instead of being silently dropped. */
-     var send=function(){ return sbRpc("report_duel_focus",{p_msg:m.id,p_minutes:min,p_key:SB.keyForRpc()}); };
-     send().then(function(res){ if(res&&res.error){ setTimeout(function(){ send().catch(function(){}); },3000); } }).catch(function(){ setTimeout(function(){ send().catch(function(){}); },3000); });
-   });
- },
- /* Ask the server whether any of my duels is decided (called from
-    OG.onTaskDone / OG.onFocusDone). */
- checkDuel:function(){
-   PW.myDuels().forEach(function(m){
-     /* v10.4.29 (APP batch 2, Task 0): pass p_key like the four sibling
-        duel RPCs — check_duel now authorizes participants in-function
-        and key-only users got "forbidden" without it. keyForRpc() is
-        null for Auth/owner callers, so they are unaffected. */
-     sbRpc("check_duel",{p_msg:m.id,p_key:SB.keyForRpc()}).then(function(res){
-       if(res.error) return;
-       var row=(res.data&&res.data[0])||null;
-       if(row&&row.ok&&(row.status==="finished"||row.status==="declined")){
-         PW._duelDone[m.id]=true;
-         if(row.status==="finished"){ SFX.play("fanfare"); OG.loadMsgs(); }
-       }
-     });
    });
  },
  /* Accept an avatar swap (only the member it was offered to sees the
@@ -35307,17 +35107,6 @@ var PW={uses:{},
    return uid?uid.slice(0,8):"—";
  },
  isExpired:function(m){ return !!(m.expires_at&&new Date(m.expires_at).getTime()<Date.now()); },
- /* Fortune texts (the server only stores the key fortune1..6). fa comes
-    from i18n k22201..k22206; en is the matching translation. */
- FORTUNES:{
-  fortune1:{fa:TR("k22201","این هفته یک موفقیت غیرمنتظره در راه است."),en:"An unexpected success is coming your way this week."},
-  fortune2:{fa:TR("k22202","تمرکز امروزت سه برابر می‌شود؛ ازش استفاده کن."),en:"Your focus triples today — use it well."},
-  fortune3:{fa:TR("k22203","یک دوست قدیمی به‌زودی سراغت می‌آید."),en:"An old friend will reach out soon."},
-  fortune4:{fa:TR("k22204","شانس با کسی است که زودتر شروع می‌کند."),en:"Luck favors the one who starts first."},
-  fortune5:{fa:TR("k22205","امشب یک ایده طلایی به ذهنت می‌رسد."),en:"A golden idea will come to you tonight."},
-  fortune6:{fa:TR("k22206","زنجیره‌ات این هفته نمی‌شکند؛ ادامه بده."),en:"Your streak will not break this week — keep going."}
- },
- fortuneText:function(key){ var f=PW.FORTUNES[key]; if(!f) return key; return LANG==='en'?f.en:f.fa; },
  /* Deterministic fun frame for a chest (same member + message = same frame). */
  CHEST_FRAMES:["frame_gold","frame_rainbow","frame_fire","frame_ice","frame_candy","frame_pumpkin","frame_ghost","frame_star"],
  chestFrame:function(uid,msgId){
@@ -35350,74 +35139,42 @@ var PW={uses:{},
    if(perm==="matrix_rain") cls+=" pw-matrix";
    if(perm==="fireworks") cls+=" pw-fireworks";
    if(perm==="laser_show") cls+=" pw-laser";
-   if(perm==="coin_rain") cls+=" pw-coins";
+   if(perm==="coin_rain"||perm==="supply_drop") cls+=" pw-coins";
    if(perm==="meteor_shower") cls+=" pw-meteor";
    if(perm==="pumpkin_bomb") cls+=" pw-pumpkin";
    if(perm==="fog") cls+=" pw-fog-card";
    if(perm==="lullaby") cls+=" pw-lullaby";
-   if(perm==="song") cls+=" pw-song";
+   if(perm==="song"||perm==="war_ballad") cls+=" pw-song";
    if(perm==="dance") cls+=" pw-dance";
-   if(perm==="poem") cls+=" pw-poem";
    if(perm==="parade") cls+=" pw-parade";
    if(perm==="patrol") cls+=" pw-patrol";
-   if(perm==="loop_plane"||perm==="broom_flight"||perm==="bat_effect"||perm==="wandering_spirit"||perm==="paper_plane") cls+=" pw-fly";
+   if(perm==="loop_plane"||perm==="broom_flight"||perm==="bat_effect"||perm==="wandering_spirit"||perm==="paper_plane"||perm==="falcon_swoop"||perm==="wraith_glide") cls+=" pw-fly";
    if(perm==="rest") cls+=" pw-rest";
-   if(perm==="takeoff") cls+=" pw-takeoff";
-   if(perm==="turbo") cls+=" pw-turbo";
+   if(perm==="turbo"||perm==="afterburner") cls+=" pw-turbo";
    if(perm==="emergency_landing") cls+=" pw-crash";
    if(perm==="celebrate_event") cls+=" pw-confetti";
    if(perm==="loot") cls+=" pw-loot";
    if(perm==="emergency_ping") cls+=" pw-ping";
    if(perm==="control_tower") cls+=" pw-tower";
-   if(perm==="fortress") cls+=" pw-fortress";
    }
    /* Banners: war_order / war_cry / anthem / sys_alert / plant_flag render as
       a real banner card, not a plain power card (sys_alert in alert red). */
-   if(["war_order","war_cry","anthem","sys_alert","plant_flag"].indexOf(perm)>-1) cls+=" pw-banner"+(perm==="sys_alert"?" pw-banner-alert":"");
+   if(["war_order","war_cry","anthem","sys_alert","plant_flag","ranger_banner"].indexOf(perm)>-1) cls+=" pw-banner"+(perm==="sys_alert"?" pw-banner-alert":"");
    var h='<div class="'+cls+(fresh?" pw-fresh":"")+'" data-pw="'+esc(perm)+'" data-pw-id="'+esc(String(m.id==null?"":m.id))+'">'+GFX.markHTML(perm)+'<div class="pw-head">⚡ <b>'+esc(PW.powerTitle(perm))+'</b> <span class="small">— '+esc(m.sender_name||"—")+'</span>'+supBadgeHTMLFor(m.sender_uid)+'</div>';
    if(target) h+='<div class="pw-target">'+esc(PW.memberName(target))+'</div>';
-   if(perm==="fortune") h+='<div class="pw-text">🔮 '+esc(PW.fortuneText(text))+'</div>';
-   else if(perm==="surprise") h+='<div class="pw-text">🎁 '+TR('k2181','افکت غافلگیرکننده')+': '+esc(text)+'</div>';
-   else if(perm==="trick_or_treat") h+='<div class="pw-text">'+(text==="trick"?"👻 "+TR('k2182','حقه! ترسیدی؟'):("🍬 "+TR('k2183','جایزه! قاب خوش‌مزه ۳ ساعت'))) +'</div>';
-   else if(perm==="encrypted_msg") h+='<div class="pw-text pw-encoded" dir="ltr">'+esc(text)+'</div><button class="btn ghost sm" onclick="this.previousElementSibling.textContent=PW.caesar(this.previousElementSibling.textContent,-3); this.remove()">🔓 '+TR('k2184','رمزگشایی')+'</button><button class="btn sm" onclick="PW.claim(\'+m.id+\',\'encrypted_msg\')">🏆 '+TR('k2273','من رمزگشایی کردم!')+'</button>';
-   else if(perm==="secret_code") h+='<div class="pw-text pw-encoded" dir="ltr">'+esc(text)+'</div><div class="small">'+TR('k2185','اولین نفری که کد را بشکند قاب طلایی می‌گیرد')+'</div><div id="pwClaimBox" style="display:none"></div><button class="btn sm" onclick="PW.claim(\''+m.id+'\',\'secret_code\')">'+TR('k2186','من کد را شکستم!')+'</button>';
-   else if(perm==="treasure_hunt") h+='<div class="pw-text">'+esc(text||TR('k2187','یک سرنخ پنهان در چت است؛ پیداش کن!'))+'</div><button class="btn sm" onclick="PW.claim(\''+m.id+'\',\'treasure_hunt\')">'+TR('k2188','پیدا کردم!')+'</button>';
-   else if(perm==="dream_riddle") h+='<div class="pw-text">💭 '+esc(text)+'</div><div class="small">'+TR('k2291','اولین نفری که پاسخ درست را بگوید قاب طلایی می‌گیرد')+'</div><div id="pwClaimBox" style="display:none"></div><button class="btn sm" onclick="PW.claim(\'+m.id+\',\'dream_riddle\')">🔮 '+TR('k2271','پاسخ معما')+'</button>';
-   else if(perm==="survival_challenge") h+='<div class="pw-text">'+esc(text||'')+'</div><button class="btn sm" onclick="PW.claim(\'+m.id+\',\'survival_challenge\')">🛡️ '+TR('k2274','زنجیره‌ام را حفظ کردم!')+'</button>';
-   else if(perm==="night_hunt") h+='<div class="pw-text">'+esc(text||'')+'</div><button class="btn sm" onclick="PW.claim(\'+m.id+\',\'night_hunt\')">🦇 '+TR('k2275','نیمه‌شب درس خواندم!')+'</button>';
-   else if(perm==="race_game") h+='<div class="pw-text">'+esc(text||TR('k2189','مسابقه! اولین واکنش برنده است'))+'</div><button class="btn sm" onclick="PW.claim(\''+m.id+'\',\'race_game\')">'+TR('k2190','من اول شدم!')+'</button>';
-   else if(perm==="bet_top") h+='<div class="pw-text">'+esc(text||'')+'</div><button class="btn sm" onclick="PW.claim(\''+m.id+'\',\'bet_top\')">🏆 '+TR('k9033','من برنده شرط شدم!')+'</button>';
-   else if(perm==="task_swap"){
-     var ids=(text||"").split("|");
-     h+='<div class="pw-text">🔄 '+TR('k2191','پیشنهاد مبادله کار')+'</div>';
-     if(target===SB.myUid()) h+='<button class="btn sm" onclick="PW.acceptSwap(\''+m.id+'\')">🤝 '+TR('k2192','قبول مبادله')+'</button>';
-     else h+='<div class="small">'+TR('k2193','در انتظار پاسخ')+' '+esc(PW.memberName(target))+'</div>';
-   }
+   if(perm==="surprise") h+='<div class="pw-text">🎁 '+TR('k2181','افکت غافلگیرکننده')+'</div>';
    else if(perm==="avatar_swap"){
      h+='<div class="pw-text">🔄 '+TR('k2276','قبول معامله')+'</div>';
      if(target===SB.myUid()) h+='<button class="btn sm" onclick="PW.acceptAvatarSwap(\''+m.id+'\')">🔄 '+TR('k2276','قبول معامله')+'</button>';
      else h+='<div class="small">'+TR('k2193','در انتظار پاسخ')+' '+esc(PW.memberName(target))+'</div>';
    }
-   else if(perm==="focus_duel"){
-     var dp=(text||"").split("|");
-     var dur=dp[0]||"25", gk=dp[1]||"focus";
-     var goalTxt=gk==="tasks"?TR('k2262','تمام کردن ۲ کار'):TR('k2263','تمرکز تا پایان زمان');
-     h+='<div class="pw-text">⚔️ '+fa(dur)+' '+TR('k2091','دقیقه')+' — '+goalTxt+'</div>';
-     var isParty=(m.sender_uid===SB.myUid()||target===SB.myUid());
-     var isChallenged=(target===SB.myUid());
-     var duelDone=(OG.msgs||[]).some(function(c){ return c.text&&c.text.indexOf("⚡CLAIM|focus_duel|")===0&&(c.text.split("|")[3]||"")===String(m.id); });
-     if(!duelDone&&isChallenged) h+='<div class="rowflex"><button class="btn sm" onclick="PW.acceptDuel(\''+m.id+'\')">⚔️ '+TR('k2264','قبول دوئل')+'</button><button class="btn ghost sm" onclick="PW.declineDuel(\''+m.id+'\')">🚫 '+TR('k2265','رد دوئل')+'</button></div>';
-     else if(!duelDone&&isParty) h+='<div class="rowflex"><button class="btn ghost sm" onclick="PW.forfeitDuel(\''+m.id+'\')">🏳️ '+TR('k2266','انصراف (باخت)')+'</button><button class="btn sm" onclick="PW.checkDuel()">🔍 '+TR('k2267','بررسی نتیجه')+'</button></div>';
-     else if(duelDone) h+='<div class="small">🏆 '+TR('k2197','قاب قهرمان')+'</div>';
-   }
-   else if(perm==="private_letter"){
-     h+='<div class="pw-text">💌 '+TR('k2194','یک نامه خصوصی فرستاده شد')+'</div>';
-     if(target===SB.myUid()) h+='<button class="btn sm" onclick="PW.readLetter(\''+m.id+'\')">📬 '+TR('k2195','خواندن نامه')+'</button>';
-   }
    else if(perm==="parade"){
      h+='<div class="pw-parade-row">'+(OG.members||[]).slice(0,8).map(function(mm){ var av=(OG.memberAvatar&&OG.memberAvatar[mm.user_id]!=null)?OG.memberAvatar[mm.user_id]:0; return '<span class="pw-march">'+avatarHTML(av,34)+'</span>'; }).join("")+'</div>';
    }
-   else if(text) h+='<div class="pw-text">'+esc(text)+'</div>';
+   /* v10.4.38 (G1): NO generic text fallback — p_text is a
+      structured visual param only (PW.TEXT_PARAM) and is
+      never rendered as message content. Old history rows
+      keep their title/target/time. */
    h+='<div class="small">'+esc(m.created_at?m.created_at.slice(11,16):"")+'</div></div>';
    return h;
  },
@@ -35425,38 +35182,14 @@ var PW={uses:{},
    var parts=(m.text||"").split("|");
    var perm=parts[1]||"", winner=parts[2]||"", loser=parts[4]||"";
    var frame=TR('k2198','قاب طلایی'), dur="1h";
-   if(perm==="focus_duel") frame=TR('k2197','قاب قهرمان');
-   else if(perm==="survival_challenge"){ frame=TR('k2278','قاب بازمانده'); dur="24h"; }
-   else if(perm==="night_hunt") frame=TR('k2279','قاب خفاش');
    var _fresh=false; try{ _fresh=(Date.now()-new Date(m.created_at).getTime())<10000; }catch(e){}
    /* v10.4.34 (X1 F1/F2): same never-fresh-again rule as ogMsgHTML —
       a played claim card re-rendered inside the 10s window must not
       regain pw-fresh (playFresh dedupes by id, so the class would stick). */
    try{ if(_fresh&&m.id!=null&&window.GFX&&GFX._played&&GFX._played[String(m.id)]) _fresh=false; }catch(e){}
    var h='<div class="pw-card pw-claim'+(_fresh?" pw-fresh":"")+'" data-pw="'+esc(perm)+'" data-pw-id="'+esc(String(m.id==null?"":m.id))+'" data-pw-claim="1">'+GFX.markHTML(perm)+'<div class="pw-head">🏆 <b>'+esc(PW.powerTitle(perm))+'</b></div><div class="pw-target">'+esc(PW.memberName(winner))+' — '+frame+' ('+dur+')</div>';
-   if(perm==="focus_duel"&&loser) h+='<div class="pw-target">💔 '+esc(PW.memberName(loser))+' — '+TR('k2280','قاب شکست‌خورده')+' (1h)</div>';
    h+='<div class="small">'+esc(m.created_at?m.created_at.slice(11,16):"")+'</div></div>';
    return h;
- },
- /* Private letters addressed to me in this group. */
- loadMyLetters:function(){
-   if(!SB.online||!OG.sel) return Promise.resolve([]);
-   return SB.client.from("private_letters").select("id,from_uid,text,created_at").eq("group_id",OG.sel.id).eq("to_uid",SB.uid).order("created_at",{ascending:false}).limit(20).then(function(res){
-     OG.letters=res.error?[]:(res.data||[]);
-     return OG.letters;
-   }).catch(function(){ return []; });
- },
- lettersHTML:function(){
-   if(!(OG.letters||[]).length) return "";
-   return '<div class="pw-letters">'+OG.letters.map(function(l){
-     return '<div class="pw-letter"><div class="pw-head">💌 '+TR('k2199','نامه خصوصی')+' — '+esc(PW.memberName(l.from_uid))+'</div><div>'+esc(l.text)+'</div><div class="small">'+esc(l.created_at?l.created_at.slice(0,16).replace("T"," "):"")+'</div></div>';
-   }).join("")+'</div>';
- },
- readLetter:function(msgId){
-   PW.loadMyLetters().then(function(){
-     var box=$("pwLettersBox"); if(box){ box.innerHTML=PW.lettersHTML(); box.style.display="block"; }
-     toast("💌 "+TR('k2195','خواندن نامه'));
-   });
  },
  /* Visual states derived from recent power/claim messages. Durations are
     effect durations (not the weekly limit). Returns {cls, color, frame,
@@ -35485,7 +35218,9 @@ var PW={uses:{},
        if(perm==="fog"&&ageOk(m,H)) out.cls.push("pw-fog-chat");
        if(perm==="candy"&&target===uid&&ageOk(m,3*H)) out.frame="frame_candy";
        if(perm==="chest"&&ageOk(m,3*H)&&!out.frame) out.frame=PW.chestFrame(uid,m.id);
-       if(perm==="shadow"&&target===uid&&ageOk(m,H)) out.shadow=true;
+       /* v10.4.38: shadow is a SELF effect (sender-side) — the old
+       target test never fired: shadow sends no target. */
+       if(perm==="shadow"&&m.sender_uid===uid&&ageOk(m,H)) out.shadow=true;
        if(perm==="avatar_swap"&&ageOk(m,H)){
          /* The swap takes effect ONLY after the target accepts (CLAIM). */
          var accepted=(OG.msgs||[]).some(function(c){ return c.text&&c.text.indexOf("⚡CLAIM|avatar_swap|")===0&&(c.text.split("|")[3]||"")===String(m.id); });
@@ -35499,51 +35234,40 @@ var PW={uses:{},
          var after=(OG.msgs||[]).filter(function(x){ return x.text&&x.text.indexOf("⚡")!==0&&new Date(x.created_at).getTime()>new Date(m.created_at).getTime()&&new Date(x.created_at).getTime()-new Date(m.created_at).getTime()<10*60*1000; }).sort(function(a,b){ return new Date(a.created_at)-new Date(b.created_at); })[0];
          if(after&&after.sender_uid===uid) out.frame="frame_frog";
        }
-       if(perm==="surprise"&&target===uid&&ageOk(m,H)) out.frame=text;
-       if(perm==="trick_or_treat"&&target===uid&&text==="treat"&&ageOk(m,3*H)) out.frame="frame_candy";
+       if(perm==="surprise"&&target===uid&&ageOk(m,H)&&["frame_gold","frame_sparkle","frame_fire","frame_rainbow"].indexOf(text)>-1) out.frame=text;
        if(perm==="journey"&&ageOk(m,H)) out.cls.push("pw-journey-"+(text||"beach"));
        if(perm==="rest"&&ageOk(m,10*60*1000)) out.cls.push("pw-rest-chat");
        if(perm==="lullaby"&&ageOk(m,10*60*1000)) out.cls.push("pw-dim-chat");
        if(perm==="rage"&&m.sender_uid===uid&&ageOk(m,10*60*1000)) out.cls.push("pw-rage-msg");
        if(perm==="adrenaline"&&target===uid&&ageOk(m,3*H)) out.frame="frame_lightning";
        if(perm==="shield"&&ageOk(m,H)) out.cls.push("pw-shield-chat");
-       if(perm==="magic_room"&&ageOk(m,H)) out.cls.push("pw-magic-chat");
        if(perm==="night_mode"&&ageOk(m,H)) out.cls.push("pw-night-chat");
        if(perm==="revive"&&target===uid&&ageOk(m,H)) out.frame="frame_heart";
        if(perm==="big_heart"&&target===uid&&ageOk(m,H)) out.frame="frame_heart";
+       /* v10.4.38 replacements: target frames + chat overlays. */
+       if(perm==="marked_agent"&&target===uid&&ageOk(m,H)) out.frame="frame_armor";
+       if(perm==="sealed_wax"&&target===uid&&ageOk(m,H)) out.frame="frame_fire";
+       if(perm==="golden_gambit"&&target===uid&&ageOk(m,H)) out.frame="frame_gold";
+       if(perm==="flanking_glow"&&target===uid&&ageOk(m,H)) out.frame="frame_ice";
+       if(perm==="star_charm"&&target===uid&&ageOk(m,H)) out.frame="frame_star";
+       if(perm==="rune_circle"&&ageOk(m,H)) out.cls.push("pw-rune-chat");
+       if(perm==="scope_glint"&&ageOk(m,H)) out.cls.push("pw-glint-chat");
+       if(perm==="medic_beacon"&&ageOk(m,H)) out.cls.push("pw-beacon-chat");
+       if(perm==="gold_vein"&&ageOk(m,H)) out.cls.push("pw-gold-chat");
+       if(perm==="smoke_screen"&&ageOk(m,H)) out.cls.push("pw-fog-chat");
+       if(perm==="bastion_glow"&&ageOk(m,H)) out.cls.push("pw-shield-chat");
+       if(perm==="tactical_grid"&&ageOk(m,H)) out.cls.push("pw-grid-chat");
+       if(perm==="phantom_mist"&&ageOk(m,H)) out.cls.push("pw-fog-chat");
+       if(perm==="arcane_circle"&&ageOk(m,H)) out.cls.push("pw-magic-chat");
+       if(perm==="crimson_moon"&&ageOk(m,H)) out.cls.push("pw-crimson-chat");
+       if(perm==="risen_glow"&&ageOk(m,10*60*1000)) out.cls.push("pw-fog-chat");
+       if(perm==="barricade_glow"&&ageOk(m,H)) out.cls.push("pw-gold-chat");
+       if(perm==="safehouse_lights"&&ageOk(m,H)) out.cls.push("pw-lantern-chat");
      } else if(m.text.indexOf("⚡CLAIM|")===0){
        var cperm=parts[1]||"", winner=parts[2]||"", loser=parts[4]||"";
        if(winner===uid){
-         if(cperm==="focus_duel"&&ageOk(m,H)) out.frame="frame_champion";
-         else if(cperm==="survival_challenge"&&ageOk(m,24*H)) out.frame="frame_survivor";
-         else if(cperm==="night_hunt"&&ageOk(m,H)) out.frame="frame_bat";
-         else if(ageOk(m,H)) out.frame="frame_gold";
+         if(ageOk(m,H)) out.frame="frame_gold";
        }
-       if(loser===uid&&cperm==="focus_duel"&&ageOk(m,H)) out.frame="frame_defeated";
-     }
-   });
-   /* Secret-mission task completed -> star frame (1h). */
-   (OG.tasks||[]).forEach(function(t){
-     if(t.kind==="mission"&&t.assignee_uid===uid&&t.done&&t.done_at&&now-new Date(t.done_at).getTime()<H) out.frame="frame_star";
-   });
-   /* Adventure card completed (every member did >=1 task in the hour after
-      the card) -> star frame for everyone + one-time fanfare/toast. */
-   (OG.msgs||[]).forEach(function(m){
-     if(!m.text||m.text.indexOf("⚡POWER|adventure_card|")!==0) return;
-     if(now-new Date(m.created_at).getTime()>H) return;
-     if(PW._advDone&&PW._advDone[m.id]) return;
-     var t0=new Date(m.created_at).getTime();
-     var members=(OG.members||[]).map(function(x){ return x.user_id; });
-     if(!members.length) return;
-     var allDone=members.every(function(uid2){
-       return (OG.tasks||[]).some(function(t){ return t.done&&t.done_at&&new Date(t.done_at).getTime()>=t0&&new Date(t.done_at).getTime()<=now&&(t.assignee_uid===uid2||t.created_by===uid2); });
-     });
-     if(allDone){
-       if(!PW._advDone) PW._advDone={};
-       PW._advDone[m.id]=true;
-       out.frame="frame_star";
-       SFX.play("fanfare");
-       toast("⭐ "+TR('k2281','ماجراجویی کامل شد! همه قاب ستاره می‌گیرند'));
      }
    });
    return out;
@@ -35568,14 +35292,6 @@ var PW={uses:{},
    return null;
  },
 
- /* Fortress (Guardian): chat locked to admins for 10 min after the power. */
- fortressActive:function(){
-   var now=Date.now();
-   return (OG.msgs||[]).some(function(m){
-     return m.text&&m.text.indexOf("⚡POWER|fortress|")===0
-       && now-new Date(m.created_at).getTime()<10*60*1000;
-   });
- },
  /* Bullseye (Sniper): message ids marked by a recent bullseye (3h). */
  bullseyeTargets:function(){
    var now=Date.now(), set={};
@@ -35661,50 +35377,31 @@ var PW={uses:{},
    }
    h+='<h3>'+esc((OG.isSuper()?TR('k2230','ابر کاربر')+' — ':(ownerMode?TR('k2451','مالک')+' — ':''))+roleName(roleKey||OG.myGroupRole()))+' — '+TR('k2139','قدرت‌های چت')+'</h3>'
      +'<p class="small">'+esc(LANG==='en'?def.flavorEn:def.flavor)+' — '+((OG.isSuper()||ownerMode)?TR('k2242','نامحدود'):TR('k2200','هر قدرت ۳ بار در هفته'))+'.</p>';
-   if(S.ghostMode){ h+='<div class="card" style="border-color:#a78bfa;margin-bottom:10px"><b>👻 '+TR('k2521','حالت شبح فعال است')+'</b><div class="small">'+TR('k2522','بقیه شما را آفلاین می‌بینند')+'.</div><button class="btn sm" style="margin-top:8px" onclick="PW.ghostOff()">'+TR('k2523','خاموش کردن حالت شبح')+'</button></div>'; }
    h+=def.abilities.map(function(a){
      var left=PW.left(a.perm);
      var leftTxt=(left===Infinity)?TR('k2242','نامحدود'):(left>0?TR('k2201','بار دیگه این هفته'):TR('k2202','تمام شد'));
      var inputs="";
-     if(a.perm==="task_swap"){
-       inputs='<select class="inp pw-tgt" id="pwt-'+a.perm+'" onchange="PW.fillSwapTasks(this.value)">'+(OG.members||[]).filter(function(m){ return m.user_id!==SB.myUid(); }).map(function(m){ return '<option value="'+m.user_id+'">'+esc(m.nickname||m.user_id.slice(0,8))+'</option>'; }).join("")+'</select>'
-         +'<select class="inp pw-txt" id="pwmine-'+a.perm+'">'+PW.myTaskOptions()+'</select>'
-         +'<select class="inp pw-txt" id="pwtheirs-'+a.perm+'"></select>';
-     } else if(a.perm==="focus_duel"){
-       inputs='<select class="inp pw-tgt" id="pwt-'+a.perm+'">'+(OG.members||[]).filter(function(m){ return m.user_id!==SB.myUid(); }).map(function(m){ return '<option value="'+m.user_id+'">'+esc(m.nickname||m.user_id.slice(0,8))+'</option>'; }).join("")+'</select>'
-         +'<select class="inp pw-txt" id="pwdur-'+a.perm+'"><option value="15">15 '+TR('k2091','دقیقه')+'</option><option value="25" selected>25 '+TR('k2091','دقیقه')+'</option><option value="45">45 '+TR('k2091','دقیقه')+'</option></select>'
-         +'<select class="inp pw-txt" id="pwgoal-'+a.perm+'"><option value="tasks">'+TR('k2262','تمام کردن ۲ کار')+'</option><option value="focus" selected>'+TR('k2263','تمرکز تا پایان زمان')+'</option></select>';
-     } else if(a.perm==="dream_riddle"){
-       inputs='<input class="inp pw-txt" id="pwx-'+a.perm+'" placeholder="'+TR('k2292','معما را بنویسید')+'">'
-         +'<input class="inp pw-txt" id="pwans-'+a.perm+'" placeholder="'+TR('k2272','پاسخ را بنویسید')+'">';
-     } else if(PW.needsTarget(a.perm)){
+     if(PW.needsTarget(a.perm)){
        inputs='<select class="inp pw-tgt" id="pwt-'+a.perm+'">'+(OG.members||[]).map(function(m){ return '<option value="'+m.user_id+'">'+esc(m.nickname||m.user_id.slice(0,8))+'</option>'; }).join("")+'</select>';
+       if(a.perm==="name_color_spell") inputs+='<input class="inp pw-txt" id="pwx-'+a.perm+'" type="color" value="#f59e0b" style="width:56px;padding:2px">';
      } else if(a.perm==="bullseye"){
        inputs='<select class="inp pw-tgt" id="pwt-'+a.perm+'">'+(OG.msgs||[]).filter(function(m){ return m.text&&m.text.indexOf("⚡")!==0; }).slice(-20).map(function(m){ return '<option value="'+m.id+'">'+esc((m.sender_name||"")+" — "+(m.text||"").slice(0,30))+'</option>'; }).join("")+'</select>';
      } else if(a.perm==="journey"){
        inputs='<select class="inp pw-txt" id="pwx-'+a.perm+'"><option value="beach">'+TR('k2203','ساحل')+'</option><option value="mountain">'+TR('k2204','کوهستان')+'</option><option value="desert">'+TR('k2205','کویر')+'</option><option value="forest">'+TR('k2206','جنگل')+'</option></select>';
-     } else if(a.perm==="name_color_spell"){
-       inputs='<input class="inp pw-txt" id="pwx-'+a.perm+'" type="color" value="#f59e0b" style="width:56px;padding:2px">';
      } else if(a.perm==="hack_color"){
        inputs='<input class="inp pw-txt" id="pwx-'+a.perm+'" type="color" value="#22d3ee" style="width:56px;padding:2px">';
-     } else {
-       inputs='<input class="inp pw-txt" id="pwx-'+a.perm+'" placeholder="'+(a.perm==="secret_code"?TR('k2207','کلمه رمز (یک کلمه)'):a.perm==="encrypted_msg"?TR('k2208','پیام رمزگذاری‌شده'):TR('k2144','متن (اختیاری)'))+'">';
      }
-     if(a.perm==="private_letter"){
-       inputs='<select class="inp pw-tgt" id="pwt-'+a.perm+'">'+(OG.members||[]).filter(function(m){ return m.user_id!==SB.myUid(); }).map(function(m){ return '<option value="'+m.user_id+'">'+esc(m.nickname||m.user_id.slice(0,8))+'</option>'; }).join("")+'</select><input class="inp pw-txt" id="pwx-'+a.perm+'" placeholder="'+TR('k2209','متن نامه خصوصی')+'">';
-     }
+     /* v10.4.38 (G1): the generic optional-text input is
+        REMOVED. p_text carries only whitelisted structured
+        visual params (PW.TEXT_PARAM); no power card can
+        display sender-typed arbitrary text. */
      var locked="";
-     if(a.perm==="infection"&&!PW.canInfect()){
-       locked='<div class="small">🔒 '+TR('k2210','اول باید کسی تو را گاز بگیرد؛ سرایت فقط ۱ ساعت بعد از گازگرفتن فعال است')+'</div>';
-     }
      return '<div class="pw-row"><div class="grow"><b>⚡ '+esc(LANG==='en'?a.en:a.fa)+'</b><div class="small"><span data-pw-count="'+a.perm+'">'+(left===Infinity?leftTxt:fa(left)+' '+leftTxt)+'</span></div>'+locked+'</div>'
        +inputs
-       +'<button class="btn sm" data-pw-btn="'+a.perm+'" '+((left<=0||(a.perm==="infection"&&!PW.canInfect()))?'disabled':'')+' onclick="PW.useFromSheet(\''+a.perm+'\')">'+TR('k2145','استفاده')+'</button></div>';
+       +'<button class="btn sm" data-pw-btn="'+a.perm+'" '+((left<=0)?'disabled':'')+' onclick="PW.useFromSheet(\''+a.perm+'\')">'+TR('k2145','استفاده')+'</button></div>';
    }).join("");
-   h+='<div id="pwClaimBox" style="display:none"></div>';
    h+='<button class="btn ghost" style="width:100%;margin-top:10px" onclick="$(\'pwSheet\').style.display=\'none\'">'+TR('k2141','بستن')+'</button></div>';
    ov.innerHTML=h; ov.style.display="flex";
-   if($("pwt-task_swap")) PW.fillSwapTasks($("pwt-task_swap").value);
    if(PW._t) clearInterval(PW._t);
    PW._t=setInterval(function(){
      if(!$("pwSheet")||$("pwSheet").style.display==="none"){ clearInterval(PW._t); return; }
@@ -35719,50 +35416,14 @@ var PW={uses:{},
    });
    document.querySelectorAll("[data-pw-btn]").forEach(function(btn){
      var perm=btn.getAttribute("data-pw-btn");
-     var dis=PW.left(perm)<=0||(perm==="infection"&&!PW.canInfect());
+     var dis=PW.left(perm)<=0;
      btn.disabled=dis;
    });
  },
- /* Infection (Zombie chain): only active if I was bitten within the last hour. */
- canInfect:function(){
-   var now=Date.now();
-   return (OG.msgs||[]).some(function(m){
-     return m.text&&m.text.indexOf("⚡POWER|bite|")===0
-       && (m.text.split("|")[2]||"")===SB.myUid()
-       && now-new Date(m.created_at).getTime()<3600*1000;
-   });
- },
- myTaskOptions:function(){
-   return (OG.tasks||[]).filter(function(t){
-     return !t.done&&(t.assignee_name===(S.user.name||"")||t.created_by===SB.myUid());
-   }).map(function(t){ return '<option value="'+t.id+'">'+esc(t.title||"")+'</option>'; }).join("");
- },
- fillSwapTasks:function(targetUid){
-   var sel=$("pwtheirs-task_swap"); if(!sel) return;
-   var name=PW.memberName(targetUid);
-   sel.innerHTML=(OG.tasks||[]).filter(function(t){
-     return !t.done&&t.assignee_name===name;
-   }).map(function(t){ return '<option value="'+t.id+'">'+esc(t.title||"")+'</option>'; }).join("")
-   ||'<option value="">'+TR('k2211','این عضو کار فعالی ندارد')+'</option>';
- },
- useFromSheet:function(perm){
+  useFromSheet:function(perm){
    var target="", text="";
    var tEl=$("pwt-"+perm); if(tEl) target=tEl.value||"";
-   if(perm==="task_swap"){
-     var mine=($("pwmine-"+perm)||{}).value||"";
-     var theirs=($("pwtheirs-"+perm)||{}).value||"";
-     if(!mine||!theirs){ toast(TR('k2212','یک کار از خودت و یک کار از عضو دیگر انتخاب کن')+"."); SFX.play("denied"); return; }
-     text=mine+"|"+theirs;
-   } else if(perm==="focus_duel"){
-     var dur=($("pwdur-"+perm)||{}).value||"25";
-     var gk=($("pwgoal-"+perm)||{}).value||"focus";
-     text=dur+"|"+gk+"|"+(gk==="tasks"?"2":dur);
-   } else if(perm==="dream_riddle"){
-     var rid=($("pwx-"+perm)||{}).value||"";
-     var ans=($("pwans-"+perm)||{}).value||"";
-     if(!rid||!ans){ toast(TR('k2272','پاسخ را بنویسید')+"."); SFX.play("denied"); return; }
-     text=rid+"|"+ans;
-   } else if(perm==="avatar_swap"){
+   if(perm==="avatar_swap"){
      /* The swap needs the target's avatar index, stored in the text field. */
      var av=0;
      var mm=(OG.msgs||[]).filter(function(x){ return x.sender_uid===target; }).slice(-1)[0];
@@ -36129,7 +35790,6 @@ OG.onTaskDone=function(task){
     OG.checkAutoBadges("quest");
   }
   OG.checkAutoBadges("task");
-  PW.checkDuel();
 };
 OG.onVoteCast=function(){
   if(!S.onlineStats) S.onlineStats={tasks:0,focusMin:0,votes:0,wtCalls:0,missions:0,days:{},awarded:[]};
@@ -36147,8 +35807,6 @@ OG.onFocusDone=function(min){
      so a 50/90-min session earns 2/3 blocks and a 5-min break earns
      none. Awarding here too would double-count every session. */
   OG.checkAutoBadges("focus");
-  PW.reportDuelFocus(min);
-  PW.checkDuel();
 };
 /* v10.4.25 (#3): NO synchronous floater here — SB.addPoints fires it on
    the confirmed award with the actual gained amount. */
@@ -36720,7 +36378,7 @@ function ogMsgHTML(m){
   if(t.indexOf("⚡CLAIM|")===0){ try{ return PW.renderClaimMsg(m); }catch(e){ return ""; } }
   var mine=m.sender_uid===SB.myUid();
   var frame="";
-  /* one_shot pin: a pinned message renders big + gold-pinned while its
+  /* Pinned message: renders big + gold-pinned while its
      pinned_until is in the future. bullseye: the targeted message gets a
      red dashed mark while the bullseye is fresh (3h). */
   var pinnedNow=!!(m.pinned&&(!m.pinned_until||new Date(m.pinned_until).getTime()>Date.now()));
@@ -36733,7 +36391,23 @@ function ogMsgHTML(m){
     if(eff==="trap") frame="frame_frog";
     else if(eff==="luck") frame="frame_star";
   }catch(e){}
+  var shadowNow=false;
+  try{ shadowNow=!!(typeof d!=="undefined"&&d&&d.shadow); }catch(e){}
   var av=(typeof m.sender_avatar==="number"?m.sender_avatar:0);
+  /* v10.4.38: avatar_swap — while the swap is active, show the
+     OTHER member's current avatar (derivedFor sets avatarSwap
+     to the other member's uid after the CLAIM). Falls back
+     to the send-time snapshot when unresolvable. */
+  try{
+    if(typeof d!=="undefined"&&d&&d.avatarSwap){
+      var _oav=(typeof OG!=="undefined"&&OG.memberAvatar)?OG.memberAvatar[d.avatarSwap]:undefined;
+      if(typeof _oav==="number") av=_oav;
+      else{
+        var _om=(OG.chat||[]).filter(function(x){return x.sender_uid===d.avatarSwap&&typeof x.sender_avatar==="number";});
+        if(_om.length) av=_om[_om.length-1].sender_avatar;
+      }
+    }
+  }catch(e){}
   /* v10.4.31 (Thread 7): the sender's CURRENT name color + custom title
      from the server-provided maps. The avatar stays the send-time
      snapshot (correct — old messages keep the old avatar). A spell
@@ -36743,7 +36417,7 @@ function ogMsgHTML(m){
   var _mt=(typeof OG!=="undefined"&&OG.memberTitle&&OG.memberTitle[m.sender_uid])||"";
   var when="";
   try{ when=fa(new Date(m.created_at).toLocaleTimeString("fa-IR",{hour:"2-digit",minute:"2-digit"})); }catch(e){ when=""; }
-  var h='<div class="msg '+(mine?"me":"")+(pinnedNow?" msg-pinned":"")+(bullNow?" msg-bullseye":"")+'"><div class="og-msg-head">'+avatarHTML(av,28)+'<b'+(_mc?' style="color:'+_mc+'"':'')+'>'+(pinnedNow?"📌 ":"")+(bullNow?"🎯 ":"")+esc(m.sender_name||"—")+'</b>'+(_mt?' <span class="small">'+esc(_mt)+'</span>':'')+supBadgeHTMLFor(m.sender_uid)+'</div><div class="'+frame+'">'+EMOJI.render(t)+'</div><small>'+esc(when)+'</small>';
+  var h='<div class="msg '+(mine?"me":"")+(pinnedNow?" msg-pinned":"")+(bullNow?" msg-bullseye":"")+(shadowNow?" msg-shadow":"")+'"><div class="og-msg-head">'+avatarHTML(av,28)+'<b'+(_mc?' style="color:'+_mc+'"':'')+'>'+(pinnedNow?"📌 ":"")+(bullNow?"🎯 ":"")+esc(m.sender_name||"—")+'</b>'+(_mt?' <span class="small">'+esc(_mt)+'</span>':'')+supBadgeHTMLFor(m.sender_uid)+'</div><div class="'+frame+'">'+EMOJI.render(t)+'</div><small>'+esc(when)+'</small>';
   if(mine||OG.isAdmin()) h+='<button class="del" style="color:#fff;padding:0 3px;font-size:15px" onclick="OG.deleteMsg(\''+m.id+'\')" aria-label="'+TR('k1144','حذف پیام')+'">×</button>';
   h+='</div>';
   return h;
