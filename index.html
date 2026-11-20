@@ -2225,11 +2225,11 @@ body[data-theme="haker"] .srv-note.warn,body[data-theme="solo"] .srv-note.warn,b
 .pw-fireworks::before{content:"✨ 🎆 ✨";position:absolute;top:2px;inset-inline-start:50%;font-size:18px;letter-spacing:8px}
 .pw-card.pw-fresh.pw-fireworks::before{animation:fwSparkle .8s ease-out 2}
 @keyframes fwSparkle{0%{opacity:0;transform:translateX(-50%) scale(.6)}50%{opacity:1;transform:translateX(-50%) scale(1.15)}100%{opacity:0;transform:translateX(-50%) scale(1)}}
-/* v10.4.40: the confetti card class removed (Rule 1) — celebrate_event uses PWFX440 balloons. */
+/* v10.4.43: celebrate_event uses PWFX443 rising balloons + star sparkles (Rule 1: no confetti). */
 .pw-matrix{position:relative;overflow:hidden}
 /* ============ POWERS v10 FIX — effects that were only descriptions ============
    Banners (war_order/war_cry/anthem/sys_alert/plant_flag) had no banner UI,
-   celebrate_event/emergency_landing promised confetti that did not exist,
+   celebrate_event/emergency_landing used to promise confetti (texts rewritten v10.4.43 to match the compliant animation),
    one_shot's pin and bullseye's mark were never rendered, fortress never
    locked anything, phase messages never disappeared, and shield/magic_room/
    night_mode/revive/big_heart had no visual state at all. */
@@ -2281,7 +2281,7 @@ body[data-theme="haker"] .srv-note.warn,body[data-theme="solo"] .srv-note.warn,b
 
 /* ============ v10.1 GRAPHICS ENGINE — power FX + layout fixes (a)-(e) ============ */
 .pw-card{position:relative}
-.pw-fx-mark{position:absolute;top:8px;inset-inline-end:10px;font-size:19px;line-height:1;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35));z-index:2}
+.pw-fx-mark{display:inline-block;float:inline-end;font-size:16px;line-height:1;pointer-events:none;margin-inline-start:8px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
 .pw-fx-sweep{position:absolute;top:0;bottom:0;width:34%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.55),transparent);pointer-events:none;z-index:3}
 .pw-fx-flash{position:absolute;inset:0;background:#fff;border-radius:inherit;opacity:0;pointer-events:none;z-index:3}
 .pw-fx-float{position:absolute;left:50%;top:38%;font-size:34px;transform:translateX(-50%);pointer-events:none;z-index:3;text-shadow:0 2px 8px rgba(0,0,0,.4)}
@@ -6339,8 +6339,8 @@ var ROLE_TASKS={
   "card_motion": "sweep",
   "fresh_class": null,
   "persistent_state": null,
-  "duration_ms": 660,
-  "duration_s": 0.66,
+  "duration_ms": 1200,
+  "duration_s": 1.2,
   "particles": 12,
   "frames": 7,
   "cell_px": 256,
@@ -6368,8 +6368,8 @@ var ROLE_TASKS={
   "card_motion": "burst",
   "fresh_class": null,
   "persistent_state": null,
-  "duration_ms": 830,
-  "duration_s": 0.83,
+  "duration_ms": 1200,
+  "duration_s": 1.2,
   "particles": 12,
   "frames": 7,
   "cell_px": 256,
@@ -6600,8 +6600,8 @@ var ROLE_TASKS={
   "card_motion": "pulse",
   "fresh_class": null,
   "persistent_state": null,
-  "duration_ms": 770,
-  "duration_s": 0.77,
+  "duration_ms": 1200,
+  "duration_s": 1.2,
   "particles": 12,
   "frames": 7,
   "cell_px": 256,
@@ -6658,8 +6658,8 @@ var ROLE_TASKS={
   "card_motion": "pulse",
   "fresh_class": null,
   "persistent_state": "pw-shield-chat",
-  "duration_ms": 480,
-  "duration_s": 0.48,
+  "duration_ms": 1200,
+  "duration_s": 1.2,
   "particles": 12,
   "frames": 6,
   "cell_px": 256,
@@ -6716,8 +6716,8 @@ var ROLE_TASKS={
   "card_motion": "float",
   "fresh_class": "pw-banner",
   "persistent_state": null,
-  "duration_ms": 310,
-  "duration_s": 0.31,
+  "duration_ms": 1400,
+  "duration_s": 1.4,
   "particles": 12,
   "frames": 6,
   "cell_px": 256,
@@ -7122,8 +7122,8 @@ var ROLE_TASKS={
   "card_motion": "pulse",
   "fresh_class": null,
   "persistent_state": null,
-  "duration_ms": 620,
-  "duration_s": 0.62,
+  "duration_ms": 1400,
+  "duration_s": 1.4,
   "particles": 12,
   "frames": 7,
   "cell_px": 256,
@@ -7180,8 +7180,8 @@ var ROLE_TASKS={
   "card_motion": "burst",
   "fresh_class": null,
   "persistent_state": "frame_rainbow",
-  "duration_ms": 380,
-  "duration_s": 0.38,
+  "duration_ms": 1400,
+  "duration_s": 1.4,
   "particles": 12,
   "frames": 6,
   "cell_px": 256,
@@ -7209,8 +7209,8 @@ var ROLE_TASKS={
   "card_motion": "shake",
   "fresh_class": null,
   "persistent_state": "frame_frog",
-  "duration_ms": 260,
-  "duration_s": 0.26,
+  "duration_ms": 1200,
+  "duration_s": 1.2,
   "particles": 8,
   "frames": 6,
   "cell_px": 256,
@@ -7383,8 +7383,8 @@ var ROLE_TASKS={
   "card_motion": "breathe",
   "fresh_class": null,
   "persistent_state": null,
-  "duration_ms": 830,
-  "duration_s": 0.83,
+  "duration_ms": 1400,
+  "duration_s": 1.4,
   "particles": 12,
   "frames": 8,
   "cell_px": 256,
@@ -7412,8 +7412,8 @@ var ROLE_TASKS={
   "card_motion": "sweep",
   "fresh_class": null,
   "persistent_state": null,
-  "duration_ms": 720,
-  "duration_s": 0.72,
+  "duration_ms": 1400,
+  "duration_s": 1.4,
   "particles": 12,
   "frames": 7,
   "cell_px": 256,
@@ -7818,8 +7818,8 @@ var ROLE_TASKS={
   "card_motion": "shake",
   "fresh_class": null,
   "persistent_state": "frame_zombie",
-  "duration_ms": 240,
-  "duration_s": 0.24,
+  "duration_ms": 1400,
+  "duration_s": 1.4,
   "particles": 8,
   "frames": 6,
   "cell_px": 256,
@@ -7847,8 +7847,8 @@ var ROLE_TASKS={
   "card_motion": "float",
   "fresh_class": null,
   "persistent_state": null,
-  "duration_ms": 500,
-  "duration_s": 0.5,
+  "duration_ms": 1800,
+  "duration_s": 1.8,
   "particles": 12,
   "frames": 7,
   "cell_px": 256,
@@ -8050,8 +8050,8 @@ var ROLE_TASKS={
   "card_motion": "burst",
   "fresh_class": null,
   "persistent_state": null,
-  "duration_ms": 800,
-  "duration_s": 0.8,
+  "duration_ms": 1600,
+  "duration_s": 1.6,
   "particles": 12,
   "frames": 8,
   "cell_px": 256,
@@ -9275,7 +9275,7 @@ var GFX={
   bullseye:["🎯","pulse","#ef4444"],
   crosshair:["◎","pulse","#f97316"],
   scope_glint:["🔆","breathe","#22c55e"],
-  deadeye_flash:["💥","shake","#f97316"],
+  deadeye_flash:["✦","shake","#f97316"],
   ambush:["🥷","sweep","#64748b"],
   glitch_wave:["👾","sweep","#38bdf8"],
   signal_burst:["📡","float",["#38bdf8","#22d3ee"]],
@@ -9323,7 +9323,7 @@ var GFX={
   night_mode:["🌃","breathe","#818cf8"],
   crimson_moon:["🌕","breathe","#e11d48"],
   eternal_dusk:["🌇","breathe","#f97316"],
-  bite:["🧛","shake","#ef4444"],
+  bite:["🧟","shake","#65a30d"],
   toxic_spores:["☣️","breathe","#65a30d"],
   risen_glow:["🧟","pulse","#65a30d"],
   barricade_glow:["🧱","pulse","#f59e0b"],
@@ -9421,7 +9421,7 @@ var GFX={
        per-power card keyframe). No generic confetti/burst/glow/border.
        Same signature; the card class is removed by PWFX440 itself. */
     if(!el) return;
-    try{ if(typeof PWFX440!=="undefined") PWFX440.play(perm,el); }catch(e){}
+    try{ if(typeof PWFX440!=="undefined") PWFX440.play(perm,el,{msgId:(el.getAttribute?el.getAttribute("data-pw-id")||"":"")}); }catch(e){}
   },
   _celebrate:function(el,gen){
     /* v10.4.40: removed (Rule 1) — confetti celebration. celebrate_event
@@ -13483,6 +13483,7 @@ function drawGroupChat(){
         } else { GFX.playFresh(box); }
       }
     }catch(e){}
+    try{ if(typeof PWFX440!=="undefined"&&PWFX440.paintEndStates) PWFX440.paintEndStates(box); }catch(e){}
     return;
   }
   box.className="chatbox";
@@ -14425,7 +14426,7 @@ Object.assign(I18N_EN,{"k4815":"Study tasks","k4816":"Personal tasks","k4817":"S
 Object.assign(I18N_EN,{"k9131":"App sounds are muted — unmute to hear the soundscape","k9133":"Sound events","k9134":"Effect events","k9135":"Delivery decisions","k9137":"No events recorded yet"});
 /* v10.4.35 (Y5): EN strings for the clock-skew banner (k3259–k3260). */
 Object.assign(I18N_EN,{"k3259":"Owner signature not verified, and the device clock differs from the server clock.","k3260":"This device's clock differs from the server clock by {n} minutes; fix the device clock. Password-based reset still works."});
-var APP_VERSION="10.4.42";
+var APP_VERSION="10.4.43";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -17566,26 +17567,26 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    there are no points) — replaced by LOTTERY (random online member wins a
    task-skip pass). */
 var ROLES={};
-ROLES["commander"]={key:"commander",fa:"فرمانده",en:"Commander",icon:"⭐",flavor:"Call of Duty / Battlefield",flavorEn:"Call of Duty / Battlefield",abilities:[{perm:"parade",fa:"رژه (آواتارها از وسط چت رژه می‌روند)",en:"Parade (avatars march across the chat)"}, {perm:"war_order",fa:"دستور جنگ (بنر + صدا)",en:"War order (banner + sound)"}, {perm:"summon_all",fa:"احضار همه (صدای شیپور)",en:"Summon all (fanfare ping)"}, {perm:"crown",fa:"تاج‌گذاری عضو روز (قاب تاج ۱ ساعت)",en:"Crown a member (crown frame 1h)"}, {perm:"celebrate_event",fa:"جشن (بارش کانفتی)",en:"Celebration (confetti)"}]};
+ROLES["commander"]={key:"commander",fa:"فرمانده",en:"Commander",icon:"⭐",flavor:"Call of Duty / Battlefield",flavorEn:"Call of Duty / Battlefield",abilities:[{perm:"parade",fa:"رژه (آواتارها از وسط چت رژه می‌روند)",en:"Parade (avatars march across the chat)"}, {perm:"war_order",fa:"دستور جنگ (بنر + صدا)",en:"War order (banner + sound)"}, {perm:"summon_all",fa:"احضار همه (صدای شیپور)",en:"Summon all (fanfare ping)"}, {perm:"crown",fa:"تاج‌گذاری عضو روز (قاب تاج ۱ ساعت)",en:"Crown a member (crown frame 1h)"}, {perm:"celebrate_event",fa:"جشن (بالون‌های بالا‌رونده و جرقه‌های ستاره)",en:"Celebration (rising balloons and star sparkles)"}]};
 ROLES["shaman"]={key:"shaman",fa:"شمن",en:"Shaman",icon:"🔮",flavor:"Viking mystic",flavorEn:"Viking mystic",abilities:[{perm:"rune_circle",fa:"حلقه رون‌ها (هاله بنفش رون روی چت ۱ ساعت)",en:"Rune circle (violet rune halo on chat 1h)"}, {perm:"blessing",fa:"طلسم برکت (نام یک عضو ۳ ساعت می‌درخشد)",en:"Blessing spell (a member's name glows 3h)"}, {perm:"sacred_fire",fa:"آتش مقدس (افکت آتش در چت ۳ ساعت)",en:"Sacred fire (fire effect 3h)"}, {perm:"spirit_drum",fa:"طبل روح (ضرب‌آهنگ + موج نور روی کارت)",en:"Spirit drum (drumbeat + light wave on the card)"}, {perm:"meteor_shower",fa:"بارش شهابی (افکت شهاب در چت)",en:"Meteor shower effect"}]};
 ROLES["berserker"]={key:"berserker",fa:"برزرکر",en:"Berserker",icon:"🪓",flavor:"God of War Spartan Rage",flavorEn:"God of War Spartan Rage",abilities:[{perm:"war_cry",fa:"فریاد جنگ (بنر + صدا)",en:"War cry (banner + sound)"}, {perm:"rage",fa:"خشم (پیام‌هایم ۱۰ دقیقه افکت آتش می‌گیرند)",en:"Rage (my messages get fire effect 10 min)"}, {perm:"spartan_charge",fa:"یورش اسپارتی (موج شوک + لرزش کارت)",en:"Spartan charge (shockwave + card shake)"}, {perm:"storm",fa:"طوفان تصویری (برق و باران + صدا)",en:"Visual storm effect (lightning + rain + sound)"}, {perm:"earthquake",fa:"زلزله (لرزش چت)",en:"Earthquake (chat shake effect)"}]};
 ROLES["skald"]={key:"skald",fa:"اسکالد",en:"Skald",icon:"🎵",flavor:"Valhalla / The Witcher bard",flavorEn:"Valhalla / The Witcher bard",abilities:[{perm:"anthem",fa:"سرود پیروزی (صدا + بنر)",en:"Victory anthem (sound + banner)"}, {perm:"song",fa:"آهنگ (نت‌های موسیقی در چت شناور می‌شوند)",en:"Song (music notes float across chat)"}, {perm:"war_ballad",fa:"ترانه حماسی (نت‌های موسیقی شناور + صدا)",en:"War ballad (floating music notes + sound)"}, {perm:"dance",fa:"رقص (آواتارها در چت می‌رقصند)",en:"Dance (avatars dance in chat)"}, {perm:"lullaby",fa:"لالایی (صدای نرم + افکت تیره‌شدن)",en:"Lullaby (soft sound + dim effect)"}]};
 ROLES["sniper"]={key:"sniper",fa:"تک‌تیرانداز",en:"Sniper",icon:"🎯",flavor:"Call of Duty / Valorant",flavorEn:"Call of Duty / Valorant",abilities:[{perm:"bullseye",fa:"هدف‌گیری یک پیام (نشانه وسط پیام)",en:"Bullseye on a message"}, {perm:"crosshair",fa:"قاب دوربین تفنگ روی آواتار یک عضو (۱ ساعت)",en:"Crosshair frame on a member's avatar (1h)"}, {perm:"scope_glint",fa:"برق دوربین (درخشش سبز روی چت ۱ ساعت)",en:"Scope glint (green shimmer overlay 1h)"}, {perm:"deadeye_flash",fa:"فلاش دید دقیق (فلاش + لرزش کارت)",en:"Deadeye flash (flash + card shake)"}, {perm:"ambush",fa:"کمین (پیام غافلگیرکننده + صدا)",en:"Ambush (surprise pop-up message + sound)"}]};
-ROLES["hacker"]={key:"hacker",fa:"هکر",en:"Hacker",icon:"💻",flavor:"Watch Dogs / Cyberpunk 2077 / Matrix",flavorEn:"Watch Dogs / Cyberpunk 2077 / Matrix",abilities:[{perm:"matrix_rain",fa:"باران ماتریکس در چت",en:"Matrix rain effect in chat"}, {perm:"glitch_wave",fa:"موج گلیچ (موج دیجیتالی روی کارت + صدا)",en:"Glitch wave (digital wave on the card + sound)"}, {perm:"signal_burst",fa:"انفجار سیگنال (بارش کد + موج سایبری)",en:"Signal burst (code rain + cyber wave)"}, {perm:"sys_alert",fa:"بنر هشدار سیستم",en:"System alert banner"}, {perm:"hack_color",fa:"هک رنگ چت (تغییر رنگ چت ۱ ساعت)",en:"Hack the chat accent color (1h)"}]};
+ROLES["hacker"]={key:"hacker",fa:"هکر",en:"Hacker",icon:"💻",flavor:"Watch Dogs / Cyberpunk 2077 / Matrix",flavorEn:"Watch Dogs / Cyberpunk 2077 / Matrix",abilities:[{perm:"matrix_rain",fa:"باران ماتریکس در چت",en:"Matrix rain effect in chat"}, {perm:"glitch_wave",fa:"موج گلیچ (موج دیجیتالی روی کارت + صدا)",en:"Glitch wave (digital wave on the card + sound)"}, {perm:"signal_burst",fa:"موج سیگنال (بارش کد + موج سایبری)",en:"Signal wave (code rain + cyber wave)"}, {perm:"sys_alert",fa:"بنر هشدار سیستم",en:"System alert banner"}, {perm:"hack_color",fa:"هک رنگ چت (تغییر رنگ چت ۱ ساعت)",en:"Hack the chat accent color (1h)"}]};
 ROLES["medic"]={key:"medic",fa:"امدادگر",en:"Medic",icon:"🩺",flavor:"Battlefield",flavorEn:"Battlefield",abilities:[{perm:"revive",fa:"احیا (افکت بازگشت برای عضو غایب)",en:"Revive welcome-back effect"}, {perm:"adrenaline",fa:"آدرنالین (قاب برقی روی یک عضو)",en:"Adrenaline lightning frame on a member"}, {perm:"emergency_ping",fa:"پینگ اضطراری برای کمک فوری",en:"Emergency ping for urgent help"}, {perm:"big_heart",fa:"قلب بزرگ برای یک عضو",en:"Big heart effect to a member"}, {perm:"medic_beacon",fa:"فانوس امداد (هاله آرام روی چت ۱ ساعت)",en:"Medic beacon (calm halo overlay 1h)"}]};
 ROLES["scout"]={key:"scout",fa:"دیده‌بان",en:"Scout",icon:"🔭",flavor:"PUBG / Fortnite / LOTR Legolas",flavorEn:"PUBG / Fortnite / LOTR Legolas",abilities:[{perm:"falcon_swoop",fa:"پرواز شاهین (شاهین از وسط چت رد می‌شود)",en:"Falcon swoop (a falcon sweeps across the chat)"}, {perm:"lantern",fa:"فانوس (افکت روشن در چت ۳ ساعت)",en:"Lantern bright effect (3h)"}, {perm:"gold_vein",fa:"رگ طلا (درخشش طلایی روی چت ۱ ساعت)",en:"Gold vein (golden shimmer overlay 1h)"}, {perm:"trail_blaze",fa:"رد آتش (شعله‌های کوچک روی کارت)",en:"Trail blaze (small flames on the card)"}, {perm:"horizon_scan",fa:"اسکن افق (موج اسکن آبی روی کارت)",en:"Horizon scan (blue scan wave on the card)"}]};
 ROLES["engineer"]={key:"engineer",fa:"مهندس",en:"Engineer",icon:"🔧",flavor:"Clash of Clans / Iron Man",flavorEn:"Clash of Clans / Iron Man",abilities:[{perm:"arc_welder",fa:"جوش قوس (جرقه‌های آبی + صدا)",en:"Arc welder (blue sparks + sound)"}, {perm:"fireworks",fa:"آتش‌بازی",en:"Fireworks effect"}, {perm:"laser_show",fa:"نمایش لیزر",en:"Laser show"}, {perm:"paper_plane",fa:"پیام هواپیمای کاغذی (پرواز در چت)",en:"Paper plane flying message"}, {perm:"golden_border",fa:"ارتقای قاب طلایی چت (۱ ساعت)",en:"Golden chat border upgrade (1h)"}]};
 ROLES["intel"]={key:"intel",fa:"افسر اطلاعات",en:"Intel",icon:"🕵️",flavor:"Rainbow Six / Mission Impossible",flavorEn:"Rainbow Six / Mission Impossible",abilities:[{perm:"marked_agent",fa:"مأمور نشان‌دار (قاب زره روی یک عضو ۱ ساعت)",en:"Marked agent (armor frame on a member 1h)"}, {perm:"smoke_screen",fa:"پرده دود (مه خاکستری روی چت ۱ ساعت)",en:"Smoke screen (grey haze overlay 1h)"}, {perm:"static_hum",fa:"زمزمه استاتیک (موج استاتیک روی کارت + صدا)",en:"Static hum (static wave on the card + sound)"}, {perm:"sealed_wax",fa:"مهر موم (قاب سرخ روی یک عضو ۱ ساعت)",en:"Sealed wax (red frame on a member 1h)"}, {perm:"cipher_spark",fa:"جرقه رمز (جرقه‌های فیروزه‌ای روی کارت)",en:"Cipher spark (cyan sparks on the card)"}]};
 ROLES["guardian"]={key:"guardian",fa:"محافظ",en:"Guardian",icon:"🛡️",flavor:"Overwatch Reinhardt",flavorEn:"Overwatch Reinhardt",abilities:[{perm:"shield",fa:"سپر (افکت سپر روی چت)",en:"Shield effect on chat"}, {perm:"bastion_glow",fa:"درخشش دژ (هاله آبی فولادی روی چت ۱ ساعت)",en:"Bastion glow (steel-blue halo overlay 1h)"}, {perm:"plant_flag",fa:"کاشت پرچم (بنر پرچم)",en:"Plant a flag banner"}, {perm:"armor_frame",fa:"قاب زره روی آواتار خودم (۱ ساعت)",en:"Armor frame on my avatar (1h)"}, {perm:"patrol",fa:"گشت‌زنی (نگهبان از وسط چت رد می‌شود)",en:"Patrol (guard walks across chat)"}]};
 ROLES["ranger"]={key:"ranger",fa:"تکاور",en:"Ranger",icon:"🏹",flavor:"WoW / LOTR Aragorn",flavorEn:"WoW / LOTR Aragorn",abilities:[{perm:"ranger_banner",fa:"پرچم تکاور (بنر سبز جنگل + صدا)",en:"Ranger banner (forest-green banner + sound)"}, {perm:"loot",fa:"غنیمت (کارت غنیمت + بارش سکه)",en:"Loot (loot card + coin burst)"}, {perm:"rest",fa:"استراحت (درخشش آبی آرام + صدای نرم ۱۰ دقیقه)",en:"Rest (calm blue glow + soft sound 10 min)"}, {perm:"swift_wind",fa:"باد تند (موج باد روی کارت + صدا)",en:"Swift wind (wind wave on the card + sound)"}, {perm:"journey",fa:"سفر (تم چت ۱ ساعت به یک مقصد سفر تغییر می‌کند)",en:"Journey (chat theme changes to a travel destination 1h)"}]};
-ROLES["pilot"]={key:"pilot",fa:"خلبان",en:"Pilot",icon:"✈️",flavor:"Top Gun / Battlefield",flavorEn:"Top Gun / Battlefield",abilities:[{perm:"afterburner",fa:"پس‌سوز (شعله آبی + موج سرعت)",en:"Afterburner (blue flame + speed wave)"}, {perm:"emergency_landing",fa:"فرود اضطراری (افکت خنده‌دار سقوط + کانفتی)",en:"Emergency landing (funny crash effect + confetti)"}, {perm:"turbo",fa:"توربو (افکت سرعت)",en:"Turbo speed effect"}, {perm:"loop_plane",fa:"لوپ هوایی (هواپیما از وسط چت رد می‌شود)",en:"Loop-de-loop plane flying across chat"}, {perm:"control_tower",fa:"برج مراقبت (کارت برج + صدای شیپور)",en:"Control tower (tower card + horn sound)"}]};
+ROLES["pilot"]={key:"pilot",fa:"خلبان",en:"Pilot",icon:"✈️",flavor:"Top Gun / Battlefield",flavorEn:"Top Gun / Battlefield",abilities:[{perm:"afterburner",fa:"پس‌سوز (شعله آبی + موج سرعت)",en:"Afterburner (blue flame + speed wave)"}, {perm:"emergency_landing",fa:"فرود اضطراری (هواپیما با تکان فرود می‌آید و دود سفید بلند می‌شود)",en:"Emergency landing (the plane wobbles down and white smoke puffs up)"}, {perm:"turbo",fa:"توربو (افکت سرعت)",en:"Turbo speed effect"}, {perm:"loop_plane",fa:"لوپ هوایی (هواپیما از وسط چت رد می‌شود)",en:"Loop-de-loop plane flying across chat"}, {perm:"control_tower",fa:"برج مراقبت (کارت برج + صدای شیپور)",en:"Control tower (tower card + horn sound)"}]};
 ROLES["strategist"]={key:"strategist",fa:"استراتژیست",en:"Strategist",icon:"♟️",flavor:"StarCraft / Queen's Gambit",flavorEn:"StarCraft / Queen's Gambit",abilities:[{perm:"tactical_grid",fa:"شبکه تاکتیکی (شبکه نورانی روی چت ۱ ساعت)",en:"Tactical grid (glowing grid overlay 1h)"}, {perm:"golden_gambit",fa:"گامبیت طلایی (قاب طلایی روی یک عضو ۱ ساعت)",en:"Golden gambit (gold frame on a member 1h)"}, {perm:"flanking_glow",fa:"درخشش جناحی (قاب یخی روی یک عضو ۱ ساعت)",en:"Flanking glow (ice frame on a member 1h)"}, {perm:"surprise",fa:"غافلگیری (یک افکت بامزه تصادفی روی یک عضو تصادفی)",en:"Surprise (random fun effect on a random member)"}, {perm:"trap",fa:"تله (پیام‌رسان بعدی یک افکت بامزه می‌گیرد)",en:"Trap (next messenger gets a fun effect)"}]};
 ROLES["quartermaster"]={key:"quartermaster",fa:"تدارکات",en:"Quartermaster",icon:"📦",flavor:"WoW / Clash of Clans",flavorEn:"WoW / Clash of Clans",abilities:[{perm:"chest",fa:"صندوق غنیمت (به هر عضو آنلاین یک قاب آواتار بامزه تصادفی می‌دهد)",en:"Loot chest (every online member gets a random fun avatar frame)"}, {perm:"supply_drop",fa:"محموله تدارکات (بارش جعبه و سکه روی کارت)",en:"Supply drop (crate + coin burst on the card)"}, {perm:"lantern_convoy",fa:"کاروان فانوس (فانوس‌های شناور در چت)",en:"Lantern convoy (floating lanterns in chat)"}, {perm:"coin_rain",fa:"بارش سکه",en:"Coin rain effect"}, {perm:"avatar_swap",fa:"مبادله آواتار (آواتارت را با یک عضو ۱ ساعت عوض کن)",en:"Avatar swap (swap avatars with a member for 1h)"}]};
 ROLES["ghost"]={key:"ghost",fa:"شبح",en:"Ghost",icon:"👻",flavor:"Call of Duty Ghost",flavorEn:"Call of Duty Ghost",abilities:[{perm:"phantom_mist",fa:"مه شبح (مه بنفش روی چت ۱ ساعت)",en:"Phantom mist (violet mist overlay 1h)"}, {perm:"wraith_glide",fa:"پرواز شبح (شبح از وسط چت رد می‌شود)",en:"Wraith glide (a wraith glides across the chat)"}, {perm:"shadow",fa:"سایه (آواتارت ۱ ساعت سایه می‌شود)",en:"Shadow (your avatar becomes a shadow 1h)"}, {perm:"midnight_bell",fa:"زنگ نیمه‌شب (زنگ + موج آبی شبانه روی کارت)",en:"Midnight bell (bell + night-blue wave on the card)"}, {perm:"phase_shimmer",fa:"سوسوی فاز (سوسوی نقره‌ای روی کارت)",en:"Phase shimmer (silver shimmer on the card)"}]};
 ROLES["witch"]={key:"witch",fa:"جادوگر",en:"Witch",icon:"🧙",flavor:"Harry Potter / The Witcher",flavorEn:"Harry Potter / The Witcher",abilities:[{perm:"name_color_spell",fa:"طلسم رنگ نام روی یک عضو (۱ ساعت)",en:"Name-color spell on a member (1h)"}, {perm:"arcane_circle",fa:"دایره جادویی (حلقه نورانی بنفش روی چت ۱ ساعت)",en:"Arcane circle (violet glowing ring overlay 1h)"}, {perm:"star_charm",fa:"طلسم ستاره (قاب ستاره روی یک عضو ۱ ساعت)",en:"Star charm (star frame on a member 1h)"}, {perm:"luck_potion",fa:"معجون شانس (پیام بعدی یک عضو افکت جرقه می‌گیرد)",en:"Luck potion (a member's next message gets a sparkle effect)"}, {perm:"wandering_spirit",fa:"روح سرگردان (افکت روح که در چت شناور می‌شود)",en:"Wandering spirit effect floating through chat"}]};
 ROLES["vampire"]={key:"vampire",fa:"خون‌آشام",en:"Vampire",icon:"🧛",flavor:"Blade / Dracula",flavorEn:"Blade / Dracula",abilities:[{perm:"night_mode",fa:"حالت شب",en:"Night mode"}, {perm:"bat_effect",fa:"خفاش پرنده در چت",en:"Bat flying across chat"}, {perm:"crimson_moon",fa:"ماه زرشکی (هاله زرشکی روی چت ۱ ساعت)",en:"Crimson moon (crimson halo overlay 1h)"}, {perm:"eternal_dusk",fa:"غروب ابدی (درخشش نارنجی-بنفش روی کارت)",en:"Eternal dusk (orange-violet glow on the card)"}, {perm:"fog",fa:"مه (افکت مه روی چت ۱ ساعت)",en:"Fog effect on chat (1h)"}]};
 ROLES["zombie"]={key:"zombie",fa:"زامبی",en:"Zombie",icon:"🧟",flavor:"The Walking Dead / Left 4 Dead",flavorEn:"The Walking Dead / Left 4 Dead",abilities:[{perm:"bite",fa:"گاز (قاب زامبی بازیگوش روی یک عضو ۳ ساعت)",en:"Bite (playful zombie frame on a member for 3h)"}, {perm:"toxic_spores",fa:"هاگ‌های سمی (ابر سبز کوچک روی کارت)",en:"Toxic spores (small green cloud on the card)"}, {perm:"risen_glow",fa:"درخشش برخاسته (هاله سبز روی چت ۱۰ دقیقه)",en:"Risen glow (green halo overlay 10 min)"}, {perm:"barricade_glow",fa:"درخشش سنگر (هاله کهربایی روی چت ۱ ساعت)",en:"Barricade glow (amber halo overlay 1h)"}, {perm:"safehouse_lights",fa:"چراغ‌های پناهگاه (درخشش گرم روی چت ۱ ساعت)",en:"Safehouse lights (warm glow overlay 1h)"}]};
-ROLES["jack"]={key:"jack",fa:"جک کدو",en:"Jack-o'-Lantern",icon:"🎃",flavor:"Nightmare Before Christmas",flavorEn:"Nightmare Before Christmas",abilities:[{perm:"pumpkin_bomb",fa:"بمب کدو (افکت انفجار کدو)",en:"Pumpkin bomb effect"}, {perm:"scare",fa:"ترساندن (افکت ترسناک + صدا)",en:"Scare (spooky effect + sound)"}, {perm:"candy",fa:"آب‌نبات (قاب آب‌نبات/کدو + افکت بامزه برای یک عضو)",en:"Candy (candy/pumpkin frame + fun effect on a member)"}, {perm:"candy_shower",fa:"بارش آب‌نبات (بارش آب‌نبات روی کارت + صدا)",en:"Candy shower (candy burst on the card + sound)"}, {perm:"theme_halloween",fa:"تم هالووین گروه (۳ ساعت)",en:"Halloween group theme (3h)"}]};
+ROLES["jack"]={key:"jack",fa:"جک کدو",en:"Jack-o'-Lantern",icon:"🎃",flavor:"Nightmare Before Christmas",flavorEn:"Nightmare Before Christmas",abilities:[{perm:"pumpkin_bomb",fa:"بمب کدو (کدو می‌درخشد و جرقه‌های نارنجی دورش می‌رقصند)",en:"Pumpkin bomb (the pumpkin glows and orange sparks dance around it)"}, {perm:"scare",fa:"ترساندن (افکت ترسناک + صدا)",en:"Scare (spooky effect + sound)"}, {perm:"candy",fa:"آب‌نبات (قاب آب‌نبات/کدو + افکت بامزه برای یک عضو)",en:"Candy (candy/pumpkin frame + fun effect on a member)"}, {perm:"candy_shower",fa:"بارش آب‌نبات (بارش آب‌نبات روی کارت + صدا)",en:"Candy shower (candy burst on the card + sound)"}, {perm:"theme_halloween",fa:"تم هالووین گروه (۳ ساعت)",en:"Halloween group theme (3h)"}]};
 var ROLE_ORDER=["commander","shaman","berserker","skald","sniper","hacker","medic","scout","engineer","intel","guardian","ranger","pilot","strategist","quartermaster","ghost","witch","vampire","zombie","jack"];
 function roleDef(k){ return ROLES[k]||null; }
 function roleName(k){ var r=ROLES[k]; if(!r) return k; return LANG==='en'?r.en:r.fa; }
@@ -29976,12 +29977,15 @@ OG.loadMsgs=function(){
         if(res.error||!res.data) return false;
         var _prevMsgs=OG.msgs;
         OG.msgs=(res.data||[]).slice().reverse();
+        var _lastSeen443=(S.onlineLastSeen||{})[OG.sel.id]||0;
+        if(curView==="chat") drawGroupChat();
         OG.deliverBulkPowers(_prevMsgs);
+        OG.drainPendingPowerReplay();
+        OG.replayMissedOnOpen(_lastSeen443);
         OG.missedPowersNote(OG.msgs);
         if(!S.onlineLastSeen) S.onlineLastSeen={};
         S.onlineLastSeen[OG.sel.id]=Date.now();
         save();
-        if(curView==="chat") drawGroupChat();
         return true;
       });
     }).catch(function(){ OG._msgsLoading=false; return false; });
@@ -30001,12 +30005,15 @@ OG.loadMsgs=function(){
       if(res.error){ sbLog("loadMsgs: "+res.error.message); return false; }
       var _prevMsgs=OG.msgs;
       OG.msgs=(res.data||[]).map(function(r){ return {id:r.id,group_id:r.group_id,sender_uid:r.sender_uid,sender_name:r.sender_name,sender_avatar:r.sender_avatar,text:r.text,reply_to:r.reply_to,created_at:r.created_at,pinned:r.pinned,pinned_until:r.pinned_until,expires_at:r.expires_at,anon:r.anon,approved:r.approved}; });
+      var _lastSeen443=(S.onlineLastSeen||{})[OG.sel.id]||0;
+      if(curView==="chat") drawGroupChat();
       OG.deliverBulkPowers(_prevMsgs);
+      OG.drainPendingPowerReplay();
+      OG.replayMissedOnOpen(_lastSeen443);
       OG.missedPowersNote(OG.msgs);
       if(!S.onlineLastSeen) S.onlineLastSeen={};
       S.onlineLastSeen[OG.sel.id]=Date.now();
       save();
-      if(curView==="chat") drawGroupChat();
       return true;
     }).catch(function(){ OG._msgsLoading=false; return false; });
   }
@@ -30019,12 +30026,15 @@ OG.loadMsgs=function(){
     if(res.error){ sbLog("loadMsgs: "+res.error.message); return false; }
     var _prevMsgs=OG.msgs;
     OG.msgs=(res.data||[]).slice().reverse();
+    var _lastSeen443=(S.onlineLastSeen||{})[OG.sel.id]||0;
+    if(curView==="chat") drawGroupChat();
     OG.deliverBulkPowers(_prevMsgs);
+    OG.drainPendingPowerReplay();
+    OG.replayMissedOnOpen(_lastSeen443);
     OG.missedPowersNote(OG.msgs);
     if(!S.onlineLastSeen) S.onlineLastSeen={};
     S.onlineLastSeen[OG.sel.id]=Date.now();
     save();
-    if(curView==="chat") drawGroupChat();
     return true;
   }).catch(function(){ OG._msgsLoading=false; return false; });
 };
@@ -30093,6 +30103,7 @@ OG._appendChatMsg=function(m){
        scrollTop by itself; follow only when already near the bottom). */
     var nearBottom=(box.scrollHeight-box.clientHeight-box.scrollTop)<=120;
     box.insertAdjacentHTML("beforeend",ogMsgHTML(m));
+    try{ if(typeof PWFX440!=="undefined"&&PWFX440.paintEndStates) PWFX440.paintEndStates(box); }catch(e){}
     OG._chatRendered={groupId:OG.sel.id,count:vis.length,lastId:m.id,cls:cls};
     if(nearBottom){ try{ box.scrollTop=box.scrollHeight; }catch(e){} }
     try{
@@ -30141,7 +30152,7 @@ OG.deliverPower=function(m,via){
     if(!m||!m.text||m.text.indexOf("⚡POWER|")!==0) return fx;
     var perm=(m.text.split("|")[1]||"");
     if(m.sender_uid===SB.myUid()) return fx;
-    if(PW.presentInChat(m)){ PROFX.soundFor(perm); fx.push("sound"); fx.push("pwfx440"); /* v10.4.40: burst removed (Rule 1); PWFX440 plays the visual below. */ /* v10.4.39 — GhostOpsFX scene for the received power (code effect until sheets exist; fx_v from the message when present, else 0). Card = the rendered power card when present (bulk loads render after delivery, so _card may be null — playAbility tolerates it). Stage is document.body: fixed fullscreen canvas, same as the existing burst. The fx[] tier list is unchanged (sound+burst) — this adds a visual layer, not a tier. */ try{ if(typeof GhostOpsFX!=="undefined"){ var _pp=GhostOpsFX.parsePowerMessage(m.text); var _card=null; try{ var _st=document.getElementById("gChatBox"); if(_st&&m.id!=null) _card=_st.querySelector('[data-pw-id="'+String(m.id).replace(/"/g,"")+'"]'); }catch(e){} if(typeof PWFX440!=="undefined") PWFX440.play(_pp?_pp.perm:perm,_card); } }catch(e){} }
+    if(PW.presentInChat(m)){ PROFX.soundFor(perm); fx.push("sound"); fx.push("pwfx440"); /* v10.4.40: burst removed (Rule 1); PWFX440 plays the visual below. */ /* v10.4.39 — GhostOpsFX scene for the received power (code effect until sheets exist; fx_v from the message when present, else 0). Card = the rendered power card when present (bulk loads render after delivery, so _card may be null — playAbility tolerates it). Stage is document.body: fixed fullscreen canvas, same as the existing burst. The fx[] tier list is unchanged (sound+burst) — this adds a visual layer, not a tier. */ try{ var _card443=null; try{ var _st443=document.getElementById("gChatBox"); if(_st443&&m.id!=null) _card443=_st443.querySelector('[data-pw-id="'+String(m.id).replace(/"/g,"")+'"]'); }catch(e){} if(typeof PWFX440!=="undefined") PWFX440.play(perm,_card443,{msgId:m.id,targetUid:((m.text||"").split("|")[2]||"")}); }catch(e){} }
     else if(document.hidden){ SB.notifyPower(m,perm); fx.push("notify"); }
     else { PROFX.soundFor(perm); fx.push("sound"); toast("⚡ "+PW.powerTitle(perm)+" — "+(m.sender_name||"")); fx.push("toast"); }
   }catch(e){}
@@ -30163,11 +30174,72 @@ OG.deliverBulkPowers=function(prevMsgs){
       if(m.sender_uid===me) return;
       var age=now-new Date(m.created_at).getTime();
       if(!(age>=0&&age<=60000)) return;
-      OG._deliveredPowerMark(m.id);
       var fx=OG.deliverPower(m,"bulk");
+      /* FIX-1 BF-4: mark delivered ONLY when the visual actually played
+         (fx contains "pwfx440"). A hidden/other-view arrival stays
+         eligible for replay-on-open instead of being marked on arrival. */
+      if(fx&&fx.indexOf("pwfx440")!==-1) OG._deliveredPowerMark(m.id);
       OG._tierLog(m,"bulk",fx);
     });
   }catch(e){}
+};
+/* v10.4.43 (Defect B) — replay-on-open + deep-link replay + replay-by-id.
+   History is no longer "static forever": the latest power missed since the
+   member's last visit replays once when the chat opens (sound + scene, with
+   its card); every older missed power replays on tap (card tap / ↻ button).
+   First-ever open (no lastSeen) replays nothing — no ancient-power blast. */
+OG.replayPowerById=function(mid, permHint){
+  try{
+    var m=(OG.msgs||[]).filter(function(x){ return String(x.id)===String(mid); })[0];
+    if(!m) return false;
+    var perm=permHint||((m.text||"").split("|")[1]||"");
+    var target=((m.text||"").split("|")[2]||"");
+    var card=null;
+    try{ var box=document.getElementById("gChatBox"); if(box) card=box.querySelector('[data-pw-id="'+String(mid).replace(/"/g,"")+'"]'); }catch(e){}
+    if(!card) return false;
+    try{ PROFX.soundFor(perm); }catch(e){}
+    return !!(typeof PWFX440!=="undefined"&&PWFX440.play(perm,card,{msgId:String(mid),targetUid:target,replay:true}));
+  }catch(e){ return false; }
+};
+OG.replayMissedOnOpen=function(lastSeen){
+  try{
+    if(!lastSeen) return false;
+    if(!OG.sel) return false;
+    if(!PW.presentInChat({group_id:OG.sel.id})) return false;
+    var now=Date.now(), me=SB.myUid();
+    var missed=(OG.msgs||[]).filter(function(m){
+      return m.text&&m.text.indexOf("⚡POWER|")===0&&m.sender_uid!==me
+        &&new Date(m.created_at).getTime()>lastSeen
+        &&now-new Date(m.created_at).getTime()>60000;
+    }).sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
+    if(!missed.length) return false;
+    var m=missed[0];
+    if(OG._deliveredPowerSeen(m.id)) return false;
+    /* FIX-1 BF-4: mark delivered ONLY after the replay actually played,
+       so a failed replay (card not rendered yet) stays retryable. */
+    var _ok=OG.replayPowerById(m.id);
+    if(_ok) OG._deliveredPowerMark(m.id);
+    return _ok;
+  }catch(e){ return false; }
+};
+OG.drainPendingPowerReplay=function(){
+  try{
+    var p=window.__goPendingPowerReplay; if(!p) return false;
+    if(!OG.sel||String(p.gid)!==String(OG.sel.id)) return false;
+    /* FIX-1 residual fragility: keep the pending entry until the replay
+       actually plays — the old code cleared it first, so a drain that ran
+       before the card was rendered lost the replay instead of retrying it
+       on the next loadMsgs. */
+    var _ok=false;
+    if(p.mid) _ok=OG.replayPowerById(p.mid, p.perm||"");
+    else{
+      var list=(OG.msgs||[]).filter(function(m){ return m.text&&m.text.indexOf("⚡POWER|")===0; }).sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
+      if(!list.length) return false;
+      _ok=OG.replayPowerById(list[0].id);
+    }
+    if(_ok) window.__goPendingPowerReplay=null;
+    return _ok;
+  }catch(e){ return false; }
 };
 /* v10.4.20 (N6, CORE): polling fallback for group liveness. Realtime
    postgres_changes on messages is RLS-blocked for anon (key users and
@@ -39802,7 +39874,7 @@ var PW={uses:{},
      PROFX.soundFor(perm); /* v10.4.40: burst removed (Rule 1). */
      /* v10.4.39 — sender sees the GhostOpsFX scene too (card not rendered yet —
         OG.loadMsgs() runs next — so cardEl is null; the fullscreen canvas still plays). */
-     try{ if(typeof PWFX440!=="undefined") PWFX440.play(perm,null); }catch(e){}
+     try{ if(typeof PWFX440!=="undefined") PWFX440.play(perm,null,{msgId:"sender-"+perm}); }catch(e){}
      OG.loadMsgs(); PW.loadUses(); PW.refreshSheetCounts();
      /* v10.4.32 (T12): CLOSE the sheet on a successful send — the old
         code re-rendered it (openSheet), so the dimmed sheet covered
@@ -39847,16 +39919,16 @@ var PW={uses:{},
    for(var i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))%997; }
    return PW.CHEST_FRAMES[h%PW.CHEST_FRAMES.length];
  },
- /* DELIVERY TIERS (Parsa, 2026-11-09 ~23:40): the transient animation
-    classes below play ONLY when fresh=true — the member is present in the
-    chat and the message just arrived (age < 10s). History renders STATIC
-    (the card + text + buttons, no animation): tier (a) offline members get
-    a notification only; tier (b) locked/backgrounded members get sound
-    only; tier (c) present members get animation + sound. Persistent visual
-    STATES (fire/fog/gold border from derivedFor) still render for everyone
-    when they open the chat — they are states, not one-time animations.
-    patch.py wires the call as PW.renderPowerMsg(m, fresh) in drawGroupChat
-    with fresh = PW.presentInChat(m) && age<10s. */
+ /* DELIVERY TIERS (Parsa, 2026-11-09 ~23:40; v10.4.43 extends them):
+    live animation plays when fresh=true (present in chat, age < 10s).
+    History is NOT static anymore: every history card renders its designed
+    END-STATE scene persistently (the scene's end frame on the card), the
+    latest missed power replays once on open (OG.replayMissedOnOpen), and
+    any history card replays on tap (card tap / "↻ پخش دوباره" button).
+    Tier (a) offline members get a notification only, then the replay on
+    return; tier (b) locked/backgrounded members get sound only, then the
+    replay on return; tier (c) present members get animation + sound.
+    Persistent visual STATES (derivedFor) still render for everyone. */
  renderPowerMsg:function(m,fresh){
    var parts=(m.text||"").split("|");
    var perm=parts[1]||"", target=parts[2]||"", text=parts.slice(3).join("|").replace(/\|fx_v=\d+$/,"");
@@ -39885,7 +39957,7 @@ var PW={uses:{},
       structured visual param only (PW.TEXT_PARAM) and is
       never rendered as message content. Old history rows
       keep their title/target/time. */
-   h+='<div class="small">'+esc(m.created_at?m.created_at.slice(11,16):"")+'</div></div>';
+   h+='<canvas class="pw-end-cv" width="320" height="52" data-perm="'+esc(perm)+'"></canvas><div class="small">'+esc(m.created_at?m.created_at.slice(11,16):"")+' <button class="pw-replay" type="button">↻ پخش دوباره</button></div></div>';
    return h;
  },
  renderClaimMsg:function(m){
@@ -39970,9 +40042,9 @@ var PW={uses:{},
        if(perm==="phantom_mist"&&ageOk(m,H)) out.cls.push("pw-fog-chat");
        if(perm==="arcane_circle"&&ageOk(m,H)) out.cls.push("pw-magic-chat");
        if(perm==="crimson_moon"&&ageOk(m,H)) out.cls.push("pw-crimson-chat");
-       if(perm==="risen_glow"&&ageOk(m,10*60*1000)) out.cls.push("pw-fog-chat");
-       if(perm==="barricade_glow"&&ageOk(m,H)) out.cls.push("pw-gold-chat");
-       if(perm==="safehouse_lights"&&ageOk(m,H)) out.cls.push("pw-lantern-chat");
+       if(perm==="risen_glow"&&ageOk(m,10*60*1000)) out.cls.push("pw-risen-chat");
+       if(perm==="barricade_glow"&&ageOk(m,H)) out.cls.push("pw-barricade-chat");
+       if(perm==="safehouse_lights"&&ageOk(m,H)) out.cls.push("pw-safehouse-chat");
      } else if(m.text.indexOf("⚡CLAIM|")===0){
        var cperm=parts[1]||"", winner=parts[2]||"", loser=parts[4]||"";
        if(winner===uid){
@@ -41261,6 +41333,7 @@ SB._pushRouteDeepLink=function(d){
       if(!SB._pushFindGroup(gid)) return "queued";
       try{ OG.select(gid); }catch(e){}
       try{ go(kind==="group"?"group":"chat"); }catch(e){}
+      if(kind==="power"){ try{ window.__goPendingPowerReplay={gid:String(gid),mid:d.message_id||null,perm:d.perm||""}; }catch(e){} }
       return "routed";
     }
     if(title||body){ try{ toast(title||body); }catch(e){} return "routed"; }
@@ -41516,8 +41589,15 @@ function revokeSuperKey(code){
       /* My own power: PW.use already played it (deliverPower also
          refuses own rows; the early return keeps the tier log clean). */
       if(m.sender_uid===SB.myUid()) return;
-      OG._deliveredPowerMark(m.id);
       var _fx=OG.deliverPower(m,"live");
+      /* FIX-1 BF-4: mark delivered ONLY when the power was actually PLAYED
+         visually (present tier, fx contains "pwfx440"). Hidden
+         (notify-only) and other-view (sound+toast) arrivals must stay
+         eligible for replay-on-open — the old code marked EVERY live
+         delivery before delivering, so replayMissedOnOpen and
+         deliverBulkPowers refused them forever (0 plays on return).
+         The R5 dedupe is unchanged: exactly 1 real play per power. */
+      if(_fx&&_fx.indexOf("pwfx440")!==-1) OG._deliveredPowerMark(m.id);
       OG._tierLog(m,OG._tierOf(m),_fx);
     }
     else if(m.sender_uid!==SB.myUid()){
@@ -60252,230 +60332,351 @@ if(!GROW8.keys){
 
 </script>
 <style>
-/* PWFX440 v10.4.40 — per-power card keyframes (one unique path per power). */
-.pw-card{position:relative}
-.pw440-float{position:absolute;right:8px;top:-14px;font-size:22px;line-height:1;pointer-events:none;z-index:3;animation:pw440float 1.6s ease-out 1 forwards}
-@keyframes pw440float{0%{opacity:0;transform:translateY(8px) scale(.7)}25%{opacity:1;transform:translateY(0) scale(1.15)}100%{opacity:0;transform:translateY(-26px) scale(1)}}
-@media (prefers-reduced-motion: reduce){[class*="pw440-"]{animation:none !important}.pw440-float{display:none}}
+/* PWFX443 v10.4.43 — per-power card keyframes. Motion TYPE follows the scene kind
+   (shake/pulse/flicker/rise/sway/march/settle); amplitude varies per power. */
+.pw-card{position:relative;overflow:hidden;flex-shrink:0} /* FIX-1 BF-2: flex-shrink:0 stops the column-flex chatbox crushing the card to 26px (v10.4.43 regression); overflow:hidden still clips the card-scope canvas inside the card */
+.pw443-cv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.pw443-cv[data-pw443-chat="1"]{inset:auto;left:0} /* FIX-1 BF-1: chat canvas is positioned by JS over the visible region, not inset:0 at content top */
+.pw-end-cv{display:block;width:100%;height:52px;margin-top:6px;border-radius:10px}
+.pw-replay{font-size:12px;padding:2px 10px;border-radius:99px;border:1px solid var(--acc);background:transparent;color:var(--acc);cursor:pointer;margin-inline-start:8px}
+.pw443-shake{animation:pw443shake .12s linear 8}
+@keyframes pw443shake{0%,100%{transform:translate(0,0)}25%{transform:translate(-5px,2px)}50%{transform:translate(4px,-2px)}75%{transform:translate(-3px,-2px)}}
+/* v10.4.43 persistent states — colours/shapes match the text (green halo, amber halo, warm wash). */
+.pw-risen-chat{box-shadow:inset 0 0 60px rgba(163,230,53,.38);background:radial-gradient(ellipse at 50% 0%,rgba(163,230,53,.14),transparent 60%)}
+.pw-barricade-chat{box-shadow:inset 0 0 60px rgba(245,158,11,.38);background:radial-gradient(ellipse at 50% 0%,rgba(245,158,11,.14),transparent 60%)}
+.pw-safehouse-chat{box-shadow:inset 0 0 55px rgba(251,191,36,.32);background:radial-gradient(ellipse at 50% 0%,rgba(251,191,36,.16),transparent 60%)}
+@media (prefers-reduced-motion: reduce){[class*="pw440-"]{animation:none !important}.pw443-cv{display:none}.pw443-shake{animation:none !important}}
 .pw440-adrenaline{animation:pw440k-adrenaline 1400ms ease-out 1}
-@keyframes pw440k-adrenaline{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(13px,-11px) rotate(5deg) scale(1.04)}70%{transform:translate(-1px,5px) rotate(4deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-adrenaline{0%{transform:scale(1)}35%{transform:scale(1.03)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-afterburner{animation:pw440k-afterburner 2000ms ease-out 1}
-@keyframes pw440k-afterburner{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-1px,-6px) rotate(-2deg) scale(1.04)}70%{transform:translate(1px,-9px) rotate(4deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-afterburner{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-ambush{animation:pw440k-ambush 1200ms ease-out 1}
-@keyframes pw440k-ambush{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-14px,11px) rotate(-5deg) scale(1.01)}70%{transform:translate(-3px,-10px) rotate(-5deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-ambush{0%{transform:translateX(-5px)}35%{transform:translateX(5px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-anthem{animation:pw440k-anthem 2200ms ease-out 1}
-@keyframes pw440k-anthem{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(10px,8px) rotate(5deg) scale(0.98)}70%{transform:translate(3px,12px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-arc_welder{animation:pw440k-arc_welder 830ms ease-out 1}
-@keyframes pw440k-arc_welder{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-4px,12px) rotate(-7deg) scale(1.00)}70%{transform:translate(11px,-7px) rotate(5deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-anthem{0%{transform:rotate(0deg)}35%{transform:rotate(-4deg)}70%{transform:rotate(4deg)}100%{transform:rotate(0deg)}}
+
+.pw440-arc_welder{animation:pw440k-arc_welder 1200ms ease-out 1}
+@keyframes pw440k-arc_welder{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-arcane_circle{animation:pw440k-arcane_circle 2000ms ease-out 1}
-@keyframes pw440k-arcane_circle{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(13px,10px) rotate(-6deg) scale(1.02)}70%{transform:translate(7px,-10px) rotate(6deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-arcane_circle{0%{transform:scale(1)}35%{transform:scale(1.02)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-armor_frame{animation:pw440k-armor_frame 1080ms ease-out 1}
-@keyframes pw440k-armor_frame{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-14px,11px) rotate(2deg) scale(0.98)}70%{transform:translate(-3px,9px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-armor_frame{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-avatar_swap{animation:pw440k-avatar_swap 1200ms ease-out 1}
-@keyframes pw440k-avatar_swap{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-8px,8px) rotate(-5deg) scale(0.97)}70%{transform:translate(-1px,10px) rotate(4deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-avatar_swap{0%{transform:translateX(-6px)}35%{transform:translateX(6px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-barricade_glow{animation:pw440k-barricade_glow 1800ms ease-out 1}
-@keyframes pw440k-barricade_glow{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(12px,-5px) rotate(-6deg) scale(1.02)}70%{transform:translate(-4px,-5px) rotate(-3deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-barricade_glow{0%{transform:scale(1)}35%{transform:scale(1.02)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-bastion_glow{animation:pw440k-bastion_glow 1800ms ease-out 1}
-@keyframes pw440k-bastion_glow{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(3px,10px) rotate(-4deg) scale(0.97)}70%{transform:translate(-8px,5px) rotate(6deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-bastion_glow{0%{transform:scale(1)}35%{transform:scale(1.03)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-bat_effect{animation:pw440k-bat_effect 1200ms ease-out 1}
-@keyframes pw440k-bat_effect{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-5px,-7px) rotate(0deg) scale(1.03)}70%{transform:translate(8px,-4px) rotate(-4deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-bat_effect{0%{transform:translateX(-8px)}35%{transform:translateX(8px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-big_heart{animation:pw440k-big_heart 1100ms ease-out 1}
-@keyframes pw440k-big_heart{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-9px,-7px) rotate(2deg) scale(1.02)}70%{transform:translate(-4px,-4px) rotate(3deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-bite{animation:pw440k-bite 240ms ease-out 1}
-@keyframes pw440k-bite{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(6px,-9px) rotate(0deg) scale(1.02)}70%{transform:translate(10px,10px) rotate(4deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-big_heart{0%{transform:scale(1)}35%{transform:scale(1.04)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
+.pw440-bite{animation:pw440k-bite 1400ms ease-out 1}
+@keyframes pw440k-bite{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-blessing{animation:pw440k-blessing 2000ms ease-out 1}
-@keyframes pw440k-blessing{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(7px,-6px) rotate(-5deg) scale(1.03)}70%{transform:translate(-9px,8px) rotate(-4deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-blessing{0%{transform:scale(1)}35%{transform:scale(1.04)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-broom_flight{animation:pw440k-broom_flight 1500ms ease-out 1}
-@keyframes pw440k-broom_flight{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(16px,-4px) rotate(1deg) scale(1.04)}70%{transform:translate(-10px,9px) rotate(-4deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-broom_flight{0%{transform:translateX(-7px)}35%{transform:translateX(7px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-bullseye{animation:pw440k-bullseye 800ms ease-out 1}
-@keyframes pw440k-bullseye{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(0px,7px) rotate(5deg) scale(0.99)}70%{transform:translate(-8px,6px) rotate(3deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-bullseye{0%{transform:translateX(-6px)}35%{transform:translateX(6px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-candy{animation:pw440k-candy 1200ms ease-out 1}
-@keyframes pw440k-candy{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(4px,-7px) rotate(3deg) scale(1.03)}70%{transform:translate(-10px,7px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-candy_shower{animation:pw440k-candy_shower 800ms ease-out 1}
-@keyframes pw440k-candy_shower{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-2px,5px) rotate(-6deg) scale(1.04)}70%{transform:translate(12px,-9px) rotate(-2deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-candy{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
+.pw440-candy_shower{animation:pw440k-candy_shower 1600ms ease-out 1}
+@keyframes pw440k-candy_shower{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-celebrate_event{animation:pw440k-celebrate_event 2000ms ease-out 1}
-@keyframes pw440k-celebrate_event{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-8px,-9px) rotate(-1deg) scale(1.04)}70%{transform:translate(-3px,-7px) rotate(-5deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-celebrate_event{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-chest{animation:pw440k-chest 1400ms ease-out 1}
-@keyframes pw440k-chest{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-8px,10px) rotate(4deg) scale(1.01)}70%{transform:translate(-5px,7px) rotate(-3deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-chest{0%{transform:rotate(0deg)}35%{transform:rotate(-3deg)}70%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+
 .pw440-cipher_spark{animation:pw440k-cipher_spark 1030ms ease-out 1}
-@keyframes pw440k-cipher_spark{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(15px,-9px) rotate(-3deg) scale(1.00)}70%{transform:translate(-13px,5px) rotate(5deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-cipher_spark{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-coin_rain{animation:pw440k-coin_rain 1140ms ease-out 1}
-@keyframes pw440k-coin_rain{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(1px,-11px) rotate(4deg) scale(1.04)}70%{transform:translate(7px,8px) rotate(-2deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-coin_rain{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-control_tower{animation:pw440k-control_tower 1400ms ease-out 1}
-@keyframes pw440k-control_tower{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(14px,7px) rotate(3deg) scale(0.99)}70%{transform:translate(-14px,-4px) rotate(-3deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-control_tower{0%{transform:rotate(0deg)}35%{transform:rotate(-3deg)}70%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+
 .pw440-crimson_moon{animation:pw440k-crimson_moon 1800ms ease-out 1}
-@keyframes pw440k-crimson_moon{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(10px,-11px) rotate(8deg) scale(0.98)}70%{transform:translate(-8px,-8px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-crimson_moon{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-crosshair{animation:pw440k-crosshair 1000ms ease-out 1}
-@keyframes pw440k-crosshair{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-3px,7px) rotate(5deg) scale(0.97)}70%{transform:translate(-7px,11px) rotate(-4deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-crosshair{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-crown{animation:pw440k-crown 1800ms ease-out 1}
-@keyframes pw440k-crown{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(7px,-4px) rotate(3deg) scale(0.98)}70%{transform:translate(-8px,-9px) rotate(3deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-crown{0%{transform:scale(1)}35%{transform:scale(1.03)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-dance{animation:pw440k-dance 1800ms ease-out 1}
-@keyframes pw440k-dance{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-3px,-10px) rotate(-1deg) scale(1.04)}70%{transform:translate(-5px,-6px) rotate(-3deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-dance{0%{transform:rotate(0deg)}35%{transform:rotate(-2deg)}70%{transform:rotate(2deg)}100%{transform:rotate(0deg)}}
+
 .pw440-deadeye_flash{animation:pw440k-deadeye_flash 1200ms ease-out 1}
-@keyframes pw440k-deadeye_flash{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(6px,5px) rotate(7deg) scale(1.00)}70%{transform:translate(-10px,10px) rotate(-4deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-deadeye_flash{0%{transform:translateX(-7px)}35%{transform:translateX(7px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-earthquake{animation:pw440k-earthquake 2200ms ease-out 1}
-@keyframes pw440k-earthquake{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-12px,-10px) rotate(0deg) scale(1.03)}70%{transform:translate(7px,-5px) rotate(4deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-earthquake{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(5px,-4px) rotate(3deg) scale(1.02)}70%{transform:translate(-5px,4px) rotate(-3deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+
 .pw440-emergency_landing{animation:pw440k-emergency_landing 1800ms ease-out 1}
-@keyframes pw440k-emergency_landing{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(16px,6px) rotate(-3deg) scale(1.04)}70%{transform:translate(-11px,-4px) rotate(-2deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-emergency_landing{0%{transform:translateX(-6px)}35%{transform:translateX(6px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-emergency_ping{animation:pw440k-emergency_ping 1200ms ease-out 1}
-@keyframes pw440k-emergency_ping{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-10px,9px) rotate(-2deg) scale(1.04)}70%{transform:translate(-13px,-5px) rotate(-5deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-emergency_ping{0%{transform:scale(1)}35%{transform:scale(1.03)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-eternal_dusk{animation:pw440k-eternal_dusk 2000ms ease-out 1}
-@keyframes pw440k-eternal_dusk{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-13px,7px) rotate(2deg) scale(0.97)}70%{transform:translate(3px,8px) rotate(-2deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-eternal_dusk{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-falcon_swoop{animation:pw440k-falcon_swoop 1400ms ease-out 1}
-@keyframes pw440k-falcon_swoop{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(3px,-5px) rotate(-7deg) scale(0.98)}70%{transform:translate(15px,-11px) rotate(5deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-falcon_swoop{0%{transform:translateX(-7px)}35%{transform:translateX(7px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-fireworks{animation:pw440k-fireworks 2200ms ease-out 1}
-@keyframes pw440k-fireworks{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(5px,12px) rotate(1deg) scale(1.03)}70%{transform:translate(11px,6px) rotate(4deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-fireworks{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-flanking_glow{animation:pw440k-flanking_glow 1000ms ease-out 1}
-@keyframes pw440k-flanking_glow{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(6px,-7px) rotate(5deg) scale(1.03)}70%{transform:translate(6px,10px) rotate(-2deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-flanking_glow{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-fog{animation:pw440k-fog 2000ms ease-out 1}
-@keyframes pw440k-fog{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(14px,8px) rotate(5deg) scale(1.02)}70%{transform:translate(-7px,-11px) rotate(-2deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-fog{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-glitch_wave{animation:pw440k-glitch_wave 1400ms ease-out 1}
-@keyframes pw440k-glitch_wave{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(14px,11px) rotate(-4deg) scale(0.99)}70%{transform:translate(-3px,12px) rotate(3deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-glitch_wave{0%{transform:translateX(-8px)}35%{transform:translateX(8px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-gold_vein{animation:pw440k-gold_vein 1800ms ease-out 1}
-@keyframes pw440k-gold_vein{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(15px,8px) rotate(-1deg) scale(0.99)}70%{transform:translate(-2px,-4px) rotate(-2deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-gold_vein{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-golden_border{animation:pw440k-golden_border 1600ms ease-out 1}
-@keyframes pw440k-golden_border{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-5px,-7px) rotate(5deg) scale(0.97)}70%{transform:translate(-5px,-8px) rotate(6deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-golden_gambit{animation:pw440k-golden_gambit 620ms ease-out 1}
-@keyframes pw440k-golden_gambit{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(16px,10px) rotate(-7deg) scale(1.04)}70%{transform:translate(0px,-9px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-golden_border{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
+.pw440-golden_gambit{animation:pw440k-golden_gambit 1400ms ease-out 1}
+@keyframes pw440k-golden_gambit{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-hack_color{animation:pw440k-hack_color 1020ms ease-out 1}
-@keyframes pw440k-hack_color{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-6px,10px) rotate(5deg) scale(1.00)}70%{transform:translate(-9px,8px) rotate(-2deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-horizon_scan{animation:pw440k-horizon_scan 660ms ease-out 1}
-@keyframes pw440k-horizon_scan{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(12px,-5px) rotate(8deg) scale(0.98)}70%{transform:translate(15px,8px) rotate(3deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-hack_color{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
+.pw440-horizon_scan{animation:pw440k-horizon_scan 1200ms ease-out 1}
+@keyframes pw440k-horizon_scan{0%{transform:translateX(-6px)}35%{transform:translateX(6px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-journey{animation:pw440k-journey 2000ms ease-out 1}
-@keyframes pw440k-journey{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(8px,-9px) rotate(-7deg) scale(0.97)}70%{transform:translate(-1px,-8px) rotate(-2deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-journey{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-lantern{animation:pw440k-lantern 1400ms ease-out 1}
-@keyframes pw440k-lantern{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-1px,11px) rotate(8deg) scale(1.04)}70%{transform:translate(-12px,7px) rotate(-2deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-lantern{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-lantern_convoy{animation:pw440k-lantern_convoy 2000ms ease-out 1}
-@keyframes pw440k-lantern_convoy{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(2px,6px) rotate(-2deg) scale(1.00)}70%{transform:translate(9px,9px) rotate(3deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-lantern_convoy{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-laser_show{animation:pw440k-laser_show 1600ms ease-out 1}
-@keyframes pw440k-laser_show{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(8px,-7px) rotate(8deg) scale(1.00)}70%{transform:translate(11px,-9px) rotate(-2deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-laser_show{0%{transform:translateX(-6px)}35%{transform:translateX(6px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-loop_plane{animation:pw440k-loop_plane 1800ms ease-out 1}
-@keyframes pw440k-loop_plane{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-1px,7px) rotate(-7deg) scale(1.00)}70%{transform:translate(-6px,-4px) rotate(5deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-loop_plane{0%{transform:translateX(-6px)}35%{transform:translateX(6px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-loot{animation:pw440k-loot 1340ms ease-out 1}
-@keyframes pw440k-loot{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-11px,-6px) rotate(-3deg) scale(0.98)}70%{transform:translate(6px,-5px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-loot{0%{transform:rotate(0deg)}35%{transform:rotate(-4deg)}70%{transform:rotate(4deg)}100%{transform:rotate(0deg)}}
+
 .pw440-luck_potion{animation:pw440k-luck_potion 1400ms ease-out 1}
-@keyframes pw440k-luck_potion{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(7px,10px) rotate(0deg) scale(0.98)}70%{transform:translate(-3px,-9px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-luck_potion{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-lullaby{animation:pw440k-lullaby 2200ms ease-out 1}
-@keyframes pw440k-lullaby{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(13px,-7px) rotate(-6deg) scale(1.00)}70%{transform:translate(-14px,8px) rotate(-3deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-lullaby{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-marked_agent{animation:pw440k-marked_agent 1150ms ease-out 1}
-@keyframes pw440k-marked_agent{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-11px,10px) rotate(2deg) scale(1.00)}70%{transform:translate(14px,5px) rotate(-5deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-marked_agent{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-matrix_rain{animation:pw440k-matrix_rain 830ms ease-out 1}
-@keyframes pw440k-matrix_rain{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(8px,-4px) rotate(5deg) scale(1.03)}70%{transform:translate(-13px,11px) rotate(-3deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-matrix_rain{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-medic_beacon{animation:pw440k-medic_beacon 1200ms ease-out 1}
-@keyframes pw440k-medic_beacon{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-4px,-8px) rotate(1deg) scale(1.02)}70%{transform:translate(-4px,-4px) rotate(5deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-medic_beacon{0%{transform:scale(1)}35%{transform:scale(1.03)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-meteor_shower{animation:pw440k-meteor_shower 2200ms ease-out 1}
-@keyframes pw440k-meteor_shower{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(10px,-4px) rotate(2deg) scale(1.02)}70%{transform:translate(-3px,-10px) rotate(6deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-meteor_shower{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-midnight_bell{animation:pw440k-midnight_bell 1800ms ease-out 1}
-@keyframes pw440k-midnight_bell{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(7px,-9px) rotate(0deg) scale(0.99)}70%{transform:translate(7px,11px) rotate(-5deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-midnight_bell{0%{transform:scale(1)}35%{transform:scale(1.04)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-name_color_spell{animation:pw440k-name_color_spell 1400ms ease-out 1}
-@keyframes pw440k-name_color_spell{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(14px,6px) rotate(7deg) scale(1.00)}70%{transform:translate(11px,6px) rotate(-4deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-name_color_spell{0%{transform:scale(1)}35%{transform:scale(1.04)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-night_mode{animation:pw440k-night_mode 1800ms ease-out 1}
-@keyframes pw440k-night_mode{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(6px,-6px) rotate(6deg) scale(0.99)}70%{transform:translate(14px,8px) rotate(4deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-night_mode{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-paper_plane{animation:pw440k-paper_plane 1400ms ease-out 1}
-@keyframes pw440k-paper_plane{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-5px,11px) rotate(-2deg) scale(1.00)}70%{transform:translate(-9px,9px) rotate(-2deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-paper_plane{0%{transform:translateX(-6px)}35%{transform:translateX(6px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-parade{animation:pw440k-parade 2200ms ease-out 1}
-@keyframes pw440k-parade{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-8px,11px) rotate(-3deg) scale(1.01)}70%{transform:translate(16px,-10px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-parade{0%{transform:translateX(-6px)}35%{transform:translateX(6px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-patrol{animation:pw440k-patrol 1800ms ease-out 1}
-@keyframes pw440k-patrol{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(11px,-11px) rotate(-7deg) scale(1.02)}70%{transform:translate(13px,5px) rotate(6deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-phantom_mist{animation:pw440k-phantom_mist 830ms ease-out 1}
-@keyframes pw440k-phantom_mist{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(8px,10px) rotate(7deg) scale(1.03)}70%{transform:translate(-9px,9px) rotate(-4deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-patrol{0%{transform:translateX(-5px)}35%{transform:translateX(5px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
+.pw440-phantom_mist{animation:pw440k-phantom_mist 1400ms ease-out 1}
+@keyframes pw440k-phantom_mist{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-phase_shimmer{animation:pw440k-phase_shimmer 1200ms ease-out 1}
-@keyframes pw440k-phase_shimmer{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(16px,-4px) rotate(1deg) scale(1.01)}70%{transform:translate(0px,-5px) rotate(-4deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-plant_flag{animation:pw440k-plant_flag 310ms ease-out 1}
-@keyframes pw440k-plant_flag{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(16px,9px) rotate(-4deg) scale(1.03)}70%{transform:translate(12px,7px) rotate(6deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-phase_shimmer{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
+.pw440-plant_flag{animation:pw440k-plant_flag 1400ms ease-out 1}
+@keyframes pw440k-plant_flag{0%{transform:rotate(0deg)}35%{transform:rotate(-3deg)}70%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+
 .pw440-pumpkin_bomb{animation:pw440k-pumpkin_bomb 1600ms ease-out 1}
-@keyframes pw440k-pumpkin_bomb{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-2px,5px) rotate(-3deg) scale(1.01)}70%{transform:translate(9px,9px) rotate(-3deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-pumpkin_bomb{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-rage{animation:pw440k-rage 1800ms ease-out 1}
-@keyframes pw440k-rage{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(14px,-7px) rotate(0deg) scale(0.97)}70%{transform:translate(4px,-6px) rotate(5deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-rage{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-ranger_banner{animation:pw440k-ranger_banner 1600ms ease-out 1}
-@keyframes pw440k-ranger_banner{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(2px,-6px) rotate(4deg) scale(0.99)}70%{transform:translate(-10px,-5px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-ranger_banner{0%{transform:rotate(0deg)}35%{transform:rotate(-2deg)}70%{transform:rotate(2deg)}100%{transform:rotate(0deg)}}
+
 .pw440-rest{animation:pw440k-rest 2000ms ease-out 1}
-@keyframes pw440k-rest{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-4px,-11px) rotate(-7deg) scale(0.99)}70%{transform:translate(5px,12px) rotate(3deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-rest{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-revive{animation:pw440k-revive 1350ms ease-out 1}
-@keyframes pw440k-revive{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(14px,-7px) rotate(-3deg) scale(1.04)}70%{transform:translate(7px,-7px) rotate(-2deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-revive{0%{transform:scale(1)}35%{transform:scale(1.03)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-risen_glow{animation:pw440k-risen_glow 1800ms ease-out 1}
-@keyframes pw440k-risen_glow{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(9px,-4px) rotate(-4deg) scale(0.97)}70%{transform:translate(-8px,5px) rotate(-3deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-risen_glow{0%{transform:scale(1)}35%{transform:scale(1.04)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-rune_circle{animation:pw440k-rune_circle 2000ms ease-out 1}
-@keyframes pw440k-rune_circle{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-12px,-8px) rotate(-2deg) scale(1.01)}70%{transform:translate(11px,-8px) rotate(6deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-rune_circle{0%{transform:scale(1)}35%{transform:scale(1.03)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-sacred_fire{animation:pw440k-sacred_fire 2000ms ease-out 1}
-@keyframes pw440k-sacred_fire{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-11px,-9px) rotate(-3deg) scale(1.02)}70%{transform:translate(4px,7px) rotate(-3deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-sacred_fire{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-safehouse_lights{animation:pw440k-safehouse_lights 1400ms ease-out 1}
-@keyframes pw440k-safehouse_lights{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(9px,6px) rotate(-4deg) scale(1.02)}70%{transform:translate(16px,7px) rotate(6deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-safehouse_lights{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-scare{animation:pw440k-scare 1200ms ease-out 1}
-@keyframes pw440k-scare{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(8px,-9px) rotate(-7deg) scale(0.99)}70%{transform:translate(1px,5px) rotate(6deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-scare{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(5px,-3px) rotate(2deg) scale(1.02)}70%{transform:translate(-5px,3px) rotate(-2deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+
 .pw440-scope_glint{animation:pw440k-scope_glint 1150ms ease-out 1}
-@keyframes pw440k-scope_glint{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(4px,11px) rotate(-3deg) scale(1.01)}70%{transform:translate(-1px,-7px) rotate(3deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-sealed_wax{animation:pw440k-sealed_wax 770ms ease-out 1}
-@keyframes pw440k-sealed_wax{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-9px,10px) rotate(-4deg) scale(0.97)}70%{transform:translate(1px,9px) rotate(-3deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-scope_glint{0%{transform:translateX(-8px)}35%{transform:translateX(8px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
+.pw440-sealed_wax{animation:pw440k-sealed_wax 1200ms ease-out 1}
+@keyframes pw440k-sealed_wax{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-shadow{animation:pw440k-shadow 1800ms ease-out 1}
-@keyframes pw440k-shadow{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-5px,-9px) rotate(-3deg) scale(1.01)}70%{transform:translate(9px,-4px) rotate(-2deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-shield{animation:pw440k-shield 480ms ease-out 1}
-@keyframes pw440k-shield{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-3px,7px) rotate(-1deg) scale(0.99)}70%{transform:translate(-12px,-8px) rotate(-4deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-shadow{0%{transform:translateX(-5px)}35%{transform:translateX(5px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
+.pw440-shield{animation:pw440k-shield 1200ms ease-out 1}
+@keyframes pw440k-shield{0%{transform:scale(1)}35%{transform:scale(1.03)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-signal_burst{animation:pw440k-signal_burst 1400ms ease-out 1}
-@keyframes pw440k-signal_burst{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(9px,-7px) rotate(3deg) scale(1.00)}70%{transform:translate(3px,7px) rotate(-5deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-signal_burst{0%{transform:translateX(-6px)}35%{transform:translateX(6px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-smoke_screen{animation:pw440k-smoke_screen 1600ms ease-out 1}
-@keyframes pw440k-smoke_screen{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(12px,-7px) rotate(-2deg) scale(1.01)}70%{transform:translate(13px,6px) rotate(-3deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-smoke_screen{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-song{animation:pw440k-song 1830ms ease-out 1}
-@keyframes pw440k-song{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-6px,5px) rotate(6deg) scale(0.99)}70%{transform:translate(16px,-11px) rotate(4deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-song{0%{transform:rotate(0deg)}35%{transform:rotate(-3deg)}70%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+
 .pw440-spartan_charge{animation:pw440k-spartan_charge 1140ms ease-out 1}
-@keyframes pw440k-spartan_charge{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(13px,6px) rotate(-4deg) scale(0.98)}70%{transform:translate(-3px,-9px) rotate(6deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-spartan_charge{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(4px,-3px) rotate(2deg) scale(1.02)}70%{transform:translate(-4px,3px) rotate(-2deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+
 .pw440-spirit_drum{animation:pw440k-spirit_drum 2000ms ease-out 1}
-@keyframes pw440k-spirit_drum{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-8px,7px) rotate(6deg) scale(0.99)}70%{transform:translate(16px,-5px) rotate(-5deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-spirit_drum{0%{transform:scale(1)}35%{transform:scale(1.04)}70%{transform:scale(1.01)}100%{transform:scale(1)}}
+
 .pw440-star_charm{animation:pw440k-star_charm 1600ms ease-out 1}
-@keyframes pw440k-star_charm{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(2px,-5px) rotate(7deg) scale(0.99)}70%{transform:translate(-13px,6px) rotate(4deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-star_charm{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
 .pw440-static_hum{animation:pw440k-static_hum 1400ms ease-out 1}
-@keyframes pw440k-static_hum{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-12px,-5px) rotate(-3deg) scale(0.99)}70%{transform:translate(6px,-11px) rotate(-3deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-static_hum{0%{transform:translateX(-8px)}35%{transform:translateX(8px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-storm{animation:pw440k-storm 2200ms ease-out 1}
-@keyframes pw440k-storm{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(14px,9px) rotate(-7deg) scale(0.99)}70%{transform:translate(-1px,7px) rotate(-5deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-storm{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
 .pw440-summon_all{animation:pw440k-summon_all 1600ms ease-out 1}
-@keyframes pw440k-summon_all{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(13px,-5px) rotate(-1deg) scale(1.01)}70%{transform:translate(10px,10px) rotate(-5deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-summon_all{0%{transform:rotate(0deg)}35%{transform:rotate(-3deg)}70%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+
 .pw440-supply_drop{animation:pw440k-supply_drop 1600ms ease-out 1}
-@keyframes pw440k-supply_drop{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-9px,-8px) rotate(-6deg) scale(0.97)}70%{transform:translate(-9px,-9px) rotate(5deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-surprise{animation:pw440k-surprise 380ms ease-out 1}
-@keyframes pw440k-surprise{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(10px,-11px) rotate(3deg) scale(1.04)}70%{transform:translate(4px,6px) rotate(-3deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-supply_drop{0%{transform:translateY(0) scale(1)}35%{transform:translateY(1px) scale(1.01)}70%{transform:translateY(0) scale(1.005)}100%{transform:translateY(0) scale(1)}}
+
+.pw440-surprise{animation:pw440k-surprise 1400ms ease-out 1}
+@keyframes pw440k-surprise{0%{transform:rotate(0deg)}35%{transform:rotate(-3deg)}70%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+
 .pw440-swift_wind{animation:pw440k-swift_wind 1200ms ease-out 1}
-@keyframes pw440k-swift_wind{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-4px,7px) rotate(6deg) scale(1.00)}70%{transform:translate(-5px,12px) rotate(6deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-swift_wind{0%{transform:rotate(0deg)}35%{transform:rotate(-3deg)}70%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+
 .pw440-sys_alert{animation:pw440k-sys_alert 1000ms ease-out 1}
-@keyframes pw440k-sys_alert{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(4px,-8px) rotate(4deg) scale(1.00)}70%{transform:translate(0px,-11px) rotate(-2deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-sys_alert{0%{transform:rotate(0deg)}35%{transform:rotate(-4deg)}70%{transform:rotate(4deg)}100%{transform:rotate(0deg)}}
+
 .pw440-tactical_grid{animation:pw440k-tactical_grid 1000ms ease-out 1}
-@keyframes pw440k-tactical_grid{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(16px,12px) rotate(-6deg) scale(1.03)}70%{transform:translate(-12px,10px) rotate(5deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-tactical_grid{0%{transform:translateX(-7px)}35%{transform:translateX(7px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 .pw440-theme_halloween{animation:pw440k-theme_halloween 2000ms ease-out 1}
-@keyframes pw440k-theme_halloween{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-4px,7px) rotate(-1deg) scale(1.04)}70%{transform:translate(-1px,5px) rotate(-4deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-toxic_spores{animation:pw440k-toxic_spores 500ms ease-out 1}
-@keyframes pw440k-toxic_spores{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-15px,11px) rotate(5deg) scale(1.00)}70%{transform:translate(0px,12px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-theme_halloween{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
+.pw440-toxic_spores{animation:pw440k-toxic_spores 1800ms ease-out 1}
+@keyframes pw440k-toxic_spores{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-trail_blaze{animation:pw440k-trail_blaze 1400ms ease-out 1}
-@keyframes pw440k-trail_blaze{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-8px,9px) rotate(-6deg) scale(1.03)}70%{transform:translate(4px,10px) rotate(3deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-trap{animation:pw440k-trap 260ms ease-out 1}
-@keyframes pw440k-trap{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-3px,9px) rotate(6deg) scale(1.04)}70%{transform:translate(-4px,-9px) rotate(4deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-trail_blaze{0%{transform:scale(1);opacity:1}35%{transform:scale(1.02);opacity:.88}70%{transform:scale(1.03);opacity:.95}100%{transform:scale(1);opacity:1}}
+
+.pw440-trap{animation:pw440k-trap 1200ms ease-out 1}
+@keyframes pw440k-trap{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(8px,-4px) rotate(3deg) scale(1.02)}70%{transform:translate(-8px,4px) rotate(-3deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+
 .pw440-turbo{animation:pw440k-turbo 1600ms ease-out 1}
-@keyframes pw440k-turbo{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-9px,-7px) rotate(3deg) scale(1.00)}70%{transform:translate(-12px,10px) rotate(-4deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-turbo{0%{transform:rotate(0deg)}35%{transform:rotate(-3deg)}70%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+
 .pw440-wandering_spirit{animation:pw440k-wandering_spirit 2000ms ease-out 1}
-@keyframes pw440k-wandering_spirit{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(6px,-10px) rotate(-6deg) scale(1.02)}70%{transform:translate(16px,-9px) rotate(6deg) scale(1.00)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-wandering_spirit{0%{transform:translateY(2px)}35%{transform:translateY(-3px)}70%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+
 .pw440-war_ballad{animation:pw440k-war_ballad 2000ms ease-out 1}
-@keyframes pw440k-war_ballad{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-12px,-5px) rotate(1deg) scale(0.98)}70%{transform:translate(-5px,-8px) rotate(4deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-war_ballad{0%{transform:rotate(0deg)}35%{transform:rotate(-3deg)}70%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+
 .pw440-war_cry{animation:pw440k-war_cry 1790ms ease-out 1}
-@keyframes pw440k-war_cry{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-1px,-11px) rotate(-6deg) scale(1.01)}70%{transform:translate(4px,9px) rotate(5deg) scale(1.03)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-war_cry{0%{transform:rotate(0deg)}35%{transform:rotate(-4deg)}70%{transform:rotate(4deg)}100%{transform:rotate(0deg)}}
+
 .pw440-war_order{animation:pw440k-war_order 1600ms ease-out 1}
-@keyframes pw440k-war_order{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(-13px,10px) rotate(7deg) scale(0.99)}70%{transform:translate(-7px,7px) rotate(-4deg) scale(1.01)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
-.pw440-wraith_glide{animation:pw440k-wraith_glide 720ms ease-out 1}
-@keyframes pw440k-wraith_glide{0%{transform:translate(0,0) rotate(0deg) scale(1)}35%{transform:translate(5px,9px) rotate(2deg) scale(0.99)}70%{transform:translate(3px,10px) rotate(-2deg) scale(0.98)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+@keyframes pw440k-war_order{0%{transform:rotate(0deg)}35%{transform:rotate(-4deg)}70%{transform:rotate(4deg)}100%{transform:rotate(0deg)}}
+
+.pw440-wraith_glide{animation:pw440k-wraith_glide 1400ms ease-out 1}
+@keyframes pw440k-wraith_glide{0%{transform:translateX(-6px)}35%{transform:translateX(6px)}70%{transform:translateX(2px)}100%{transform:translateX(0)}}
+
 </style>
 <script>
-/* ================= PWFX440 — v10.4.40 per-power visual engine =================
-   Rule 1 (Parsa 2026-11-20): NO explosion effects, NO colored-bar effects.
-   Every power gets its OWN canvas scene (particle law + spawn + hero motion)
-   and its OWN card keyframe. Budgets: <=2.6s, <=12 particles, reduced-motion
-   respected (static).
-   0 real sprite files — glyphs + canvas only. */
+/* ================= PWFX443 — v10.4.43 drawn-shape scene engine =================
+   Replaces the v10.4.40 glyph+motion-law engine (PWFX440).
+   Rule 1 (Parsa 2026-11-20): NO explosion, NO colored-bar, NO confetti effects.
+   Every power gets its OWN drawn scene (shape library + per-power scene spec)
+   and its OWN card motion. The animation ITSELF must be the promised thing:
+   a cloud is drawn circles, a halo is a drawn ring + glow wash, a frame is a
+   drawn frame. The giant emoji is gone: the biggest glyph anywhere is a
+   <=20px badge inside the scene. Scope follows the text: "روی کارت" scenes
+   render INSIDE the card, "روی چت" inside the chat box, "روی عضو" on the
+   target member's avatar + the card frame. Nothing is ever fullscreen.
+   Budgets: <=2.6s, reduced-motion draws one static end frame. Public surface
+   kept (PWFX440.play/playCard/glyph/cardPerm/specOf/retiredTitle/reduced)
+   so every existing call site keeps working; play() takes an optional
+   opts {msgId, targetUid, replay} for the Defect B dedupe. */
 (function(){
 "use strict";
-var SPEC={"adrenaline":{"role":"medic","fa":"آدرنالین (قاب برقی روی یک عضو)","g":"💉","c":"#facc15","sp":"center","law":"expand","hero":"ecg","n":6,"spd":1.1,"dur":1400,"slot":"ability_adrenaline","old_dur":1400},"afterburner":{"role":"pilot","fa":"پس‌سوز (شعله آبی + موج سرعت)","g":"✈️","c":"#3b82f6","sp":"left","law":"march","hero":"flicker","n":8,"spd":1.3,"dur":2000,"slot":"ability_takeoff","old_dur":1600},"ambush":{"role":"sniper","fa":"کمین (پیام غافلگیرکننده + صدا)","g":"🥷","c":"#78716c","sp":"left","law":"march","hero":"none","n":6,"spd":1.0,"dur":1200,"slot":"ability_ambush","old_dur":1200},"anthem":{"role":"skald","fa":"سرود پیروزی (صدا + بنر)","g":"🎵","c":"#f5d142","sp":"bottom","law":"rise","hero":"none","n":8,"spd":0.9,"dur":2200,"slot":"ability_anthem","old_dur":2200},"arc_welder":{"role":"engineer","fa":"جوش قوس (جرقه‌های آبی + صدا)","g":"🔌","c":"#60a5fa","sp":"random","law":"twinkle","hero":"flash","n":8,"spd":1.2,"dur":830,"slot":"ability_robot_msg","old_dur":1200},"arcane_circle":{"role":"witch","fa":"دایره جادویی (حلقه نورانی بنفش روی چت ۱ ساعت)","g":"🪄","c":"#a855f7","sp":"ring","law":"orbit","hero":"spin","n":8,"spd":0.8,"dur":2000,"slot":"ability_magic_room","old_dur":2000},"armor_frame":{"role":"guardian","fa":"قاب زره روی آواتار خودم (۱ ساعت)","g":"⛓️","c":"#cbd5e1","sp":"center","law":"expand","hero":"spin","n":6,"spd":0.9,"dur":1080,"slot":"ability_armor_frame","old_dur":1080},"avatar_swap":{"role":"quartermaster","fa":"مبادله آواتار (آواتارت را با یک عضو ۱ ساعت عوض کن)","g":"🔄","c":"#a78bfa","sp":"center","law":"expand","hero":"spin","n":6,"spd":1.0,"dur":1200,"slot":"ability_avatar_swap","old_dur":1200},"barricade_glow":{"role":"zombie","fa":"درخشش سنگر (هاله کهربایی روی چت ۱ ساعت)","g":"🧱","c":"#b45309","sp":"bottom","law":"rise","hero":"none","n":8,"spd":0.9,"dur":1800,"slot":"ability_survival_challenge","old_dur":1600},"bastion_glow":{"role":"guardian","fa":"درخشش دژ (هاله آبی فولادی روی چت ۱ ساعت)","g":"🏰","c":"#64748b","sp":"bottom","law":"rise","hero":"pulse","n":6,"spd":0.8,"dur":1800,"slot":"ability_fortress","old_dur":1800},"bat_effect":{"role":"vampire","fa":"خفاش پرنده در چت","g":"🦇","c":"#7c3aed","sp":"left","law":"fly","hero":"none","n":8,"spd":1.2,"dur":1200,"slot":"ability_bat_effect","old_dur":1200},"big_heart":{"role":"medic","fa":"قلب بزرگ برای یک عضو","g":"❤️","c":"#f472b6","sp":"center","law":"expand","hero":"beat","n":6,"spd":0.9,"dur":1100,"slot":"ability_big_heart","old_dur":1100},"bite":{"role":"zombie","fa":"گاز (قاب زامبی بازیگوش روی یک عضو ۳ ساعت)","g":"🧛","c":"#65a30d","sp":"center","law":"expand","hero":"flash","n":6,"spd":1.1,"dur":240,"slot":"ability_bite","old_dur":240},"blessing":{"role":"shaman","fa":"طلسم برکت (نام یک عضو ۳ ساعت می‌درخشد)","g":"🙏","c":"#fde68a","sp":"bottom","law":"rise","hero":"pulse","n":6,"spd":0.7,"dur":2000,"slot":"ability_blessing","old_dur":2000},"bullseye":{"role":"sniper","fa":"هدف‌گیری یک پیام (نشانه وسط پیام)","g":"🎯","c":"#ef4444","sp":"center","law":"expand","hero":"stamp","n":5,"spd":1.0,"dur":800,"slot":"ability_bullseye","old_dur":800},"candy":{"role":"jack","fa":"آب‌نبات (قاب آب‌نبات/کدو + افکت بامزه برای یک عضو)","g":"🍬","c":"#ec4899","sp":"top","law":"rain","hero":"none","n":8,"spd":1.0,"dur":1200,"slot":"ability_candy","old_dur":1200},"candy_shower":{"role":"jack","fa":"بارش آب‌نبات (بارش آب‌نبات روی کارت + صدا)","g":"🍭","c":"#f43f5e","sp":"top","law":"rain","hero":"none","n":12,"spd":1.2,"dur":800,"slot":"ui_sparkle","old_dur":1800},"celebrate_event":{"role":"commander","fa":"جشن (بارش کانفتی)","g":"🎈","c":"#ef4444","sp":"bottom","law":"rise","hero":"twinkle","n":10,"spd":1.0,"dur":2000,"slot":"ability_celebrate_event","old_dur":2000},"chest":{"role":"quartermaster","fa":"صندوق غنیمت (به هر عضو آنلاین یک قاب آواتار بامزه تصادفی می‌دهد)","g":"🧰","c":"#d97706","sp":"center","law":"expand","hero":"open","n":8,"spd":1.0,"dur":1400,"slot":"ability_chest","old_dur":1400},"cipher_spark":{"role":"intel","fa":"جرقه رمز (جرقه‌های فیروزه‌ای روی کارت)","g":"✨","c":"#2dd4bf","sp":"top","law":"rain","hero":"none","n":8,"spd":1.1,"dur":1030,"slot":"ability_secret_code","old_dur":1200},"coin_rain":{"role":"quartermaster","fa":"بارش سکه","g":"🪙","c":"#fcd34d","sp":"top","law":"rain","hero":"none","n":12,"spd":1.1,"dur":1140,"slot":"ability_coin_rain","old_dur":1140},"control_tower":{"role":"pilot","fa":"برج مراقبت (کارت برج + صدای شیپور)","g":"📡","c":"#22c55e","sp":"center","law":"expand","hero":"beam","n":6,"spd":0.9,"dur":1400,"slot":"ability_control_tower","old_dur":1400},"crimson_moon":{"role":"vampire","fa":"ماه زرشکی (هاله زرشکی روی چت ۱ ساعت)","g":"🌕","c":"#be123c","sp":"bottom","law":"rise","hero":"pulse","n":6,"spd":0.8,"dur":1800,"slot":"ability_night_hunt","old_dur":2000},"crosshair":{"role":"sniper","fa":"قاب دوربین تفنگ روی آواتار یک عضو (۱ ساعت)","g":"◎","c":"#f87171","sp":"center","law":"expand","hero":"spin","n":5,"spd":1.0,"dur":1000,"slot":"ability_crosshair","old_dur":1000},"crown":{"role":"commander","fa":"تاج‌گذاری عضو روز (قاب تاج ۱ ساعت)","g":"👑","c":"#fbbf24","sp":"bottom","law":"rise","hero":"spin","n":6,"spd":0.9,"dur":1800,"slot":"ability_crown","old_dur":1800},"dance":{"role":"skald","fa":"رقص (آواتارها در چت می‌رقصند)","g":"💃","c":"#34d399","sp":"random","law":"bounce","hero":"none","n":8,"spd":1.0,"dur":1800,"slot":"ability_dance","old_dur":1800},"deadeye_flash":{"role":"sniper","fa":"فلاش دید دقیق (فلاش + لرزش کارت)","g":"💥","c":"#fef08a","sp":"center","law":"expand","hero":"flash","n":6,"spd":1.2,"dur":1200,"slot":"ability_one_shot","old_dur":800},"earthquake":{"role":"berserker","fa":"زلزله (لرزش چت)","g":"🌋","c":"#a8a29e","sp":"center","law":"expand","hero":"shake","n":8,"spd":1.0,"dur":2200,"slot":"ability_earthquake","old_dur":2200},"emergency_landing":{"role":"pilot","fa":"فرود اضطراری (افکت خنده‌دار سقوط + کانفتی)","g":"🛬","c":"#fb923c","sp":"top","law":"fall","hero":"shake","n":6,"spd":1.0,"dur":1800,"slot":"ability_emergency_landing","old_dur":1800},"emergency_ping":{"role":"medic","fa":"پینگ اضطراری برای کمک فوری","g":"🆘","c":"#f43f5e","sp":"center","law":"expand","hero":"pulse","n":6,"spd":1.0,"dur":1200,"slot":"ability_emergency_ping","old_dur":1200},"eternal_dusk":{"role":"vampire","fa":"غروب ابدی (درخشش نارنجی-بنفش روی کارت)","g":"🌇","c":"#fb923c","sp":"bottom","law":"rise","hero":"none","n":6,"spd":0.8,"dur":2000,"slot":"ability_immortality","old_dur":2000},"falcon_swoop":{"role":"scout","fa":"پرواز شاهین (شاهین از وسط چت رد می‌شود)","g":"🦅","c":"#d6b98c","sp":"left","law":"fly","hero":"none","n":5,"spd":1.3,"dur":1400,"slot":"ability_eagle_eye","old_dur":1600},"fireworks":{"role":"engineer","fa":"آتش‌بازی","g":"🎆","c":"#f472b6","sp":"bottom","law":"rise","hero":"sparkle","n":10,"spd":1.1,"dur":2200,"slot":"ability_fireworks","old_dur":2200},"flanking_glow":{"role":"strategist","fa":"درخشش جناحی (قاب یخی روی یک عضو ۱ ساعت)","g":"🧊","c":"#7dd3fc","sp":"left","law":"sweep","hero":"none","n":8,"spd":1.0,"dur":1000,"slot":"ability_task_swap","old_dur":1400},"fog":{"role":"vampire","fa":"مه (افکت مه روی چت ۱ ساعت)","g":"🌫️","c":"#cbd5e1","sp":"random","law":"drift","hero":"none","n":10,"spd":0.7,"dur":2000,"slot":"ability_fog","old_dur":2000},"glitch_wave":{"role":"hacker","fa":"موج گلیچ (موج دیجیتالی روی کارت + صدا)","g":"👾","c":"#f43f5e","sp":"random","law":"drift","hero":"jitter","n":8,"spd":1.1,"dur":1400,"slot":"ability_encrypted_msg","old_dur":1200},"gold_vein":{"role":"scout","fa":"رگ طلا (درخشش طلایی روی چت ۱ ساعت)","g":"⛏️","c":"#eab308","sp":"top","law":"fall","hero":"none","n":6,"spd":1.0,"dur":1800,"slot":"ability_treasure_hunt","old_dur":1600},"golden_border":{"role":"engineer","fa":"ارتقای قاب طلایی چت (۱ ساعت)","g":"✨","c":"#f59e0b","sp":"center","law":"expand","hero":"frame","n":8,"spd":0.9,"dur":1600,"slot":"ability_golden_border","old_dur":1600},"golden_gambit":{"role":"strategist","fa":"گامبیت طلایی (قاب طلایی روی یک عضو ۱ ساعت)","g":"🌟","c":"#d4a437","sp":"center","law":"expand","hero":"spin","n":6,"spd":1.0,"dur":620,"slot":"ability_bet_top","old_dur":1400},"hack_color":{"role":"hacker","fa":"هک رنگ چت (تغییر رنگ چت ۱ ساعت)","g":"🎨","c":"#e879f9","sp":"left","law":"sweep","hero":"none","n":8,"spd":1.0,"dur":1020,"slot":"ability_hack_color","old_dur":1020},"horizon_scan":{"role":"scout","fa":"اسکن افق (موج اسکن آبی روی کارت)","g":"🔭","c":"#38bdf8","sp":"left","law":"sweep","hero":"none","n":6,"spd":1.0,"dur":660,"slot":"ability_binoculars","old_dur":1600},"journey":{"role":"ranger","fa":"سفر (تم چت ۱ ساعت به یک مقصد سفر تغییر می‌کند)","g":"🧭","c":"#f59e0b","sp":"left","law":"march","hero":"spin","n":6,"spd":0.9,"dur":2000,"slot":"ability_journey","old_dur":2000},"lantern":{"role":"scout","fa":"فانوس (افکت روشن در چت ۳ ساعت)","g":"🏮","c":"#fbbf24","sp":"bottom","law":"rise","hero":"pulse","n":6,"spd":0.8,"dur":1400,"slot":"ability_lantern","old_dur":1400},"lantern_convoy":{"role":"quartermaster","fa":"کاروان فانوس (فانوس‌های شناور در چت)","g":"🏮","c":"#fb923c","sp":"bottom","law":"rise","hero":"none","n":10,"spd":0.8,"dur":2000,"slot":"ability_caravan","old_dur":2000},"laser_show":{"role":"engineer","fa":"نمایش لیزر","g":"🔴","c":"#a3e635","sp":"left","law":"sweep","hero":"beam","n":8,"spd":1.2,"dur":1600,"slot":"ability_laser_show","old_dur":1600},"loop_plane":{"role":"pilot","fa":"لوپ هوایی (هواپیما از وسط چت رد می‌شود)","g":"✈️","c":"#f8fafc","sp":"left","law":"fly","hero":"spin","n":5,"spd":1.0,"dur":1800,"slot":"ability_loop_plane","old_dur":1800},"loot":{"role":"ranger","fa":"غنیمت (کارت غنیمت + بارش سکه)","g":"💰","c":"#facc15","sp":"top","law":"rain","hero":"none","n":8,"spd":1.0,"dur":1340,"slot":"ability_loot","old_dur":1340},"luck_potion":{"role":"witch","fa":"معجون شانس (پیام بعدی یک عضو افکت جرقه می‌گیرد)","g":"🍀","c":"#22c55e","sp":"bottom","law":"rise","hero":"bubble","n":8,"spd":0.9,"dur":1400,"slot":"ability_luck_potion","old_dur":1400},"lullaby":{"role":"skald","fa":"لالایی (صدای نرم + افکت تیره‌شدن)","g":"🌙","c":"#818cf8","sp":"random","law":"drift","hero":"pulse","n":6,"spd":0.6,"dur":2200,"slot":"ability_lullaby","old_dur":2200},"marked_agent":{"role":"intel","fa":"مأمور نشان‌دار (قاب زره روی یک عضو ۱ ساعت)","g":"🎖️","c":"#94a3b8","sp":"center","law":"expand","hero":"stamp","n":5,"spd":1.0,"dur":1150,"slot":"ability_fun_dossier","old_dur":1200},"matrix_rain":{"role":"hacker","fa":"باران ماتریکس در چت","g":"01","c":"#22c55e","sp":"top","law":"rain","hero":"none","n":12,"spd":1.0,"dur":830,"slot":"ability_matrix_rain","old_dur":830},"medic_beacon":{"role":"medic","fa":"فانوس امداد (هاله آرام روی چت ۱ ساعت)","g":"🔦","c":"#2dd4bf","sp":"center","law":"expand","hero":"beam","n":6,"spd":0.8,"dur":1200,"slot":"ability_wellness_poll","old_dur":2000},"meteor_shower":{"role":"shaman","fa":"بارش شهابی (افکت شهاب در چت)","g":"☄️","c":"#fb923c","sp":"top","law":"rain","hero":"none","n":8,"spd":1.3,"dur":2200,"slot":"ability_meteor_shower","old_dur":2200},"midnight_bell":{"role":"ghost","fa":"زنگ نیمه‌شب (زنگ + موج آبی شبانه روی کارت)","g":"🌙","c":"#1e40af","sp":"center","law":"expand","hero":"swing","n":6,"spd":0.9,"dur":1800,"slot":"ability_session_midnight","old_dur":2200},"name_color_spell":{"role":"witch","fa":"طلسم رنگ نام روی یک عضو (۱ ساعت)","g":"🌈","c":"#f472b6","sp":"left","law":"sweep","hero":"none","n":8,"spd":1.0,"dur":1400,"slot":"ability_name_color_spell","old_dur":1400},"night_mode":{"role":"vampire","fa":"حالت شب","g":"🌃","c":"#4c1d95","sp":"top","law":"fall","hero":"none","n":6,"spd":0.8,"dur":1800,"slot":"ability_night_mode","old_dur":1800},"paper_plane":{"role":"engineer","fa":"پیام هواپیمای کاغذی (پرواز در چت)","g":"✈️","c":"#e2e8f0","sp":"left","law":"fly","hero":"none","n":5,"spd":1.0,"dur":1400,"slot":"ability_paper_plane","old_dur":1400},"parade":{"role":"commander","fa":"رژه (آواتارها از وسط چت رژه می‌روند)","g":"🎺","c":"#d4a437","sp":"left","law":"march","hero":"none","n":8,"spd":1.0,"dur":2200,"slot":"ability_parade","old_dur":2200},"patrol":{"role":"guardian","fa":"گشت‌زنی (نگهبان از وسط چت رد می‌شود)","g":"🛡️","c":"#a3a3a3","sp":"left","law":"march","hero":"none","n":6,"spd":0.9,"dur":1800,"slot":"ability_patrol","old_dur":1800},"phantom_mist":{"role":"ghost","fa":"مه شبح (مه بنفش روی چت ۱ ساعت)","g":"🌫️","c":"#a78bfa","sp":"bottom","law":"rise","hero":"none","n":8,"spd":0.6,"dur":830,"slot":"ability_ghost_mode","old_dur":2000},"phase_shimmer":{"role":"ghost","fa":"سوسوی فاز (سوسوی نقره‌ای روی کارت)","g":"🌗","c":"#e5e7eb","sp":"random","law":"twinkle","hero":"none","n":8,"spd":0.9,"dur":1200,"slot":"ability_phase","old_dur":1200},"plant_flag":{"role":"guardian","fa":"کاشت پرچم (بنر پرچم)","g":"🚩","c":"#16a34a","sp":"bottom","law":"rise","hero":"wave","n":6,"spd":0.9,"dur":310,"slot":"ability_plant_flag","old_dur":310},"pumpkin_bomb":{"role":"jack","fa":"بمب کدو (افکت انفجار کدو)","g":"🎃","c":"#f97316","sp":"center","law":"expand","hero":"bounce","n":6,"spd":1.0,"dur":1600,"slot":"ability_pumpkin_bomb","old_dur":1600},"rage":{"role":"berserker","fa":"خشم (پیام‌هایم ۱۰ دقیقه افکت آتش می‌گیرند)","g":"💢","c":"#ef4444","sp":"center","law":"expand","hero":"pulse","n":8,"spd":1.1,"dur":1800,"slot":"ability_rage","old_dur":1800},"ranger_banner":{"role":"ranger","fa":"پرچم تکاور (بنر سبز جنگل + صدا)","g":"🌲","c":"#15803d","sp":"center","law":"expand","hero":"band","n":6,"spd":0.9,"dur":1600,"slot":"ui_fanfare","old_dur":1800},"rest":{"role":"ranger","fa":"استراحت (درخشش آبی آرام + صدای نرم ۱۰ دقیقه)","g":"😴","c":"#7dd3fc","sp":"random","law":"drift","hero":"pulse","n":6,"spd":0.6,"dur":2000,"slot":"ability_rest","old_dur":2000},"revive":{"role":"medic","fa":"احیا (افکت بازگشت برای عضو غایب)","g":"💫","c":"#4ade80","sp":"bottom","law":"rise","hero":"spin","n":8,"spd":0.9,"dur":1350,"slot":"ability_revive","old_dur":1350},"risen_glow":{"role":"zombie","fa":"درخشش برخاسته (هاله سبز روی چت ۱۰ دقیقه)","g":"🧟","c":"#a3e635","sp":"bottom","law":"rise","hero":"pulse","n":6,"spd":0.9,"dur":1800,"slot":"ability_comeback","old_dur":1600},"rune_circle":{"role":"shaman","fa":"حلقه رون‌ها (هاله بنفش رون روی چت ۱ ساعت)","g":"🧿","c":"#8b5cf6","sp":"ring","law":"orbit","hero":"spin","n":8,"spd":0.8,"dur":2000,"slot":"ability_prophecy","old_dur":2000},"sacred_fire":{"role":"shaman","fa":"آتش مقدس (افکت آتش در چت ۳ ساعت)","g":"🔥","c":"#f97316","sp":"bottom","law":"rise","hero":"flicker","n":10,"spd":1.1,"dur":2000,"slot":"ability_sacred_fire","old_dur":2000},"safehouse_lights":{"role":"zombie","fa":"چراغ‌های پناهگاه (درخشش گرم روی چت ۱ ساعت)","g":"💡","c":"#fbbf24","sp":"random","law":"twinkle","hero":"none","n":10,"spd":0.9,"dur":1400,"slot":"ui_chime","old_dur":2000},"scare":{"role":"jack","fa":"ترساندن (افکت ترسناک + صدا)","g":"😱","c":"#a3e635","sp":"center","law":"expand","hero":"flash","n":6,"spd":1.1,"dur":1200,"slot":"ability_scare","old_dur":1200},"scope_glint":{"role":"sniper","fa":"برق دوربین (درخشش سبز روی چت ۱ ساعت)","g":"🔆","c":"#34d399","sp":"left","law":"sweep","hero":"flash","n":6,"spd":1.0,"dur":1150,"slot":"ability_night_vision","old_dur":1200},"sealed_wax":{"role":"intel","fa":"مهر موم (قاب سرخ روی یک عضو ۱ ساعت)","g":"🕯️","c":"#b91c1c","sp":"center","law":"expand","hero":"stamp","n":5,"spd":0.9,"dur":770,"slot":"ability_private_letter","old_dur":1000},"shadow":{"role":"ghost","fa":"سایه (آواتارت ۱ ساعت سایه می‌شود)","g":"🌑","c":"#4b5563","sp":"left","law":"march","hero":"none","n":6,"spd":0.8,"dur":1800,"slot":"ability_shadow","old_dur":1800},"shield":{"role":"guardian","fa":"سپر (افکت سپر روی چت)","g":"🛡️","c":"#60a5fa","sp":"center","law":"expand","hero":"frame","n":6,"spd":0.9,"dur":480,"slot":"ability_shield","old_dur":480},"signal_burst":{"role":"hacker","fa":"انفجار سیگنال (بارش کد + موج سایبری)","g":"📡","c":"#38bdf8","sp":"center","law":"expand","hero":"pulse","n":8,"spd":1.0,"dur":1400,"slot":"ability_subchannel","old_dur":1400},"smoke_screen":{"role":"intel","fa":"پرده دود (مه خاکستری روی چت ۱ ساعت)","g":"🌫️","c":"#9ca3af","sp":"random","law":"drift","hero":"none","n":8,"spd":0.7,"dur":1600,"slot":"ability_secret_mission","old_dur":2000},"song":{"role":"skald","fa":"آهنگ (نت‌های موسیقی در چت شناور می‌شوند)","g":"🎶","c":"#fda4af","sp":"bottom","law":"rise","hero":"none","n":6,"spd":0.8,"dur":1830,"slot":"ability_song","old_dur":1830},"spartan_charge":{"role":"berserker","fa":"یورش اسپارتی (موج شوک + لرزش کارت)","g":"⚔️","c":"#b45309","sp":"left","law":"march","hero":"shake","n":8,"spd":1.2,"dur":1140,"slot":"ability_focus_duel","old_dur":1400},"spirit_drum":{"role":"shaman","fa":"طبل روح (ضرب‌آهنگ + موج نور روی کارت)","g":"🥁","c":"#06b6d4","sp":"center","law":"expand","hero":"pulse","n":6,"spd":1.0,"dur":2000,"slot":"ability_dream_riddle","old_dur":1400},"star_charm":{"role":"witch","fa":"طلسم ستاره (قاب ستاره روی یک عضو ۱ ساعت)","g":"⭐","c":"#fde047","sp":"random","law":"twinkle","hero":"none","n":10,"spd":0.9,"dur":1600,"slot":"ability_fortune","old_dur":1400},"static_hum":{"role":"intel","fa":"زمزمه استاتیک (موج استاتیک روی کارت + صدا)","g":"🔊","c":"#d1d5db","sp":"random","law":"twinkle","hero":"jitter","n":8,"spd":1.0,"dur":1400,"slot":"ability_activity_listen","old_dur":1400},"storm":{"role":"berserker","fa":"طوفان تصویری (برق و باران + صدا)","g":"⚡","c":"#7dd3fc","sp":"top","law":"rain","hero":"flash","n":10,"spd":1.3,"dur":2200,"slot":"ability_storm","old_dur":2200},"summon_all":{"role":"commander","fa":"احضار همه (صدای شیپور)","g":"📯","c":"#f59e0b","sp":"center","law":"expand","hero":"pulse","n":8,"spd":1.0,"dur":1600,"slot":"ability_summon_all","old_dur":1600},"supply_drop":{"role":"quartermaster","fa":"محموله تدارکات (بارش جعبه و سکه روی کارت)","g":"📦","c":"#65a30d","sp":"top","law":"fall","hero":"none","n":6,"spd":1.0,"dur":1600,"slot":"ui_thunder","old_dur":1800},"surprise":{"role":"strategist","fa":"غافلگیری (یک افکت بامزه تصادفی روی یک عضو تصادفی)","g":"🎁","c":"#f472b6","sp":"center","law":"expand","hero":"open","n":6,"spd":1.0,"dur":380,"slot":"ability_surprise","old_dur":380},"swift_wind":{"role":"ranger","fa":"باد تند (موج باد روی کارت + صدا)","g":"💨","c":"#bae6fd","sp":"left","law":"march","hero":"none","n":10,"spd":1.3,"dur":1200,"slot":"ability_race_game","old_dur":1400},"sys_alert":{"role":"hacker","fa":"بنر هشدار سیستم","g":"⚠️","c":"#ef4444","sp":"center","law":"expand","hero":"flash","n":6,"spd":1.0,"dur":1000,"slot":"ability_sys_alert","old_dur":1000},"tactical_grid":{"role":"strategist","fa":"شبکه تاکتیکی (شبکه نورانی روی چت ۱ ساعت)","g":"📐","c":"#22d3ee","sp":"center","law":"expand","hero":"grid","n":6,"spd":0.9,"dur":1000,"slot":"ui_magic","old_dur":1800},"theme_halloween":{"role":"jack","fa":"تم هالووین گروه (۳ ساعت)","g":"🎃","c":"#fb923c","sp":"random","law":"drift","hero":"pulse","n":8,"spd":0.9,"dur":2000,"slot":"ability_theme_halloween","old_dur":2000},"toxic_spores":{"role":"zombie","fa":"هاگ‌های سمی (ابر سبز کوچک روی کارت)","g":"☣️","c":"#84cc16","sp":"random","law":"drift","hero":"none","n":10,"spd":0.8,"dur":500,"slot":"ability_infection","old_dur":1400},"trail_blaze":{"role":"scout","fa":"رد آتش (شعله‌های کوچک روی کارت)","g":"🔥","c":"#fb923c","sp":"left","law":"march","hero":"flicker","n":8,"spd":1.1,"dur":1400,"slot":"ability_streak_post","old_dur":1400},"trap":{"role":"strategist","fa":"تله (پیام‌رسان بعدی یک افکت بامزه می‌گیرد)","g":"🪤","c":"#a16207","sp":"center","law":"expand","hero":"snap","n":6,"spd":1.1,"dur":260,"slot":"ability_trap","old_dur":260},"turbo":{"role":"pilot","fa":"توربو (افکت سرعت)","g":"⚡","c":"#06b6d4","sp":"left","law":"march","hero":"none","n":10,"spd":1.4,"dur":1600,"slot":"ability_turbo","old_dur":1600},"wandering_spirit":{"role":"witch","fa":"روح سرگردان (افکت روح که در چت شناور می‌شود)","g":"🔮","c":"#93c5fd","sp":"random","law":"drift","hero":"none","n":6,"spd":0.7,"dur":2000,"slot":"ability_wandering_spirit","old_dur":2000},"war_ballad":{"role":"skald","fa":"ترانه حماسی (نت‌های موسیقی شناور + صدا)","g":"🎶","c":"#c2410c","sp":"bottom","law":"rise","hero":"wave","n":8,"spd":0.9,"dur":2000,"slot":"ability_poem","old_dur":2000},"war_cry":{"role":"berserker","fa":"فریاد جنگ (بنر + صدا)","g":"📣","c":"#dc2626","sp":"center","law":"expand","hero":"shake","n":8,"spd":1.1,"dur":1790,"slot":"ability_war_cry","old_dur":1790},"war_order":{"role":"commander","fa":"دستور جنگ (بنر + صدا)","g":"⚔️","c":"#b91c1c","sp":"center","law":"expand","hero":"band","n":6,"spd":1.0,"dur":1600,"slot":"ability_war_order","old_dur":1600},"wraith_glide":{"role":"ghost","fa":"پرواز شبح (شبح از وسط چت رد می‌شود)","g":"👻","c":"#e2e8f0","sp":"left","law":"fly","hero":"none","n":5,"spd":1.0,"dur":720,"slot":"ability_msg_anonymous","old_dur":1600},"broom_flight":{"role":"witch","fa":"پرواز جارو","g":"🧹","c":"#8b5cf6","sp":"left","law":"fly","hero":"none","n":5,"spd":1.0,"dur":1500,"slot":null,"old_dur":null}};
-var RETIRED={"prophecy":{"to":"rune_circle","fa":"حلقه رون‌ها (هاله بنفش رون روی چت ۱ ساعت)"},"dream_riddle":{"to":"spirit_drum","fa":"طبل روح (ضرب‌آهنگ + موج نور روی کارت)"},"focus_duel":{"to":"spartan_charge","fa":"یورش اسپارتی (موج شوک + لرزش کارت)"},"poem":{"to":"war_ballad","fa":"ترانه حماسی (نت‌های موسیقی شناور + صدا)"},"night_vision":{"to":"scope_glint","fa":"برق دوربین (درخشش سبز روی چت ۱ ساعت)"},"one_shot":{"to":"deadeye_flash","fa":"فلاش دید دقیق (فلاش + لرزش کارت)"},"encrypted_msg":{"to":"glitch_wave","fa":"موج گلیچ (موج دیجیتالی روی کارت + صدا)"},"subchannel":{"to":"signal_burst","fa":"انفجار سیگنال (بارش کد + موج سایبری)"},"wellness_poll":{"to":"medic_beacon","fa":"فانوس امداد (هاله آرام روی چت ۱ ساعت)"},"eagle_eye":{"to":"falcon_swoop","fa":"پرواز شاهین (شاهین از وسط چت رد می‌شود)"},"treasure_hunt":{"to":"gold_vein","fa":"رگ طلا (درخشش طلایی روی چت ۱ ساعت)"},"streak_post":{"to":"trail_blaze","fa":"رد آتش (شعله‌های کوچک روی کارت)"},"binoculars":{"to":"horizon_scan","fa":"اسکن افق (موج اسکن آبی روی کارت)"},"robot_msg":{"to":"arc_welder","fa":"جوش قوس (جرقه‌های آبی + صدا)"},"fun_dossier":{"to":"marked_agent","fa":"مأمور نشان‌دار (قاب زره روی یک عضو ۱ ساعت)"},"secret_mission":{"to":"smoke_screen","fa":"پرده دود (مه خاکستری روی چت ۱ ساعت)"},"activity_listen":{"to":"static_hum","fa":"زمزمه استاتیک (موج استاتیک روی کارت + صدا)"},"private_letter":{"to":"sealed_wax","fa":"مهر موم (قاب سرخ روی یک عضو ۱ ساعت)"},"secret_code":{"to":"cipher_spark","fa":"جرقه رمز (جرقه‌های فیروزه‌ای روی کارت)"},"fortress":{"to":"bastion_glow","fa":"درخشش دژ (هاله آبی فولادی روی چت ۱ ساعت)"},"adventure_card":{"to":"ranger_banner","fa":"پرچم تکاور (بنر سبز جنگل + صدا)"},"race_game":{"to":"swift_wind","fa":"باد تند (موج باد روی کارت + صدا)"},"takeoff":{"to":"afterburner","fa":"پس‌سوز (شعله آبی + موج سرعت)"},"chess_move":{"to":"tactical_grid","fa":"شبکه تاکتیکی (شبکه نورانی روی چت ۱ ساعت)"},"bet_top":{"to":"golden_gambit","fa":"گامبیت طلایی (قاب طلایی روی یک عضو ۱ ساعت)"},"task_swap":{"to":"flanking_glow","fa":"درخشش جناحی (قاب یخی روی یک عضو ۱ ساعت)"},"lottery":{"to":"supply_drop","fa":"محموله تدارکات (بارش جعبه و سکه روی کارت)"},"caravan":{"to":"lantern_convoy","fa":"کاروان فانوس (فانوس‌های شناور در چت)"},"ghost_mode":{"to":"phantom_mist","fa":"مه شبح (مه بنفش روی چت ۱ ساعت)"},"msg_anonymous":{"to":"wraith_glide","fa":"پرواز شبح (شبح از وسط چت رد می‌شود)"},"session_midnight":{"to":"midnight_bell","fa":"زنگ نیمه‌شب (زنگ + موج آبی شبانه روی کارت)"},"phase":{"to":"phase_shimmer","fa":"سوسوی فاز (سوسوی نقره‌ای روی کارت)"},"magic_room":{"to":"arcane_circle","fa":"دایره جادویی (حلقه نورانی بنفش روی چت ۱ ساعت)"},"fortune":{"to":"star_charm","fa":"طلسم ستاره (قاب ستاره روی یک عضو ۱ ساعت)"},"night_hunt":{"to":"crimson_moon","fa":"ماه زرشکی (هاله زرشکی روی چت ۱ ساعت)"},"immortality":{"to":"eternal_dusk","fa":"غروب ابدی (درخشش نارنجی-بنفش روی کارت)"},"infection":{"to":"toxic_spores","fa":"هاگ‌های سمی (ابر سبز کوچک روی کارت)"},"comeback":{"to":"risen_glow","fa":"درخشش برخاسته (هاله سبز روی چت ۱۰ دقیقه)"},"survival_challenge":{"to":"barricade_glow","fa":"درخشش سنگر (هاله کهربایی روی چت ۱ ساعت)"},"shelter":{"to":"safehouse_lights","fa":"چراغ‌های پناهگاه (درخشش گرم روی چت ۱ ساعت)"},"trick_or_treat":{"to":"candy_shower","fa":"بارش آب‌نبات (بارش آب‌نبات روی کارت + صدا)"},"broom_flight":{"to":null,"fa":"پرواز جارو"}};
-var cv=null, raf=0, gen=0;
+var SPEC={"adrenaline":{"role":"medic","fa":"آدرنالین (قاب برقی روی یک عضو)","g":"💉","c":"#facc15","sp":"center","law":"expand","hero":"ecg","n":6,"spd":1.1,"dur":1400,"slot":"ability_adrenaline","old_dur":1400},"afterburner":{"role":"pilot","fa":"پس‌سوز (شعله آبی + موج سرعت)","g":"✈️","c":"#3b82f6","sp":"left","law":"march","hero":"flicker","n":8,"spd":1.3,"dur":2000,"slot":"ability_takeoff","old_dur":1600},"ambush":{"role":"sniper","fa":"کمین (پیام غافلگیرکننده + صدا)","g":"🥷","c":"#78716c","sp":"left","law":"march","hero":"none","n":6,"spd":1.0,"dur":1200,"slot":"ability_ambush","old_dur":1200},"anthem":{"role":"skald","fa":"سرود پیروزی (صدا + بنر)","g":"🎵","c":"#f5d142","sp":"bottom","law":"rise","hero":"none","n":8,"spd":0.9,"dur":2200,"slot":"ability_anthem","old_dur":2200},"arc_welder":{"role":"engineer","fa":"جوش قوس (جرقه‌های آبی + صدا)","g":"🔌","c":"#60a5fa","sp":"random","law":"twinkle","hero":"flash","n":8,"spd":1.2,"dur":1200,"slot":"ability_robot_msg","old_dur":1200},"arcane_circle":{"role":"witch","fa":"دایره جادویی (حلقه نورانی بنفش روی چت ۱ ساعت)","g":"🪄","c":"#a855f7","sp":"ring","law":"orbit","hero":"spin","n":8,"spd":0.8,"dur":2000,"slot":"ability_magic_room","old_dur":2000},"armor_frame":{"role":"guardian","fa":"قاب زره روی آواتار خودم (۱ ساعت)","g":"⛓️","c":"#cbd5e1","sp":"center","law":"expand","hero":"spin","n":6,"spd":0.9,"dur":1080,"slot":"ability_armor_frame","old_dur":1080},"avatar_swap":{"role":"quartermaster","fa":"مبادله آواتار (آواتارت را با یک عضو ۱ ساعت عوض کن)","g":"🔄","c":"#a78bfa","sp":"center","law":"expand","hero":"spin","n":6,"spd":1.0,"dur":1200,"slot":"ability_avatar_swap","old_dur":1200},"barricade_glow":{"role":"zombie","fa":"درخشش سنگر (هاله کهربایی روی چت ۱ ساعت)","g":"🧱","c":"#b45309","sp":"bottom","law":"rise","hero":"none","n":8,"spd":0.9,"dur":1800,"slot":"ability_survival_challenge","old_dur":1600},"bastion_glow":{"role":"guardian","fa":"درخشش دژ (هاله آبی فولادی روی چت ۱ ساعت)","g":"🏰","c":"#64748b","sp":"bottom","law":"rise","hero":"pulse","n":6,"spd":0.8,"dur":1800,"slot":"ability_fortress","old_dur":1800},"bat_effect":{"role":"vampire","fa":"خفاش پرنده در چت","g":"🦇","c":"#7c3aed","sp":"left","law":"fly","hero":"none","n":8,"spd":1.2,"dur":1200,"slot":"ability_bat_effect","old_dur":1200},"big_heart":{"role":"medic","fa":"قلب بزرگ برای یک عضو","g":"❤️","c":"#f472b6","sp":"center","law":"expand","hero":"beat","n":6,"spd":0.9,"dur":1100,"slot":"ability_big_heart","old_dur":1100},"bite":{"role":"zombie","fa":"گاز (قاب زامبی بازیگوش روی یک عضو ۳ ساعت)","g":"🧟","c":"#65a30d","sp":"center","law":"expand","hero":"flash","n":6,"spd":1.1,"dur":1400,"slot":"ability_bite","old_dur":240},"blessing":{"role":"shaman","fa":"طلسم برکت (نام یک عضو ۳ ساعت می‌درخشد)","g":"🙏","c":"#fde68a","sp":"bottom","law":"rise","hero":"pulse","n":6,"spd":0.7,"dur":2000,"slot":"ability_blessing","old_dur":2000},"bullseye":{"role":"sniper","fa":"هدف‌گیری یک پیام (نشانه وسط پیام)","g":"🎯","c":"#ef4444","sp":"center","law":"expand","hero":"stamp","n":5,"spd":1.0,"dur":800,"slot":"ability_bullseye","old_dur":800},"candy":{"role":"jack","fa":"آب‌نبات (قاب آب‌نبات/کدو + افکت بامزه برای یک عضو)","g":"🍬","c":"#ec4899","sp":"top","law":"rain","hero":"none","n":8,"spd":1.0,"dur":1200,"slot":"ability_candy","old_dur":1200},"candy_shower":{"role":"jack","fa":"بارش آب‌نبات (بارش آب‌نبات روی کارت + صدا)","g":"🍭","c":"#f43f5e","sp":"top","law":"rain","hero":"none","n":12,"spd":1.2,"dur":1600,"slot":"ui_sparkle","old_dur":1800},"celebrate_event":{"role":"commander","fa":"جشن (بالون‌های بالا‌رونده و جرقه‌های ستاره)","g":"🎈","c":"#ef4444","sp":"bottom","law":"rise","hero":"twinkle","n":10,"spd":1.0,"dur":2000,"slot":"ability_celebrate_event","old_dur":2000},"chest":{"role":"quartermaster","fa":"صندوق غنیمت (به هر عضو آنلاین یک قاب آواتار بامزه تصادفی می‌دهد)","g":"🧰","c":"#d97706","sp":"center","law":"expand","hero":"open","n":8,"spd":1.0,"dur":1400,"slot":"ability_chest","old_dur":1400},"cipher_spark":{"role":"intel","fa":"جرقه رمز (جرقه‌های فیروزه‌ای روی کارت)","g":"✨","c":"#2dd4bf","sp":"top","law":"rain","hero":"none","n":8,"spd":1.1,"dur":1030,"slot":"ability_secret_code","old_dur":1200},"coin_rain":{"role":"quartermaster","fa":"بارش سکه","g":"🪙","c":"#fcd34d","sp":"top","law":"rain","hero":"none","n":12,"spd":1.1,"dur":1140,"slot":"ability_coin_rain","old_dur":1140},"control_tower":{"role":"pilot","fa":"برج مراقبت (کارت برج + صدای شیپور)","g":"📡","c":"#22c55e","sp":"center","law":"expand","hero":"beam","n":6,"spd":0.9,"dur":1400,"slot":"ability_control_tower","old_dur":1400},"crimson_moon":{"role":"vampire","fa":"ماه زرشکی (هاله زرشکی روی چت ۱ ساعت)","g":"🌕","c":"#be123c","sp":"bottom","law":"rise","hero":"pulse","n":6,"spd":0.8,"dur":1800,"slot":"ability_night_hunt","old_dur":2000},"crosshair":{"role":"sniper","fa":"قاب دوربین تفنگ روی آواتار یک عضو (۱ ساعت)","g":"◎","c":"#f87171","sp":"center","law":"expand","hero":"spin","n":5,"spd":1.0,"dur":1000,"slot":"ability_crosshair","old_dur":1000},"crown":{"role":"commander","fa":"تاج‌گذاری عضو روز (قاب تاج ۱ ساعت)","g":"👑","c":"#fbbf24","sp":"bottom","law":"rise","hero":"spin","n":6,"spd":0.9,"dur":1800,"slot":"ability_crown","old_dur":1800},"dance":{"role":"skald","fa":"رقص (آواتارها در چت می‌رقصند)","g":"💃","c":"#34d399","sp":"random","law":"bounce","hero":"none","n":8,"spd":1.0,"dur":1800,"slot":"ability_dance","old_dur":1800},"deadeye_flash":{"role":"sniper","fa":"فلاش دید دقیق (فلاش + لرزش کارت)","g":"✦","c":"#fef08a","sp":"center","law":"expand","hero":"flash","n":6,"spd":1.2,"dur":1200,"slot":"ability_one_shot","old_dur":800},"earthquake":{"role":"berserker","fa":"زلزله (لرزش چت)","g":"🌋","c":"#a8a29e","sp":"center","law":"expand","hero":"shake","n":8,"spd":1.0,"dur":2200,"slot":"ability_earthquake","old_dur":2200},"emergency_landing":{"role":"pilot","fa":"فرود اضطراری (هواپیما با تکان فرود می‌آید و دود سفید بلند می‌شود)","g":"🛬","c":"#fb923c","sp":"top","law":"fall","hero":"shake","n":6,"spd":1.0,"dur":1800,"slot":"ability_emergency_landing","old_dur":1800},"emergency_ping":{"role":"medic","fa":"پینگ اضطراری برای کمک فوری","g":"🆘","c":"#f43f5e","sp":"center","law":"expand","hero":"pulse","n":6,"spd":1.0,"dur":1200,"slot":"ability_emergency_ping","old_dur":1200},"eternal_dusk":{"role":"vampire","fa":"غروب ابدی (درخشش نارنجی-بنفش روی کارت)","g":"🌇","c":"#fb923c","sp":"bottom","law":"rise","hero":"none","n":6,"spd":0.8,"dur":2000,"slot":"ability_immortality","old_dur":2000},"falcon_swoop":{"role":"scout","fa":"پرواز شاهین (شاهین از وسط چت رد می‌شود)","g":"🦅","c":"#d6b98c","sp":"left","law":"fly","hero":"none","n":5,"spd":1.3,"dur":1400,"slot":"ability_eagle_eye","old_dur":1600},"fireworks":{"role":"engineer","fa":"آتش‌بازی","g":"🎆","c":"#f472b6","sp":"bottom","law":"rise","hero":"sparkle","n":10,"spd":1.1,"dur":2200,"slot":"ability_fireworks","old_dur":2200},"flanking_glow":{"role":"strategist","fa":"درخشش جناحی (قاب یخی روی یک عضو ۱ ساعت)","g":"🧊","c":"#7dd3fc","sp":"left","law":"sweep","hero":"none","n":8,"spd":1.0,"dur":1000,"slot":"ability_task_swap","old_dur":1400},"fog":{"role":"vampire","fa":"مه (افکت مه روی چت ۱ ساعت)","g":"🌫️","c":"#cbd5e1","sp":"random","law":"drift","hero":"none","n":10,"spd":0.7,"dur":2000,"slot":"ability_fog","old_dur":2000},"glitch_wave":{"role":"hacker","fa":"موج گلیچ (موج دیجیتالی روی کارت + صدا)","g":"👾","c":"#f43f5e","sp":"random","law":"drift","hero":"jitter","n":8,"spd":1.1,"dur":1400,"slot":"ability_encrypted_msg","old_dur":1200},"gold_vein":{"role":"scout","fa":"رگ طلا (درخشش طلایی روی چت ۱ ساعت)","g":"⛏️","c":"#eab308","sp":"top","law":"fall","hero":"none","n":6,"spd":1.0,"dur":1800,"slot":"ability_treasure_hunt","old_dur":1600},"golden_border":{"role":"engineer","fa":"ارتقای قاب طلایی چت (۱ ساعت)","g":"✨","c":"#f59e0b","sp":"center","law":"expand","hero":"frame","n":8,"spd":0.9,"dur":1600,"slot":"ability_golden_border","old_dur":1600},"golden_gambit":{"role":"strategist","fa":"گامبیت طلایی (قاب طلایی روی یک عضو ۱ ساعت)","g":"🌟","c":"#d4a437","sp":"center","law":"expand","hero":"spin","n":6,"spd":1.0,"dur":1400,"slot":"ability_bet_top","old_dur":1400},"hack_color":{"role":"hacker","fa":"هک رنگ چت (تغییر رنگ چت ۱ ساعت)","g":"🎨","c":"#e879f9","sp":"left","law":"sweep","hero":"none","n":8,"spd":1.0,"dur":1020,"slot":"ability_hack_color","old_dur":1020},"horizon_scan":{"role":"scout","fa":"اسکن افق (موج اسکن آبی روی کارت)","g":"🔭","c":"#38bdf8","sp":"left","law":"sweep","hero":"none","n":6,"spd":1.0,"dur":1200,"slot":"ability_binoculars","old_dur":1600},"journey":{"role":"ranger","fa":"سفر (تم چت ۱ ساعت به یک مقصد سفر تغییر می‌کند)","g":"🧭","c":"#f59e0b","sp":"left","law":"march","hero":"spin","n":6,"spd":0.9,"dur":2000,"slot":"ability_journey","old_dur":2000},"lantern":{"role":"scout","fa":"فانوس (افکت روشن در چت ۳ ساعت)","g":"🏮","c":"#fbbf24","sp":"bottom","law":"rise","hero":"pulse","n":6,"spd":0.8,"dur":1400,"slot":"ability_lantern","old_dur":1400},"lantern_convoy":{"role":"quartermaster","fa":"کاروان فانوس (فانوس‌های شناور در چت)","g":"🏮","c":"#fb923c","sp":"bottom","law":"rise","hero":"none","n":10,"spd":0.8,"dur":2000,"slot":"ability_caravan","old_dur":2000},"laser_show":{"role":"engineer","fa":"نمایش لیزر","g":"🔴","c":"#a3e635","sp":"left","law":"sweep","hero":"beam","n":8,"spd":1.2,"dur":1600,"slot":"ability_laser_show","old_dur":1600},"loop_plane":{"role":"pilot","fa":"لوپ هوایی (هواپیما از وسط چت رد می‌شود)","g":"✈️","c":"#f8fafc","sp":"left","law":"fly","hero":"spin","n":5,"spd":1.0,"dur":1800,"slot":"ability_loop_plane","old_dur":1800},"loot":{"role":"ranger","fa":"غنیمت (کارت غنیمت + بارش سکه)","g":"💰","c":"#facc15","sp":"top","law":"rain","hero":"none","n":8,"spd":1.0,"dur":1340,"slot":"ability_loot","old_dur":1340},"luck_potion":{"role":"witch","fa":"معجون شانس (پیام بعدی یک عضو افکت جرقه می‌گیرد)","g":"🍀","c":"#22c55e","sp":"bottom","law":"rise","hero":"bubble","n":8,"spd":0.9,"dur":1400,"slot":"ability_luck_potion","old_dur":1400},"lullaby":{"role":"skald","fa":"لالایی (صدای نرم + افکت تیره‌شدن)","g":"🌙","c":"#818cf8","sp":"random","law":"drift","hero":"pulse","n":6,"spd":0.6,"dur":2200,"slot":"ability_lullaby","old_dur":2200},"marked_agent":{"role":"intel","fa":"مأمور نشان‌دار (قاب زره روی یک عضو ۱ ساعت)","g":"🎖️","c":"#94a3b8","sp":"center","law":"expand","hero":"stamp","n":5,"spd":1.0,"dur":1150,"slot":"ability_fun_dossier","old_dur":1200},"matrix_rain":{"role":"hacker","fa":"باران ماتریکس در چت","g":"01","c":"#22c55e","sp":"top","law":"rain","hero":"none","n":12,"spd":1.0,"dur":830,"slot":"ability_matrix_rain","old_dur":830},"medic_beacon":{"role":"medic","fa":"فانوس امداد (هاله آرام روی چت ۱ ساعت)","g":"🔦","c":"#2dd4bf","sp":"center","law":"expand","hero":"beam","n":6,"spd":0.8,"dur":1200,"slot":"ability_wellness_poll","old_dur":2000},"meteor_shower":{"role":"shaman","fa":"بارش شهابی (افکت شهاب در چت)","g":"☄️","c":"#fb923c","sp":"top","law":"rain","hero":"none","n":8,"spd":1.3,"dur":2200,"slot":"ability_meteor_shower","old_dur":2200},"midnight_bell":{"role":"ghost","fa":"زنگ نیمه‌شب (زنگ + موج آبی شبانه روی کارت)","g":"🌙","c":"#1e40af","sp":"center","law":"expand","hero":"swing","n":6,"spd":0.9,"dur":1800,"slot":"ability_session_midnight","old_dur":2200},"name_color_spell":{"role":"witch","fa":"طلسم رنگ نام روی یک عضو (۱ ساعت)","g":"🌈","c":"#f472b6","sp":"left","law":"sweep","hero":"none","n":8,"spd":1.0,"dur":1400,"slot":"ability_name_color_spell","old_dur":1400},"night_mode":{"role":"vampire","fa":"حالت شب","g":"🌃","c":"#4c1d95","sp":"top","law":"fall","hero":"none","n":6,"spd":0.8,"dur":1800,"slot":"ability_night_mode","old_dur":1800},"paper_plane":{"role":"engineer","fa":"پیام هواپیمای کاغذی (پرواز در چت)","g":"✈️","c":"#e2e8f0","sp":"left","law":"fly","hero":"none","n":5,"spd":1.0,"dur":1400,"slot":"ability_paper_plane","old_dur":1400},"parade":{"role":"commander","fa":"رژه (آواتارها از وسط چت رژه می‌روند)","g":"🎺","c":"#d4a437","sp":"left","law":"march","hero":"none","n":8,"spd":1.0,"dur":2200,"slot":"ability_parade","old_dur":2200},"patrol":{"role":"guardian","fa":"گشت‌زنی (نگهبان از وسط چت رد می‌شود)","g":"🛡️","c":"#a3a3a3","sp":"left","law":"march","hero":"none","n":6,"spd":0.9,"dur":1800,"slot":"ability_patrol","old_dur":1800},"phantom_mist":{"role":"ghost","fa":"مه شبح (مه بنفش روی چت ۱ ساعت)","g":"🌫️","c":"#a78bfa","sp":"bottom","law":"rise","hero":"none","n":8,"spd":0.6,"dur":1400,"slot":"ability_ghost_mode","old_dur":2000},"phase_shimmer":{"role":"ghost","fa":"سوسوی فاز (سوسوی نقره‌ای روی کارت)","g":"🌗","c":"#e5e7eb","sp":"random","law":"twinkle","hero":"none","n":8,"spd":0.9,"dur":1200,"slot":"ability_phase","old_dur":1200},"plant_flag":{"role":"guardian","fa":"کاشت پرچم (بنر پرچم)","g":"🚩","c":"#16a34a","sp":"bottom","law":"rise","hero":"wave","n":6,"spd":0.9,"dur":1400,"slot":"ability_plant_flag","old_dur":310},"pumpkin_bomb":{"role":"jack","fa":"بمب کدو (کدو می‌درخشد و جرقه‌های نارنجی دورش می‌رقصند)","g":"🎃","c":"#f97316","sp":"center","law":"expand","hero":"bounce","n":6,"spd":1.0,"dur":1600,"slot":"ability_pumpkin_bomb","old_dur":1600},"rage":{"role":"berserker","fa":"خشم (پیام‌هایم ۱۰ دقیقه افکت آتش می‌گیرند)","g":"💢","c":"#ef4444","sp":"center","law":"expand","hero":"pulse","n":8,"spd":1.1,"dur":1800,"slot":"ability_rage","old_dur":1800},"ranger_banner":{"role":"ranger","fa":"پرچم تکاور (بنر سبز جنگل + صدا)","g":"🌲","c":"#15803d","sp":"center","law":"expand","hero":"band","n":6,"spd":0.9,"dur":1600,"slot":"ui_fanfare","old_dur":1800},"rest":{"role":"ranger","fa":"استراحت (درخشش آبی آرام + صدای نرم ۱۰ دقیقه)","g":"😴","c":"#7dd3fc","sp":"random","law":"drift","hero":"pulse","n":6,"spd":0.6,"dur":2000,"slot":"ability_rest","old_dur":2000},"revive":{"role":"medic","fa":"احیا (افکت بازگشت برای عضو غایب)","g":"💫","c":"#4ade80","sp":"bottom","law":"rise","hero":"spin","n":8,"spd":0.9,"dur":1350,"slot":"ability_revive","old_dur":1350},"risen_glow":{"role":"zombie","fa":"درخشش برخاسته (هاله سبز روی چت ۱۰ دقیقه)","g":"🧟","c":"#a3e635","sp":"bottom","law":"rise","hero":"pulse","n":6,"spd":0.9,"dur":1800,"slot":"ability_comeback","old_dur":1600},"rune_circle":{"role":"shaman","fa":"حلقه رون‌ها (هاله بنفش رون روی چت ۱ ساعت)","g":"🧿","c":"#8b5cf6","sp":"ring","law":"orbit","hero":"spin","n":8,"spd":0.8,"dur":2000,"slot":"ability_prophecy","old_dur":2000},"sacred_fire":{"role":"shaman","fa":"آتش مقدس (افکت آتش در چت ۳ ساعت)","g":"🔥","c":"#f97316","sp":"bottom","law":"rise","hero":"flicker","n":10,"spd":1.1,"dur":2000,"slot":"ability_sacred_fire","old_dur":2000},"safehouse_lights":{"role":"zombie","fa":"چراغ‌های پناهگاه (درخشش گرم روی چت ۱ ساعت)","g":"💡","c":"#fbbf24","sp":"random","law":"twinkle","hero":"none","n":10,"spd":0.9,"dur":1400,"slot":"ui_chime","old_dur":2000},"scare":{"role":"jack","fa":"ترساندن (افکت ترسناک + صدا)","g":"😱","c":"#a3e635","sp":"center","law":"expand","hero":"flash","n":6,"spd":1.1,"dur":1200,"slot":"ability_scare","old_dur":1200},"scope_glint":{"role":"sniper","fa":"برق دوربین (درخشش سبز روی چت ۱ ساعت)","g":"🔆","c":"#34d399","sp":"left","law":"sweep","hero":"flash","n":6,"spd":1.0,"dur":1150,"slot":"ability_night_vision","old_dur":1200},"sealed_wax":{"role":"intel","fa":"مهر موم (قاب سرخ روی یک عضو ۱ ساعت)","g":"🕯️","c":"#b91c1c","sp":"center","law":"expand","hero":"stamp","n":5,"spd":0.9,"dur":1200,"slot":"ability_private_letter","old_dur":1000},"shadow":{"role":"ghost","fa":"سایه (آواتارت ۱ ساعت سایه می‌شود)","g":"🌑","c":"#4b5563","sp":"left","law":"march","hero":"none","n":6,"spd":0.8,"dur":1800,"slot":"ability_shadow","old_dur":1800},"shield":{"role":"guardian","fa":"سپر (افکت سپر روی چت)","g":"🛡️","c":"#60a5fa","sp":"center","law":"expand","hero":"frame","n":6,"spd":0.9,"dur":1200,"slot":"ability_shield","old_dur":480},"signal_burst":{"role":"hacker","fa":"موج سیگنال (بارش کد + موج سایبری)","g":"📡","c":"#38bdf8","sp":"center","law":"expand","hero":"pulse","n":8,"spd":1.0,"dur":1400,"slot":"ability_subchannel","old_dur":1400},"smoke_screen":{"role":"intel","fa":"پرده دود (مه خاکستری روی چت ۱ ساعت)","g":"🌫️","c":"#9ca3af","sp":"random","law":"drift","hero":"none","n":8,"spd":0.7,"dur":1600,"slot":"ability_secret_mission","old_dur":2000},"song":{"role":"skald","fa":"آهنگ (نت‌های موسیقی در چت شناور می‌شوند)","g":"🎶","c":"#fda4af","sp":"bottom","law":"rise","hero":"none","n":6,"spd":0.8,"dur":1830,"slot":"ability_song","old_dur":1830},"spartan_charge":{"role":"berserker","fa":"یورش اسپارتی (موج شوک + لرزش کارت)","g":"⚔️","c":"#b45309","sp":"left","law":"march","hero":"shake","n":8,"spd":1.2,"dur":1140,"slot":"ability_focus_duel","old_dur":1400},"spirit_drum":{"role":"shaman","fa":"طبل روح (ضرب‌آهنگ + موج نور روی کارت)","g":"🥁","c":"#06b6d4","sp":"center","law":"expand","hero":"pulse","n":6,"spd":1.0,"dur":2000,"slot":"ability_dream_riddle","old_dur":1400},"star_charm":{"role":"witch","fa":"طلسم ستاره (قاب ستاره روی یک عضو ۱ ساعت)","g":"⭐","c":"#fde047","sp":"random","law":"twinkle","hero":"none","n":10,"spd":0.9,"dur":1600,"slot":"ability_fortune","old_dur":1400},"static_hum":{"role":"intel","fa":"زمزمه استاتیک (موج استاتیک روی کارت + صدا)","g":"🔊","c":"#d1d5db","sp":"random","law":"twinkle","hero":"jitter","n":8,"spd":1.0,"dur":1400,"slot":"ability_activity_listen","old_dur":1400},"storm":{"role":"berserker","fa":"طوفان تصویری (برق و باران + صدا)","g":"⚡","c":"#7dd3fc","sp":"top","law":"rain","hero":"flash","n":10,"spd":1.3,"dur":2200,"slot":"ability_storm","old_dur":2200},"summon_all":{"role":"commander","fa":"احضار همه (صدای شیپور)","g":"📯","c":"#f59e0b","sp":"center","law":"expand","hero":"pulse","n":8,"spd":1.0,"dur":1600,"slot":"ability_summon_all","old_dur":1600},"supply_drop":{"role":"quartermaster","fa":"محموله تدارکات (بارش جعبه و سکه روی کارت)","g":"📦","c":"#65a30d","sp":"top","law":"fall","hero":"none","n":6,"spd":1.0,"dur":1600,"slot":"ui_thunder","old_dur":1800},"surprise":{"role":"strategist","fa":"غافلگیری (یک افکت بامزه تصادفی روی یک عضو تصادفی)","g":"🎁","c":"#f472b6","sp":"center","law":"expand","hero":"open","n":6,"spd":1.0,"dur":1400,"slot":"ability_surprise","old_dur":380},"swift_wind":{"role":"ranger","fa":"باد تند (موج باد روی کارت + صدا)","g":"💨","c":"#bae6fd","sp":"left","law":"march","hero":"none","n":10,"spd":1.3,"dur":1200,"slot":"ability_race_game","old_dur":1400},"sys_alert":{"role":"hacker","fa":"بنر هشدار سیستم","g":"⚠️","c":"#ef4444","sp":"center","law":"expand","hero":"flash","n":6,"spd":1.0,"dur":1000,"slot":"ability_sys_alert","old_dur":1000},"tactical_grid":{"role":"strategist","fa":"شبکه تاکتیکی (شبکه نورانی روی چت ۱ ساعت)","g":"📐","c":"#22d3ee","sp":"center","law":"expand","hero":"grid","n":6,"spd":0.9,"dur":1000,"slot":"ui_magic","old_dur":1800},"theme_halloween":{"role":"jack","fa":"تم هالووین گروه (۳ ساعت)","g":"🎃","c":"#fb923c","sp":"random","law":"drift","hero":"pulse","n":8,"spd":0.9,"dur":2000,"slot":"ability_theme_halloween","old_dur":2000},"toxic_spores":{"role":"zombie","fa":"هاگ‌های سمی (ابر سبز کوچک روی کارت)","g":"☣️","c":"#84cc16","sp":"random","law":"drift","hero":"none","n":10,"spd":0.8,"dur":1800,"slot":"ability_infection","old_dur":1400},"trail_blaze":{"role":"scout","fa":"رد آتش (شعله‌های کوچک روی کارت)","g":"🔥","c":"#fb923c","sp":"left","law":"march","hero":"flicker","n":8,"spd":1.1,"dur":1400,"slot":"ability_streak_post","old_dur":1400},"trap":{"role":"strategist","fa":"تله (پیام‌رسان بعدی یک افکت بامزه می‌گیرد)","g":"🪤","c":"#a16207","sp":"center","law":"expand","hero":"snap","n":6,"spd":1.1,"dur":1200,"slot":"ability_trap","old_dur":260},"turbo":{"role":"pilot","fa":"توربو (افکت سرعت)","g":"⚡","c":"#06b6d4","sp":"left","law":"march","hero":"none","n":10,"spd":1.4,"dur":1600,"slot":"ability_turbo","old_dur":1600},"wandering_spirit":{"role":"witch","fa":"روح سرگردان (افکت روح که در چت شناور می‌شود)","g":"🔮","c":"#93c5fd","sp":"random","law":"drift","hero":"none","n":6,"spd":0.7,"dur":2000,"slot":"ability_wandering_spirit","old_dur":2000},"war_ballad":{"role":"skald","fa":"ترانه حماسی (نت‌های موسیقی شناور + صدا)","g":"🎶","c":"#c2410c","sp":"bottom","law":"rise","hero":"wave","n":8,"spd":0.9,"dur":2000,"slot":"ability_poem","old_dur":2000},"war_cry":{"role":"berserker","fa":"فریاد جنگ (بنر + صدا)","g":"📣","c":"#dc2626","sp":"center","law":"expand","hero":"shake","n":8,"spd":1.1,"dur":1790,"slot":"ability_war_cry","old_dur":1790},"war_order":{"role":"commander","fa":"دستور جنگ (بنر + صدا)","g":"⚔️","c":"#b91c1c","sp":"center","law":"expand","hero":"band","n":6,"spd":1.0,"dur":1600,"slot":"ability_war_order","old_dur":1600},"wraith_glide":{"role":"ghost","fa":"پرواز شبح (شبح از وسط چت رد می‌شود)","g":"👻","c":"#e2e8f0","sp":"left","law":"fly","hero":"none","n":5,"spd":1.0,"dur":1400,"slot":"ability_msg_anonymous","old_dur":1600},"broom_flight":{"role":"witch","fa":"پرواز جارو","g":"🧹","c":"#8b5cf6","sp":"left","law":"fly","hero":"none","n":5,"spd":1.0,"dur":1500,"slot":null,"old_dur":null}};
+var RETIRED={"prophecy":{"to":"rune_circle","fa":"حلقه رون‌ها (هاله بنفش رون روی چت ۱ ساعت)"},"dream_riddle":{"to":"spirit_drum","fa":"طبل روح (ضرب‌آهنگ + موج نور روی کارت)"},"focus_duel":{"to":"spartan_charge","fa":"یورش اسپارتی (موج شوک + لرزش کارت)"},"poem":{"to":"war_ballad","fa":"ترانه حماسی (نت‌های موسیقی شناور + صدا)"},"night_vision":{"to":"scope_glint","fa":"برق دوربین (درخشش سبز روی چت ۱ ساعت)"},"one_shot":{"to":"deadeye_flash","fa":"فلاش دید دقیق (فلاش + لرزش کارت)"},"encrypted_msg":{"to":"glitch_wave","fa":"موج گلیچ (موج دیجیتالی روی کارت + صدا)"},"subchannel":{"to":"signal_burst","fa":"موج سیگنال (بارش کد + موج سایبری)"},"wellness_poll":{"to":"medic_beacon","fa":"فانوس امداد (هاله آرام روی چت ۱ ساعت)"},"eagle_eye":{"to":"falcon_swoop","fa":"پرواز شاهین (شاهین از وسط چت رد می‌شود)"},"treasure_hunt":{"to":"gold_vein","fa":"رگ طلا (درخشش طلایی روی چت ۱ ساعت)"},"streak_post":{"to":"trail_blaze","fa":"رد آتش (شعله‌های کوچک روی کارت)"},"binoculars":{"to":"horizon_scan","fa":"اسکن افق (موج اسکن آبی روی کارت)"},"robot_msg":{"to":"arc_welder","fa":"جوش قوس (جرقه‌های آبی + صدا)"},"fun_dossier":{"to":"marked_agent","fa":"مأمور نشان‌دار (قاب زره روی یک عضو ۱ ساعت)"},"secret_mission":{"to":"smoke_screen","fa":"پرده دود (مه خاکستری روی چت ۱ ساعت)"},"activity_listen":{"to":"static_hum","fa":"زمزمه استاتیک (موج استاتیک روی کارت + صدا)"},"private_letter":{"to":"sealed_wax","fa":"مهر موم (قاب سرخ روی یک عضو ۱ ساعت)"},"secret_code":{"to":"cipher_spark","fa":"جرقه رمز (جرقه‌های فیروزه‌ای روی کارت)"},"fortress":{"to":"bastion_glow","fa":"درخشش دژ (هاله آبی فولادی روی چت ۱ ساعت)"},"adventure_card":{"to":"ranger_banner","fa":"پرچم تکاور (بنر سبز جنگل + صدا)"},"race_game":{"to":"swift_wind","fa":"باد تند (موج باد روی کارت + صدا)"},"takeoff":{"to":"afterburner","fa":"پس‌سوز (شعله آبی + موج سرعت)"},"chess_move":{"to":"tactical_grid","fa":"شبکه تاکتیکی (شبکه نورانی روی چت ۱ ساعت)"},"bet_top":{"to":"golden_gambit","fa":"گامبیت طلایی (قاب طلایی روی یک عضو ۱ ساعت)"},"task_swap":{"to":"flanking_glow","fa":"درخشش جناحی (قاب یخی روی یک عضو ۱ ساعت)"},"lottery":{"to":"supply_drop","fa":"محموله تدارکات (بارش جعبه و سکه روی کارت)"},"caravan":{"to":"lantern_convoy","fa":"کاروان فانوس (فانوس‌های شناور در چت)"},"ghost_mode":{"to":"phantom_mist","fa":"مه شبح (مه بنفش روی چت ۱ ساعت)"},"msg_anonymous":{"to":"wraith_glide","fa":"پرواز شبح (شبح از وسط چت رد می‌شود)"},"session_midnight":{"to":"midnight_bell","fa":"زنگ نیمه‌شب (زنگ + موج آبی شبانه روی کارت)"},"phase":{"to":"phase_shimmer","fa":"سوسوی فاز (سوسوی نقره‌ای روی کارت)"},"magic_room":{"to":"arcane_circle","fa":"دایره جادویی (حلقه نورانی بنفش روی چت ۱ ساعت)"},"fortune":{"to":"star_charm","fa":"طلسم ستاره (قاب ستاره روی یک عضو ۱ ساعت)"},"night_hunt":{"to":"crimson_moon","fa":"ماه زرشکی (هاله زرشکی روی چت ۱ ساعت)"},"immortality":{"to":"eternal_dusk","fa":"غروب ابدی (درخشش نارنجی-بنفش روی کارت)"},"infection":{"to":"toxic_spores","fa":"هاگ‌های سمی (ابر سبز کوچک روی کارت)"},"comeback":{"to":"risen_glow","fa":"درخشش برخاسته (هاله سبز روی چت ۱۰ دقیقه)"},"survival_challenge":{"to":"barricade_glow","fa":"درخشش سنگر (هاله کهربایی روی چت ۱ ساعت)"},"shelter":{"to":"safehouse_lights","fa":"چراغ‌های پناهگاه (درخشش گرم روی چت ۱ ساعت)"},"trick_or_treat":{"to":"candy_shower","fa":"بارش آب‌نبات (بارش آب‌نبات روی کارت + صدا)"},"broom_flight":{"to":null,"fa":"پرواز جارو"}};
+var SCENE={"adrenaline":{"kind":"ecg","scope":"member"},"afterburner":{"kind":"flame","scope":"chat"},"ambush":{"kind":"veil","scope":"card"},"anthem":{"kind":"banner","scope":"chat"},"arc_welder":{"kind":"sparks","scope":"card"},"arcane_circle":{"kind":"ring","scope":"chat"},"armor_frame":{"kind":"frame","scope":"member"},"avatar_swap":{"kind":"swap","scope":"member"},"barricade_glow":{"kind":"halo","scope":"chat"},"bastion_glow":{"kind":"halo","scope":"chat"},"bat_effect":{"kind":"flybat","scope":"chat"},"big_heart":{"kind":"heartbeat","scope":"member"},"bite":{"kind":"framezombie","scope":"member"},"blessing":{"kind":"glowrays","scope":"member"},"bullseye":{"kind":"stamp","scope":"card"},"candy":{"kind":"framecandy","scope":"member"},"candy_shower":{"kind":"raincandy","scope":"card"},"celebrate_event":{"kind":"balloons","scope":"chat"},"chest":{"kind":"chest","scope":"card"},"cipher_spark":{"kind":"sparks","scope":"card"},"coin_rain":{"kind":"raincoins","scope":"chat"},"control_tower":{"kind":"tower","scope":"card"},"crimson_moon":{"kind":"moon","scope":"chat"},"crosshair":{"kind":"framecross","scope":"member"},"crown":{"kind":"crown","scope":"member"},"dance":{"kind":"dance","scope":"chat"},"deadeye_flash":{"kind":"flash","scope":"card"},"earthquake":{"kind":"shake","scope":"chat"},"emergency_landing":{"kind":"landing","scope":"chat"},"emergency_ping":{"kind":"ping","scope":"chat"},"eternal_dusk":{"kind":"dusk","scope":"card"},"falcon_swoop":{"kind":"flybird","scope":"chat"},"fireworks":{"kind":"fireworks","scope":"chat"},"flanking_glow":{"kind":"frameice","scope":"member"},"fog":{"kind":"fog","scope":"chat"},"glitch_wave":{"kind":"glitch","scope":"card"},"gold_vein":{"kind":"goldrain","scope":"chat"},"golden_border":{"kind":"frame","scope":"chat"},"golden_gambit":{"kind":"framegold","scope":"member"},"hack_color":{"kind":"colorwash","scope":"chat"},"horizon_scan":{"kind":"scan","scope":"card"},"journey":{"kind":"landscape","scope":"chat"},"lantern":{"kind":"lantern","scope":"chat"},"lantern_convoy":{"kind":"lanterns","scope":"chat"},"laser_show":{"kind":"beam","scope":"chat"},"loop_plane":{"kind":"flyplane","scope":"chat"},"loot":{"kind":"chestcoins","scope":"card"},"luck_potion":{"kind":"bubbles","scope":"member"},"lullaby":{"kind":"dimmoon","scope":"chat"},"marked_agent":{"kind":"framemedal","scope":"member"},"matrix_rain":{"kind":"raincode","scope":"chat"},"medic_beacon":{"kind":"halo","scope":"chat"},"meteor_shower":{"kind":"meteors","scope":"chat"},"midnight_bell":{"kind":"bell","scope":"card"},"name_color_spell":{"kind":"nameglow","scope":"member"},"night_mode":{"kind":"dim","scope":"chat"},"paper_plane":{"kind":"flyplane","scope":"chat"},"parade":{"kind":"march","scope":"chat"},"patrol":{"kind":"marchshield","scope":"chat"},"phantom_mist":{"kind":"fog","scope":"chat"},"phase_shimmer":{"kind":"shimmer","scope":"card"},"plant_flag":{"kind":"flag","scope":"card"},"pumpkin_bomb":{"kind":"pumpkin","scope":"card"},"rage":{"kind":"flame","scope":"chat"},"ranger_banner":{"kind":"banner","scope":"chat"},"rest":{"kind":"restwash","scope":"chat"},"revive":{"kind":"riseglow","scope":"member"},"risen_glow":{"kind":"halo","scope":"chat"},"rune_circle":{"kind":"ring","scope":"chat"},"sacred_fire":{"kind":"flame","scope":"chat"},"safehouse_lights":{"kind":"warmwash","scope":"chat"},"scare":{"kind":"scareface","scope":"card"},"scope_glint":{"kind":"flashcross","scope":"chat"},"sealed_wax":{"kind":"framewax","scope":"member"},"shadow":{"kind":"shadowveil","scope":"member"},"shield":{"kind":"shield","scope":"chat"},"signal_burst":{"kind":"wavecode","scope":"chat"},"smoke_screen":{"kind":"fog","scope":"chat"},"song":{"kind":"notes","scope":"chat"},"spartan_charge":{"kind":"shockwave","scope":"card"},"spirit_drum":{"kind":"drum","scope":"card"},"star_charm":{"kind":"framestar","scope":"member"},"static_hum":{"kind":"static","scope":"card"},"storm":{"kind":"storm","scope":"chat"},"summon_all":{"kind":"horn","scope":"chat"},"supply_drop":{"kind":"rainboxes","scope":"card"},"surprise":{"kind":"gift","scope":"member"},"swift_wind":{"kind":"wind","scope":"card"},"sys_alert":{"kind":"banneralert","scope":"chat"},"tactical_grid":{"kind":"grid","scope":"chat"},"theme_halloween":{"kind":"halloween","scope":"chat"},"toxic_spores":{"kind":"cloud","scope":"card"},"trail_blaze":{"kind":"flame","scope":"card"},"trap":{"kind":"trap","scope":"card"},"turbo":{"kind":"speedlines","scope":"chat"},"wandering_spirit":{"kind":"wisp","scope":"chat"},"war_ballad":{"kind":"notes","scope":"chat"},"war_cry":{"kind":"bannerhorn","scope":"chat"},"war_order":{"kind":"banner","scope":"chat"},"wraith_glide":{"kind":"flyghost","scope":"chat"},"broom_flight":{"kind":"flybroom","scope":"chat"}};
+var _diag={plays:0,deduped:0,replays:0};
+var _inflight={}, _lastPerm={};
 function hash(s){ var h=0; for(var i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return h>>>0; }
 function seedRnd(seed){ var x=(seed||1)&0x7fffffff; return function(){ x=(x*1103515245+12345)&0x7fffffff; return x/0x7fffffff; }; }
 function reduced(){ try{ return document.hidden||(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches); }catch(e){ return false; } }
 function specOf(perm){ return SPEC[perm]||null; }
+function sceneOf(perm){ var cp=cardPerm(perm); if(!cp) return null; var sc=SCENE[cp]; if(!sc) return null; return {kind:sc.kind,scope:sc.scope,color:SPEC[cp].c,dur:SPEC[cp].dur,glyph:SPEC[cp].g}; }
 function cardPerm(perm){
   var r=RETIRED[perm];
   if(r) return r.to||"broom_flight";
@@ -60489,100 +60690,535 @@ function retiredTitle(perm){
   var r=RETIRED[perm]; if(!r) return null;
   return r.fa+" (قدیمی)";
 }
-function drawHero(ctx,W,H,t,sp){
-  var cx=W/2, cy=H*0.42, g=sp.g==="01"?"0":sp.g, size=110;
-  ctx.save(); ctx.textAlign="center"; ctx.textBaseline="middle";
-  ctx.font=size+"px sans-serif"; ctx.fillStyle=sp.c;
-  var a=1;
-  switch(sp.hero){
-    case "none": break;
-    case "stamp": { var s=2.2-1.2*Math.min(t*3,1); ctx.translate(cx,cy); ctx.scale(s,s); ctx.globalAlpha=Math.min(t*4,1); ctx.fillText(g,0,0); break; }
-    case "pulse": { var s=1+0.22*Math.sin(t*Math.PI*4); ctx.translate(cx,cy); ctx.scale(s,s); ctx.fillText(g,0,0); break; }
-    case "spin": { ctx.translate(cx,cy); ctx.rotate(t*Math.PI*2); ctx.fillText(g,0,0); break; }
-    case "shake": { ctx.translate(cx+Math.sin(t*40)*8,cy); ctx.fillText(g,0,0); break; }
-    case "flash": { ctx.globalAlpha=(t<0.12)?1:Math.max(0,1-(t-0.12)*1.4); ctx.translate(cx,cy); ctx.fillText(g,0,0); break; }
-    case "flicker": { var f=1+0.18*Math.sin(t*55)+0.1*Math.sin(t*23); ctx.translate(cx,cy); ctx.scale(1,f); ctx.globalAlpha=0.75+0.25*Math.sin(t*31); ctx.fillText(g,0,0); break; }
-    case "frame": { ctx.strokeStyle=sp.c; ctx.lineWidth=5; var p=Math.min(t*1.4,1); var w=210, h=150; ctx.beginPath(); ctx.setLineDash([2*(w+h)]); ctx.lineDashOffset=2*(w+h)*(1-p); ctx.strokeRect(cx-w/2,cy-h/2,w,h); ctx.setLineDash([]); ctx.translate(cx,cy); ctx.fillText(g,0,0); break; }
-    case "band": { ctx.translate(cx,cy); ctx.scale(Math.min(t*2.2,1),1); ctx.fillRect(-W*0.32,-26,W*0.64,52); ctx.fillStyle="#ffffff"; ctx.font="34px sans-serif"; ctx.fillText(g,0,2); break; }
-    case "wave": { ctx.translate(cx,cy); ctx.rotate(Math.sin(t*Math.PI*2)*0.12); ctx.fillText(g,0,0); break; }
-    case "swing": { ctx.translate(cx,cy-40); ctx.rotate(Math.sin(t*Math.PI*2)*0.35); ctx.fillText(g,0,40); break; }
-    case "beam": { ctx.strokeStyle=sp.c; ctx.lineWidth=10; ctx.globalAlpha=0.85; var ang=t*Math.PI*2; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(ang)*W*0.45, cy+Math.sin(ang)*H*0.35); ctx.stroke(); ctx.globalAlpha=1; ctx.translate(cx,cy); ctx.fillText(g,0,0); break; }
-    case "ecg": { ctx.strokeStyle=sp.c; ctx.lineWidth=5; ctx.beginPath(); var n=40, px, py; for(var i=0;i<=n;i++){ var tt=i/n; px=cx-150+tt*300; py=cy+((tt>0.42&&tt<0.5)?-46:((tt>0.5&&tt<0.58)?30:0))*Math.min(t*2,1); if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); } ctx.stroke(); ctx.translate(cx,cy-70); ctx.fillText(g,0,0); break; }
-    case "open": { var o=Math.min(t*2,1)*70; ctx.save(); ctx.translate(cx-o,cy); ctx.globalAlpha=1-o/140; ctx.fillText("🎁",0,0); ctx.restore(); ctx.translate(cx,cy); ctx.scale(0.6+0.4*o/70,0.6+0.4*o/70); ctx.fillText(g,0,0); break; }
-    case "snap": { var s2=(t<0.25)?1+0.5*t*4:(t<0.5)?1.5-0.6*(t-0.25)*4:0.9+0.1*Math.sin(t*10); ctx.translate(cx,cy); ctx.scale(s2,s2); ctx.fillText(g,0,0); break; }
-    case "bounce": { var sq=(t<0.4)?0.6+0.55*Math.min(t*2.5,1):1.15-0.15*Math.min((t-0.4)*2.5,1); ctx.translate(cx,cy); ctx.scale(2-sq,sq); ctx.fillText(g,0,0); break; }
-    case "grid": { ctx.strokeStyle=sp.c; ctx.lineWidth=2; ctx.globalAlpha=0.8; var p2=Math.min(t*1.5,1); for(var gx=0;gx<=4;gx++){ var x=cx-140+gx*70; ctx.beginPath(); ctx.moveTo(x,cy-90); ctx.lineTo(x,cy-90+180*p2); ctx.stroke(); } for(var gy=0;gy<=3;gy++){ var y=cy-90+gy*60; ctx.beginPath(); ctx.moveTo(cx-140,y); ctx.lineTo(cx-140+280*p2,y); ctx.stroke(); } ctx.globalAlpha=1; ctx.translate(cx,cy); ctx.fillText(g,0,0); break; }
-    case "jitter": { ctx.translate(cx+((hash(sp.g+String(Math.floor(t*12)))%17)-8), cy+((hash(sp.g+String(Math.floor(t*12)+3))%13)-6)); ctx.fillText(g,0,0); break; }
-    case "sparkle": { ctx.translate(cx,cy); ctx.fillText(g,0,0); ctx.font="30px sans-serif"; for(var si=0;si<5;si++){ var sa=si*1.256+t*2; ctx.globalAlpha=0.4+0.6*Math.abs(Math.sin(t*6+si)); ctx.fillText("✦",cx+Math.cos(sa)*120,cy-60+Math.sin(sa)*60); } break; }
-    case "bubble": { ctx.translate(cx,cy); ctx.fillText(g,0,0); ctx.font="22px sans-serif"; for(var bi=0;bi<4;bi++){ var by=cy+50-t*160-bi*22; ctx.globalAlpha=0.9-t*0.6; ctx.fillText("○",cx-40+bi*26,by); } break; }
-    case "beat": { var b=(t%0.5)<0.12?1.25:1; ctx.translate(cx,cy); ctx.scale(b,b); ctx.fillText(g,0,0); break; }
-    case "twinkle": { ctx.globalAlpha=0.35+0.65*Math.abs(Math.sin(t*Math.PI*3)); ctx.translate(cx,cy); ctx.fillText(g,0,0); break; }
-    default: ctx.translate(cx,cy); ctx.fillText(g,0,0);
-  }
+/* ---------- canvas shape library (drawn, never a big emoji) ---------- */
+function el(ctx,x,y,rx,ry,col,a){ ctx.save(); ctx.globalAlpha=(a==null?1:a); ctx.fillStyle=col; ctx.beginPath(); ctx.ellipse(x,y,Math.max(1,rx),Math.max(1,ry),0,0,Math.PI*2); ctx.fill(); ctx.restore(); }
+function ci(ctx,x,y,r,col,a){ el(ctx,x,y,r,r,col,a); }
+function ring(ctx,x,y,r,lw,col,a){ ctx.save(); ctx.globalAlpha=(a==null?1:a); ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.beginPath(); ctx.arc(x,y,Math.max(1,r),0,Math.PI*2); ctx.stroke(); ctx.restore(); }
+function st4(ctx,x,y,r,col,a){ ctx.save(); ctx.globalAlpha=(a==null?1:a); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x,y-r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.quadraticCurveTo(x,y,x,y+r); ctx.quadraticCurveTo(x,y,x-r,y); ctx.quadraticCurveTo(x,y,x,y-r); ctx.fill(); ctx.restore(); }
+function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function flame(ctx,x,y,s,col,a){ ctx.save(); ctx.globalAlpha=(a==null?1:a); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x,y-s); ctx.bezierCurveTo(x+s*0.9,y-s*0.2,x+s*0.7,y+s*0.6,x,y+s); ctx.bezierCurveTo(x-s*0.7,y+s*0.6,x-s*0.9,y-s*0.2,x,y-s); ctx.fill(); ctx.restore(); }
+function heart(ctx,x,y,s,col,a){ ctx.save(); ctx.globalAlpha=(a==null?1:a); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x,y+s*0.9); ctx.bezierCurveTo(x-s*1.2,y-s*0.1,x-s*0.7,y-s,y,x-s*0.35); ctx.bezierCurveTo(x+s*0.7,y-s,x+s*1.2,y-s*0.1,x,y+s*0.9); ctx.fill(); ctx.restore(); }
+function bolt(ctx,x,y,s,col,a){ ctx.save(); ctx.globalAlpha=(a==null?1:a); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x+s*0.15,y-s); ctx.lineTo(x-s*0.45,y+s*0.15); ctx.lineTo(x-s*0.05,y+s*0.15); ctx.lineTo(x-s*0.15,y+s); ctx.lineTo(x+s*0.45,y-s*0.15); ctx.lineTo(x+s*0.05,y-s*0.15); ctx.closePath(); ctx.fill(); ctx.restore(); }
+function pumpkin(ctx,x,y,s,col){ ctx.save(); ctx.fillStyle=col; el(ctx,x,y,s,s*0.82,col,1); ctx.strokeStyle="rgba(0,0,0,.25)"; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(x,y,s*0.45,s*0.82,0,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.ellipse(x,y,s*0.8,s*0.82,0,0,Math.PI*2); ctx.stroke(); ctx.strokeStyle="#3f6212"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(x,y-s*0.8); ctx.quadraticCurveTo(x+4,y-s*1.15,x+10,y-s*1.1); ctx.stroke(); ctx.fillStyle="#1c1917"; ci(ctx,x-s*0.32,y-s*0.1,3,1,1); ci(ctx,x+s*0.32,y-s*0.1,3,1,1); ctx.restore(); }
+function balloon(ctx,x,y,s,col){ ctx.save(); el(ctx,x,y,s,s*1.15,col,0.95); ctx.fillStyle="rgba(255,255,255,.35)"; el(ctx,x-s*0.3,y-s*0.35,s*0.25,s*0.4,"#fff",0.5); ctx.strokeStyle="rgba(0,0,0,.35)"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(x,y+s*1.15); ctx.quadraticCurveTo(x+6,y+s*1.5,x-2,y+s*1.8); ctx.stroke(); ctx.restore(); }
+function lanternShape(ctx,x,y,s,col){ ctx.save(); ctx.fillStyle=col; rr(ctx,x-s*0.55,y-s*0.7,s*1.1,s*1.4,6); ctx.fill(); ctx.fillStyle="rgba(255,255,255,.75)"; rr(ctx,x-s*0.3,y-s*0.4,s*0.6,s*0.8,4); ctx.fill(); ctx.strokeStyle="#78350f"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x-s*0.55,y-s*0.7); ctx.lineTo(x+s*0.55,y-s*0.7); ctx.moveTo(x-s*0.55,y+s*0.7); ctx.lineTo(x+s*0.55,y+s*0.7); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-s*0.25,y-s*0.7); ctx.quadraticCurveTo(x,y-s*1.15,x+s*0.25,y-s*0.7); ctx.stroke(); ctx.restore(); }
+function moonShape(ctx,x,y,r,col){ ctx.save(); ctx.fillStyle=col; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.globalCompositeOperation="destination-out"; ctx.beginPath(); ctx.arc(x+r*0.45,y-r*0.2,r*0.85,0,Math.PI*2); ctx.fill(); ctx.restore(); }
+function shieldShape(ctx,x,y,s,col){ ctx.save(); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x,y-s); ctx.lineTo(x+s*0.8,y-s*0.55); ctx.lineTo(x+s*0.8,y+s*0.1); ctx.quadraticCurveTo(x+s*0.8,y+s*0.8,x,y+s); ctx.quadraticCurveTo(x-s*0.8,y+s*0.8,x-s*0.8,y+s*0.1); ctx.lineTo(x-s*0.8,y-s*0.55); ctx.closePath(); ctx.fill(); ctx.strokeStyle="rgba(255,255,255,.6)"; ctx.lineWidth=2; ctx.stroke(); ctx.restore(); }
+function crownShape(ctx,x,y,s,col){ ctx.save(); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x-s,y+s*0.5); ctx.lineTo(x-s,y-s*0.4); ctx.lineTo(x-s*0.5,y); ctx.lineTo(x,y-s*0.8); ctx.lineTo(x+s*0.5,y); ctx.lineTo(x+s,y-s*0.4); ctx.lineTo(x+s,y+s*0.5); ctx.closePath(); ctx.fill(); ctx.fillStyle="rgba(255,255,255,.5)"; ctx.fillRect(x-s,y+s*0.5,s*2,3); ctx.restore(); }
+function bellShape(ctx,x,y,s,col){ ctx.save(); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x-s*0.7,y+s*0.55); ctx.quadraticCurveTo(x-s*0.75,y-s*0.5,x,y-s*0.7); ctx.quadraticCurveTo(x+s*0.75,y-s*0.5,x+s*0.7,y+s*0.55); ctx.closePath(); ctx.fill(); ci(ctx,x,y+s*0.75,s*0.22,"#78350f",1); ctx.fillStyle=col; ctx.fillRect(x-s*0.15,y-s*0.95,s*0.3,s*0.25); ctx.restore(); }
+function hornShape(ctx,x,y,s,col){ ctx.save(); ctx.translate(x,y); ctx.rotate(-0.5); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(-s*1.1,0); ctx.lineTo(s*0.7,-s*0.45); ctx.lineTo(s*0.7,s*0.45); ctx.closePath(); ctx.fill(); ctx.fillStyle="#fde68a"; el(ctx,s*0.85,0,s*0.28,s*0.55,"#fde68a",1); ctx.restore(); }
+function giftShape(ctx,x,y,s,col){ ctx.save(); ctx.fillStyle=col; ctx.fillRect(x-s*0.7,y-s*0.3,s*1.4,s*0.9); ctx.fillStyle="#fde047"; ctx.fillRect(x-s*0.12,y-s*0.3,s*0.24,s*0.9); ctx.fillStyle=col; ctx.fillRect(x-s*0.85,y-s*0.55,s*1.7,s*0.3); ctx.strokeStyle="#fde047"; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(x-s*0.25,y-s*0.6,s*0.22,Math.PI,0); ctx.stroke(); ctx.beginPath(); ctx.arc(x+s*0.25,y-s*0.6,s*0.22,Math.PI,0); ctx.stroke(); ctx.restore(); }
+function chestShape(ctx,x,y,s,open,col){ ctx.save(); ctx.fillStyle=col; rr(ctx,x-s,y-s*0.2,s*2,s*0.9,4); ctx.fill(); ctx.fillStyle="#92400e"; ctx.save(); ctx.translate(x,y-s*0.2); ctx.rotate(open?-0.9:0); rr(ctx,-s,-s*0.55,s*2,s*0.55,6); ctx.fill(); ctx.restore(); ctx.fillStyle="#fde047"; ctx.fillRect(x-3,y-s*0.1,6,10); ctx.restore(); }
+function flagShape(ctx,x,y,s,col,wave){ ctx.save(); ctx.strokeStyle="#78716c"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(x,y+s); ctx.lineTo(x,y-s); ctx.stroke(); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x,y-s); ctx.quadraticCurveTo(x+s*0.7,y-s+wave*6,x+s*1.3,y-s*0.55); ctx.lineTo(x+s*1.3,y-s*0.1); ctx.quadraticCurveTo(x+s*0.6,y-s*0.15,x,y-s*0.1); ctx.closePath(); ctx.fill(); ctx.restore(); }
+function towerShape(ctx,x,y,s,col){ ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(x-s*0.6,y+s); ctx.lineTo(x,y-s); ctx.lineTo(x+s*0.6,y+s); ctx.moveTo(x-s*0.35,y+s*0.3); ctx.lineTo(x+s*0.35,y+s*0.3); ctx.moveTo(x-s*0.2,y-s*0.3); ctx.lineTo(x+s*0.2,y-s*0.3); ctx.stroke(); ci(ctx,x,y-s*1.15,s*0.22,col,1); ctx.restore(); }
+function avatarDot(ctx,x,y,r,col){ ctx.save(); ci(ctx,x,y,r,col,1); ctx.fillStyle="rgba(0,0,0,.55)"; ci(ctx,x-r*0.35,y-r*0.2,r*0.11,1,1); ci(ctx,x+r*0.35,y-r*0.2,r*0.11,1,1); ctx.strokeStyle="rgba(0,0,0,.55)"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,y+r*0.15,r*0.4,0.15*Math.PI,0.85*Math.PI); ctx.stroke(); ctx.restore(); }
+function ghostShape(ctx,x,y,s,col){ ctx.save(); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x-s,y+s); ctx.lineTo(x-s,y-s*0.3); ctx.quadraticCurveTo(x-s,y-s,x,y-s); ctx.quadraticCurveTo(x+s,y-s,x+s,y-s*0.3); ctx.lineTo(x+s,y+s); for(var i=0;i<3;i++){ ctx.quadraticCurveTo(x+s-(i+0.5)*(2*s/3),y+s*0.45,x+s-(i+1)*(2*s/3),y+s); } ctx.closePath(); ctx.fill(); ctx.fillStyle="#1c1917"; ci(ctx,x-s*0.35,y-s*0.2,3,1,1); ci(ctx,x+s*0.35,y-s*0.2,3,1,1); ctx.restore(); }
+function batShape(ctx,x,y,s,col,flap){ ctx.save(); ctx.fillStyle=col; ctx.translate(x,y); ctx.scale(1,1-flap*0.4); ctx.beginPath(); ctx.moveTo(0,0); ctx.quadraticCurveTo(-s*0.7,-s*0.9,-s*1.4,-s*0.2); ctx.quadraticCurveTo(-s*0.9,s*0.2,-s*0.5,s*0.1); ctx.quadraticCurveTo(-s*0.7,s*0.5,0,s*0.3); ctx.quadraticCurveTo(s*0.7,s*0.5,s*0.5,s*0.1); ctx.quadraticCurveTo(s*0.9,s*0.2,s*1.4,-s*0.2); ctx.quadraticCurveTo(s*0.7,-s*0.9,0,0); ctx.fill(); ctx.restore(); }
+function planeShape(ctx,x,y,s,col){ ctx.save(); ctx.translate(x,y); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(s*1.3,0); ctx.lineTo(-s*0.9,-s*0.35); ctx.lineTo(-s*0.5,0); ctx.lineTo(-s*0.9,s*0.35); ctx.closePath(); ctx.fill(); ctx.fillRect(-s*0.2,-s*0.7,s*0.35,s*1.4); ctx.restore(); }
+function broomShape(ctx,x,y,s,col){ ctx.save(); ctx.translate(x,y); ctx.rotate(0.6); ctx.strokeStyle="#92400e"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(-s,0); ctx.lineTo(s*0.7,0); ctx.stroke(); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(s*0.7,0); ctx.lineTo(s*1.4,-s*0.4); ctx.lineTo(s*1.4,s*0.4); ctx.closePath(); ctx.fill(); ctx.restore(); }
+function drumShape(ctx,x,y,s,col){ ctx.save(); el(ctx,x,y,s,s*0.75,col,1); ctx.fillStyle="#fde68a"; ctx.fillRect(x-s,y-s*0.75,s*2,5); ctx.fillRect(x-s,y+s*0.75-5,s*2,5); ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x-s*0.5,y-s*0.9); ctx.lineTo(x-s*0.2,y-s*1.5); ctx.moveTo(x+s*0.5,y-s*0.9); ctx.lineTo(x+s*0.2,y-s*1.5); ctx.stroke(); ctx.restore(); }
+function trapShape(ctx,x,y,s,closed){ ctx.save(); ctx.fillStyle="#92400e"; rr(ctx,x-s,y-s*0.15,s*2,s*0.3,3); ctx.fill(); ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(x,y-s*0.15,s*0.7,Math.PI,closed?Math.PI*1.85:Math.PI*1.25); ctx.stroke(); ci(ctx,x+s*0.7,y-s*0.15,4,"#facc15",1); ctx.restore(); }
+function scareShape(ctx,x,y,s,col){ ctx.save(); ci(ctx,x,y,s,col,1); ctx.fillStyle="#1c1917"; el(ctx,x-s*0.35,y-s*0.25,s*0.14,s*0.2,"#1c1917",1); el(ctx,x+s*0.35,y-s*0.25,s*0.14,s*0.2,"#1c1917",1); el(ctx,x,y+s*0.35,s*0.22,s*0.3,"#1c1917",1); ctx.restore(); }
+function noteChar(ctx,x,y,size,col,a){ ctx.save(); ctx.globalAlpha=(a==null?1:a); ctx.fillStyle=col; ctx.font=size+"px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText("♪",x,y); ctx.restore(); }
+function badge(ctx,x,y,g){ ctx.save(); ctx.font="18px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(g,x,y); ctx.restore(); }
+/* A drawn frame: rounded border + corner ticks + small badge. secondary picks
+   the frame flavour (zombie teeth, candy dots, crosshair, gold double,
+   ice flakes, medal, star corners, wax seal, plain). */
+function frameDraw(ctx,W,H,t,sp,kind){
+  var pad=7, r=12, col=sp.c;
+  ctx.save();
+  ctx.strokeStyle=col; ctx.lineWidth=3;
+  var p=Math.min(t*1.6,1);
+  ctx.globalAlpha=0.35+0.65*p;
+  rr(ctx,pad,pad,W-pad*2,H-pad*2,r); ctx.stroke();
+  if(kind==="framegold"){ ctx.lineWidth=1.5; rr(ctx,pad+5,pad+5,W-pad*2-10,H-pad*2-10,r-4); ctx.stroke(); }
+  if(kind==="framecross"){ ctx.beginPath(); ctx.moveTo(W/2,pad+2); ctx.lineTo(W/2,H-pad-2); ctx.moveTo(pad+2,H/2); ctx.lineTo(W-pad-2,H/2); ctx.stroke(); ci(ctx,W/2,H/2,4,col,1); }
+  ctx.lineWidth=3; ctx.beginPath();
+  [[pad,pad,1,1],[W-pad,pad,-1,1],[pad,H-pad,1,-1],[W-pad,H-pad,-1,-1]].forEach(function(c){
+    ctx.moveTo(c[0]+c[2]*16,c[1]); ctx.lineTo(c[0],c[1]); ctx.lineTo(c[0],c[1]+c[3]*16);
+  });
+  ctx.stroke();
+  if(kind==="framezombie"){ ctx.fillStyle=col; for(var i=0;i<5;i++){ var tx=pad+18+i*((W-pad*2-36)/4); ctx.fillRect(tx-2,pad+1,4,7); ctx.fillRect(tx-2,H-pad-8,4,7); } }
+  if(kind==="framecandy"){ for(var j=0;j<6;j++){ ci(ctx,pad+14+j*((W-pad*2-28)/5),pad+3,2.5,["#ec4899","#f59e0b","#22c55e"][j%3],1); } }
+  if(kind==="frameice"){ for(var k=0;k<5;k++){ st4(ctx,pad+16+k*((W-pad*2-32)/4),H/2,4,"#bae6fd",0.9); } }
+  if(kind==="framestar"){ [[pad+14,pad+14],[W-pad-14,pad+14],[pad+14,H-pad-14],[W-pad-14,H-pad-14]].forEach(function(pt){ st4(ctx,pt[0],pt[1],6,"#fde047",1); }); }
+  if(kind==="framemedal"){ ci(ctx,W-pad-16,pad+16,9,"#cbd5e1",1); st4(ctx,W-pad-16,pad+16,5,"#f59e0b",1); }
+  if(kind==="framewax"){ ci(ctx,W/2,pad+12,9,"#b91c1c",1); ring(ctx,W/2,pad+12,6,1.5,"#fca5a5",1); }
+  if(kind==="framezombie") badge(ctx,pad+22,pad+22,"🧟");
+  else if(kind==="framecandy") badge(ctx,pad+22,pad+22,"🍬");
+  else if(kind==="framecross") badge(ctx,pad+22,pad+22,"◎");
+  else badge(ctx,pad+22,pad+22,(sp.g==="01"?"0":sp.g));
   ctx.restore();
 }
-function play(perm, cardEl){
-  var sp=specOf(perm);
-  if(!sp) { var cp=cardPerm(perm); if(cp) sp=specOf(cp); }
-  if(!sp) return false;
-  if(cardEl) playCard(perm, cardEl);
-  if(reduced()) return true;
-  var dur=Math.min(sp.dur||1500, 2600);
-  var W=window.innerWidth||360, H=window.innerHeight||640;
-  try{
-    if(!cv){ cv=document.createElement("canvas"); cv.id="pwfx440cv"; cv.style.cssText="position:fixed;inset:0;z-index:70;pointer-events:none;"; document.body.appendChild(cv); }
-    cv.width=W; cv.height=H;
-  }catch(e){ return true; }
-  var ctx=cv.getContext("2d");
-  var rnd=seedRnd(hash(perm)+7);
-  var parts=[], i, p;
-  var n=Math.min(sp.n||8, 12);
-  for(i=0;i<n;i++){
-    p={g:sp.g, ph:rnd()*Math.PI*2, sp:0.7+rnd()*0.6, sz:18+Math.floor(rnd()*14), x0:0, y0:0, cx:0, cy:0, a:0};
-    if(sp.g==="01") p.g=(i%2===0)?"0":"1";
-    switch(sp.sp){
-      case "top": p.x0=rnd()*W; p.y0=-30-rnd()*40; break;
-      case "bottom": p.x0=rnd()*W; p.y0=H+30+rnd()*40; break;
-      case "left": p.x0=-30-rnd()*30; p.y0=H*(0.25+rnd()*0.5); break;
-      case "center": p.x0=W/2; p.y0=H/2; break;
-      case "ring": p.cx=W/2; p.cy=H*0.45; p.a=p.ph; break;
-      default: p.x0=rnd()*W; p.y0=rnd()*H;
-    }
-    parts.push(p);
-  }
-  var t0=performance.now(); var myGen=++gen;
-  function frame(now){
-    if(myGen!==gen) return;
-    var t=Math.min((now-t0)/dur, 1);
-    ctx.clearRect(0,0,W,H);
-    ctx.textAlign="center"; ctx.textBaseline="middle";
-    for(var j=0;j<parts.length;j++){
-      var q=parts[j], x, y, alpha=1, rot=0, sc=1;
-      switch(sp.law){
-        case "rain": x=q.x0+Math.sin(t*6+q.ph)*18; y=q.y0+t*(H+80)*q.sp; break;
-        case "rise": x=q.x0+Math.sin(t*5+q.ph)*16; y=q.y0-t*(H+80)*q.sp; alpha=1-t*0.4; break;
-        case "fall": x=q.x0+Math.sin(t*3+q.ph)*10; y=q.y0+t*t*(H+80); break;
-        case "expand": { var r=t*260*q.sp; x=q.x0+Math.cos(q.ph)*r; y=q.y0+Math.sin(q.ph)*r; alpha=1-t; break; }
-        case "march": x=q.x0+t*(W+80); y=q.y0-Math.abs(Math.sin(t*Math.PI*3))*22; break;
-        case "fly": x=q.x0+t*(W+80); y=q.y0-Math.sin(t*Math.PI)*H*0.35; rot=Math.sin(t*Math.PI)*-0.4; break;
-        case "sweep": x=t*W; y=H*0.45+Math.sin(t*Math.PI*4)*30; alpha=0.9; break;
-        case "orbit": { var ang=q.a+t*Math.PI*2*q.sp*(q.ph>Math.PI?1:-1); var rr=90+((j%3)*28); x=q.cx+Math.cos(ang)*rr; y=q.cy+Math.sin(ang)*rr*0.7; break; }
-        case "twinkle": x=q.x0; y=q.y0; alpha=0.25+0.75*Math.abs(Math.sin(t*Math.PI*2+q.ph)); break;
-        case "drift": x=q.x0+Math.sin(t*3+q.ph)*30; y=q.y0+Math.cos(t*2+q.ph)*20; alpha=0.8; break;
-        case "bounce": x=q.x0; y=q.y0-Math.abs(Math.sin(t*Math.PI*3))*46; sc=1+0.2*Math.sin(t*Math.PI*3); break;
-        default: x=q.x0; y=q.y0;
+
+/* ---------- the per-power scene: the animation IS the promised thing ---------- */
+function drawScene(ctx,W,H,t,sp,kind){
+  var rnd=seedRnd(hash(sp.g+kind));
+  var cx=W/2, cy=H/2, col=sp.c, i, x, y;
+  var pts=[]; for(i=0;i<12;i++) pts.push([rnd(),rnd(),rnd()]);
+  switch(kind){
+    case "cloud": {
+      var drift=(t-0.5)*W*0.3;
+      for(i=0;i<3;i++){
+        var bx=W*(0.22+0.28*i)+drift*(i%2?1:-0.6), by=H*(0.42+0.14*((i+1)%2));
+        el(ctx,bx,by,26,15,"#84cc16",0.85); el(ctx,bx-18,by+6,18,11,"#65a30d",0.8); el(ctx,bx+18,by+6,18,11,"#4d7c0f",0.8);
+        el(ctx,bx,by-10,15,10,"#a3e635",0.7);
       }
-      if(x<-60||x>W+60||y<-60||y>H+60) continue;
-      ctx.save(); ctx.globalAlpha=Math.max(0,Math.min(1,alpha));
-      ctx.translate(x,y); ctx.rotate(rot); ctx.scale(sc,sc);
-      ctx.font=q.sz+"px sans-serif"; ctx.fillStyle=sp.c; ctx.fillText(q.g,0,0); ctx.restore();
+      for(i=0;i<6;i++){ ci(ctx,W*pts[i][0]+drift*0.4,H*pts[i][1],2.5,"#a3e635",0.5+0.5*Math.sin(t*6+i)); }
+      badge(ctx,W-24,22,"☣️"); break; }
+    case "halo": {
+      var pulse=1+0.12*Math.sin(t*Math.PI*4);
+      var g=ctx.createRadialGradient(cx,cy,4,cx,cy,Math.min(W,H)*0.62);
+      g.addColorStop(0,col); g.addColorStop(1,"rgba(0,0,0,0)");
+      ctx.save(); ctx.globalAlpha=0.28+0.14*Math.sin(t*Math.PI*4); ctx.fillStyle=g; ctx.fillRect(0,0,W,H); ctx.restore();
+      ctx.save(); ctx.translate(cx,cy); ctx.scale(pulse,1); ring(ctx,0,0,Math.min(W,H)*0.30,5,col,0.95); ring(ctx,0,0,Math.min(W,H)*0.36,2,col,0.5); ctx.restore();
+      for(i=0;i<6;i++){ var a=i*1.047+t*1.2; st4(ctx,cx+Math.cos(a)*Math.min(W,H)*0.33,cy+Math.sin(a)*Math.min(W,H)*0.33*0.7,4,"#ffffff",0.7); }
+      break; }
+    case "frame": case "framegold": case "framecross": case "frameice":
+    case "framemedal": case "framestar": case "framewax": case "framecandy":
+    case "framezombie": frameDraw(ctx,W,H,t,sp,kind); break;
+    case "raincandy": case "raincoins": case "raincode": case "rainboxes": case "goldrain": {
+      for(i=0;i<Math.min(sp.n||8,12);i++){
+        var fx=pts[i][0]*W, fy=((pts[i][1]+t*1.15)%1.15)*H-20, fs=6+pts[i][2]*7;
+        if(kind==="raincandy"){ ctx.save(); ctx.translate(fx,fy); ctx.rotate(Math.sin(t*4+i)*0.4); ctx.fillStyle=["#ec4899","#f59e0b","#22c55e","#f43f5e"][i%4]; rr(ctx,-fs*0.7,-fs*0.4,fs*1.4,fs*0.8,3); ctx.fill(); ctx.restore(); }
+        else if(kind==="raincoins"){ ci(ctx,fx,fy,fs,"#fcd34d",1); ring(ctx,fx,fy,fs*0.6,2,"#b45309",1); }
+        else if(kind==="raincode"){ ctx.save(); ctx.fillStyle="#22c55e"; ctx.font="bold 15px monospace"; ctx.textAlign="center"; ctx.fillText(i%2?"1":"0",fx,fy); ctx.restore(); }
+        else if(kind==="rainboxes"){ ctx.save(); ctx.fillStyle="#d97706"; ctx.fillRect(fx-fs*0.6,fy-fs*0.4,fs*1.2,fs*0.8); ctx.fillStyle="#92400e"; ctx.fillRect(fx-fs*0.6,fy-fs*0.55,fs*1.2,fs*0.25); ctx.restore(); }
+        else { st4(ctx,fx,fy,fs,"#fbbf24",0.9); ci(ctx,fx+8,fy+6,3,"#fde68a",0.8); }
+      }
+      break; }
+    case "fog": {
+      for(i=0;i<3;i++){
+        var ox=((pts[i][0]+t*0.25*(i%2?1:-1))%1)*W;
+        el(ctx,ox,H*(0.3+0.25*i),W*0.42,26,col,0.20);
+        el(ctx,ox+W*0.3,H*(0.35+0.25*i),W*0.36,22,col,0.16);
+      }
+      break; }
+    case "glowrays": {
+      var gg=ctx.createRadialGradient(cx,cy,2,cx,cy,Math.min(W,H)*0.6);
+      gg.addColorStop(0,col); gg.addColorStop(1,"rgba(0,0,0,0)");
+      ctx.save(); ctx.globalAlpha=0.5; ctx.fillStyle=gg; ctx.fillRect(0,0,W,H); ctx.restore();
+      for(i=0;i<8;i++){ var ra=i*Math.PI/4+t*0.6; ctx.save(); ctx.strokeStyle=col; ctx.globalAlpha=0.5; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(ra)*Math.min(W,H)*0.45,cy+Math.sin(ra)*Math.min(W,H)*0.45); ctx.stroke(); ctx.restore(); }
+      break; }
+    case "sparks": case "shimmer": {
+      for(i=0;i<10;i++){ var sx=pts[i][0]*W, sy=pts[i][1]*H, tw=0.3+0.7*Math.abs(Math.sin(t*Math.PI*3+pts[i][2]*6)); st4(ctx,sx,sy,3+pts[i][2]*6,col,tw); }
+      if(kind==="shimmer") for(i=0;i<4;i++) ci(ctx,pts[i][0]*W,pts[i][1]*H,2,"#fff",0.6);
+      break; }
+    case "bubbles": {
+      for(i=0;i<8;i++){ var bx2=pts[i][0]*W+Math.sin(t*5+i)*10, by2=H*(1-((pts[i][1]+t*0.9)%1)); ring(ctx,bx2,by2,4+pts[i][2]*7,1.5,col,0.8); ci(ctx,bx2-3,by2-3,1.5,"#fff",0.7); }
+      el(ctx,cx,H*0.85,26,10,"#22c55e",0.8); break; }
+    case "flame": {
+      for(i=0;i<5;i++){ var fx2=W*(0.2+0.15*i), fy2=H*0.78-((pts[i][1]+t)%1)*H*0.5, fl=1+0.25*Math.sin(t*22+i*3); /* FIX-1 BF-3: flame band lifted into the visible band (was base H*0.85, mostly low) */ flame(ctx,fx2,fy2,10*fl,col,0.9); flame(ctx,fx2,fy2+4,5*fl,"#fde047",0.9); }
+      break; }
+    case "dusk": {
+      ctx.save(); ctx.globalAlpha=0.5; ctx.fillStyle="#fb923c"; ctx.fillRect(0,0,W,H*0.5); ctx.fillStyle="#7c3aed"; ctx.fillRect(0,H*0.5,W,H*0.5); ctx.restore();
+      ci(ctx,cx,H*0.55,Math.min(W,H)*0.2,"#fde68a",0.9);
+      el(ctx,0,H*0.85,W,26,"#1c1917",0.9); el(ctx,W,H*0.9,W*0.7,20,"#1c1917",0.9); break; }
+    case "warmwash": case "restwash": case "dim": case "dimmoon": {
+      var wc = kind==="warmwash" ? "251,191,36" : kind==="restwash" ? "125,211,252" : "30,27,75";
+      ctx.save(); ctx.globalAlpha=kind==="dim"||kind==="dimmoon"?0.45:0.35; ctx.fillStyle="rgba("+wc+",1)"; ctx.fillRect(0,0,W,H); ctx.restore();
+      if(kind==="warmwash") for(i=0;i<5;i++) lanternShape(ctx,W*(0.15+0.175*i),H*(0.4+0.1*Math.sin(t*2+i)),9,"#fbbf24");
+      if(kind==="restwash") for(i=0;i<3;i++) noteChar(ctx,W*(0.3+0.2*i),H*(0.7-t*0.5),18,"#e0f2fe",0.8);
+      if(kind==="dim"||kind==="dimmoon"){ for(i=0;i<8;i++) st4(ctx,pts[i][0]*W,pts[i][1]*H*0.6,3,"#fff",0.4+0.6*Math.abs(Math.sin(t*3+i))); }
+      if(kind==="dimmoon") moonShape(ctx,W*0.78,H*0.3,18,"#fde68a");
+      break; }
+    case "colorwash": {
+      for(i=0;i<5;i++){ var band=((i/5+t*0.6)%1)*W; ctx.save(); ctx.globalAlpha=0.35; ctx.fillStyle=["#f472b6","#facc15","#38bdf8","#22c55e","#a78bfa"][i]; ctx.fillRect(band-30,0,60,H); ctx.restore(); }
+      break; }
+    case "beam": {
+      for(i=0;i<2;i++){ var ba=t*Math.PI*2+i*Math.PI; ctx.save(); ctx.strokeStyle=col; ctx.globalAlpha=0.85; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(ba)*W*0.48,cy+Math.sin(ba)*H*0.4); ctx.stroke(); ctx.restore(); }
+      ci(ctx,cx,cy,8,col,1); break; }
+    case "grid": {
+      var gp=Math.min(t*1.5,1);
+      ctx.save(); ctx.strokeStyle=col; ctx.globalAlpha=0.8; ctx.lineWidth=1.5;
+      for(i=0;i<=4;i++){ var gx=cx-120+i*60; ctx.beginPath(); ctx.moveTo(gx,cy-70); ctx.lineTo(gx,cy-70+140*gp); ctx.stroke(); }
+      for(i=0;i<=3;i++){ var gy=cy-70+i*46; ctx.beginPath(); ctx.moveTo(cx-120,gy); ctx.lineTo(cx-120+240*gp,gy); ctx.stroke(); }
+      ctx.restore(); break; }
+    case "ring": {
+      ring(ctx,cx,cy,Math.min(W,H)*0.3,4,col,0.9);
+      ring(ctx,cx,cy,Math.min(W,H)*0.22,2,"#fff",0.5);
+      for(i=0;i<8;i++){ var oa=i*Math.PI/4+t*1.5; ci(ctx,cx+Math.cos(oa)*Math.min(W,H)*0.3,cy+Math.sin(oa)*Math.min(W,H)*0.3,4,"#e9d5ff",1); }
+      for(i=0;i<4;i++){ var ta=i*Math.PI/2+0.4; ctx.save(); ctx.translate(cx+Math.cos(ta)*Math.min(W,H)*0.3,cy+Math.sin(ta)*Math.min(W,H)*0.3); ctx.rotate(ta); ctx.fillStyle="#fff"; ctx.fillRect(-1,-6,2,12); ctx.restore(); }
+      break; }
+    case "moon": {
+      moonShape(ctx,cx,cy,Math.min(W,H)*0.22,"#fda4af");
+      for(i=0;i<8;i++) st4(ctx,pts[i][0]*W,pts[i][1]*H,3,"#fff",0.4+0.6*Math.abs(Math.sin(t*3+i)));
+      el(ctx,cx,cy+Math.min(W,H)*0.22,Math.min(W,H)*0.3,6,"rgba(190,18,60,.5)",0.6); break; }
+    case "bell": {
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(Math.sin(t*Math.PI*2)*0.35); bellShape(ctx,0,0,22,col); ctx.restore();
+      for(i=0;i<3;i++){ var arcR=34+i*12; ctx.save(); ctx.strokeStyle=col; ctx.globalAlpha=0.7-t*0.4; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(cx,cy,arcR,-0.6,0.6); ctx.stroke(); ctx.restore(); }
+      break; }
+    case "horn": {
+      hornShape(ctx,cx-30,cy,20,"#f59e0b");
+      for(i=0;i<3;i++){ var hr=26+i*12+((t*40)%12); ctx.save(); ctx.strokeStyle="#f59e0b"; ctx.globalAlpha=0.8-i*0.2; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(cx-30,cy,hr,-0.9,0.9); ctx.stroke(); ctx.restore(); }
+      for(i=0;i<5;i++){ var hx=W*(0.85-((pts[i][0]+t*0.5)%1)*0.5), hy=H*(0.32+pts[i][1]*0.28); /* FIX-1 BF-3: summoned heads kept in the visible band (was up to H*0.7, bottom edge) */ avatarDot(ctx,hx,hy,9,["#f59e0b","#ef4444","#22c55e"][i%3]); }
+      break; }
+    case "banner": case "banneralert": case "bannerhorn": {
+      var bw=Math.min(t*1.4,1)*W*0.86, bcol=kind==="banneralert"?"#ef4444":col;
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(Math.sin(t*Math.PI*2)*0.02);
+      ctx.fillStyle=bcol; rr(ctx,-bw/2,-24,bw,48,8); ctx.fill();
+      ctx.fillStyle="#fff"; ctx.font="bold 15px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.fillText(kind==="banneralert"?"!":(sp.g==="01"?"0":sp.g),0,1);
+      ctx.restore();
+      if(kind==="bannerhorn") hornShape(ctx,cx-bw/2+26,cy,12,"#fde68a");
+      for(i=0;i<5;i++) st4(ctx,cx-bw/2+16+i*(bw-32)/4,cy-34,3,"#fde047",0.5+0.5*Math.sin(t*5+i));
+      break; }
+    case "balloons": {
+      var cols=["#ef4444","#38bdf8","#facc15","#22c55e","#f472b6"];
+      for(i=0;i<5;i++){ var bx3=W*(0.14+0.18*i)+Math.sin(t*3+i)*8, by3=H*(0.95-((pts[i][1]+t*0.85)%1)*0.9); balloon(ctx,bx3,by3,13,cols[i%5]); }
+      for(i=0;i<5;i++) st4(ctx,pts[i][0]*W,H*(0.3+0.4*pts[i][1]),3.5,"#fff",0.4+0.6*Math.abs(Math.sin(t*5+i)));
+      break; }
+    case "chest": case "chestcoins": {
+      chestShape(ctx,cx,cy+8,26,Math.min(t*2,1),col);
+      for(i=0;i<5;i++){ var cy2=cy-10-((pts[i][1]+t*0.8)%1)*44; ci(ctx,cx-30+i*15,cy2,5,"#fcd34d",0.9); }
+      if(kind==="chestcoins") for(i=0;i<4;i++){ var cx2=W*(0.15+0.2*i), cy3=((pts[i][0]+t)%1)*H; ci(ctx,cx2,cy3,5,"#fcd34d",0.9); }
+      break; }
+    case "tower": {
+      towerShape(ctx,cx,cy+6,24,col);
+      var ta2=t*Math.PI*2; ctx.save(); ctx.strokeStyle=col; ctx.globalAlpha=0.8; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(cx,cy-30); ctx.lineTo(cx+Math.cos(ta2)*W*0.4,cy-30+Math.sin(ta2)*H*0.3); ctx.stroke(); ctx.restore();
+      break; }
+    case "crown": {
+      var cs=1+0.1*Math.sin(t*Math.PI*4); ctx.save(); ctx.translate(cx,cy); ctx.scale(cs,cs); crownShape(ctx,0,0,30,col); ctx.restore();
+      for(i=0;i<5;i++) st4(ctx,cx-40+i*20,cy-34,3,"#fff",0.5+0.5*Math.sin(t*5+i));
+      break; }
+    case "flag": {
+      flagShape(ctx,cx-30,cy,26,col,Math.sin(t*Math.PI*4));
+      for(i=0;i<4;i++) ci(ctx,cx-20+i*16,cy+34,2.5,"#16a34a",0.7);
+      break; }
+    case "lantern": case "lanterns": {
+      var nL=kind==="lanterns"?5:1;
+      for(i=0;i<nL;i++){ var lx=W*(0.2+0.15*i)+Math.sin(t*2+i)*6, ly=H*(0.9-((pts[i][1]+t*0.7)%1)*0.75); lanternShape(ctx,lx,ly,10,"#fbbf24"); el(ctx,lx,ly,26,26,"rgba(251,191,36,.25)",0.5); }
+      break; }
+    case "landscape": {
+      ctx.save(); ctx.globalAlpha=0.8; ctx.fillStyle="#38bdf8"; ctx.fillRect(0,0,W,H*0.45); ctx.fillStyle="#f59e0b"; ctx.fillRect(0,H*0.45,W,H*0.25); ctx.fillStyle="#22c55e"; ctx.fillRect(0,H*0.7,W,H*0.3); ctx.restore();
+      ci(ctx,W*0.78,H*0.2,14,"#fde68a",0.95);
+      el(ctx,W*0.2,H*0.62,40,14,"#166534",0.8); el(ctx,W*0.6,H*0.66,50,16,"#14532d",0.8);
+      break; }
+    case "march": case "marchshield": {
+      for(i=0;i<5;i++){ var mx=((pts[i][0]+t*0.9)%1.1)*W-20, my=H*0.45+Math.sin(t*8+i)*3; /* FIX-1 BF-3: march figures centred in the visible band (was H*0.55, low) */ avatarDot(ctx,mx,my,13,["#d4a437","#f59e0b","#22c55e","#38bdf8","#ef4444"][i%5]); if(kind==="marchshield") shieldShape(ctx,mx+14,my,9,"#a3a3a3"); }
+      el(ctx,0,H*0.62,W,8,"rgba(0,0,0,.15)",0.8); break; } /* FIX-1 BF-3: march ground line follows the centred figures */
+    case "dance": {
+      for(i=0;i<4;i++){ var dx=W*(0.2+0.2*i), dy=H*0.42+Math.sin(t*Math.PI*4+i*1.6)*10; /* FIX-1 BF-3: dance figures centred (was H*0.55 — sat below the fold at screen y ~883) */ ctx.save(); ctx.translate(dx,dy); ctx.rotate(Math.sin(t*Math.PI*4+i)*0.25); avatarDot(ctx,0,0,13,["#34d399","#f472b6","#facc15","#38bdf8"][i%4]); ctx.restore(); }
+      for(i=0;i<3;i++) noteChar(ctx,W*(0.25+0.25*i),H*0.25,16,"#fda4af",0.8);
+      break; }
+    case "shake": {
+      for(i=0;i<4;i++){ el(ctx,W*(0.2+0.2*i),H*(0.8+0.05*Math.sin(t*9+i)),16,7,"rgba(168,162,158,.5)",0.7); }
+      ctx.save(); ctx.strokeStyle="#a8a29e"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(W*0.3,H*0.75); ctx.lineTo(W*0.38,H*0.85); ctx.lineTo(W*0.46,H*0.78); ctx.stroke(); ctx.restore();
+      break; }
+    case "shockwave": {
+      for(i=0;i<3;i++){ var sr=((t*1.2+i*0.33)%1)*Math.min(W,H)*0.5; ring(ctx,cx,cy,sr,3,col,Math.max(0,0.9-((t*1.2+i*0.33)%1))); }
+      ci(ctx,cx,cy,10,col,0.9); break; }
+    case "storm": {
+      for(i=0;i<8;i++){ var rx=pts[i][0]*W, ry=((pts[i][1]+t*1.3)%1.2)*H-16; ctx.save(); ctx.strokeStyle="#7dd3fc"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(rx,ry); ctx.lineTo(rx-3,ry+12); ctx.stroke(); ctx.restore(); }
+      if(Math.sin(t*Math.PI*6)>0.2) bolt(ctx,cx,cy-10,26,"#fde047",0.95);
+      ctx.save(); ctx.globalAlpha=0.25+0.25*Math.abs(Math.sin(t*Math.PI*3)); ctx.fillStyle="#e0f2fe"; ctx.fillRect(0,0,W,H); ctx.restore();
+      break; }
+    case "meteors": {
+      for(i=0;i<4;i++){ var mx2=W*(0.9-((pts[i][0]+t*0.9)%1)*0.9), my2=H*((pts[i][1]+t*0.9)%1)*0.7; ctx.save(); ctx.strokeStyle="#fb923c"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(mx2,my2); ctx.lineTo(mx2+34,my2-18); ctx.stroke(); ctx.restore(); ci(ctx,mx2,my2,4,"#fdba74",1); }
+      break; }
+    case "fireworks": {
+      for(i=0;i<6;i++){ var tx3=W*(0.15+0.14*i), ty3=H*(0.9-((pts[i][1]+t*1.1)%1)*0.8); ci(ctx,tx3,ty3,2.5,["#f472b6","#facc15","#38bdf8"][i%3],0.9); }
+      for(i=0;i<6;i++){ var sx3=W*(0.2+0.12*i), sy3=H*0.22+Math.sin(t*4+i)*6; st4(ctx,sx3,sy3,4,"#fff",0.5+0.5*Math.sin(t*6+i)); }
+      break; }
+    case "flybat": case "flybird": case "flyplane": case "flyghost": case "flybroom": {
+      var fx3=((t*1.05)%1.15)*W-40, fy3=H*0.4+Math.sin(t*Math.PI*3)*14;
+      if(kind==="flybat") batShape(ctx,fx3,fy3,16,"#7c3aed",Math.abs(Math.sin(t*Math.PI*6)));
+      else if(kind==="flybird"){ ctx.save(); ctx.translate(fx3,fy3); ctx.strokeStyle=col; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(-14,0); ctx.quadraticCurveTo(-7,-10+Math.sin(t*10)*6,0,0); ctx.quadraticCurveTo(7,-10+Math.sin(t*10)*6,14,0); ctx.stroke(); ctx.restore(); }
+      else if(kind==="flyplane") planeShape(ctx,fx3,fy3,16,col);
+      else if(kind==="flyghost") ghostShape(ctx,fx3,fy3,16,"#e2e8f0");
+      else broomShape(ctx,fx3,fy3,16,"#8b5cf6");
+      break; }
+    case "wisp": {
+      var wx=cx+Math.sin(t*3)*W*0.25, wy=H*0.5+Math.cos(t*2)*H*0.12; /* FIX-1 BF-3: wisp centred */
+      el(ctx,wx,wy,30,16,"rgba(147,197,253,.5)",0.6); el(ctx,wx-14,wy+6,18,10,"rgba(147,197,253,.4)",0.5); el(ctx,wx+14,wy+6,18,10,"rgba(147,197,253,.4)",0.5);
+      for(i=0;i<4;i++) ci(ctx,wx-30+i*8,wy+10+Math.sin(t*4+i)*4,2,"#93c5fd",0.7);
+      break; }
+    case "veil": {
+      var vx=((t*1.2)%1.3)*W-40;
+      ctx.save(); ctx.globalAlpha=0.55; ctx.fillStyle="#1c1917"; ctx.fillRect(vx-50,0,100,H); ctx.restore();
+      if(t>0.45){ ci(ctx,cx-12,cy,4,"#fff",1); ci(ctx,cx+12,cy,4,"#fff",1); }
+      break; }
+    case "swap": {
+      var ax=cx-40+80*Math.sin(t*Math.PI), bx4=cx+40-80*Math.sin(t*Math.PI);
+      avatarDot(ctx,ax,cy-14+Math.abs(Math.sin(t*Math.PI))*18,14,"#a78bfa");
+      avatarDot(ctx,bx4,cy+14-Math.abs(Math.sin(t*Math.PI))*18,14,"#22c55e");
+      break; }
+    case "stamp": {
+      var sp2=Math.min(t*3,1);
+      ring(ctx,cx,cy,34*sp2,5,"#ef4444",0.95); ring(ctx,cx,cy,20*sp2,4,"#fff",0.9); ring(ctx,cx,cy,9*sp2,4,"#ef4444",0.95);
+      ctx.save(); ctx.strokeStyle="#ef4444"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cx-44,cy); ctx.lineTo(cx+44,cy); ctx.moveTo(cx,cy-44); ctx.lineTo(cx,cy+44); ctx.stroke(); ctx.restore();
+      break; }
+    case "flash": {
+      var fa2=t<0.15?0.85:Math.max(0,0.85-(t-0.15)*1.1);
+      ctx.save(); ctx.globalAlpha=fa2; ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H); ctx.restore();
+      ring(ctx,cx,cy,10+t*40,3,col,Math.max(0,0.9-t)); break; }
+    case "flashcross": {
+      var fb=t<0.15?0.7:Math.max(0,0.7-(t-0.15)*1.1);
+      ctx.save(); ctx.globalAlpha=fb; ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H); ctx.restore();
+      ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cx-50,cy); ctx.lineTo(cx+50,cy); ctx.moveTo(cx,cy-40); ctx.lineTo(cx,cy+40); ctx.stroke(); ctx.restore();
+      ci(ctx,cx,cy,5,col,1); break; }
+    case "scan": {
+      var sy4=t*H;
+      ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(0,sy4); ctx.lineTo(W,sy4); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.strokeStyle=col; ctx.globalAlpha=0.7; ctx.lineWidth=2; ctx.beginPath();
+      for(var px=0;px<=W;px+=8){ var py=cy+Math.sin(px*0.05+t*8)*8; if(px===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+      ctx.stroke(); ctx.restore(); break; }
+    case "wavecode": {
+      ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.beginPath();
+      for(var wx2=0;wx2<=W;wx2+=8){ var wy2=cy+Math.sin(wx2*0.06-t*10)*12; if(wx2===0) ctx.moveTo(wx2,wy2); else ctx.lineTo(wx2,wy2); }
+      ctx.stroke(); ctx.restore();
+      for(i=0;i<5;i++){ var cx3=pts[i][0]*W, cy3=((pts[i][1]+t)%1)*H; ctx.save(); ctx.fillStyle="#38bdf8"; ctx.font="bold 13px monospace"; ctx.textAlign="center"; ctx.fillText(i%2?"1":"0",cx3,cy3); ctx.restore(); }
+      break; }
+    case "glitch": {
+      for(i=0;i<10;i++){ var gx2=pts[i][0]*W, gy2=pts[i][1]*H; ctx.save(); ctx.globalAlpha=0.5+0.5*Math.sin(t*20+i); ctx.fillStyle=i%2?col:"#fff"; ctx.fillRect(gx2,gy2,6+pts[i][2]*10,3); ctx.restore(); }
+      ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=2; ctx.beginPath();
+      for(var gx3=0;gx3<=W;gx3+=10){ var gy3=cy+Math.sin(gx3*0.08+t*12)*6; if(gx3===0) ctx.moveTo(gx3,gy3); else ctx.lineTo(gx3,gy3); }
+      ctx.stroke(); ctx.restore(); break; }
+    case "static": {
+      for(i=0;i<40;i++){ ci(ctx,pts[i%12][0]*W,pts[i%12][1]*H,1.5,"#d1d5db",0.3+0.7*rnd()); }
+      ctx.save(); ctx.strokeStyle=col; ctx.globalAlpha=0.6; ctx.lineWidth=1.5; ctx.beginPath();
+      for(var sx4=0;sx4<=W;sx4+=6){ var sy5=cy+(rnd()-0.5)*10; if(sx4===0) ctx.moveTo(sx4,sy5); else ctx.lineTo(sx4,sy5); }
+      ctx.stroke(); ctx.restore(); break; }
+    case "heartbeat": case "ecg": {
+      var hp=1+0.25*((t%0.5)<0.12?1:0); ctx.save(); ctx.translate(cx,cy); ctx.scale(hp,hp); heart(ctx,0,-6,16,"#f472b6"); ctx.restore();
+      ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=3; ctx.beginPath();
+      var prog=Math.min(t*1.4,1);
+      for(var ex=0;ex<=40;ex++){ var et=ex/40; if(et>prog) break; var exx=cx-90+et*180; var eyy=cy+24+((et>0.42&&et<0.5)?-34:((et>0.5&&et<0.58)?22:0)); if(ex===0) ctx.moveTo(exx,eyy); else ctx.lineTo(exx,eyy); }
+      ctx.stroke(); ctx.restore();
+      if(kind==="ecg") bolt(ctx,cx+52,cy-24,10,"#facc15",0.9);
+      break; }
+    case "riseglow": {
+      var rg=ctx.createRadialGradient(cx,H,2,cx,H,Math.min(W,H)*0.7);
+      rg.addColorStop(0,col); rg.addColorStop(1,"rgba(0,0,0,0)");
+      ctx.save(); ctx.globalAlpha=0.5; ctx.fillStyle=rg; ctx.fillRect(0,0,W,H); ctx.restore();
+      for(i=0;i<5;i++){ var rx3=W*(0.2+0.15*i), ry3=H*(0.9-((pts[i][1]+t*0.8)%1)*0.7); st4(ctx,rx3,ry3,4,"#fff",0.7); }
+      break; }
+    case "nameglow": {
+      ring(ctx,cx,cy,Math.min(W,H)*0.3,3,col,0.9);
+      var ng=ctx.createRadialGradient(cx,cy,2,cx,cy,Math.min(W,H)*0.5);
+      ng.addColorStop(0,col); ng.addColorStop(1,"rgba(0,0,0,0)");
+      ctx.save(); ctx.globalAlpha=0.4; ctx.fillStyle=ng; ctx.fillRect(0,0,W,H); ctx.restore();
+      for(i=0;i<5;i++) st4(ctx,cx-36+i*18,cy-26,3,"#f472b6",0.6+0.4*Math.sin(t*5+i));
+      break; }
+    case "shadowveil": {
+      ctx.save(); ctx.globalAlpha=0.5; ctx.fillStyle="#1c1917"; ctx.fillRect(0,0,W,H); ctx.restore();
+      avatarDot(ctx,cx,cy,20,"#4b5563");
+      el(ctx,cx+24,cy+16,14,6,"rgba(0,0,0,.5)",0.8); break; }
+    case "shield": {
+      var ss=1+0.12*Math.sin(t*Math.PI*4); ctx.save(); ctx.translate(cx,cy); ctx.scale(ss,ss); shieldShape(ctx,0,0,26,col); ctx.restore();
+      ring(ctx,cx,cy,Math.min(W,H)*0.32,2,col,0.5+0.3*Math.sin(t*Math.PI*4)); break; }
+    case "scareface": {
+      ctx.save(); ctx.translate(cx+Math.sin(t*40)*3,cy); scareShape(ctx,0,0,22,col); ctx.restore();
+      for(i=0;i<3;i++) st4(ctx,cx-34+i*34,cy-30,3,"#fff",0.5+0.5*Math.sin(t*6+i));
+      break; }
+    case "trap": {
+      trapShape(ctx,cx,cy+6,20,t>0.3);
+      if(t>0.3) for(i=0;i<3;i++) st4(ctx,cx-20+i*20,cy-26,3,"#facc15",0.8);
+      break; }
+    case "gift": {
+      ctx.save(); ctx.translate(0,-Math.min(t*2,1)*14); giftShape(ctx,cx,cy+6,22,col); ctx.restore();
+      for(i=0;i<4;i++){ var gx4=cx-24+i*16, gy4=cy-16-((pts[i][1]+t*0.7)%1)*30; st4(ctx,gx4,gy4,3.5,"#fde047",0.8); }
+      break; }
+    case "pumpkin": {
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(Math.sin(t*Math.PI*3)*0.08); pumpkin(ctx,0,0,24,col); ctx.restore();
+      for(i=0;i<5;i++) st4(ctx,cx-36+i*18,cy-30,3,"#fdba74",0.5+0.5*Math.sin(t*5+i));
+      break; }
+    case "halloween": {
+      moonShape(ctx,W*0.8,H*0.28,16,"#fde68a");
+      pumpkin(ctx,W*0.25,H*0.72,16,"#f97316");
+      batShape(ctx,W*(0.3+0.4*t),H*0.3,10,"#1c1917",Math.abs(Math.sin(t*8)));
+      for(i=0;i<5;i++) st4(ctx,pts[i][0]*W,pts[i][1]*H*0.5,3,"#fff",0.5);
+      break; }
+    case "landing": {
+      var ly2=H*(0.25+t*0.55), lx2=W*0.5+Math.sin(t*9)*14;
+      ctx.save(); ctx.translate(lx2,ly2); ctx.rotate(0.25+Math.sin(t*9)*0.08); planeShape(ctx,0,0,18,"#fb923c"); ctx.restore();
+      for(i=0;i<4;i++){ var px2=W*(0.3+0.13*i), py2=H*(0.9-((pts[i][1]+t*0.5)%1)*0.3); el(ctx,px2,py2,12,7,"rgba(255,255,255,.6)",0.6); }
+      break; }
+    case "ping": {
+      for(i=0;i<3;i++){ var pr=((t*1.1+i*0.33)%1)*Math.min(W,H)*0.45; ring(ctx,cx,cy,pr,3,"#f43f5e",Math.max(0,0.9-((t*1.1+i*0.33)%1))); }
+      ci(ctx,cx,cy,8,"#f43f5e",1); break; }
+    case "notes": {
+      ctx.save(); ctx.strokeStyle="rgba(128,128,128,.5)"; ctx.lineWidth=1;
+      for(i=0;i<3;i++){ ctx.beginPath(); ctx.moveTo(W*0.1,H*(0.35+i*0.12)); ctx.lineTo(W*0.9,H*(0.35+i*0.12)); ctx.stroke(); }
+      ctx.restore();
+      for(i=0;i<5;i++){ var nx=W*(0.2+0.15*i), ny=H*(0.6-((pts[i][1]+t*0.8)%1)*0.45); noteChar(ctx,nx,ny,17,col,0.9); }
+      break; }
+    case "wind": case "speedlines": {
+      for(i=0;i<7;i++){ var wx3=((pts[i][0]+t*1.2)%1.2)*W-20, wy3=H*(0.15+pts[i][1]*0.7); ctx.save(); ctx.strokeStyle=i%2?col:"#fff"; ctx.globalAlpha=0.7; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(wx3,wy3); ctx.lineTo(wx3+34+pts[i][2]*30,wy3); ctx.stroke(); ctx.restore(); }
+      if(kind==="speedlines") bolt(ctx,cx,cy,16,"#06b6d4",0.9);
+      break; }
+    case "drum": {
+      var dp=(t%0.5)<0.12?1.12:1; ctx.save(); ctx.translate(cx,cy); ctx.scale(dp,dp); drumShape(ctx,0,0,22,col); ctx.restore();
+      ring(ctx,cx,cy,20+t*30,2,col,Math.max(0,0.8-t*0.7)); break; }
+    default: {
+      for(i=0;i<6;i++) st4(ctx,pts[i][0]*W,pts[i][1]*H,4,col,0.6+0.4*Math.sin(t*5+i));
+      badge(ctx,W-24,22,(sp.g==="01"?"0":sp.g));
     }
-    try{ drawHero(ctx,W,H,t,sp); }catch(e){}
-    if(t<1){ raf=requestAnimationFrame(frame); }
-    else { try{ ctx.clearRect(0,0,W,H); }catch(e){} }
   }
-  raf=requestAnimationFrame(frame);
+}
+function endT(kind){
+  if(kind.indexOf("fly")===0||kind==="march"||kind==="marchshield"||kind==="landing"||kind==="meteors"||kind==="fireworks") return 0.45;
+  if(kind==="flash"||kind==="flashcross") return 0.12;
+  if(kind==="shake"||kind==="shockwave") return 0.5;
+  if(kind==="swap") return 0.5;
+  return 1;
+}
+
+/* ---------- playback: scoped canvases, dedupe, end-state ---------- */
+function hostFor(scope, cardEl){
+  if(scope==="chat"){
+    var box=null; try{ box=document.getElementById("gChatBox"); }catch(e){}
+    return box||document.body;
+  }
+  if(cardEl) return cardEl;
+  var box2=null; try{ box2=document.getElementById("gChatBox"); }catch(e){}
+  return box2||document.body;
+}
+/* FIX-1 BF-1: keep a live chat-scope canvas pinned to the chat box's
+   VISIBLE region while it plays. The old code sized the canvas to the host
+   and anchored it with inset:0 at the CONTENT TOP of the scroll container,
+   so in any chat with history (scrolled to the latest message) the whole
+   scene sat ~900-1800px above the viewport: 0% of drawn pixels visible.
+   The canvas now covers exactly the part of #gChatBox that is on screen:
+   top = scrollTop + the on-screen offset of the box top, height = the
+   on-screen height of the box. It stays INSIDE #gChatBox (never a
+   fullscreen-over-everything canvas) and scrolls with the chat if the user
+   scrolls mid-play (scroll listeners re-pin its top; the bitmap height is
+   never changed mid-play, so the drawing is not cleared). */
+function pw443PinChatCanvas(host){
+  try{
+    var rect=host.getBoundingClientRect();
+    var visTop=Math.max(0,rect.top), visBottom=Math.min(window.innerHeight||844,rect.bottom);
+    var visH=Math.max(40,visBottom-visTop);
+    var topInContent=(host.scrollTop||0)+Math.max(0,-rect.top);
+    var list=host.querySelectorAll('.pw443-cv[data-pw443-chat="1"]');
+    for(var i=0;i<list.length;i++){ list[i].style.top=topInContent+"px"; }
+    return {top:topInContent, height:visH};
+  }catch(e){ return null; }
+}
+function pw443BindChatPin(host){
+  try{
+    if(host._pw443PinBound) return;
+    host._pw443PinBound=true;
+    var h=function(){ pw443PinChatCanvas(host); };
+    host.addEventListener("scroll",h,{passive:true});
+    window.addEventListener("scroll",h,{passive:true});
+  }catch(e){}
+}
+function makeCanvas(host, scope){
+  var cv=document.createElement("canvas");
+  cv.className="pw443-cv";
+  var w=host.clientWidth||320, h=host.clientHeight||120;
+  if(host===document.body){ w=window.innerWidth||390; h=window.innerHeight||844; }
+  cv.width=Math.max(50,Math.min(w,900)); cv.height=Math.max(40,Math.min(h,900));
+  try{ if(window.getComputedStyle(host).position==="static") host.style.position="relative"; }catch(e){}
+  host.appendChild(cv);
+  if(scope==="chat"&&host!==document.body){
+    /* Anchor to the visible region of the scroll container (BF-1). */
+    cv.setAttribute("data-pw443-chat","1");
+    var pin=pw443PinChatCanvas(host);
+    if(pin){
+      cv.height=Math.max(40,Math.min(pin.height,900));
+      cv.style.top=pin.top+"px"; cv.style.height=pin.height+"px";
+    }
+    pw443BindChatPin(host);
+  }
+  return cv;
+}
+function drawInto(cv, perm, cp, t){
+  var sp=SPEC[cp], sc=SCENE[cp];
+  if(!sp||!sc) return;
+  var ctx=cv.getContext("2d"); if(!ctx) return;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  drawScene(ctx,cv.width,cv.height,t,sp,sc.kind);
+}
+function play(perm, cardEl, opts){
+  opts=opts||{};
+  var cp=cardPerm(perm);
+  if(!cp) return false;
+  var sp=SPEC[cp], sc=SCENE[cp];
+  if(!sp||!sc) return false;
+  var dur=Math.min(sp.dur||1500,2600);
+  var now=Date.now();
+  if(!opts.replay){
+    if(opts.msgId){
+      var until=_inflight[String(opts.msgId)];
+      if(until&&now<until){ _diag.deduped++; return false; }
+      _inflight[String(opts.msgId)]=now+dur+400;
+    } else {
+      var lp=_lastPerm[cp]||0;
+      if(now-lp<800){ _diag.deduped++; return false; }
+      _lastPerm[cp]=now;
+    }
+  } else { _diag.replays++; }
+  _diag.plays++;
+  if(cardEl) playCard(perm, cardEl);
+  var host=hostFor(sc.scope, cardEl);
+  var cv=makeCanvas(host, sc.scope);
+  /* member scope: also draw the frame on the target member's avatar in the
+     chat (best effort — the card frame below is the guaranteed visual). */
+  var avCv=null;
+  if(sc.scope==="member"&&opts.targetUid){
+    try{ avCv=targetAvatarCanvas(opts.targetUid, cp, dur); }catch(e){ avCv=null; }
+  }
+  if(sc.kind==="shake"){ try{ host.classList.add("pw443-shake"); }catch(e){} }
+  if(reduced()){
+    drawInto(cv, perm, cp, endT(sc.kind));
+    if(avCv) drawFrameInto(avCv, cp, 1);
+    paintEndStateForCard(cardEl, cp);
+    setTimeout(function(){ try{ if(cv.parentNode) cv.parentNode.removeChild(cv); }catch(e){} try{ if(avCv&&avCv.parentNode) avCv.parentNode.removeChild(avCv); }catch(e){} try{ host.classList.remove("pw443-shake"); }catch(e){} }, dur+400);
+    return true;
+  }
+  var t0=null;
+  function frame(ts){
+    if(t0===null) t0=ts;
+    var t=Math.min((ts-t0)/dur,1);
+    drawInto(cv, perm, cp, t);
+    if(avCv) drawFrameInto(avCv, cp, t);
+    if(t<1){ requestAnimationFrame(frame); }
+    else {
+      paintEndStateForCard(cardEl, cp);
+      try{ if(cv.parentNode) cv.parentNode.removeChild(cv); }catch(e){}
+      try{ if(avCv&&avCv.parentNode) avCv.parentNode.removeChild(avCv); }catch(e){}
+      try{ host.classList.remove("pw443-shake"); }catch(e){}
+    }
+  }
+  if(typeof requestAnimationFrame==="function") requestAnimationFrame(frame);
+  else { drawInto(cv, perm, cp, 1); setTimeout(function(){ try{ if(cv.parentNode) cv.parentNode.removeChild(cv); }catch(e){} }, dur); }
   return true;
+}
+function drawFrameInto(cv, cp, t){
+  var sp=SPEC[cp]; if(!sp) return;
+  var ctx=cv.getContext("2d"); if(!ctx) return;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  var kind=SCENE[cp]?SCENE[cp].kind:"frame";
+  if(kind.indexOf("frame")!==0) kind="frame";
+  frameDraw(ctx,cv.width,cv.height,t,sp,kind);
+}
+/* Best-effort avatar overlay: find the target member's most recent chat
+   message avatar by sender name and frame it. Returns the canvas or null. */
+function targetAvatarCanvas(targetUid, cp, dur){
+  var name=null;
+  try{ if(typeof PW!=="undefined"&&PW.memberName) name=PW.memberName(targetUid); }catch(e){}
+  if(!name) return null;
+  var box=document.getElementById("gChatBox"); if(!box) return null;
+  var heads=box.querySelectorAll(".og-msg-head");
+  var found=null;
+  for(var i=heads.length-1;i>=0;i--){
+    var b=heads[i].querySelector("b");
+    if(b&&b.textContent.trim()===name){ found=heads[i]; break; }
+  }
+  if(!found) return null;
+  var av=found.querySelector(".av-mini")||found.querySelector(".chat-ava")||found;
+  if(!av) return null;
+  try{ if(window.getComputedStyle(av).position==="static") av.style.position="relative"; }catch(e){}
+  var cv=document.createElement("canvas");
+  cv.className="pw443-cv pw443-av";
+  cv.width=52; cv.height=52;
+  cv.style.cssText="position:absolute;left:-6px;top:-6px;width:52px;height:52px;pointer-events:none;z-index:5";
+  av.appendChild(cv);
+  setTimeout(function(){ try{ if(cv.parentNode) cv.parentNode.removeChild(cv); }catch(e){} }, dur+400);
+  return cv;
 }
 function playCard(perm, el){
   var cp=cardPerm(perm); if(!cp||!el) return;
@@ -60591,14 +61227,85 @@ function playCard(perm, el){
     el.classList.remove("pw440-"+cp);
     void el.offsetWidth;
     el.classList.add("pw440-"+cp);
-    var fl=document.createElement("span"); fl.className="pw440-float"; fl.textContent=glyph(perm)||""; el.appendChild(fl);
     var dur=Math.min(sp.dur||1500,2600);
-    setTimeout(function(){ try{ el.classList.remove("pw440-"+cp); if(fl.parentNode) fl.parentNode.removeChild(fl); }catch(e){} }, dur+400);
+    setTimeout(function(){ try{ el.classList.remove("pw440-"+cp); }catch(e){} }, dur+400);
   }catch(e){}
 }
-window.PWFX440={SPEC:SPEC, RETIRED:RETIRED, play:play, playCard:playCard,
-  cardPerm:cardPerm, glyph:glyph, retiredTitle:retiredTitle, reduced:reduced};
+/* ---------- persistent end-state: history cards show the designed scene ---------- */
+function paintEndStateForCard(cardEl, cp){
+  if(!cardEl) return;
+  try{
+    var cv=cardEl.querySelector(".pw-end-cv");
+    if(!cv) return;
+    paintEndState(cv, cp||cardPerm(cardEl.getAttribute("data-pw")||""));
+  }catch(e){}
+}
+function paintEndState(cv, cp){
+  if(!cv||!cp) return false;
+  var sp=SPEC[cp], sc=SCENE[cp];
+  if(!sp||!sc) return false;
+  try{
+    var ctx=cv.getContext("2d"); if(!ctx) return false;
+    ctx.clearRect(0,0,cv.width,cv.height);
+    drawScene(ctx,cv.width,cv.height,endT(sc.kind),sp,sc.kind);
+    return true;
+  }catch(e){ return false; }
+}
+function paintEndStates(root){
+  try{
+    var scope=root||document;
+    var list=scope.querySelectorAll?scope.querySelectorAll(".pw-end-cv"): [];
+    for(var i=0;i<list.length;i++){
+      var cv=list[i];
+      paintEndState(cv, cardPerm(cv.getAttribute("data-perm")||""));
+    }
+  }catch(e){}
+}
+/* ---------- tap-to-replay ---------- */
+function replayCard(cardEl){
+  if(!cardEl) return false;
+  var perm=cardEl.getAttribute("data-pw")||"";
+  var id=cardEl.getAttribute("data-pw-id")||"";
+  var targetUid="";
+  try{
+    var m=(typeof OG!=="undefined"&&OG.msgs||[]).filter(function(x){ return String(x.id)===String(id); })[0];
+    if(m&&m.text) targetUid=(m.text.split("|")[2]||"");
+  }catch(e){}
+  var ok=play(perm, cardEl, {msgId:id||("tap-"+Date.now()), targetUid:targetUid, replay:true});
+  try{ if(typeof PROFX!=="undefined"&&PROFX.soundFor) PROFX.soundFor(cardPerm(perm)||perm); }catch(e){}
+  return ok;
+}
+if(typeof document!=="undefined"&&document.addEventListener){
+  document.addEventListener("click", function(ev){
+    try{
+      var t=ev.target;
+      if(!t||!t.closest) return;
+      if(t.closest("button,a,select,input,textarea")) return;
+      var card=t.closest(".pw-card[data-pw-id]");
+      if(!card) return;
+      replayCard(card);
+    }catch(e){}
+  });
+  /* The replay button inside the card (its own click must not double-fire
+     via the card handler above — the button is excluded there). */
+  document.addEventListener("click", function(ev){
+    try{
+      var t=ev.target;
+      if(!t||!t.closest) return;
+      var btn=t.closest(".pw-replay");
+      if(!btn) return;
+      ev.stopPropagation();
+      var card=btn.closest(".pw-card");
+      if(card) replayCard(card);
+    }catch(e){}
+  }, true);
+}
+window.PWFX440={SPEC:SPEC, RETIRED:RETIRED, SCENE:SCENE, play:play, playCard:playCard,
+  cardPerm:cardPerm, glyph:glyph, retiredTitle:retiredTitle, reduced:reduced,
+  sceneOf:sceneOf, paintEndState:paintEndState, paintEndStates:paintEndStates,
+  replayCard:replayCard, _diag:_diag};
 })();
+
 </script>
 </body>
 </html>
