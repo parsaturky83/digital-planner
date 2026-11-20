@@ -3813,7 +3813,7 @@ var S={
      S.tasks; ledger flashcards ride S.flashDecks). No new server code. */
   b5Bingo:{size:3,cards:{},seq:0}, b5Sudoku:{diff:"easy",puzzle:null,solution:null,grid:null,notes:{},mistakes:0,seed:0,daily:false,solved:{}}, b5SigWord:{lang:"fa",hard:false,day:"",target:"",guesses:[],done:false,won:false,stats:{played:0,won:0,streak:0}}, b5Nono:{size:5,pat:0,grid:{},marks:{},solved:{},daily:false,seed:0}, b5Set:{deck:[],table:[],found:0,selected:[],wrong:0,started:false}, b5Code:{secret:[],guesses:[],daily:false,seed:0,cur:[],done:false,won:false}, b5Riddle:{dayOff:0,state:{},streak:0,lastSolved:null}, b5Numbers:{day:"",revealed:{},done:false}, b5Repeat:{best:0,strict:false,reverse:false}, b5Mock:{exams:[],active:null,results:[]}, b5Ledger:{entries:[]}, b5Grades:{courses:[]}, b5Rev:{plans:[]}, b5Queue:{items:[],idx:0,mode:"manual",breakMin:5,running:false,left:0}, b5Formulas:{entries:[],sheet:[]}, b5Zettel:{notes:[],links:[]}, b5Ivy:{lists:{},draft:[]}, b5Matrix:{matrices:[]}, b5DecJournal:{entries:[]},
   weekDecisions:{}, supporterNotes:[""], challenge:"", strategy:"",
-  calCursor:null, calSel:null, theme:"zomorod", mode:"light", plans:[], subKeys:[], mySub:null, mySuper:null, superKeys:[], onlineLastSeen:{}, loggedIn:false, keyGateShown:false, permMic:false, permNotif:false, permBg:false, permCal:false, permLoc:false, permStorage:false, onlineStats:null, sfxMute:false, sfxVol:0.6, avUnlockSeen:[], homeLayout:null, customWidgets:[], subSales:{telegramOn:true,telegramId:"Albakorov",gatewayOn:false,gatewayName:"",merchantId:"",payLink:""}
+  calCursor:null, calSel:null, theme:"zomorod", mode:"light", plans:[], subKeys:[], mySub:null, mySuper:null, superKeys:[], onlineLastSeen:{}, loggedIn:false, keyGateShown:false, permMic:false, permNotif:false, permBg:false, permCal:false, permLoc:false, permStorage:false, onlineStats:null, groupNotifMute:{}, groupNotifMutePending:{}, sfxMute:false, sfxVol:0.6, avUnlockSeen:[], homeLayout:null, customWidgets:[], subSales:{telegramOn:true,telegramId:"Albakorov",gatewayOn:false,gatewayName:"",merchantId:"",payLink:""}
 };
 /* v10.4.18 — fresh-state snapshot (per-account state, #27): captured here,
    immediately after the S literal, before boot() or any login mutates it.
@@ -9694,6 +9694,10 @@ function enterApp(){
   try{ if(typeof SB!=="undefined") SB.afterEnter(); }catch(e){}
   /* v10.4.39 — owner-voice welcome on every entry (login + resume). */
   try{ playWelcomeVoice(); }catch(e){}
+  /* v10.4.42 (FCM): the app is booted now — drain any push deep link
+     that arrived before boot (or while the group list was loading). */
+  window.__goAppBooted=true;
+  try{ if(typeof SB!=="undefined"&&SB.drainPushDeepLinks) SB.drainPushDeepLinks(); }catch(e){}
 }
 async function obDone(){
   var pass=$("obPass").value, secA=$("obSecA").value.trim();
@@ -14421,7 +14425,7 @@ Object.assign(I18N_EN,{"k4815":"Study tasks","k4816":"Personal tasks","k4817":"S
 Object.assign(I18N_EN,{"k9131":"App sounds are muted — unmute to hear the soundscape","k9133":"Sound events","k9134":"Effect events","k9135":"Delivery decisions","k9137":"No events recorded yet"});
 /* v10.4.35 (Y5): EN strings for the clock-skew banner (k3259–k3260). */
 Object.assign(I18N_EN,{"k3259":"Owner signature not verified, and the device clock differs from the server clock.","k3260":"This device's clock differs from the server clock by {n} minutes; fix the device clock. Password-based reset still works."});
-var APP_VERSION="10.4.41";
+var APP_VERSION="10.4.42";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -17018,6 +17022,11 @@ var GameFX={
          so the milestone never fired later when visible. */
       var shown=this.celebrate({type:"streak",streak:streak});
       if(!shown) return false;
+      /* v10.4.42 (FCM): streak milestones report only when the
+         overlay actually showed — same once-only rule as the
+         seen-mark below, so a hidden milestone re-fires (and
+         reports) on first sight instead of double-reporting. */
+      try{ if(typeof SB!=="undefined"&&SB.reportCelebration) SB.reportCelebration("streak",TR('k3251','نقطه عطف زنجیره!')+" — "+fa(hit)+" "+TR('k2162','روز زنجیره'),null); }catch(e){}
       for(var j=0;j<miles.length;j++){ if(miles[j]<=hit&&seen.indexOf(miles[j])===-1) seen.push(miles[j]); }
       try{ localStorage.setItem("go-streak-ms",JSON.stringify(seen)); }catch(e){}
       return true;
@@ -28291,7 +28300,7 @@ SB.recoverKeyFromServer=function(){
     return true;
   }).catch(function(){ return false; });
 };
-SB.afterEnter=function(){ if(SB.online){ SB.syncIdentity(); OG.loadMine(); SB.revalidateKey(); } else if(SB.groupOnline()){ OG.loadMine(); SB.revalidateKey(); } };
+SB.afterEnter=function(){ try{ if(typeof SB.flushPushToken==="function") SB.flushPushToken(); }catch(e){} try{ if(typeof SB.flushPushMutes==="function") SB.flushPushMutes(); }catch(e){} if(SB.online){ SB.syncIdentity(); OG.loadMine(); SB.revalidateKey(); } else if(SB.groupOnline()){ OG.loadMine(); SB.revalidateKey(); } };
 /* v10.4.11 — OFFLINE group sync (Parsa 22:17): groups created offline
    (pendingSync) are pushed to the server when the device comes online.
    On success the local pending copy is removed and the server group
@@ -31203,7 +31212,7 @@ function onlineGroupHTML(){
   if(!OG.list.length){ h+='<p class="small">'+TR('k1105','هنوز گروهی نساخته‌اید')+'.</p></div>'; return h; }
   h+='<h3 style="margin:14px 0 8px">'+TR('k2102','گروه آنلاین شما')+'</h3>'+OG.list.map(function(g){
     var sel=OG.sel&&String(OG.sel.id)===String(g.id);
-    return '<div class="listrow'+(sel?'':'')+'"><div class="grow"><b>'+esc(g.name)+'</b><div class="small">'+TR('k2024','کد دعوت گروه')+': <span dir="ltr" class="latintok">'+keyCodeHTML(g.invite_code)+'</span> — '+esc(g.myRole||"")+'</div></div><button class="btn ghost sm" onclick="copySubKey(\''+esc(g.invite_code)+'\')">'+TR('k1500','کپی کلید')+'</button>' +(OG.isAdmin()?'<button class="btn sm ghost" onclick="OG.regenInvite(\''+g.id+'\')">'+TR('k2437','کد تازه')+'</button>':'')+(ownerMode?'<button class="btn ghost sm" onclick="SB.editOwnerGroup(\''+g.id+'\',\''+esc(g.name||"")+'\',\''+esc(g.theme||"default")+'\')">'+TR('k2766','ویرایش گروه')+'</button><button class="btn ghost sm" style="color:#b3352c;border-color:#b3352c" onclick="SB.deleteOwnerGroup(\''+g.id+'\',\''+esc(g.name||"")+'\')">'+TR('k0303','حذف')+'</button>':'')+'<button class="btn sm" onclick="OG.select(\''+g.id+'\')">'+(sel?TR('k0620','فعال'):TR('k0256','خانه'))+'</button></div>';
+    return '<div class="listrow'+(sel?'':'')+'"><div class="grow"><b>'+esc(g.name)+'</b><div class="small">'+TR('k2024','کد دعوت گروه')+': <span dir="ltr" class="latintok">'+keyCodeHTML(g.invite_code)+'</span> — '+esc(g.myRole||"")+'</div></div><button class="btn ghost sm" onclick="copySubKey(\''+esc(g.invite_code)+'\')">'+TR('k1500','کپی کلید')+'</button>'+'<button class="btn ghost sm" onclick="OG.toggleGroupPushMute(\''+g.id+'\')" aria-label="'+TR((S.groupNotifMute&&S.groupNotifMute[g.id])?'k6274':'k6273',(S.groupNotifMute&&S.groupNotifMute[g.id])?'روشن کردن اعلان‌های گروه':'بی‌صدا کردن اعلان‌های گروه')+'">'+((S.groupNotifMute&&S.groupNotifMute[g.id])?'🔕':'🔔')+'</button>' +(OG.isAdmin()?'<button class="btn sm ghost" onclick="OG.regenInvite(\''+g.id+'\')">'+TR('k2437','کد تازه')+'</button>':'')+(ownerMode?'<button class="btn ghost sm" onclick="SB.editOwnerGroup(\''+g.id+'\',\''+esc(g.name||"")+'\',\''+esc(g.theme||"default")+'\')">'+TR('k2766','ویرایش گروه')+'</button><button class="btn ghost sm" style="color:#b3352c;border-color:#b3352c" onclick="SB.deleteOwnerGroup(\''+g.id+'\',\''+esc(g.name||"")+'\')">'+TR('k0303','حذف')+'</button>':'')+'<button class="btn sm" onclick="OG.select(\''+g.id+'\')">'+(sel?TR('k0620','فعال'):TR('k0256','خانه'))+'</button></div>';
   }).join("");
   if(OG.sel){
     h+='<div style="margin-top:14px;border-top:1px solid var(--acc);padding-top:12px"><div class="ghead"><div class="gav">👥</div><div><b>'+esc(OG.sel.name)+'</b><div class="small">'+fa(OG.members.length)+' '+TR('k2026','اعضا')+' — '+TR('k2000','آنلاین')+'</div></div></div>';
@@ -33165,7 +33174,7 @@ SB.profile=null;
    unsynced-data indicator (paintServerStatus) shows it. A bare false from
    the server (unlinked key) is a failure, not a success (#30 pattern). */
 SB._settingsSnapshot=function(){
-  return {sfxMute:!!S.sfxMute,sfxVol:(typeof S.sfxVol==="number"?S.sfxVol:0.6),theme:S.theme||"zomorod",lang:(S.settings&&S.settings.lang)||LANG||"fa",alarmSound:S.alarmSound||"chime",homeLayout:S.homeLayout||null,quietFrom:(S.settings&&S.settings.quietFrom)||"23:00",quietTo:(S.settings&&S.settings.quietTo)||"07:00",fontSize:S.fontSize||"normal",sound:(S.settings&&S.settings.sound)||"soft",activeDays:(S.onlineStats&&S.onlineStats.days)?Object.keys(S.onlineStats.days):[],pomoLog:S.pomoLog||{},customWidgets:S.customWidgets||[],wtHandsFree:!!(S.settings&&S.settings.wtHandsFree)};
+  return {sfxMute:!!S.sfxMute,sfxVol:(typeof S.sfxVol==="number"?S.sfxVol:0.6),theme:S.theme||"zomorod",lang:(S.settings&&S.settings.lang)||LANG||"fa",alarmSound:S.alarmSound||"chime",homeLayout:S.homeLayout||null,quietFrom:(S.settings&&S.settings.quietFrom)||"23:00",quietTo:(S.settings&&S.settings.quietTo)||"07:00",fontSize:S.fontSize||"normal",sound:(S.settings&&S.settings.sound)||"soft",activeDays:(S.onlineStats&&S.onlineStats.days)?Object.keys(S.onlineStats.days):[],pomoLog:S.pomoLog||{},customWidgets:S.customWidgets||[],wtHandsFree:!!(S.settings&&S.settings.wtHandsFree),groupNotifMute:(S.groupNotifMute&&typeof S.groupNotifMute==="object"?S.groupNotifMute:{})};
 };
 SB.pushUserSettings=function(){
   var _k=null; try{ _k=SB.keyForRpc(); }catch(e){}
@@ -33208,6 +33217,7 @@ SB.pullUserSettings=function(){
     if(typeof d.quietTo==="string"&&S.settings) S.settings.quietTo=d.quietTo;
     if(typeof d.fontSize==="string") S.fontSize=d.fontSize;
     if(typeof d.sound==="string"&&S.settings) S.settings.sound=d.sound;
+    if(d.groupNotifMute&&typeof d.groupNotifMute==="object"){ if(!S.groupNotifMute||typeof S.groupNotifMute!=="object") S.groupNotifMute={}; Object.keys(d.groupNotifMute).forEach(function(gid){ S.groupNotifMute[gid]=!!d.groupNotifMute[gid]; }); }
     if(Array.isArray(d.activeDays)){ if(!S.onlineStats) S.onlineStats={tasks:0,focusMin:0,votes:0,wtCalls:0,missions:0,days:{},awarded:[]}; d.activeDays.forEach(function(day){ S.onlineStats.days[day]=true; }); }
     if(d.pomoLog&&typeof d.pomoLog==="object") S.pomoLog=d.pomoLog;
     save();
@@ -34498,6 +34508,11 @@ SB.addPoints=function(kind,groupId,opts){
       if(_ev){
         if(_ev.type==="rank") toast("🎉 "+TR('k2117','رتبه تازه')+": "+rankName(after));
         if(GameFX.celebrate(_ev)){ SFX.play("fanfare"); try{ if(typeof Juice!=="undefined"&&Juice.burst) Juice.burst("levelup"); }catch(e){} try{ if(typeof achieveCheck==="function") achieveCheck(); }catch(e){} }
+        /* v10.4.42 (FCM): the level/rank crossing is reported even
+           when the overlay did not show (hidden app) — add_points
+           was NOT modified server-side, so this client report IS
+           the level-up push path. Fire-and-forget. */
+        try{ if(typeof SB!=="undefined"&&SB.reportCelebration){ var _celTitle=(_ev.type==="rank")?(TR('k2117','رتبه تازه')+": "+rankName(after)):(TR('k3249','سطح')+" "+fa(_ev.level)); SB.reportCelebration("level_up",_celTitle,groupId||null); } }catch(e){}
       }
     }catch(e){}
     /* v10.4.25 (#3): the XP floater fires ONLY on a confirmed award,
@@ -35720,6 +35735,10 @@ var WT={joined:false,groupId:null,peers:{},pc:{},stream:null,talking:false,speak
    WT.talking=true;
    WT.stream.getAudioTracks().forEach(function(t){ t.enabled=true; });
    WT.send({type:"talking",to:"*",from:WT.myUid(),on:true});
+   /* v10.4.42 (FCM): one report per talk burst, alongside the
+      broadcast send — never pttDown / retrack / onPresence.
+      Fire-and-forget; the server dedupes within 10 minutes. */
+   try{ if(typeof SB!=="undefined"&&SB.reportWalkieTalk) SB.reportWalkieTalk(WT.groupId); }catch(e){}
    WT.retrack();
    SFX.play("wt_start");
    if(window.GhostOpsBridge&&GhostOpsBridge.onTalkingChanged) GhostOpsBridge.onTalkingChanged(true);
@@ -40882,12 +40901,481 @@ SB.notifyPower=function(m,perm){
     }
   }catch(e){}
 };
-/* Optional FCM path: the wrapper passes its FCM token here; it is stored so
-   a server sender can push ability events to offline members. */
-SB.registerPushToken=function(token){
-  if(!token||!SB.online||!SB.uid) return Promise.resolve(null);
-  return SB.client.from("device_tokens").upsert({user_id:SB.uid,token:token,platform:"android"},{onConflict:"user_id,token"}).then(function(res){ if(res.error) sbLog("push token: "+res.error.message); return res; }).catch(function(){ return null; });
+/* ================= v10.4.42 — FCM PUSH (Parsa 2026-11-20) =================
+   Push for chat messages, powers, celebrations, walkie talk-start, plus
+   a per-group mute. Audit: work/APP-AUDIT-442.md. Native contract:
+   native/INSTALL-NOTE.md. Server: §442.4 RPCs in
+   sql/supabase-complete-final-v10442.sql.
+   IDENTITY (audit §1/§10 + §442 header): device_tokens.user_id is the
+   SB.myUid() string uniformly — Auth uid, 'key:'+code, or 'owner'. The
+   old stub guarded on SB.online && SB.uid and silently dropped tokens
+   for key users and the owner; the RPCs below resolve the caller
+   server-side (push_caller_myuid: auth.uid() wins, else key_text_uid,
+   else 'owner' with a valid owner sig), so the guard is relaxed to
+   "any myUid() identity". CORRECTION to the audit §1: device_tokens
+   DOES exist in v10.4.39 — only the guard was broken, not the table.
+   All push RPCs are fire-and-forget: a failure NEVER breaks login,
+   logout, an award, or a talk burst. No secret, key or signature is
+   ever written to any file. */
+Object.assign(I18N_EN,{"k6273":"Mute group notifications","k6274":"Unmute group notifications","k6275":"Notifications muted for this group","k6276":"Notifications unmuted for this group","k6277":"Could not save the mute on the server","k6278":"New message"});
+SB._pushToken=null; /* last FCM token handed by the native wrapper */
+SB._pushTokenPending=false; /* true when a token still needs registering */
+SB._pushTokenRegisteredFor=null; /* myUid() the token is registered under */
+SB._pushSeenIds=[]; /* live-push event ids already handled (dedupe) */
+SB._pushDrainTimer=null; SB._pushDrainTries=0;
+SB._pushOwnerSig=function(){
+  try{ if(typeof ownerMode!=="undefined"&&ownerMode&&typeof ownerSig==="function") return ownerSig().catch(function(){ return null; }); }catch(e){}
+  return Promise.resolve(null);
 };
+/* Optional FCM path: the wrapper passes its FCM token here; the server
+   sender uses it to push ability/chat events to offline members.
+   Replaces the v10.4.41 direct device_tokens upsert (audit §1): the
+   token now goes through register_push_token, which derives the caller
+   identity server-side, so key users and the owner register too. A
+   token that arrives before any identity exists (or before the client
+   is ready) is kept pending and flushed by SB.afterEnter. */
+/* Guarded RPC for push bookkeeping (v10.4.42 fix, suite k3305):
+   sbRpc marks SB.serverOk=false on ANY network failure, and these calls
+   are best-effort push bookkeeping, not data reads — a failed celebration
+   / mute / token report must never mark the server down or drop a group
+   action that was already judged online (an unguarded record_celebration
+   rejection landing in the 30 ms window between two addTaskOnline calls
+   broke the k3305 suite test 8/8 on the unguarded build). Restore the
+   flag whenever this call fails with the same network/fetch error class
+   sbRpc flips on. A genuine outage is still re-flagged by the next real
+   data call (loadMine / poll / diary) within seconds, so this masks
+   nothing for longer than that. */
+SB._pushRpc=function(name,params){
+  var netRe=/network|fetch|Failed to fetch|timeout|abort/i;
+  var restore=function(err){
+    /* No wasOk snapshot on purpose: the flag may legitimately be set true
+       AFTER this call starts (a login step or a test judging the server
+       online), and this best-effort call's failure must not undo that
+       judgment. A genuine outage is re-flagged by the next real data call
+       (loadMine / poll / diary) within seconds, so nothing is masked for
+       longer than that. */
+    try{ if(SB.serverOk===false&&err&&netRe.test(String(err.message||err))) SB.serverOk=true; }catch(e){}
+  };
+  var p=null;
+  try{ p=sbRpc(name,params); }catch(e){ return Promise.resolve({data:null,error:{message:String(e&&e.message||e)}}); }
+  return p.then(function(res){
+    if(res&&res.error) restore(res.error);
+    return res;
+  }).catch(function(e){ restore(e); return {data:null,error:{message:String(e&&e.message||e)}}; });
+};
+SB.registerPushToken=function(token){
+  if(!token||typeof token!=="string") return Promise.resolve(null);
+  token=token.trim(); if(token.length<10) return Promise.resolve(null);
+  SB._pushToken=token;
+  var uid=null; try{ uid=SB.myUid(); }catch(e){}
+  if(!uid){ SB._pushTokenPending=true; return Promise.resolve(null); }
+  if(!SB.client||typeof sbRpc!=="function"){ SB._pushTokenPending=true; return Promise.resolve(null); }
+  var key=null; try{ key=SB.keyForRpc(); }catch(e){}
+  return SB._pushOwnerSig().then(function(sig){
+    return SB._pushRpc("register_push_token",{p_token:token,p_platform:"android",p_key:key,p_sig:sig});
+  }).then(function(res){
+    if(res&&!res.error&&res.data&&res.data[0]&&res.data[0].ok){ SB._pushTokenPending=false; SB._pushTokenRegisteredFor=uid; }
+    else { SB._pushTokenPending=true; if(res&&res.error) sbLog("push token: "+res.error.message); }
+    return res;
+  }).catch(function(){ SB._pushTokenPending=true; return null; });
+};
+/* Delete the token row for the CURRENT identity, by token value (not
+   uid — logout nulls SB.uid, see logoutApp). Call BEFORE any logout
+   step clears the key/uid; the key + sig are captured synchronously
+   when this is called. The stored token itself is kept, so the next
+   account on this device re-registers the same device token under its
+   own identity on entry. */
+SB.deletePushToken=function(token){
+  var tok=(token&&typeof token==="string"&&token.trim().length>=10)?token.trim():SB._pushToken;
+  if(!tok) return Promise.resolve(null);
+  if(!SB.client||typeof sbRpc!=="function") return Promise.resolve(null);
+  var key=null; try{ key=SB.keyForRpc(); }catch(e){}
+  return SB._pushOwnerSig().then(function(sig){
+    return SB._pushRpc("delete_push_token",{p_token:tok,p_key:key,p_sig:sig});
+  }).then(function(res){
+    SB._pushTokenRegisteredFor=null;
+    if(res&&res.error) sbLog("push token delete: "+res.error.message);
+    return res;
+  }).catch(function(){ return null; });
+};
+/* Flush a pending token (called from SB.afterEnter — the single choke
+   point covering login, sign-up, session restore and key activation).
+   Skips the RPC when the token is already registered under the current
+   identity, so every entry does not re-register. */
+SB.flushPushToken=function(){
+  try{
+    if(!SB._pushToken) return Promise.resolve(null);
+    var uid=null; try{ uid=SB.myUid(); }catch(e){}
+    if(!uid){ SB._pushTokenPending=true; return Promise.resolve(null); }
+    if(!SB._pushTokenPending&&SB._pushTokenRegisteredFor===uid) return Promise.resolve(null);
+    return SB.registerPushToken(SB._pushToken);
+  }catch(e){ return Promise.resolve(null); }
+};
+/* Celebration report (audit §6): the client IS the level-up / streak /
+   goal / game-win path — add_points was NOT modified server-side, and
+   badge achievements are already server-triggered (never double-report
+   them here). Fire-and-forget. NOTE: record_celebration takes NO p_sig,
+   so an owner report returns no-perm server-side and just fails
+   silently — that is the server contract, not a client bug. */
+SB.reportCelebration=function(kind,title,groupId){
+  try{
+    var kinds={level_up:1,streak:1,goal_complete:1,game_win:1,puzzle:1,festival:1,saga:1,achievement:1};
+    if(!kind||!kinds[kind]) return Promise.resolve(null);
+    if(!title||typeof title!=="string"||!title.trim()||title.trim().length>200) return Promise.resolve(null);
+    if(!SB.client||typeof sbRpc!=="function") return Promise.resolve(null);
+    var key=null; try{ key=SB.keyForRpc(); }catch(e){}
+    return SB._pushRpc("record_celebration",{p_kind:kind,p_title:title.trim(),p_group:groupId||null,p_key:key}).then(function(res){
+      if(res&&res.error) sbLog("celebration report: "+res.error.message);
+      return res;
+    }).catch(function(){ return null; });
+  }catch(e){ return Promise.resolve(null); }
+};
+/* Walkie talk-start report (audit §7): one report per talk burst, from
+   WT.startTalk only — never pttDown / retrack / onPresence. */
+SB.reportWalkieTalk=function(groupId){
+  try{
+    if(!groupId) return Promise.resolve(null);
+    if(!SB.client||typeof sbRpc!=="function") return Promise.resolve(null);
+    var key=null; try{ key=SB.keyForRpc(); }catch(e){}
+    return SB._pushRpc("walkie_talk_started",{p_group:groupId,p_key:key}).then(function(res){
+      if(res&&res.error) sbLog("walkie report: "+res.error.message);
+      return res;
+    }).catch(function(){ return null; });
+  }catch(e){ return Promise.resolve(null); }
+};
+/* Per-group push mute (audit §5). The RPC fans the mute out to EVERY
+   identity the caller holds (§442.4 set_group_push_mute) — one call
+   with p_key (+ owner sig) is enough; the app never writes per-identity
+   rows itself. Local map S.groupNotifMute is the UI source and rides
+   the settings blob; the server rows are the sender's source. */
+SB.setGroupPushMute=function(gid,muted){
+  if(!gid) return Promise.resolve(null);
+  if(!SB.client||typeof sbRpc!=="function") return Promise.resolve(null);
+  var key=null; try{ key=SB.keyForRpc(); }catch(e){}
+  return SB._pushOwnerSig().then(function(sig){
+    return SB._pushRpc("set_group_push_mute",{p_group:gid,p_muted:!!muted,p_key:key,p_sig:sig});
+  }).then(function(res){
+    if(res&&res.error) sbLog("group push mute: "+res.error.message);
+    return res;
+  }).catch(function(){ return null; });
+};
+OG.toggleGroupPushMute=function(gid){
+  try{
+    if(!gid) return;
+    if(!S.groupNotifMute||typeof S.groupNotifMute!=="object") S.groupNotifMute={};
+    if(!S.groupNotifMutePending||typeof S.groupNotifMutePending!=="object") S.groupNotifMutePending={};
+    var next=!S.groupNotifMute[gid];
+    S.groupNotifMute[gid]=next;
+    try{ save(); }catch(e){}
+    try{ if(typeof SB!=="undefined"&&SB.pushUserSettings) SB.pushUserSettings(); }catch(e){}
+    try{ if(typeof OG!=="undefined"&&OG.refreshGroupCard) OG.refreshGroupCard(); }catch(e){}
+    try{ toast(TR(next?'k6275':'k6276',next?'اعلان‌های این گروه بی‌صدا شد':'اعلان‌های این گروه روشن شد')+"."); }catch(e){}
+    SB.setGroupPushMute(gid,next).then(function(res){
+      var ok=!!(res&&!res.error&&res.data&&res.data[0]&&res.data[0].ok);
+      try{
+        if(ok){ delete S.groupNotifMutePending[gid]; }
+        else { S.groupNotifMutePending[gid]=next; toast(TR('k6277','ذخیره بی‌صدایی روی سرور انجام نشد')+"."); }
+        save();
+      }catch(e){}
+    });
+  }catch(e){}
+};
+/* Replay mute intents that failed while offline (explicit user actions;
+   they win over an adopted server state). Called from SB.afterEnter. */
+SB.flushPushMutes=function(){
+  try{
+    var pend=(S.groupNotifMutePending&&typeof S.groupNotifMutePending==="object")?S.groupNotifMutePending:{};
+    var keys=Object.keys(pend);
+    if(!keys.length) return Promise.resolve(false);
+    if(!SB.client||typeof sbRpc!=="function") return Promise.resolve(false);
+    var seq=Promise.resolve(false);
+    keys.forEach(function(gid){
+      var want=!!pend[gid];
+      seq=seq.then(function(){
+        return SB.setGroupPushMute(gid,want).then(function(res){
+          var ok=!!(res&&!res.error&&res.data&&res.data[0]&&res.data[0].ok);
+          if(ok){ try{ delete S.groupNotifMutePending[gid]; save(); }catch(e){} }
+          return ok;
+        });
+      });
+    });
+    return seq.catch(function(){ return false; });
+  }catch(e){ return Promise.resolve(false); }
+};
+/* Adopt the server mute rows into the local map (fresh device / mute
+   changed on another device). Never pushes local -> server: the local
+   map travels via the settings blob, and a pending intent (explicit
+   user action) always wins over an adopted state. Throttled to 60 s. */
+SB._muteSyncAt=0;
+SB.syncGroupPushMutes=function(){
+  try{
+    if(!SB.client||typeof sbRpc!=="function") return Promise.resolve(false);
+    if(!SB.groupOnline()) return Promise.resolve(false);
+    var uid=null; try{ uid=SB.myUid(); }catch(e){}
+    if(!uid) return Promise.resolve(false);
+    var now=Date.now();
+    if(SB._muteSyncAt&&now-SB._muteSyncAt<60000) return Promise.resolve(false);
+    SB._muteSyncAt=now;
+    var list=(typeof OG!=="undefined"&&OG.list)?OG.list:[];
+    if(!list.length) return Promise.resolve(false);
+    if(!S.groupNotifMute||typeof S.groupNotifMute!=="object") S.groupNotifMute={};
+    if(!S.groupNotifMutePending||typeof S.groupNotifMutePending!=="object") S.groupNotifMutePending={};
+    var key=null; try{ key=SB.keyForRpc(); }catch(e){}
+    var changed=false;
+    var seq=Promise.resolve();
+    list.forEach(function(g){
+      seq=seq.then(function(){
+        if(S.groupNotifMutePending[g.id]!==undefined) return; /* pending intent wins */
+        return SB._pushRpc("get_group_push_mute",{p_group:g.id,p_key:key,p_sig:null}).then(function(res){
+          if(res.error||typeof res.data!=="boolean") return;
+          if(!!S.groupNotifMute[g.id]!==res.data){ S.groupNotifMute[g.id]=res.data; changed=true; }
+        }).catch(function(){});
+      });
+    });
+    return seq.then(function(){
+      if(changed){ try{ save(); }catch(e){} try{ if(typeof OG!=="undefined"&&OG.refreshGroupCard) OG.refreshGroupCard(); }catch(e){} }
+      return true;
+    }).catch(function(){ return false; });
+  }catch(e){ return Promise.resolve(false); }
+};
+/* After every group-list load, sync the server mute rows (throttled
+   inside). Additive wrapper — the original loadMine is untouched. */
+(function(){
+  try{
+    if(typeof OG!=="undefined"&&OG.loadMine&&!OG._pushMuteWrapped){
+      OG._pushMuteWrapped=true;
+      var _lm=OG.loadMine;
+      OG.loadMine=function(){
+        var r=_lm.apply(this,arguments);
+        try{ if(r&&typeof r.then==="function") r.then(function(){ try{ SB.syncGroupPushMutes(); }catch(e){} }); }catch(e){}
+        return r;
+      };
+    }
+  }catch(e){}
+})();
+/* ---------- FCM push deep links + live push messages (native contract:
+   INSTALL-NOTE.md "Page contract") ----------
+   window.__goPushDeepLink(json) — tap on a push notification. json is
+   {"kind","group_id","thread_id","chat_id","title","body"} (+ the sender
+   may also carry source_id/message_id/perm/sender_uid/sender_name, flat
+   or under "data"). Routing per INSTALL-NOTE: chat/personal/support ->
+   the thread; power -> the group chat (the effect itself still plays
+   via loadMsgs -> deliverBulkPowers on open, 60 s window — existing
+   behaviour, not a push bug); announcement / poll / vote / task /
+   member / event -> the group; walkie -> walkie view; key_revoked ->
+   key gate; celebration -> the group when it has one, else a toast.
+   If the page is not booted yet, or the group is not in OG.list yet
+   (loadMine still in flight), the link is QUEUED and drained on boot /
+   on a bounded retry (10 x 3 s), exactly like the native side's
+   deliverPendingPushDeepLink. The boot drain also pulls
+   GhostOpsBridge.getPushDeepLink() (take semantics) as a fallback.
+   window.__goPushMessage(json) — a push that arrives while the page is
+   alive. Powers and group chats re-enter the LIVE path (OG.onMsg) so
+   the existing id dedupe applies and a later Realtime/poll delivery of
+   the same row is skipped (audit §2/§10.3). Anything else is a toast
+   (or a refresh of the open view), deduped by event id. The native
+   notification was already posted, so this handler never posts another
+   notification — it only plays the live sound/effect. */
+SB._pushParse=function(json){
+  try{
+    var d=json;
+    if(typeof d==="string"){ try{ d=JSON.parse(d); }catch(e){ return null; } }
+    if(!d||typeof d!=="object") return null;
+    var inner=(d.data&&typeof d.data==="object")?d.data:{};
+    var g=function(k){
+      if(d[k]!==undefined&&d[k]!==null&&d[k]!=="") return d[k];
+      if(inner[k]!==undefined&&inner[k]!==null&&inner[k]!=="") return inner[k];
+      return null;
+    };
+    return {
+      kind:g("kind")||g("event_type")||"",
+      group_id:g("group_id")||g("groupId"),
+      thread_id:g("thread_id")||g("threadId"),
+      chat_id:g("chat_id")||g("chatId"),
+      title:g("title")||"",
+      body:g("body")||"",
+      perm:g("perm")||"",
+      text:g("text")||"",
+      message_id:g("message_id")||g("source_id")||g("id")||g("event_id"),
+      sender_uid:g("sender_uid")||g("actorUid")||g("actor_uid")||"",
+      sender_name:g("sender_name")||g("actor")||g("actor_name")||"",
+      silent:!!(d.silent||inner.silent)
+    };
+  }catch(e){ return null; }
+};
+SB._pushNormKind=function(k){
+  k=String(k||"").toLowerCase().replace(/-/g,"_");
+  if(k==="chat_message"||k==="chat"||k==="group_chat") return "chat";
+  if(k==="personal_chat"||k==="personal"||k==="pchat") return "personal";
+  if(k==="support_reply"||k==="support") return "support";
+  if(k==="power") return "power";
+  if(k==="announcement"||k==="poll"||k==="vote"||k==="group_task"||k==="task"||k==="member_join"||k==="member"||k==="group_event"||k==="event") return "group";
+  if(k==="walkie_talk"||k==="walkie") return "walkie";
+  if(k==="key_revoked") return "key";
+  if(k==="celebration") return "celebration";
+  if(k==="reminder") return "reminder";
+  return "unknown";
+};
+SB._pushFindGroup=function(gid){
+  try{
+    if(!gid) return null;
+    var list=(typeof OG!=="undefined"&&OG.list)?OG.list:[];
+    for(var i=0;i<list.length;i++){ if(String(list[i].id)===String(gid)) return list[i]; }
+    if(typeof OG!=="undefined"&&OG.sel&&String(OG.sel.id)===String(gid)) return OG.sel;
+    return null;
+  }catch(e){ return null; }
+};
+SB._pushRouteDeepLink=function(d){
+  try{
+    if(!d||typeof d!=="object") return "ignored";
+    var kind=SB._pushNormKind(d.kind||"");
+    var gid=d.group_id||null, cid=d.chat_id||null;
+    var title=d.title||"", body=d.body||"";
+    if(!window.__goAppBooted) return "queued";
+    if(kind==="key"){ try{ showKeyGateModal(); }catch(e){} return "routed"; }
+    if(kind==="support"){ try{ go("support"); }catch(e){} return "routed"; }
+    if(kind==="personal"){
+      if(!cid){ try{ go("pchatlist"); }catch(e){} return "routed"; }
+      var c=((S.pchats||[]).filter(function(x){ return String(x.id)===String(cid); }))[0];
+      if(!c) return "queued"; /* personal-chat list not loaded yet */
+      try{ SB.openPChat(cid); }catch(e){}
+      return "routed";
+    }
+    if(kind==="walkie"){
+      if(!gid){ try{ go("walkie"); }catch(e){} return "routed"; }
+      try{ go("walkie"); }catch(e){}
+      try{ if(typeof WT!=="undefined"&&WT.join) WT.join(gid); }catch(e){}
+      return "routed";
+    }
+    if(kind==="celebration"){
+      if(gid){
+        if(!SB._pushFindGroup(gid)) return "queued";
+        try{ OG.select(gid); go("group"); }catch(e){}
+      }
+      else if(title||body){ try{ toast(title||body); }catch(e){} }
+      return "routed";
+    }
+    if(kind==="reminder"){ try{ go("today"); }catch(e){} return "routed"; }
+    if(kind==="chat"||kind==="power"||kind==="group"){
+      if(!gid){ if(title||body){ try{ toast(title||body); }catch(e){} } return "routed"; }
+      if(!SB._pushFindGroup(gid)) return "queued";
+      try{ OG.select(gid); }catch(e){}
+      try{ go(kind==="group"?"group":"chat"); }catch(e){}
+      return "routed";
+    }
+    if(title||body){ try{ toast(title||body); }catch(e){} return "routed"; }
+    return "ignored";
+  }catch(e){ return "ignored"; }
+};
+window.__goPushDeepLink=function(json){
+  try{
+    var d=SB._pushParse(json);
+    if(!d) return false;
+    if(!window.__goAppBooted){ (window.__goPushDeepLinkQueue=window.__goPushDeepLinkQueue||[]).push(d); return true; }
+    var r=SB._pushRouteDeepLink(d);
+    if(r==="queued"){
+      (window.__goPushDeepLinkQueue=window.__goPushDeepLinkQueue||[]).push(d);
+      try{ if(typeof SB.drainPushDeepLinks==="function") SB.drainPushDeepLinks(); }catch(e){}
+    }
+    return r!=="ignored";
+  }catch(e){ return false; }
+};
+window.__goPushMessage=function(json){
+  try{
+    var d=SB._pushParse(json);
+    if(!d) return false;
+    if(!window.__goAppBooted) return false; /* not ready: the native notification already posted */
+    var kind=SB._pushNormKind(d.kind||"");
+    var mid=d.message_id?String(d.message_id):null;
+    var me=null; try{ me=SB.myUid(); }catch(e){}
+    if(kind==="power"){
+      var perm=d.perm||"";
+      if(!perm&&d.text){ try{ perm=(String(d.text).split("|")[1]||""); }catch(e){} }
+      if(!perm){ if(d.title||d.body){ try{ toast(d.title||d.body); }catch(e){} } return true; }
+      /* Dedupe against the live path (audit §2/§10.3): never play a
+         power the page already delivered, and never play my own. */
+      if(mid&&typeof OG!=="undefined"&&OG._deliveredPowerSeen&&OG._deliveredPowerSeen(mid)) return true;
+      if(mid&&(OG.msgs||[]).some(function(x){ return String(x.id)===String(mid); })) return true;
+      if(d.sender_uid&&me&&d.sender_uid===me) return true;
+      var m={id:(mid||("push-"+Date.now())),group_id:d.group_id||(OG.sel?OG.sel.id:null),text:"⚡POWER|"+perm+"|",sender_uid:d.sender_uid||"",sender_name:d.sender_name||"",created_at:new Date().toISOString()};
+      if(d.text&&String(d.text).indexOf("⚡POWER|")===0) m.text=d.text;
+      /* The full live path: OG.onMsg dedupes storage by id, so a later
+         Realtime/poll delivery of this same row plays nothing twice. */
+      if(typeof OG!=="undefined"&&OG.onMsg) OG.onMsg(m);
+      return true;
+    }
+    if(kind==="chat"){
+      if(mid&&(OG.msgs||[]).some(function(x){ return String(x.id)===String(mid); })) return true;
+      if(d.sender_uid&&me&&d.sender_uid===me) return true;
+      if(!d.group_id||!OG.sel||String(d.group_id)!==String(OG.sel.id)) return true; /* other group: native notification covers it */
+      var m2={id:(mid||("push-"+Date.now())),group_id:d.group_id,text:d.body||d.title||"",sender_uid:d.sender_uid||"",sender_name:d.sender_name||"",created_at:new Date().toISOString()};
+      if(typeof OG!=="undefined"&&OG.onMsg) OG.onMsg(m2);
+      return true;
+    }
+    /* Every other kind: dedupe by event id, then toast (or refresh the
+       open view). No notification is posted here — the native side
+       already posted one. */
+    if(mid){
+      if(!SB._pushSeenIds) SB._pushSeenIds=[];
+      if(SB._pushSeenIds.indexOf(mid)!==-1) return true;
+      SB._pushSeenIds.push(mid);
+      if(SB._pushSeenIds.length>500) SB._pushSeenIds.splice(0,SB._pushSeenIds.length-500);
+    }
+    if(kind==="personal"){
+      var cid=d.chat_id||null;
+      if(cid&&S.pchatSel&&String(S.pchatSel.id)===String(cid)){ try{ SB.loadPChatMessages(cid); }catch(e){} return true; }
+      if(d.title||d.body){ try{ toast(d.title||d.body); }catch(e){} }
+      return true;
+    }
+    if(kind==="walkie"){
+      if(typeof WT!=="undefined"&&WT.joined&&d.group_id&&String(WT.groupId)===String(d.group_id)) return true; /* already in the channel */
+      if(d.title||d.body){ try{ toast(d.title||d.body); }catch(e){} }
+      return true;
+    }
+    if(d.title||d.body){ try{ toast(d.title||d.body); }catch(e){} }
+    return true;
+  }catch(e){ return false; }
+};
+SB.drainPushDeepLinks=function(){
+  try{
+    if(window.GhostOpsBridge&&typeof GhostOpsBridge.getPushDeepLink==="function"){
+      var _pd=null; try{ _pd=GhostOpsBridge.getPushDeepLink(); }catch(e){ _pd=null; }
+      if(_pd){
+        var _parsed=null; try{ _parsed=SB._pushParse(_pd); }catch(e){}
+        if(_parsed){
+          try{
+            var _r=SB._pushRouteDeepLink(_parsed);
+            if(_r==="queued") (window.__goPushDeepLinkQueue=window.__goPushDeepLinkQueue||[]).push(_parsed);
+          }catch(e){}
+        }
+      }
+    }
+  }catch(e){}
+  try{
+    var q=window.__goPushDeepLinkQueue||[];
+    window.__goPushDeepLinkQueue=[];
+    var remaining=[];
+    q.forEach(function(d){
+      var r="ignored";
+      try{ r=SB._pushRouteDeepLink(d); }catch(e){ r="ignored"; }
+      if(r==="queued") remaining.push(d);
+    });
+    window.__goPushDeepLinkQueue=remaining;
+    if(remaining.length){
+      SB._pushDrainTries=(SB._pushDrainTries||0)+1;
+      if(SB._pushDrainTries<=10){
+        if(SB._pushDrainTimer){ try{ clearTimeout(SB._pushDrainTimer); }catch(e){} SB._pushDrainTimer=null; }
+        SB._pushDrainTimer=setTimeout(function(){ SB._pushDrainTimer=null; try{ SB.drainPushDeepLinks(); }catch(e){} },3000);
+      } else {
+        try{ sbLog("push deep link dropped after retries: "+remaining.length); }catch(e){}
+        SB._pushDrainTries=0;
+      }
+    } else { SB._pushDrainTries=0; }
+  }catch(e){}
+};
+/* ================= end v10.4.42 — FCM PUSH ================= */
+
+
 
 /* ---------- SUPER USER (SUP- keys, Parsa 2026-11-09 ~23:40) ----------
    The owner creates a SUP- key in the owner panel and gives it to a member;
@@ -41302,6 +41790,12 @@ function toggleAppLock(on){
   else toast(TR('k2314','قفل برنامه')+(on?" ✓":" — ")+".");
 }
 function logoutApp(){
+  /* v10.4.42 (FCM): delete this device token for the CURRENT identity
+     FIRST — logoutLocalAccount() below clears the key and SB.authOut()
+     nulls SB.uid, after which the delete cannot identify the caller.
+     Fire-and-forget: the RPC is issued synchronously (key + owner sig
+     are captured now); logout never waits for it. */
+  try{ if(typeof SB!=="undefined"&&SB.deletePushToken) SB.deletePushToken(); }catch(e){}
   try{ if(WT.joined) WT.leave(); }catch(e){}
   /* v10.4.18 (S1/#27): archive this account's state, clear its keys and
      queues, and reset the live state to fresh defaults — the next account
@@ -42031,7 +42525,7 @@ var GOArcade={
         var sc=$("memScore"); if(sc) sc.textContent=fa(mem.pairs);
         mem.open=[]; mem.lock=false;
         this._memRender();
-        if(mem.pairs>=(mem.totalPairs||8)) this.endRound("memory",mem.pairs);
+        if(mem.pairs>=(mem.totalPairs||8)){ try{ if(typeof SB!=="undefined"&&SB.reportCelebration) SB.reportCelebration("game_win",TR('k9300','برد! آفرین'),null); }catch(e){} this.endRound("memory",mem.pairs); }
       } else {
         this.later(function(){ mem.open=[]; mem.lock=false; if(self._memRender) self._memRender(); },700);
       }
@@ -42113,7 +42607,7 @@ var GOArcade={
     stack.tower.push({x:ox,w:ox2-ox}); stack.w=ox2-ox; stack.level++;
     var el=$("stackLevel"); if(el) el.textContent=fa(stack.level);
     try{ if(typeof SFX!=="undefined"&&SFX.play) SFX.play("pop"); }catch(e){}
-    if(stack.level>=10){ stack.over=true; try{ if(typeof Juice!=="undefined") Juice.burst("gamewin"); }catch(e){} this.endRound("stack",10); return; }
+    if(stack.level>=10){ stack.over=true; try{ if(typeof Juice!=="undefined") Juice.burst("gamewin"); }catch(e){} try{ if(typeof SB!=="undefined"&&SB.reportCelebration) SB.reportCelebration("game_win",TR('k9300','برد! آفرین'),null); }catch(e){} this.endRound("stack",10); return; }
     stack.x=0; stack.dir=1;
     if(this._stackDraw) this._stackDraw();
   },
@@ -42154,7 +42648,7 @@ var GOArcade={
       if(self._paused||dg.over) return;
       if(!$("dodgeCv")){ self.clearTimers(); return; }
       dg.left--; var el=$("dodgeTime"); if(el) el.textContent=fa(Math.max(0,dg.left));
-      if(dg.left<=0){ dg.over=true; try{ if(typeof Juice!=="undefined") Juice.burst("gamewin"); }catch(e){} self.endRound("dodge",45+dg.pickups*5); }
+      if(dg.left<=0){ dg.over=true; try{ if(typeof Juice!=="undefined") Juice.burst("gamewin"); }catch(e){} try{ if(typeof SB!=="undefined"&&SB.reportCelebration) SB.reportCelebration("game_win",TR('k9300','برد! آفرین'),null); }catch(e){} self.endRound("dodge",45+dg.pickups*5); }
     },1000);
     this.keyOn();
   },
@@ -42836,7 +43330,7 @@ function goalCelebrateCheck(g){
   /* v10.4.27 (APP batch 3, I-E2): the juice stack lands with the goal
      celebration — only when the overlay actually showed. */
   if(shown){ try{ if(typeof Juice!=="undefined"&&Juice.burst) Juice.burst("goal"); }catch(e){} }
-  if(shown){ S.goalCelebrated[g.id]=true; try{ save(); }catch(e){} }
+  if(shown){ S.goalCelebrated[g.id]=true; try{ save(); }catch(e){} try{ if(typeof SB!=="undefined"&&SB.reportCelebration) SB.reportCelebration("goal_complete",g.title||"",null); }catch(e){} }
   return shown;
 }
 function goalCelebrateCheckAll(){
@@ -50489,7 +50983,7 @@ function bingoToggle(i){
     b5BingoHistRecord(c,fresh);
     b5BingoStatsPatterns(fresh);
     try{ if(typeof Juice!=="undefined"&&Juice.burst) Juice.burst("gamewin",{text:fresh.map(b5BingoPatternName).join(" + ")}); }catch(e){}
-    if(before.length===0){ try{ if(typeof gamePlayRecord==="function") gamePlayRecord("bingo"); }catch(e){} }
+    if(before.length===0){ try{ if(typeof gamePlayRecord==="function") gamePlayRecord("bingo"); }catch(e){} try{ if(typeof SB!=="undefined"&&SB.reportCelebration) SB.reportCelebration("game_win",TR('k9300','برد! آفرین'),null); }catch(e){} }
   }
   save(); go("bingo");
 }
