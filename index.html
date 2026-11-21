@@ -14426,7 +14426,7 @@ Object.assign(I18N_EN,{"k4815":"Study tasks","k4816":"Personal tasks","k4817":"S
 Object.assign(I18N_EN,{"k9131":"App sounds are muted — unmute to hear the soundscape","k9133":"Sound events","k9134":"Effect events","k9135":"Delivery decisions","k9137":"No events recorded yet"});
 /* v10.4.35 (Y5): EN strings for the clock-skew banner (k3259–k3260). */
 Object.assign(I18N_EN,{"k3259":"Owner signature not verified, and the device clock differs from the server clock.","k3260":"This device's clock differs from the server clock by {n} minutes; fix the device clock. Password-based reset still works."});
-var APP_VERSION="10.4.43";
+var APP_VERSION="10.4.44";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -30134,13 +30134,30 @@ OG._tierOf=function(m){
   return "other-view";
 };
 OG._deliveredPowerIds=[];
-OG._deliveredPowerSeen=function(id){ return OG._deliveredPowerIds.indexOf(String(id))!==-1; };
+OG._deliveredPowerSeen=function(id){
+  if(OG._deliveredPowerIds.indexOf(String(id))!==-1) return true;
+  try{ if(typeof S!=="undefined"&&S&&S.pw444Played&&S.pw444Played[String(id)]) return true; }catch(e){}
+  return false;
+};
 OG._deliveredPowerMark=function(id){
   var k=String(id);
   if(OG._deliveredPowerIds.indexOf(k)===-1){
     OG._deliveredPowerIds.push(k);
     if(OG._deliveredPowerIds.length>500) OG._deliveredPowerIds.splice(0,OG._deliveredPowerIds.length-500);
   }
+  /* v10.4.44: persist across restarts — otherwise every restart would
+     replay the last 24h of powers on open. Capped at 200 ids. */
+  try{
+    if(typeof S!=="undefined"&&S){
+      if(!S.pw444Played) S.pw444Played={};
+      if(!S.pw444Played[k]){
+        S.pw444Played[k]=1;
+        var _ks=Object.keys(S.pw444Played);
+        if(_ks.length>200) delete S.pw444Played[_ks[0]];
+        if(typeof save==="function") save();
+      }
+    }
+  }catch(e){}
 };
 /* The single tier decision. Returns the list of effects fired.
    Present in chat -> sound + fullscreen burst. Hidden -> bridge
@@ -30151,10 +30168,16 @@ OG.deliverPower=function(m,via){
   try{
     if(!m||!m.text||m.text.indexOf("⚡POWER|")!==0) return fx;
     var perm=(m.text.split("|")[1]||"");
-    if(m.sender_uid===SB.myUid()) return fx;
-    if(PW.presentInChat(m)){ PROFX.soundFor(perm); fx.push("sound"); fx.push("pwfx440"); /* v10.4.40: burst removed (Rule 1); PWFX440 plays the visual below. */ /* v10.4.39 — GhostOpsFX scene for the received power (code effect until sheets exist; fx_v from the message when present, else 0). Card = the rendered power card when present (bulk loads render after delivery, so _card may be null — playAbility tolerates it). Stage is document.body: fixed fullscreen canvas, same as the existing burst. The fx[] tier list is unchanged (sound+burst) — this adds a visual layer, not a tier. */ try{ var _card443=null; try{ var _st443=document.getElementById("gChatBox"); if(_st443&&m.id!=null) _card443=_st443.querySelector('[data-pw-id="'+String(m.id).replace(/"/g,"")+'"]'); }catch(e){} if(typeof PWFX440!=="undefined") PWFX440.play(perm,_card443,{msgId:m.id,targetUid:((m.text||"").split("|")[2]||"")}); }catch(e){} }
-    else if(document.hidden){ SB.notifyPower(m,perm); fx.push("notify"); }
-    else { PROFX.soundFor(perm); fx.push("sound"); toast("⚡ "+PW.powerTitle(perm)+" — "+(m.sender_name||"")); fx.push("toast"); }
+    /* v10.4.44: NO own-row refusal — own rows go through the same tiers
+       as everyone else's (spec case (c)). The sender heard the sound
+       at send time (PW.use), so the live tier plays no second sound
+       for own rows; the overlay itself is guarded by PWFX440's 30s
+       own-row dedupe, so the arrival never plays a second overlay
+       right after the send-time one. */
+    var _own444=(m.sender_uid===SB.myUid());
+    if(PW.presentInChat(m)){ if(!_own444){ PROFX.soundFor(perm); fx.push("sound"); } /* v10.4.40: burst removed (Rule 1); PWFX440 plays the visual below. */ /* v10.4.39 — GhostOpsFX scene for the received power (code effect until sheets exist; fx_v from the message when present, else 0). Card = the rendered power card when present (bulk loads render after delivery, so _card may be null — playAbility tolerates it). Stage is document.body: fixed fullscreen canvas, same as the existing burst. The fx[] tier list is unchanged (sound+burst) — this adds a visual layer, not a tier. */ try{ var _card443=null; try{ var _st443=document.getElementById("gChatBox"); if(_st443&&m.id!=null) _card443=_st443.querySelector('[data-pw-id="'+String(m.id).replace(/"/g,"")+'"]'); }catch(e){} var _pl444=false; if(typeof PWFX440!=="undefined") _pl444=!!PWFX440.play(perm,_card443,{msgId:m.id,targetUid:((m.text||"").split("|")[2]||""),own:_own444}); if(_pl444) fx.push("pwfx440"); }catch(e){} }
+    else if(document.hidden){ if(!_own444){ SB.notifyPower(m,perm); fx.push("notify"); } }
+    else { if(!_own444){ PROFX.soundFor(perm); fx.push("sound"); toast("⚡ "+PW.powerTitle(perm)+" — "+(m.sender_name||"")); fx.push("toast"); } }
   }catch(e){}
   return fx;
 };
@@ -30164,16 +30187,18 @@ OG.deliverPower=function(m,via){
    deliveries. Older missed powers keep the tier-(a) summary note. */
 OG.deliverBulkPowers=function(prevMsgs){
   try{
+    /* v10.4.44: no age window, no own-row filter. A power that arrives late
+       (key-user 10s poll) still plays its overlay on arrival — the play is
+       anchored to arrival, not to the message being <10s old. First load
+       (no previous messages) plays nothing here: the missed queue in
+       replayMissedOnOpen owns first-open playback (last 24h, all rows). */
+    if(!prevMsgs||!prevMsgs.length) return;
     var prev={};
     (prevMsgs||[]).forEach(function(x){ prev[String(x.id)]=1; });
-    var now=Date.now(), me=SB.myUid();
     (OG.msgs||[]).forEach(function(m){
       if(!m||!m.text||m.text.indexOf("⚡POWER|")!==0) return;
       if(prev[String(m.id)]) return;
       if(OG._deliveredPowerSeen(m.id)) return;
-      if(m.sender_uid===me) return;
-      var age=now-new Date(m.created_at).getTime();
-      if(!(age>=0&&age<=60000)) return;
       var fx=OG.deliverPower(m,"bulk");
       /* FIX-1 BF-4: mark delivered ONLY when the visual actually played
          (fx contains "pwfx440"). A hidden/other-view arrival stays
@@ -30183,11 +30208,13 @@ OG.deliverBulkPowers=function(prevMsgs){
     });
   }catch(e){}
 };
-/* v10.4.43 (Defect B) — replay-on-open + deep-link replay + replay-by-id.
-   History is no longer "static forever": the latest power missed since the
-   member's last visit replays once when the chat opens (sound + scene, with
-   its card); every older missed power replays on tap (card tap / ↻ button).
-   First-ever open (no lastSeen) replays nothing — no ancient-power blast. */
+/* v10.4.44 (Defect B, reworked) — replay-on-open + deep-link replay + replay-by-id.
+   History is no longer "static forever": EVERY missed power replays when the
+   chat opens, as a queue in chronological order, each its full 5-10s screen
+   overlay — own rows included, first-ever open included (last 24h window;
+   older powers stay tap-to-replay, never an ancient-power blast). A power
+   whose overlay played within the last 60s is skipped here (the sender's own
+   row arriving right after PW.use played it at send time). */
 OG.replayPowerById=function(mid, permHint){
   try{
     var m=(OG.msgs||[]).filter(function(x){ return String(x.id)===String(mid); })[0];
@@ -30196,30 +30223,40 @@ OG.replayPowerById=function(mid, permHint){
     var target=((m.text||"").split("|")[2]||"");
     var card=null;
     try{ var box=document.getElementById("gChatBox"); if(box) card=box.querySelector('[data-pw-id="'+String(mid).replace(/"/g,"")+'"]'); }catch(e){}
-    if(!card) return false;
+    /* v10.4.44: no card required — the overlay is fullscreen on
+       document.body and plays even when the chat rendered the offline
+       placeholder (no card in the DOM). The card only adds the pulse. */
     try{ PROFX.soundFor(perm); }catch(e){}
     return !!(typeof PWFX440!=="undefined"&&PWFX440.play(perm,card,{msgId:String(mid),targetUid:target,replay:true}));
   }catch(e){ return false; }
 };
 OG.replayMissedOnOpen=function(lastSeen){
   try{
-    if(!lastSeen) return false;
     if(!OG.sel) return false;
     if(!PW.presentInChat({group_id:OG.sel.id})) return false;
-    var now=Date.now(), me=SB.myUid();
+    var now=Date.now();
+    /* v10.4.44: missed = never visually played AND created in the last 24h.
+       No lastSeen requirement (first-ever open included), no own-row filter
+       (the sender's own powers replay too), no latest-only: ALL of them
+       queue, oldest first, each its full overlay duration. "Never played"
+       is the persisted delivered mark, so a restart does not re-queue
+       powers that already played. */
     var missed=(OG.msgs||[]).filter(function(m){
-      return m.text&&m.text.indexOf("⚡POWER|")===0&&m.sender_uid!==me
-        &&new Date(m.created_at).getTime()>lastSeen
-        &&now-new Date(m.created_at).getTime()>60000;
-    }).sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
+      if(!m.text||m.text.indexOf("⚡POWER|")!==0) return false;
+      if(OG._deliveredPowerSeen(m.id)) return false;
+      var tt=new Date(m.created_at).getTime();
+      if(!(tt>0&&now-tt<=24*3600*1000)) return false;
+      var perm=(m.text.split("|")[1]||"");
+      try{ if(typeof PWFX440!=="undefined"&&PWFX440.playedRecently&&PWFX440.playedRecently(perm,60000)) return false; }catch(e){}
+      return true;
+    }).sort(function(a,b){ return new Date(a.created_at)-new Date(b.created_at); });
     if(!missed.length) return false;
-    var m=missed[0];
-    if(OG._deliveredPowerSeen(m.id)) return false;
-    /* FIX-1 BF-4: mark delivered ONLY after the replay actually played,
-       so a failed replay (card not rendered yet) stays retryable. */
-    var _ok=OG.replayPowerById(m.id);
-    if(_ok) OG._deliveredPowerMark(m.id);
-    return _ok;
+    var playedAny=false;
+    for(var i=0;i<missed.length;i++){
+      var _ok=OG.replayPowerById(missed[i].id);
+      if(_ok){ OG._deliveredPowerMark(missed[i].id); playedAny=true; }
+    }
+    return playedAny;
   }catch(e){ return false; }
 };
 OG.drainPendingPowerReplay=function(){
@@ -30231,11 +30268,19 @@ OG.drainPendingPowerReplay=function(){
        before the card was rendered lost the replay instead of retrying it
        on the next loadMsgs. */
     var _ok=false;
-    if(p.mid) _ok=OG.replayPowerById(p.mid, p.perm||"");
+    /* v10.4.44 FIX F2: mark delivered after a SUCCESSFUL drain play — the
+       drain was the one play route that never marked, so the power
+       replayed once more on the next open after the ~5min _inflight
+       window expired (verifier runtime proof). Marking happens only on
+       _ok, exactly like replayMissedOnOpen: when the play cannot happen
+       (no message yet — server unreachable at draw time — or the play is
+       deduped) the pending entry is still retained, not lost. */
+    if(p.mid){ _ok=OG.replayPowerById(p.mid, p.perm||""); if(_ok) OG._deliveredPowerMark(p.mid); }
     else{
       var list=(OG.msgs||[]).filter(function(m){ return m.text&&m.text.indexOf("⚡POWER|")===0; }).sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
       if(!list.length) return false;
       _ok=OG.replayPowerById(list[0].id);
+      if(_ok) OG._deliveredPowerMark(list[0].id);
     }
     if(_ok) window.__goPendingPowerReplay=null;
     return _ok;
@@ -39874,7 +39919,7 @@ var PW={uses:{},
      PROFX.soundFor(perm); /* v10.4.40: burst removed (Rule 1). */
      /* v10.4.39 — sender sees the GhostOpsFX scene too (card not rendered yet —
         OG.loadMsgs() runs next — so cardEl is null; the fullscreen canvas still plays). */
-     try{ if(typeof PWFX440!=="undefined") PWFX440.play(perm,null,{msgId:"sender-"+perm}); }catch(e){}
+     try{ if(typeof PWFX440!=="undefined") PWFX440.play(perm,null,{msgId:"sender-"+perm,own:true}); }catch(e){}
      OG.loadMsgs(); PW.loadUses(); PW.refreshSheetCounts();
      /* v10.4.32 (T12): CLOSE the sheet on a successful send — the old
         code re-rendered it (openSheet), so the dimmed sheet covered
@@ -39919,15 +39964,17 @@ var PW={uses:{},
    for(var i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))%997; }
    return PW.CHEST_FRAMES[h%PW.CHEST_FRAMES.length];
  },
- /* DELIVERY TIERS (Parsa, 2026-11-09 ~23:40; v10.4.43 extends them):
-    live animation plays when fresh=true (present in chat, age < 10s).
-    History is NOT static anymore: every history card renders its designed
-    END-STATE scene persistently (the scene's end frame on the card), the
-    latest missed power replays once on open (OG.replayMissedOnOpen), and
-    any history card replays on tap (card tap / "↻ پخش دوباره" button).
-    Tier (a) offline members get a notification only, then the replay on
+ /* DELIVERY TIERS (Parsa, 2026-11-09 ~23:40; v10.4.44 reworks them):
+    the effect is a SCREEN OVERLAY (5-10s, queued), played on arrival for
+    present members — arrival-anchored, never gated on the message being
+    <10s old. History cards keep only a small static end-state icon + the
+    replay button; the overlay is the animation. On open, ALL missed
+    powers since the last visit (own rows included, first-ever open: last
+    24h) replay as a queue, oldest first; any history card replays its
+    overlay on tap (card tap / "↻ پخش دوباره" button).
+    Tier (a) offline members get a notification only, then the queue on
     return; tier (b) locked/backgrounded members get sound only, then the
-    replay on return; tier (c) present members get animation + sound.
+    queue on return; tier (c) present members get overlay + sound.
     Persistent visual STATES (derivedFor) still render for everyone. */
  renderPowerMsg:function(m,fresh){
    var parts=(m.text||"").split("|");
@@ -41231,9 +41278,10 @@ SB.syncGroupPushMutes=function(){
    {"kind","group_id","thread_id","chat_id","title","body"} (+ the sender
    may also carry source_id/message_id/perm/sender_uid/sender_name, flat
    or under "data"). Routing per INSTALL-NOTE: chat/personal/support ->
-   the thread; power -> the group chat (the effect itself still plays
-   via loadMsgs -> deliverBulkPowers on open, 60 s window — existing
-   behaviour, not a push bug); announcement / poll / vote / task /
+   the thread; power -> the group chat (the effect itself plays as a
+   screen-overlay queue via loadMsgs -> replayMissedOnOpen on open — all
+   missed powers, own rows included, no age window); announcement / poll
+   / vote / task /
    member / event -> the group; walkie -> walkie view; key_revoked ->
    key gate; celebration -> the group when it has one, else a toast.
    If the page is not booted yet, or the group is not in OG.list yet
@@ -41586,9 +41634,9 @@ function revokeSuperKey(code){
     _onMsg(m);
     if(_dup) return;
     if(m.text&&m.text.indexOf("⚡POWER|")===0){
-      /* My own power: PW.use already played it (deliverPower also
-         refuses own rows; the early return keeps the tier log clean). */
-      if(m.sender_uid===SB.myUid()) return;
+      /* v10.4.44: own rows are delivered too (same tiers) — PW.use played
+         the overlay at send time, and deliverPower's 30s own-row dedupe
+         keeps the arrival from playing it a second time. */
       var _fx=OG.deliverPower(m,"live");
       /* FIX-1 BF-4: mark delivered ONLY when the power was actually PLAYED
          visually (present tier, fx contains "pwfx440"). Hidden
@@ -60336,6 +60384,9 @@ if(!GROW8.keys){
    (shake/pulse/flicker/rise/sway/march/settle); amplitude varies per power. */
 .pw-card{position:relative;overflow:hidden;flex-shrink:0} /* FIX-1 BF-2: flex-shrink:0 stops the column-flex chatbox crushing the card to 26px (v10.4.43 regression); overflow:hidden still clips the card-scope canvas inside the card */
 .pw443-cv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.pw444-ovl{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:10000}
+.pw444-ovl-cv{display:block;width:100vw;height:100vh;pointer-events:none}
+.pw444-ovl-skip{position:absolute;top:10px;inset-inline-end:10px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.55);color:#fff;font-size:16px;line-height:1;pointer-events:auto;cursor:pointer}
 .pw443-cv[data-pw443-chat="1"]{inset:auto;left:0} /* FIX-1 BF-1: chat canvas is positioned by JS over the visible region, not inset:0 at content top */
 .pw-end-cv{display:block;width:100%;height:52px;margin-top:6px;border-radius:10px}
 .pw-replay{font-size:12px;padding:2px 10px;border-radius:99px;border:1px solid var(--acc);background:transparent;color:var(--acc);cursor:pointer;margin-inline-start:8px}
@@ -60714,7 +60765,32 @@ function towerShape(ctx,x,y,s,col){ ctx.save(); ctx.strokeStyle=col; ctx.lineWid
 function avatarDot(ctx,x,y,r,col){ ctx.save(); ci(ctx,x,y,r,col,1); ctx.fillStyle="rgba(0,0,0,.55)"; ci(ctx,x-r*0.35,y-r*0.2,r*0.11,1,1); ci(ctx,x+r*0.35,y-r*0.2,r*0.11,1,1); ctx.strokeStyle="rgba(0,0,0,.55)"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,y+r*0.15,r*0.4,0.15*Math.PI,0.85*Math.PI); ctx.stroke(); ctx.restore(); }
 function ghostShape(ctx,x,y,s,col){ ctx.save(); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x-s,y+s); ctx.lineTo(x-s,y-s*0.3); ctx.quadraticCurveTo(x-s,y-s,x,y-s); ctx.quadraticCurveTo(x+s,y-s,x+s,y-s*0.3); ctx.lineTo(x+s,y+s); for(var i=0;i<3;i++){ ctx.quadraticCurveTo(x+s-(i+0.5)*(2*s/3),y+s*0.45,x+s-(i+1)*(2*s/3),y+s); } ctx.closePath(); ctx.fill(); ctx.fillStyle="#1c1917"; ci(ctx,x-s*0.35,y-s*0.2,3,1,1); ci(ctx,x+s*0.35,y-s*0.2,3,1,1); ctx.restore(); }
 function batShape(ctx,x,y,s,col,flap){ ctx.save(); ctx.fillStyle=col; ctx.translate(x,y); ctx.scale(1,1-flap*0.4); ctx.beginPath(); ctx.moveTo(0,0); ctx.quadraticCurveTo(-s*0.7,-s*0.9,-s*1.4,-s*0.2); ctx.quadraticCurveTo(-s*0.9,s*0.2,-s*0.5,s*0.1); ctx.quadraticCurveTo(-s*0.7,s*0.5,0,s*0.3); ctx.quadraticCurveTo(s*0.7,s*0.5,s*0.5,s*0.1); ctx.quadraticCurveTo(s*0.9,s*0.2,s*1.4,-s*0.2); ctx.quadraticCurveTo(s*0.7,-s*0.9,0,0); ctx.fill(); ctx.restore(); }
-function planeShape(ctx,x,y,s,col){ ctx.save(); ctx.translate(x,y); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(s*1.3,0); ctx.lineTo(-s*0.9,-s*0.35); ctx.lineTo(-s*0.5,0); ctx.lineTo(-s*0.9,s*0.35); ctx.closePath(); ctx.fill(); ctx.fillRect(-s*0.2,-s*0.7,s*0.35,s*1.4); ctx.restore(); }
+function planeShape(ctx,x,y,s,col){ ctx.save(); ctx.translate(x,y); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(s*1.3,0); ctx.lineTo(-s*0.9,-s*0.35); ctx.lineTo(-s*0.5,0); ctx.lineTo(-s*0.9,s*0.35); ctx.closePath(); ctx.fill(); ctx.strokeStyle="#1e293b"; ctx.lineWidth=2.5; ctx.stroke(); ctx.fillStyle="#1e293b"; ctx.fillRect(-s*0.2,-s*0.7,s*0.35,s*1.4); ctx.restore(); }
+/* v10.4.44 FIX F1: filled falcon silhouette (the old flybird hero was a
+   28px pale-tan stroked "gull" outline, invisible on the light theme).
+   Dark body + swept wings + hooked beak + fanned tail + cream belly and
+   cheek read on both light and dark themes. flap varies the wing sweep. */
+function falconShape(ctx,x,y,s,flap){
+  ctx.save(); ctx.translate(x,y);
+  var w=Math.sin(flap)*0.45;
+  ctx.fillStyle="#451a03";
+  ctx.beginPath(); ctx.moveTo(-s*0.45,0); ctx.lineTo(-s*1.05,-s*0.26); ctx.lineTo(-s*1.12,0); ctx.lineTo(-s*1.05,s*0.26); ctx.closePath(); ctx.fill();
+  ctx.fillStyle="#292524";
+  ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-s*0.6,-s*(0.8+w*0.25)); ctx.lineTo(-s*0.12,-s*0.12); ctx.closePath(); ctx.fill();
+  ctx.fillStyle="#7c2d12";
+  ctx.beginPath(); ctx.ellipse(0,0,s*0.55,s*0.22,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle="#92400e";
+  ctx.beginPath(); ctx.moveTo(s*0.08,0); ctx.lineTo(-s*0.72,s*(0.72+w*0.2)); ctx.lineTo(-s*0.08,s*0.1); ctx.closePath(); ctx.fill();
+  ctx.fillStyle="#451a03";
+  ctx.beginPath(); ctx.arc(s*0.55,-s*0.08,s*0.2,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(s*0.7,-s*0.15); ctx.lineTo(s*0.98,-s*0.02); ctx.lineTo(s*0.68,s*0.02); ctx.closePath(); ctx.fill();
+  ctx.fillStyle="#fef3c7";
+  ctx.beginPath(); ctx.ellipse(s*0.06,s*0.1,s*0.34,s*0.1,0,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(s*0.58,-s*0.13,s*0.07,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle="#111111";
+  ctx.beginPath(); ctx.arc(s*0.6,-s*0.1,s*0.035,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
 function broomShape(ctx,x,y,s,col){ ctx.save(); ctx.translate(x,y); ctx.rotate(0.6); ctx.strokeStyle="#92400e"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(-s,0); ctx.lineTo(s*0.7,0); ctx.stroke(); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(s*0.7,0); ctx.lineTo(s*1.4,-s*0.4); ctx.lineTo(s*1.4,s*0.4); ctx.closePath(); ctx.fill(); ctx.restore(); }
 function drumShape(ctx,x,y,s,col){ ctx.save(); el(ctx,x,y,s,s*0.75,col,1); ctx.fillStyle="#fde68a"; ctx.fillRect(x-s,y-s*0.75,s*2,5); ctx.fillRect(x-s,y+s*0.75-5,s*2,5); ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x-s*0.5,y-s*0.9); ctx.lineTo(x-s*0.2,y-s*1.5); ctx.moveTo(x+s*0.5,y-s*0.9); ctx.lineTo(x+s*0.2,y-s*1.5); ctx.stroke(); ctx.restore(); }
 function trapShape(ctx,x,y,s,closed){ ctx.save(); ctx.fillStyle="#92400e"; rr(ctx,x-s,y-s*0.15,s*2,s*0.3,3); ctx.fill(); ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(x,y-s*0.15,s*0.7,Math.PI,closed?Math.PI*1.85:Math.PI*1.25); ctx.stroke(); ci(ctx,x+s*0.7,y-s*0.15,4,"#facc15",1); ctx.restore(); }
@@ -60923,8 +60999,8 @@ function drawScene(ctx,W,H,t,sp,kind){
     case "flybat": case "flybird": case "flyplane": case "flyghost": case "flybroom": {
       var fx3=((t*1.05)%1.15)*W-40, fy3=H*0.4+Math.sin(t*Math.PI*3)*14;
       if(kind==="flybat") batShape(ctx,fx3,fy3,16,"#7c3aed",Math.abs(Math.sin(t*Math.PI*6)));
-      else if(kind==="flybird"){ ctx.save(); ctx.translate(fx3,fy3); ctx.strokeStyle=col; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(-14,0); ctx.quadraticCurveTo(-7,-10+Math.sin(t*10)*6,0,0); ctx.quadraticCurveTo(7,-10+Math.sin(t*10)*6,14,0); ctx.stroke(); ctx.restore(); }
-      else if(kind==="flyplane") planeShape(ctx,fx3,fy3,16,col);
+      else if(kind==="flybird") falconShape(ctx,fx3,fy3,30,Math.sin(t*Math.PI*4)); /* v10.4.44 FIX F1: filled falcon, ~2.1x30px wingspan (was a 28px pale stroked gull outline) */
+      else if(kind==="flyplane") planeShape(ctx,fx3,fy3,22,col); /* v10.4.44 FIX F1: bigger plane + dark outline (was a 16px near-white shape: paper_plane #e2e8f0, loop_plane #f8fafc) */
       else if(kind==="flyghost") ghostShape(ctx,fx3,fy3,16,"#e2e8f0");
       else broomShape(ctx,fx3,fy3,16,"#8b5cf6");
       break; }
@@ -61132,60 +61208,233 @@ function drawInto(cv, perm, cp, t){
   ctx.clearRect(0,0,cv.width,cv.height);
   drawScene(ctx,cv.width,cv.height,t,sp,sc.kind);
 }
+var _permPlayedAt={}; /* v10.4.44: last successful overlay start per power (ms) — the sender's own row arriving seconds after PW.use played it must not play a second overlay; open-replay consults it via playedRecently(). */
+function overlayDur(cp){
+  if(cp==="matrix_rain") return 9000; /* the praised exemplar: long + dense */
+  return 5000+(hash(cp)%5001); /* deterministic 5000..10000 ms per power */
+}
+function overlayReduced(){
+  try{ return !!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches); }catch(e){ return false; }
+}
+function playedRecently(perm, ms){
+  var cp=cardPerm(perm); if(!cp) return false;
+  var t=_permPlayedAt[cp]||0;
+  return (Date.now()-t)<(ms||60000);
+}
+/* ---------- v10.4.44 screen overlay: one fullscreen canvas, queued ---------- */
+var _ovl={queue:[],cur:null,raf:0,timer:0,backstop:0,last:0};
+var _ovlDiag={started:0,finished:0,skipped:0,queued:0};
+function ovlParticles(cp){
+  var rnd=seedRnd(hash(cp)^0x4444);
+  var out=[], i;
+  for(i=0;i<16;i++) out.push({x:rnd(),y:rnd(),s:2+rnd()*5,v:0.25+rnd()*0.75,ph:rnd()*6.28,sh:i%3});
+  return out;
+}
+function ovlEnsureEl(){
+  var el=document.getElementById("pw444-ovl");
+  if(el) return el;
+  el=document.createElement("div");
+  el.id="pw444-ovl"; el.className="pw444-ovl"; el.setAttribute("aria-hidden","true");
+  var cv=document.createElement("canvas");
+  cv.className="pw444-ovl-cv";
+  el.appendChild(cv);
+  var b=document.createElement("button");
+  b.type="button"; b.className="pw444-ovl-skip"; b.textContent="✕";
+  b.setAttribute("aria-label","رد کردن افکت");
+  b.addEventListener("click",function(ev){ try{ ev.stopPropagation(); }catch(e){} overlaySkip(); });
+  el.appendChild(b);
+  document.body.appendChild(el);
+  return el;
+}
+function ovlRemoveEl(){
+  var el=document.getElementById("pw444-ovl");
+  if(el&&el.parentNode) el.parentNode.removeChild(el);
+}
+function overlayEnqueue(cp, opts){
+  opts=opts||{};
+  var mid=opts.msgId?String(opts.msgId):null;
+  if(mid&&!opts.force){
+    var i;
+    if(_ovl.cur&&_ovl.cur.msgId===mid) return false;
+    for(i=0;i<_ovl.queue.length;i++) if(_ovl.queue[i].msgId===mid) return false;
+  }
+  _ovl.queue.push({cp:cp,msgId:mid,targetUid:opts.targetUid||"",dur:overlayDur(cp),parts:ovlParticles(cp)});
+  _ovlDiag.queued++;
+  if(!_ovl.cur) ovlNext();
+  return true;
+}
+function overlayQueueLen(){ return _ovl.queue.length+(_ovl.cur?1:0); }
+function ovlNext(){
+  var item=_ovl.queue.shift();
+  if(!item){ _ovl.cur=null; ovlRemoveEl(); return; }
+  _ovl.cur=item;
+  ovlStart(item);
+}
+function ovlAccent(ctx,W,H,item,elapsed){
+  var sp=SPEC[item.cp], sc=SCENE[item.cp];
+  var law=sp.law||"drift";
+  var overall=elapsed/item.dur;
+  var i,p,x,y;
+  for(i=0;i<item.parts.length;i++){
+    p=item.parts[i];
+    if(law==="rain"||law==="fall"){ x=p.x*W; y=((p.y+overall*p.v*1.4)%1.15)*H-20; }
+    else if(law==="rise"){ x=p.x*W+Math.sin(elapsed/700+p.ph)*8; y=H*(1-((p.y+overall*p.v)%1.05)); }
+    else if(law==="march"||law==="fly"){ x=((p.x+overall*p.v)%1.1)*W-20; y=p.y*H*0.7+H*0.12; }
+    else { x=p.x*W+Math.sin(elapsed/900+p.ph)*14; y=p.y*H*0.7+H*0.1+Math.cos(elapsed/800+p.ph)*10; }
+    var a=0.35+0.45*Math.abs(Math.sin(elapsed/300+p.ph));
+    ctx.save(); ctx.globalAlpha=a; ctx.fillStyle=sp.c;
+    if(p.sh===1) st4(ctx,x,y,p.s+2,sp.c,a);
+    else if(p.sh===2){ ctx.translate(x,y); ctx.rotate(Math.PI/4); ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s); }
+    else ci(ctx,x,y,p.s,sp.c,a);
+    ctx.restore();
+  }
+  if(sc.kind==="raincode"){
+    /* Dense screen-filling code rain: the matrix-rain exemplar Parsa praised,
+       now ~1 column per 26px with 3 staggered glyphs each (was 12 glyphs). */
+    ctx.save(); ctx.font="bold 14px monospace"; ctx.textAlign="center";
+    var cols=Math.floor(W/26), c, k;
+    for(c=0;c<cols;c++){
+      var seed=((hash(item.cp)+c*97)%1000)/1000;
+      var speed=0.25+seed*0.5;
+      for(k=0;k<3;k++){
+        var yy=(((seed+k*0.33)+elapsed/1000*speed*0.12)%1.2)*H-30;
+        ctx.globalAlpha=0.25+0.5*((k+1)/3);
+        ctx.fillStyle="#22c55e";
+        ctx.fillText(((c+k)%2)?"1":"0",c*26+13,yy);
+      }
+    }
+    ctx.restore();
+  }
+}
+function ovlBanner(ctx,W,H,item,elapsed,alpha){
+  var sp=SPEC[item.cp];
+  var title=(sp.fa||"").split(" (")[0];
+  var label=(sp.g==="01"?"0":sp.g)+"  "+title;
+  ctx.save();
+  ctx.font="bold 15px sans-serif";
+  var tw=ctx.measureText(label).width;
+  var bw=Math.min(tw+52,W-32), bh=40;
+  var bx=(W-bw)/2, by=H-64-Math.max(0,(1-Math.min(elapsed/500,1))*24);
+  ctx.globalAlpha=0.92*alpha;
+  ctx.fillStyle="rgba(0,0,0,0.65)";
+  rr(ctx,bx,by,bw,bh,20); ctx.fill();
+  ctx.strokeStyle=sp.c; ctx.lineWidth=2; rr(ctx,bx,by,bw,bh,20); ctx.stroke();
+  ctx.fillStyle="#fff"; ctx.textAlign="center"; ctx.textBaseline="middle";
+  ctx.fillText(label,W/2,by+bh/2+1);
+  ctx.restore();
+}
+function ovlStart(item){
+  var sp=SPEC[item.cp], sc=SCENE[item.cp];
+  if(!sp||!sc){ ovlFinish(); return; }
+  var el=ovlEnsureEl();
+  var cv=el.querySelector("canvas");
+  var W=Math.min(window.innerWidth||390,800), H=Math.min(window.innerHeight||844,1200);
+  if(cv.width!==W) cv.width=W;
+  if(cv.height!==H) cv.height=H;
+  _ovlDiag.started++;
+  var ctx=cv.getContext("2d");
+  if(!ctx){ ovlFinish(); return; }
+  var t0=Date.now();
+  var avCv=null;
+  if(sc.scope==="member"&&item.targetUid){
+    try{ avCv=targetAvatarCanvas(item.targetUid,item.cp,item.dur); }catch(e){ avCv=null; }
+  }
+  function paintFrame(elapsed,tOverride){
+    var cyc=(tOverride!=null)?tOverride:((elapsed%(sp.dur||1500))/(sp.dur||1500));
+    var aIn=Math.min(elapsed/300,1), aOut=Math.min(Math.max((item.dur-elapsed)/800,0),1);
+    var alpha=Math.min(aIn,aOut);
+    if(tOverride!=null) alpha=1;
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ctx.save(); ctx.globalAlpha=0.28*alpha; ctx.fillStyle="#000"; ctx.fillRect(0,0,cv.width,cv.height); ctx.restore();
+    ctx.save(); ctx.globalAlpha=alpha;
+    /* v10.4.44: the v10.4.43 scenes were drawn for a ~320px card/chat box —
+       at fullscreen size their fixed-size heroes would be tiny (a 24px
+       pumpkin on an 844px screen). Render the scene in a half-size logical
+       space scaled 2x around the centre, so the hero fills the screen the
+       way the old chat-box render filled its box. Accent + banner below
+       stay at screen scale. */
+    ctx.save();
+    ctx.translate(cv.width/2,cv.height/2);
+    ctx.scale(2,2);
+    ctx.translate(-cv.width/4,-cv.height/4);
+    drawScene(ctx,cv.width/2,cv.height/2,cyc,sp,sc.kind);
+    ctx.restore();
+    ovlAccent(ctx,cv.width,cv.height,item,elapsed);
+    ovlBanner(ctx,cv.width,cv.height,item,elapsed,alpha);
+    ctx.restore();
+    if(avCv) drawFrameInto(avCv,item.cp,cyc);
+  }
+  if(overlayReduced()){
+    /* Reduced motion: one complete static frame, held for the full duration. */
+    try{ paintFrame(0,endT(sc.kind)); }catch(e){}
+    _ovl.timer=setTimeout(ovlFinish,item.dur);
+  } else {
+    _ovl.last=0;
+    var step=function(ts){
+      if(!_ovl.cur||_ovl.cur!==item) return;
+      if(ts-_ovl.last>=33){ _ovl.last=ts; try{ paintFrame(Date.now()-t0); }catch(e){} }
+      _ovl.raf=requestAnimationFrame(step);
+    };
+    _ovl.raf=requestAnimationFrame(step);
+    _ovl.timer=setTimeout(ovlFinish,item.dur);
+  }
+  _ovl.backstop=setTimeout(function(){ if(_ovl.cur===item) ovlFinish(); },item.dur+1500);
+}
+function ovlFinish(){
+  var item=_ovl.cur;
+  try{ if(_ovl.raf) cancelAnimationFrame(_ovl.raf); }catch(e){}
+  try{ clearTimeout(_ovl.timer); }catch(e){}
+  try{ clearTimeout(_ovl.backstop); }catch(e){}
+  _ovl.raf=0; _ovl.timer=0; _ovl.backstop=0;
+  if(item) _ovlDiag.finished++;
+  _ovl.cur=null;
+  ovlNext();
+}
+function overlaySkip(){ _ovlDiag.skipped++; ovlFinish(); }
 function play(perm, cardEl, opts){
   opts=opts||{};
   var cp=cardPerm(perm);
   if(!cp) return false;
   var sp=SPEC[cp], sc=SCENE[cp];
   if(!sp||!sc) return false;
-  var dur=Math.min(sp.dur||1500,2600);
+  var odur=overlayDur(cp);
   var now=Date.now();
-  if(!opts.replay){
-    if(opts.msgId){
-      var until=_inflight[String(opts.msgId)];
-      if(until&&now<until){ _diag.deduped++; return false; }
-      _inflight[String(opts.msgId)]=now+dur+400;
+  if(!opts.force){
+    if(!opts.replay){
+      if(opts.msgId){
+        var until=_inflight[String(opts.msgId)];
+        if(until&&now<until){ _diag.deduped++; return false; }
+      } else {
+        var lp=_lastPerm[cp]||0;
+        if(now-lp<800){ _diag.deduped++; return false; }
+        _lastPerm[cp]=now;
+      }
+      /* v10.4.44 own-row guard: the sender's own power row arriving seconds
+         after PW.use already played the overlay must not play it twice.
+         Other members using the same power are NOT deduped by this. */
+      if(opts.own){
+        var pg=_permPlayedAt[cp]||0;
+        if(now-pg<30000){ _diag.deduped++; return false; }
+      }
+      if(opts.msgId) _inflight[String(opts.msgId)]=now+odur+300000;
     } else {
-      var lp=_lastPerm[cp]||0;
-      if(now-lp<800){ _diag.deduped++; return false; }
-      _lastPerm[cp]=now;
+      _diag.replays++;
+      /* Auto-replay bypasses the 30s same-power guard but NOT the msgId
+         dedupe: bulk + open-replay both enqueue the same id in one load. */
+      if(opts.msgId){
+        var until2=_inflight[String(opts.msgId)];
+        if(until2&&now<until2){ _diag.deduped++; return false; }
+        _inflight[String(opts.msgId)]=now+odur+300000;
+      }
     }
-  } else { _diag.replays++; }
-  _diag.plays++;
+  }
   if(cardEl) playCard(perm, cardEl);
-  var host=hostFor(sc.scope, cardEl);
-  var cv=makeCanvas(host, sc.scope);
-  /* member scope: also draw the frame on the target member's avatar in the
-     chat (best effort — the card frame below is the guaranteed visual). */
-  var avCv=null;
-  if(sc.scope==="member"&&opts.targetUid){
-    try{ avCv=targetAvatarCanvas(opts.targetUid, cp, dur); }catch(e){ avCv=null; }
-  }
-  if(sc.kind==="shake"){ try{ host.classList.add("pw443-shake"); }catch(e){} }
-  if(reduced()){
-    drawInto(cv, perm, cp, endT(sc.kind));
-    if(avCv) drawFrameInto(avCv, cp, 1);
-    paintEndStateForCard(cardEl, cp);
-    setTimeout(function(){ try{ if(cv.parentNode) cv.parentNode.removeChild(cv); }catch(e){} try{ if(avCv&&avCv.parentNode) avCv.parentNode.removeChild(avCv); }catch(e){} try{ host.classList.remove("pw443-shake"); }catch(e){} }, dur+400);
-    return true;
-  }
-  var t0=null;
-  function frame(ts){
-    if(t0===null) t0=ts;
-    var t=Math.min((ts-t0)/dur,1);
-    drawInto(cv, perm, cp, t);
-    if(avCv) drawFrameInto(avCv, cp, t);
-    if(t<1){ requestAnimationFrame(frame); }
-    else {
-      paintEndStateForCard(cardEl, cp);
-      try{ if(cv.parentNode) cv.parentNode.removeChild(cv); }catch(e){}
-      try{ if(avCv&&avCv.parentNode) avCv.parentNode.removeChild(avCv); }catch(e){}
-      try{ host.classList.remove("pw443-shake"); }catch(e){}
-    }
-  }
-  if(typeof requestAnimationFrame==="function") requestAnimationFrame(frame);
-  else { drawInto(cv, perm, cp, 1); setTimeout(function(){ try{ if(cv.parentNode) cv.parentNode.removeChild(cv); }catch(e){} }, dur); }
-  return true;
+  /* v10.4.44: the visual IS the screen overlay now. The old in-card live
+     canvas (makeCanvas/hostFor, <=2.2s then deleted) is no longer created;
+     the card keeps only its small static end-state icon + replay button. */
+  var _ok=overlayEnqueue(cp, opts);
+  if(_ok){ _diag.plays++; _permPlayedAt[cp]=now; }
+  return _ok;
 }
 function drawFrameInto(cv, cp, t){
   var sp=SPEC[cp]; if(!sp) return;
@@ -61271,7 +61520,7 @@ function replayCard(cardEl){
     var m=(typeof OG!=="undefined"&&OG.msgs||[]).filter(function(x){ return String(x.id)===String(id); })[0];
     if(m&&m.text) targetUid=(m.text.split("|")[2]||"");
   }catch(e){}
-  var ok=play(perm, cardEl, {msgId:id||("tap-"+Date.now()), targetUid:targetUid, replay:true});
+  var ok=play(perm, cardEl, {msgId:id||("tap-"+Date.now()), targetUid:targetUid, replay:true, force:true});
   try{ if(typeof PROFX!=="undefined"&&PROFX.soundFor) PROFX.soundFor(cardPerm(perm)||perm); }catch(e){}
   return ok;
 }
@@ -61303,7 +61552,9 @@ if(typeof document!=="undefined"&&document.addEventListener){
 window.PWFX440={SPEC:SPEC, RETIRED:RETIRED, SCENE:SCENE, play:play, playCard:playCard,
   cardPerm:cardPerm, glyph:glyph, retiredTitle:retiredTitle, reduced:reduced,
   sceneOf:sceneOf, paintEndState:paintEndState, paintEndStates:paintEndStates,
-  replayCard:replayCard, _diag:_diag};
+  replayCard:replayCard, _diag:_diag,
+  overlayDur:overlayDur, overlayEnqueue:overlayEnqueue, overlaySkip:overlaySkip,
+  overlayQueueLen:overlayQueueLen, playedRecently:playedRecently, _ovlDiag:_ovlDiag};
 })();
 
 </script>
