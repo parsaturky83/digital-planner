@@ -10005,6 +10005,10 @@ function go(id){
      only #supvBox, so a re-render never re-triggers the load). */
   if((id==="adminpanel"||id==="ownerpanel") && _prevView!==id){ try{ if(typeof supvLoadStudents==="function") supvLoadStudents(id==="ownerpanel"?"owner":(ownerMode?"owner":"advisor")); }catch(e){} }
   if(id!=="groupmap"){ try{ if(typeof OG!=="undefined"&&OG._mapPoll){ clearInterval(OG._mapPoll); OG._mapPoll=null; } }catch(e){} try{ if(typeof groupMapDestroyAll==="function") groupMapDestroyAll(); }catch(e){} }
+  /* v10.4.47 (B4): leaving the missions view stops live tracking — the
+     watch never runs outside the missions view (battery). Same-view
+     re-renders (FM_refresh) do not stop it. */
+  if(id!=="fieldmissions"){ try{ if(typeof FM_stopWatch==="function") FM_stopWatch(); }catch(e){} }
   /* v10.4.40 (k4): a view with no nav button (e.g. themes) must not strip
      the active state from the previous section's button. Only retoggle
      when the target view has a nav button. */
@@ -14465,7 +14469,7 @@ Object.assign(I18N_EN,{"k4815":"Study tasks","k4816":"Personal tasks","k4817":"S
 Object.assign(I18N_EN,{"k9131":"App sounds are muted — unmute to hear the soundscape","k9133":"Sound events","k9134":"Effect events","k9135":"Delivery decisions","k9137":"No events recorded yet"});
 /* v10.4.35 (Y5): EN strings for the clock-skew banner (k3259–k3260). */
 Object.assign(I18N_EN,{"k3259":"Owner signature not verified, and the device clock differs from the server clock.","k3260":"This device's clock differs from the server clock by {n} minutes; fix the device clock. Password-based reset still works."});
-var APP_VERSION="10.4.46";
+var APP_VERSION="10.4.47";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -14781,6 +14785,40 @@ function groupMapAddMarker(entry, mk){
   m.addTo(entry.map);
   return m;
 }
+/* ---- v10.4.47 (B2) — in-app "open in map" ----
+   A target="_blank" link is dead in the APK wrapper (MainActivity has
+   no onCreateWindow / shouldOverrideUrlLoading / setSupportMultipleWindows,
+   so the tap is dropped) and even where it works it leaves the app.
+   groupMapFocusOn() instead routes inside the app: go("groupmap") and,
+   once the Leaflet map is initialised, centre it on the requested place
+   (zoom 16) and open the mission marker popup when the focus IS today's
+   mission place. GM_FOCUS is consumed by the first map init, so later
+   re-inits (group change, 20 s poll) never yank the view. */
+var GM_FOCUS=null;
+function groupMapFocusOn(lat,lng,name){
+  if(!isFinite(+lat)||!isFinite(+lng)) return;
+  GM_FOCUS={lat:+lat,lng:+lng,name:String(name||"")};
+  go("groupmap");
+}
+function groupMapFocusFromEl(el){
+  try{
+    var la=parseFloat(el.getAttribute("data-lat")), ln=parseFloat(el.getAttribute("data-lng"));
+    groupMapFocusOn(la,ln,el.getAttribute("data-name")||"");
+  }catch(e){}
+}
+function GM_applyFocus(entry){
+  if(!GM_FOCUS||!entry||!entry.map) return false;
+  try{ entry.map.setView([GM_FOCUS.lat,GM_FOCUS.lng],16); }catch(e){}
+  var mp=null; try{ mp=FM_missionPlace(); }catch(e){ mp=null; }
+  if(mp&&entry.missionMarker){
+    try{
+      var d=FM_distM(mp.lat,mp.lng,GM_FOCUS.lat,GM_FOCUS.lng);
+      if(d>=0&&d<=100) entry.missionMarker.openPopup();
+    }catch(e){}
+  }
+  GM_FOCUS=null;
+  return true;
+}
 function groupMapInitOne(g){
   groupMapOGInit();
   var el=document.getElementById('rmap-'+String(g.id));
@@ -14806,6 +14844,10 @@ function groupMapInitOne(g){
   /* v10.4.45 Scope B: today's mission place as a theme-styled marker
      (marker pane — unfiltered). fitBounds above is unchanged. */
   try{ groupMapAddMissionMarker(entry); }catch(e){}
+  /* v10.4.47 (B2): arrived from a mission / history "open in map" tap —
+     centre on the requested place (zoom 16), open the mission marker
+     popup when the focus is today's mission place. */
+  try{ GM_applyFocus(entry); }catch(e){}
   setTimeout(function(){ try{ map.invalidateSize(); }catch(e){} },120);
 }
 function groupMapRefreshMarkers(){
@@ -14907,6 +14949,7 @@ function renderGroupMap(v){
     +'<div class="rowflex" style="margin-top:10px"><button class="btn sm" onclick="OG.shareMyLocation()">'+TR('k2711','اشتراک مکان من')+'</button><button class="btn ghost sm" onclick="openUserSearch()">'+TR('k2723','جست‌وجوی نام کاربری')+'</button><button class="btn ghost sm" onclick="groupMapRefresh()">'+TR('k2710','تازه‌سازی نقشه')+'</button></div></div>';
   h+='<div id="mapGroupCard"></div>';
   if(!gs.length){
+    try{ GM_FOCUS=null; }catch(e){}
     h+='<div class="card" style="margin-top:14px"><p class="small">'+TR('k2713','برای دیدن نقشه، اول گروه بسازید یا به گروهی بپیوندید')+'.</p></div>';
   }
   v.innerHTML=h;
@@ -34314,7 +34357,7 @@ OG.locationCardHTML=function(){
   var h='<div class="card" style="margin-top:12px"><h3 style="margin-bottom:10px">📍 '+TR('k2495','مکان زنده اعضا')+'</h3>';
   h+=(rows.length?rows.map(function(r){
     var when=r.updated_at?faDateShort(new Date(r.updated_at)):"";
-    return '<div class="listrow"><div class="grow"><b>'+esc(r.user_name||"—")+'</b>'+(r.label?' <span class="small">'+QO()+esc(r.label)+QC()+'</span>':'')+'<div class="small">'+esc(when)+'</div></div><a class="btn ghost sm" href="https://maps.google.com/?q='+r.lat+','+r.lng+'" target="_blank" rel="noopener">'+TR('k2497','باز کردن در نقشه')+'</a></div>';
+    return '<div class="listrow"><div class="grow"><b>'+esc(r.user_name||"—")+'</b>'+(r.label?' <span class="small">'+QO()+esc(r.label)+QC()+'</span>':'')+'<div class="small">'+esc(when)+'</div></div><button class="btn ghost sm" data-lat="'+r.lat+'" data-lng="'+r.lng+'" data-name="'+esc(r.user_name||"")+'" onclick="groupMapFocusFromEl(this)">'+TR('k2497','باز کردن در نقشه')+'</button></div>';
   }).join(""):'<p class="small">'+TR('k2499','فعلاً کسی مکان زنده به اشتراک نگذاشته است')+'.</p>');
   h+='<div class="rowflex" style="margin-top:10px">';
   if(live) h+='<button class="btn ghost sm" onclick="OG.stopLiveLocation()">'+TR('k2484','توقف مکان زنده')+'</button>';
@@ -42531,7 +42574,6 @@ var FM_CATS=[
  {k:"park",tk:"k8051",fa:"پارک",en:"Park",q:"node[leisure=park];way[leisure=park]",nomClass:"leisure",nomType:"park"},
  {k:"gym",tk:"k8052",fa:"باشگاه ورزشی",en:"Gym",q:"node[leisure=fitness_centre]",nomClass:"leisure",nomType:"fitness_centre"},
  {k:"mosque",tk:"k8053",fa:"مسجد",en:"Mosque",q:"node[amenity=place_of_worship][religion=muslim]",nomClass:"amenity",nomType:"place_of_worship"},
- {k:"market",tk:"k8054",fa:"بازار",en:"Market",q:"node[amenity=marketplace]",nomClass:"amenity",nomType:"marketplace"}
 ];
 var FM_OVERPASS=[
  "https://overpass-api.de/api/interpreter",
@@ -42540,9 +42582,10 @@ var FM_OVERPASS=[
 ];
 var FM_NOMINATIM="https://nominatim.openstreetmap.org/search";
 var FM_CHECKIN_M=100, FM_RADIUS_M=2000, FM_BLOCK_S=25*60, FM_PLACES_TTL=24*3600*1000;
-var FM={day:null,rows:null,src:null,loading:false,places:{},sel:{},fix:null,fixAcc:null,fixAt:0,busy:{}};
+var FM_FIX_MAX_AGE_MS=90000, FM_FIX_POOR_M=100, FM_WATCH_MIN_MS=5000;
+var FM={day:null,rows:null,src:null,loading:false,places:{},sel:{},fix:null,fixAcc:null,fixAt:0,fixPoor:false,watchId:null,watchLast:0,watchNear:null,busy:{}};
 var FM_TIMER={key:null,leftSec:FM_BLOCK_S,run:false,int:null,endsAt:0};
-Object.assign(I18N_EN,{"k8000":"Field missions","k8001":"Three missions a day: one out in the field, the rest with your own focus and tasks.","k8002":"Today's missions","k8003":"Completed","k8004":"Active","k8005":"Check-in","k8006":"I am here","k8007":"Your distance","k8008":"Refresh distance","k8009":"Find nearby places","k8010":"Place list unavailable — check-in needs a place","k8011":"Study timer","k8012":"Start","k8013":"Pause","k8014":"Resume","k8015":"Stop","k8016":"Every 25 minutes is one full block; partial minutes are never recorded","k8017":"Full block recorded","k8018":"Check-in needs the internet","k8019":"away — move closer to the place","k8020":"Check-in done","k8021":"Mission completed","k8022":"Offline — today's saved copy","k8023":"Substitute mission","k8024":"In place of the location mission, because no place list is available","k8025":"Claim points","k8026":"Getting your location…","k8027":"Another timer is running","k8028":"Unsubmitted block","k8029":"Submit block","k8030":"Place","k8031":"Target","k8032":"min","k8033":"Loading missions…","k8034":"Missions are shown from the local copy","k8035":"Nearest place","k8036":"Open in map","k8037":"Saved list","k8038":"Points were not recorded; try again","k8039":"Go to this place","k8040":"Focus","k8041":"Do tasks","k8042":"Today's habit","k8043":"tasks done today","k8044":"Go to tasks","k8045":"Go to habits","k8046":"This habit is done today","k8047":"A mission timer is already running; stop it first","k8048":"Points were already earned for this slot today","k8049":"Recorded blocks","k8050":"Library","k8051":"Park","k8052":"Gym","k8053":"Mosque","k8054":"Market","k8055":"Location mission","k8056":"Focus mission","k8057":"Tasks mission","k8058":"Habit mission","k8059":"Check-in needs a place","k8060":"Name-based place search","k8061":"No place found","k8062":"The Pomodoro timer is running; stop it first","k8063":"Verifying location…","k8064":"Selected place","k8065":"Block completed but offline; it will be submitted when online","k8066":"tasks","k8067":"This habit is not done yet today","k8068":"Check-in is accepted only within 100 m of the place","k8079":"To do a location mission, first share your location on the group map","k8080":"Based on the location you shared on the group map","k8070":"Map theme","k8071":"Standard","k8072":"GTA","k8073":"Red Dead","k8074":"Clash of Clans","k8075":"Today's mission","k8076":"Map theme changed","k8077":"Today's mission place is marked on the map","k8078":"Today's mission place is not set yet"});
+Object.assign(I18N_EN,{"k8000":"Field missions","k8001":"Three missions a day: one out in the field, the rest with your own focus and tasks.","k8002":"Today's missions","k8003":"Completed","k8004":"Active","k8005":"Check-in","k8006":"I am here","k8007":"Your distance","k8008":"Refresh distance","k8009":"Find nearby places","k8010":"Place list unavailable — check-in needs a place","k8011":"Study timer","k8012":"Start","k8013":"Pause","k8014":"Resume","k8015":"Stop","k8016":"Every 25 minutes is one full block; partial minutes are never recorded","k8017":"Full block recorded","k8018":"Check-in needs the internet","k8019":"away — move closer to the place","k8020":"Check-in done","k8021":"Mission completed","k8022":"Offline — today's saved copy","k8023":"Substitute mission","k8024":"In place of the location mission, because no place list is available","k8025":"Claim points","k8026":"Getting your location…","k8027":"Another timer is running","k8028":"Unsubmitted block","k8029":"Submit block","k8030":"Place","k8031":"Target","k8032":"min","k8033":"Loading missions…","k8034":"Missions are shown from the local copy","k8035":"Nearest place","k8036":"Open in map","k8037":"Saved list","k8038":"Points were not recorded; try again","k8039":"Go to this place","k8040":"Focus","k8041":"Do tasks","k8042":"Today's habit","k8043":"tasks done today","k8044":"Go to tasks","k8045":"Go to habits","k8046":"This habit is done today","k8047":"A mission timer is already running; stop it first","k8048":"Points were already earned for this slot today","k8049":"Recorded blocks","k8050":"Library","k8051":"Park","k8052":"Gym","k8053":"Mosque","k8054":"Market","k8055":"Location mission","k8056":"Focus mission","k8057":"Tasks mission","k8058":"Habit mission","k8059":"Check-in needs a place","k8060":"Name-based place search","k8061":"No place found","k8062":"The Pomodoro timer is running; stop it first","k8063":"Verifying location…","k8064":"Selected place","k8065":"Block completed but offline; it will be submitted when online","k8066":"tasks","k8067":"This habit is not done yet today","k8068":"Check-in is accepted only within 100 m of the place","k8079":"To do a location mission, first share your location on the group map","k8080":"Based on the location you shared on the group map","k8070":"Map theme","k8071":"Standard","k8072":"GTA","k8073":"Red Dead","k8074":"Clash of Clans","k8075":"Today's mission","k8076":"Map theme changed","k8077":"Today's mission place is marked on the map","k8078":"Today's mission place is not set yet","k8081":"The distance is stale; tap \u201cRefresh distance\u201d for a fresh one","k8083":"Location accuracy is low; the distance is approximate","k8087":"Open in OpenStreetMap"});
 function FM_hash(s){ var h=5381,i; s=String(s||""); for(i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))>>>0; } return h>>>0; }
 function FM_uidSeed(){ try{ if(typeof SB!=="undefined"&&SB.uid) return String(SB.uid); }catch(e){} try{ var k=(typeof SB!=="undefined"&&typeof SB.keyForRpc==="function")?SB.keyForRpc():null; if(k) return "key:"+k; }catch(e){} try{ if(S&&S.user&&S.user.name) return "name:"+S.user.name; }catch(e){} return "local"; }
 function FM_keyForRpc(){ try{ return (typeof SB!=="undefined"&&typeof SB.keyForRpc==="function")?SB.keyForRpc():null; }catch(e){ return null; } }
@@ -42631,6 +42674,10 @@ function FM_cacheRead(dk){
   try{
     var raw=localStorage.getItem(FM_cacheKey(dk)); if(!raw) return null;
     var d=JSON.parse(raw); if(!d||!Array.isArray(d.rows)||!d.rows.length) return null;
+    /* v10.4.47 (B1): a cached day can still hold a 'market' mission
+       from before the removal — show it as the library mission the
+       server migration produces instead (done rows keep history). */
+    d.rows.forEach(function(r){ if(r&&r.category==="market"&&r.status!=="done") r.category="library"; });
     return d.rows;
   }catch(e){ return null; }
 }
@@ -42688,6 +42735,10 @@ function FM_loadDay(dk,cb){
           checked_in:!!r.checked_in,mission_id:String(r.mission_id||""),src:src};
       });
       norm.sort(function(a,b){ return a.slot-b.slot; });
+      /* v10.4.47 (B1): defence in depth — a server that has not run
+         the v10.4.47 delta yet can still deal 'market'; show it as
+         library (the migration target) instead of a market mission. */
+      norm.forEach(function(r){ if(r.category==="market"&&r.status!=="done") r.category="library"; });
       FM.day=dk; FM.rows=norm; FM.src=src;
       if(src==="server") FM_cacheWrite(dk,norm);
     } else if(!FM.rows){
@@ -42791,7 +42842,13 @@ function FM_fetchNominatim(cat,fix,cb){
     (json||[]).forEach(function(it){
       if(!it||typeof it.lat==="undefined") return;
       if(it.class!==c.nomClass||it.type!==c.nomType) return;
-      var name=String(it.display_name||"").split(",")[0].trim();
+      /* v10.4.47 — a place needs a real NAME (it.name), not the first
+         segment of display_name: an unnamed park inside a rural
+         district arrives as display_name "دهستان سرداران، …" and the
+         old split showed the district as if it were the park.
+         Unnamed rows are skipped, never shown as a place. */
+      var name=String(it.name||"").trim();
+      if(!name) return;
       if(!name) return;
       var la=parseFloat(it.lat), ln=parseFloat(it.lon);
       if(!isFinite(la)||!isFinite(ln)) return;
@@ -42819,7 +42876,7 @@ function FM_fetchNominatim(cat,fix,cb){
    v10.4.45: a fresh fix is ONLY for check-in (100 m gate) + distance display.
    It is NEVER the place-generation centre (see FM_anchorOwn). ---- */
 function FM_ensureFix(force,cb){
-  if(!force&&FM.fix&&Date.now()-FM.fixAt<90000){ cb(FM.fix,FM.fixAcc,false); return; }
+  if(!force&&FM.fix&&Date.now()-FM.fixAt<90000){ cb(FM.fix,FM.fixAcc,!!FM.fixPoor); return; }
   if(typeof navigator==="undefined"||!navigator.geolocation){ cb(null,null,{code:0}); return; }
   try{
     if(typeof window!=="undefined"&&window.GhostOpsBridge&&window.GhostOpsBridge.isLocationGranted&&!window.GhostOpsBridge.isLocationGranted()){
@@ -42830,12 +42887,70 @@ function FM_ensureFix(force,cb){
   if(typeof OG==="undefined"||typeof OG.accurateFix!=="function"){ cb(null,null,{code:0}); return; }
   OG.accurateFix(function(pos,poor){
     try{
-      FM.fix={lat:pos.coords.latitude,lng:pos.coords.longitude};
-      FM.fixAcc=(pos.coords&&typeof pos.coords.accuracy==="number")?pos.coords.accuracy:null;
-      FM.fixAt=Date.now();
+      /* v10.4.47 (B3-b): a poor fix never overwrites a fresh good one —
+         the old fix stays, so the display never degrades to a hedged
+         number while a good one is still current. */
+      var _keepOld=!!poor&&FM.fix&&FM.fixAt&&Date.now()-FM.fixAt<90000&&!FM.fixPoor;
+      if(!_keepOld){
+        FM.fix={lat:pos.coords.latitude,lng:pos.coords.longitude};
+        FM.fixAcc=(pos.coords&&typeof pos.coords.accuracy==="number")?pos.coords.accuracy:null;
+        FM.fixAt=Date.now(); FM.fixPoor=!!poor;
+      }
     }catch(e){}
-    cb(FM.fix,FM.fixAcc,poor);
+    cb(FM.fix,FM.fixAcc,!!FM.fixPoor);
   },function(err){ cb(null,null,err||{code:0}); });
+}
+/* ---- v10.4.47 (B3/B4) — one source of truth for "the current fix" ----
+   FM_fixFresh(): the fix ONLY if it is at most FM_FIX_MAX_AGE_MS old
+   (90 s, the FM_ensureFix cache bound). Renderers must never read bare
+   FM.fix — a fix older than the bound is stale and shows as "—".
+   FM_fixPoor(): the OG.accurateFix poor flag (kept in FM.fixPoor) or an
+   accuracy worse than the 100 m check-in gate. A poor fix is never
+   shown as an exact metre value and never enables "من اینجام".
+   FM_placeListSorted(): the place list ordered + distanced from the
+   SAME fresh fix the render uses — never from the up-to-24 h-old
+   anchor the fetch stored (B3-c). Without a fresh fix the list keeps
+   its stored (anchor) order and shows no distances at all. */
+function FM_fixFresh(){
+  if(!FM.fix) return null;
+  if(!FM.fixAt||Date.now()-FM.fixAt>FM_FIX_MAX_AGE_MS) return null;
+  return FM.fix;
+}
+function FM_fixPoor(){
+  if(FM.fixPoor) return true;
+  return (typeof FM.fixAcc==="number"&&FM.fixAcc>FM_FIX_POOR_M);
+}
+function FM_fixDistTo(lat,lng){
+  var f=FM_fixFresh(); if(!f) return -1;
+  return FM_distM(f.lat,f.lng,lat,lng);
+}
+function FM_placeListSorted(pst){
+  var list=(pst&&pst.list)?pst.list.slice():[];
+  var f=FM_fixFresh();
+  if(!f) return {list:list,fromFix:false};
+  list.forEach(function(p){ p.dist=FM_distM(f.lat,f.lng,p.lat,p.lng); });
+  list.sort(function(a,b){ return (a.dist<0?1e9:a.dist)-(b.dist<0?1e9:b.dist); });
+  return {list:list,fromFix:true};
+}
+function FM_anyNear(){
+  try{
+    if(!FM.rows) return null;
+    var f=FM_fixFresh(); if(!f) return null;
+    if(FM_fixPoor()) return false;
+    var dk=FM.day||todayKey();
+    for(var i=0;i<FM.rows.length;i++){
+      var m=FM.rows[i];
+      if(!m||m.kind!=="checkin"||FM_isSlotDone(m,dk)) continue;
+      var pst=FM.places[m.category];
+      if(!pst||!pst.list||!pst.list.length) continue;
+      var selId=FM.sel[FM_key(dk,m.slot)];
+      var place=null;
+      pst.list.forEach(function(p){ if(p.id===selId) place=p; });
+      if(!place) place=pst.list[0];
+      if(place&&FM_distM(f.lat,f.lng,place.lat,place.lng)<=FM_CHECKIN_M) return true;
+    }
+    return false;
+  }catch(e){ return null; }
 }
 /* ---- Mission anchor (v10.4.45 correction, Parsa 2026-11-22) ----
    The location-based mission is built from the location the app ALREADY
@@ -43301,29 +43416,59 @@ function FM_checkinHTML(m,dk){
     return h;
   }
   if(pst.state==="none"||!pst.list.length) return FM_subHTML(m,dk);
+  /* v10.4.47 (B3-c): list order + distances come from the SAME fresh fix
+     the selected distance uses — never from the up-to-24 h-old anchor
+     the fetch stored. Without a fresh fix no distance is shown at all
+     ("—"), so a stale number can never pass as current. */
+  var _sorted=FM_placeListSorted(pst);
+  var _showList=_sorted.list.slice(0,5);
   var selKey=FM_key(dk,m.slot), selId=FM.sel[selKey];
-  if(!selId){ selId=pst.list[0].id; FM.sel[selKey]=selId; }
+  if(!selId){ selId=_sorted.list[0].id; FM.sel[selKey]=selId; }
   var selPlace=null;
-  pst.list.forEach(function(p){ if(p.id===selId) selPlace=p; });
-  if(!selPlace){ selPlace=pst.list[0]; FM.sel[selKey]=selPlace.id; }
+  _sorted.list.forEach(function(p){ if(p.id===selId) selPlace=p; });
+  if(!selPlace){ selPlace=_sorted.list[0]; FM.sel[selKey]=selPlace.id; }
   if(pst.state==="cached") h+='<p class="small" style="margin:6px 0 0">💾 '+TR('k8037','فهرست ذخیره‌شده')+'</p>';
   if(pst.state==="nominatim") h+='<p class="small" style="margin:6px 0 0">🔎 '+TR('k8060','جست‌وجوی مکان با نام')+'</p>';
   if(pst.anchor) h+='<p class="small" style="margin:6px 0 0">📍 '+TR('k8080','بر اساس مکانی که در نقشه گروه‌ها به اشتراک گذاشته‌اید')+'</p>';
   h+='<div style="margin-top:8px">';
-  pst.list.slice(0,5).forEach(function(p){
-    var d=(FM.fix)?FM_distM(FM.fix.lat,FM.fix.lng,p.lat,p.lng):-1;
+  _showList.forEach(function(p){
+    var d=FM_fixDistTo(p.lat,p.lng);
     var sel=(p.id===selPlace.id);
     h+='<button class="btn '+(sel?"":"ghost")+'" style="width:100%;justify-content:space-between;margin-bottom:6px" onclick="FM_selectPlace('+m.slot+',\''+esc(p.id)+'\')"><span>'+esc(p.name)+'</span><span>'+(d>=0?fa(d)+' '+TR('k2737','متر'):'—')+'</span></button>';
   });
   h+='</div>';
-  var selDist=(FM.fix&&selPlace)?FM_distM(FM.fix.lat,FM.fix.lng,selPlace.lat,selPlace.lng):-1;
-  var near=selDist>=0&&selDist<=FM_CHECKIN_M;
-  h+='<p class="small">📍 <b>'+esc(selPlace.name)+'</b> — '+TR('k8007','فاصله شما')+': '+(selDist>=0?fa(selDist)+' '+TR('k2737','متر'):'—')+'</p>';
+  /* v10.4.47 (B3-a/B3-b): the selected distance is shown ONLY from a
+     fresh fix (<=90 s, the FM_ensureFix cache bound). A stale fix shows
+     "—" with a stale note; a poor-accuracy fix shows a hedged "~N m"
+     with a warning, never a false exact number. The button enables
+     ONLY on a fresh, good-accuracy fix within 100 m — the server 100 m
+     gate itself is unchanged. */
+  var _fresh=FM_fixFresh();
+  var _stale=!!FM.fix&&!_fresh;
+  var _poor=_fresh?FM_fixPoor():false;
+  var selDist=(_fresh&&selPlace)?FM_distM(_fresh.lat,_fresh.lng,selPlace.lat,selPlace.lng):-1;
+  var near=selDist>=0&&selDist<=FM_CHECKIN_M&&!_poor;
+  var _distTxt="—";
+  if(selDist>=0) _distTxt=(_poor?"~":"")+fa(selDist)+" "+TR('k2737','متر');
+  h+='<p class="small">📍 <b>'+esc(selPlace.name)+'</b> — '+TR('k8007','فاصله شما')+': '+_distTxt+'</p>';
+  if(_stale) h+='<p class="small">⚠️ '+TR('k8081','فاصله قدیمی است؛ برای فاصله تازه، «تازه‌سازی فاصله» را بزنید')+'</p>';
+  else if(!FM.fix) h+='<p class="small">'+TR('k8026','در حال دریافت مکان…')+'</p>';
+  else if(_poor&&typeof FM.fixAcc==="number") h+='<p class="small">⚠️ '+TR('k3054','دقت مکان پایین است (حدود ')+fa(Math.round(FM.fixAcc))+TR('k3055',' متر)؛ برای دقت بیشتر به فضای باز بروید')+'</p>';
+  else if(_poor) h+='<p class="small">⚠️ '+TR('k8083','دقت مکان پایین است؛ فاصله تقریبی است')+'</p>';
+  /* v10.4.47 (B4): a disabled button must say why — otherwise the tap
+     silently does nothing (the repro's UX trap). */
+  if(!near&&selDist>FM_CHECKIN_M) h+='<p class="small">'+fa(selDist)+' '+TR('k2737','متر')+' '+TR('k8019','فاصله دارید؛ به مکان نزدیک‌تر شوید')+'</p>';
   h+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
   h+='<button class="btn" '+(near?"":"disabled")+' onclick="FM_checkinSlot('+m.slot+')">📍 '+TR('k8006','من اینجام')+'</button>';
   h+='<button class="btn ghost" onclick="FM_refreshDist('+m.slot+')">'+TR('k8008','تازه‌سازی فاصله')+'</button>';
-  h+='<a class="btn ghost" href="https://www.openstreetmap.org/?mlat='+selPlace.lat+'&mlon='+selPlace.lng+'#map=18/'+selPlace.lat+'/'+selPlace.lng+'" target="_blank" rel="noopener">'+TR('k8036','باز کردن در نقشه')+'</a>';
+  h+='<button class="btn ghost" onclick="FM_openPlaceInMap('+m.slot+')">'+TR('k8036','باز کردن در نقشه')+'</button>';
   h+='</div>';
+  /* v10.4.47 (B2): the OpenStreetMap link stays ONLY as a secondary
+     browser fallback — the button above opens the place in the app's
+     own map (FM_openPlaceInMap). The external link is inert in the APK
+     wrapper (no onCreateWindow / shouldOverrideUrlLoading there), so it
+     must never again be the only way to open the map. */
+  h+='<p class="small" style="margin:6px 0 0"><a href="https://www.openstreetmap.org/?mlat='+selPlace.lat+'&mlon='+selPlace.lng+'#map=18/'+selPlace.lat+'/'+selPlace.lng+'" target="_blank" rel="noopener">'+TR('k8087','باز کردن در OpenStreetMap')+'</a></p>';
   return h;
 }
 function FM_cardHTML(m,dk){
@@ -43390,6 +43535,52 @@ function renderFieldMissions(v){
       });
     });
   })();
+  /* v10.4.47 (B4): track position live while this view is open. */
+  try{ FM_startWatch(); }catch(e){}
+}
+/* ---- v10.4.47 (B4) — live position tracking while the missions view is open ----
+   Arrival can never be detected by a manual button: FM.fix only changed
+   on a "تازه‌سازی فاصله" tap. While the missions view is open a
+   watchPosition (high accuracy) now keeps FM.fix current, so walking
+   into the park enables "من اینجام" with no tap. Throttle: a re-render
+   at most every 5 s, or immediately when the 100 m gate state flips.
+   Battery: the watch starts ONLY here (view open) and stops on leave
+   (go() below); it never runs in the background. A poor fix never
+   overwrites a fresh good one (same rule as FM_ensureFix). The server
+   100 m gate is untouched — this only measures. */
+function FM_startWatch(){
+  if(FM.watchId!=null) return true;
+  if(typeof navigator==="undefined"||!navigator.geolocation||!navigator.geolocation.watchPosition) return false;
+  try{
+    if(typeof window!=="undefined"&&window.GhostOpsBridge&&window.GhostOpsBridge.isLocationGranted&&!window.GhostOpsBridge.isLocationGranted()) return false;
+  }catch(e){ return false; }
+  FM.watchNear=null; FM.watchLast=0;
+  try{
+    FM.watchId=navigator.geolocation.watchPosition(function(pos){
+      try{
+        var acc=(pos.coords&&typeof pos.coords.accuracy==="number")?pos.coords.accuracy:null;
+        var good=(acc==null||acc<=FM_FIX_POOR_M);
+        if(!good&&FM_fixFresh()) return;
+        FM.fix={lat:pos.coords.latitude,lng:pos.coords.longitude};
+        FM.fixAcc=acc; FM.fixAt=Date.now(); FM.fixPoor=!good;
+        var now=Date.now();
+        var nearNow=FM_anyNear();
+        var flip=(nearNow!==null&&FM.watchNear!==null&&nearNow!==FM.watchNear);
+        FM.watchNear=nearNow;
+        if(flip||now-FM.watchLast>=FM_WATCH_MIN_MS){ FM.watchLast=now; FM_refresh(); }
+      }catch(e){}
+    },function(err){
+      if(err&&err.code===1){ FM_stopWatch(); }
+    },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+  }catch(e){ FM.watchId=null; return false; }
+  return FM.watchId!=null;
+}
+function FM_stopWatch(){
+  if(FM.watchId!=null){
+    try{ if(navigator.geolocation&&navigator.geolocation.clearWatch) navigator.geolocation.clearWatch(FM.watchId); }catch(e){}
+    FM.watchId=null;
+  }
+  FM.watchNear=null; FM.watchLast=0;
 }
 /* ---- Global slot handlers (called from inline onclick) ---- */
 function FM_rowBySlot(slot){
@@ -43428,6 +43619,22 @@ function FM_findPlaces(slot){
     try{ if(FM.places[m.category]) FM.places[m.category].anchor=true; }catch(e){}
     FM_refresh();
   });
+}
+/* v10.4.47 (B2): open the selected place in the APP's own group map —
+   the in-app Leaflet map already draws today's mission place
+   (groupMapAddMissionMarker); this button finally routes to it instead
+   of leaving the app for openstreetmap.org in a new tab. */
+function FM_openPlaceInMap(slot){
+  var m=FM_rowBySlot(slot); if(!m) return;
+  var dk=FM.day||todayKey();
+  var pst=FM.places[m.category];
+  var sorted=FM_placeListSorted(pst);
+  var selId=FM.sel[FM_key(dk,slot)];
+  var place=null;
+  sorted.list.forEach(function(p){ if(p.id===selId) place=p; });
+  if(!place&&sorted.list.length) place=sorted.list[0];
+  if(!place){ toast(TR('k8059','ثبت حضور به مکان نیاز دارد')+"."); return; }
+  groupMapFocusOn(place.lat,place.lng,place.name);
 }
 function FM_selectPlace(slot,placeId){
   var dk=FM.day||todayKey();
@@ -43533,7 +43740,8 @@ function FM_missionPlace(){
     for(var i=0;i<rows.length;i++){ if(rows[i]&&rows[i].kind==="checkin"){ m=rows[i]; break; } }
     if(!m) return null;
     var pst=(typeof FM!=="undefined"&&FM.places)?FM.places[m.category]:null;
-    var list=(pst&&pst.list&&pst.list.length)?pst.list:null;
+    var _sorted=null; try{ _sorted=FM_placeListSorted(pst); }catch(e){ _sorted=null; }
+    var list=(_sorted&&_sorted.list&&_sorted.list.length)?_sorted.list:null;
     if(!list){ try{ list=FM_placesCacheRead(m.category); }catch(e){ list=null; } }
     if(!list||!list.length) return null;
     var selId=null; try{ selId=FM.sel[FM_key(dk,m.slot)]; }catch(e){ selId=null; }
