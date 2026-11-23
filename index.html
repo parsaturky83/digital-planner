@@ -9797,6 +9797,7 @@ function enterApp(){
   if(!clockStarted){ clockStarted=true; startReminderClock(); }
   try{ goScheduleAllAlarms(); }catch(e){}
   try{ goScheduleLocalNotifs(); }catch(e){}
+  try{ goAlarmFlushPending(false); }catch(e){}
   try{ if(typeof SB!=="undefined") SB.afterEnter(); }catch(e){}
   /* v10.4.39 — owner-voice welcome on every entry (login + resume). */
   try{ playWelcomeVoice(); }catch(e){}
@@ -10167,7 +10168,58 @@ function goPushAlarmPending(){
    remains the only firing path. The native side records every fire in
    SharedPreferences; goSyncNativeFired() applies those fires to S on
    boot/resume so a reminder never rings twice (once natively, once in-app). */
-function goHasAlarmBridge(){ try{ if(!(typeof window!=='undefined'&&window.GhostOpsBridge&&typeof GhostOpsBridge.scheduleAlarm==='function')) return false; if(typeof GhostOpsBridge.canScheduleExactAlarms==='function'){ try{ return !!GhostOpsBridge.canScheduleExactAlarms(); }catch(e){ return true; } } return true; }catch(e){ return false; } }
+function goHasAlarmBridge(){ try{ if(!(typeof window!=='undefined'&&window.GhostOpsBridge&&typeof GhostOpsBridge.scheduleAlarm==='function')) return false; return true; }catch(e){ return false; } }
+/* v10.4.49 (ALARM-FIX — Parsa 2026-11-23: alarms/notifications do not come
+   outside the app): the v10.4.40 code folded the SCHEDULE_EXACT_ALARM
+   permission INTO goHasAlarmBridge(), so one denied permission made the
+   bridge "not exist" and killed reminders + all four v10.4.41 local types
+   at once, silently. The gate is now split in two on purpose:
+   - goHasAlarmBridge() = the bridge EXISTS (scheduling API present).
+     Cancelling, draining fired markers and re-registering no longer
+     depend on the permission.
+   - goCanScheduleExact() = the permission itself (true when there is no
+     bridge at all — plain browser, in-app clock only — or the bridge has
+     no such method, i.e. an older APK).
+   goScheduleAlarm / goScheduleNative READ the bridge boolean now and
+   never report success on a refusal; a refused schedule is recorded in
+   the persisted pending queue (localStorage go449-pending) and retried
+   by goAlarmFlushPending() as soon as the permission is granted.
+   No alarm semantics change: setAlarmClock core, receiver, boot
+   reschedule, the 4 local types, snooze, quiet-hours-at-fire-time,
+   sounds/channels are untouched. No AI, no new animation. */
+function goCanScheduleExact(){ try{ if(!window.GhostOpsBridge||typeof GhostOpsBridge.canScheduleExactAlarms!=='function') return true; return !!GhostOpsBridge.canScheduleExactAlarms(); }catch(e){ return true; } }
+function goNotifGranted(){ try{ if(window.GhostOpsBridge&&typeof GhostOpsBridge.isNotificationGranted==='function') return !!GhostOpsBridge.isNotificationGranted(); if(("Notification" in window)) return Notification.permission==="granted"; return true; }catch(e){ return true; } }
+function goBatteryExempt(){ try{ if(window.GhostOpsBridge&&typeof GhostOpsBridge.isIgnoringBatteryOptimizations==='function') return !!GhostOpsBridge.isIgnoringBatteryOptimizations(); return null; }catch(e){ return null; } }
+window.__go449LastSched='';
+window.__go449Asked=false;
+function goAlarmQueuePending(kind,id){ try{ if(!goHasAlarmBridge()) return; var q={r:[],local:false,at:Date.now()}; try{ var raw=localStorage.getItem("go449-pending"); if(raw) q=JSON.parse(raw)||q; }catch(e){} if(!q.r) q.r=[]; if(kind==="reminder"&&id){ if(q.r.indexOf(String(id))<0) q.r.push(String(id)); } else if(kind==="local"){ q.local=true; } q.at=Date.now(); try{ localStorage.setItem("go449-pending",JSON.stringify(q)); }catch(e){} }catch(e){} }
+function goAlarmPendingCount(){ try{ var raw=localStorage.getItem("go449-pending"); if(!raw) return 0; var q=JSON.parse(raw)||{}; return (q.r?q.r.length:0)+(q.local?1:0); }catch(e){ return 0; } }
+function goAlarmClearPending(){ try{ localStorage.removeItem("go449-pending"); }catch(e){} }
+function goAlarmFlushPending(announce){ try{ if(!goHasAlarmBridge()||!goCanScheduleExact()) return 0; var n=goAlarmPendingCount(); if(!n) return 0; goAlarmClearPending(); try{ goScheduleAllAlarms(); }catch(e){} try{ goScheduleLocalNotifs(); }catch(e){} try{ goPomoNativeSync(); }catch(e){} try{ goScheduleEventAlarms(); }catch(e){} if(announce){ try{ toast(TR('k6286','آلارم دقیق فعال شد؛ یادآوری‌های در انتظار به آلارم گوشی سپرده شدند')+"."); }catch(e){} } return n; }catch(e){ return 0; } }
+function goAlarmRefreshCard(){ try{ var el=$("go449PermCard"); if(el) el.outerHTML=goAlarmPermCardHTML(); }catch(e){} }
+/* Native callbacks (v10.4.40 pushed __goExactAlarmResult but the page never
+   defined it — the return-from-Settings loop was dead; v10.4.49 defines it
+   and the battery/notification equivalents). */
+window.__goExactAlarmResult=function(granted){ try{ if(granted){ goAlarmFlushPending(true); } else { try{ toast(TR('k6284','یادآوری ثبت شد، ولی آلارم دقیق خاموش است؛ تا وقتی برنامه باز است خبر می‌دهد. از بالای همین صفحه فعالش کنید')+"."); }catch(e){} } goAlarmRefreshCard(); }catch(e){} };
+window.__goBatteryResult=function(granted){ try{ if(granted){ try{ toast(TR('k6288','معافیت باتری فعال شد')+"."); }catch(e){} } else { try{ toast(TR('k6289','معافیت باتری داده نشد؛ آلارم‌ها به بهترین تلاش کار می‌کنند و ممکن است در خواب عمیق گوشی دیر برسند')+"."); }catch(e){} } goAlarmRefreshCard(); }catch(e){} };
+window.__goNotifResult=function(granted){ try{ if(granted){ S.permNotif=true; try{ save(); }catch(e){} } else { try{ toast(TR('k6287','اعلان‌های گوشی خاموش است؛ آلارم بیرون از برنامه دیده نمی‌شود تا وقتی اعلان‌ها را فعال کنید')+"."); }catch(e){} } goAlarmRefreshCard(); }catch(e){} };
+function goAlarmRequestExact(){ try{ if(window.GhostOpsBridge&&typeof GhostOpsBridge.requestExactAlarmPermission==="function"){ GhostOpsBridge.requestExactAlarmPermission(); return true; } return false; }catch(e){ return false; } }
+function goAlarmRequestNotif(){ try{ if(window.GhostOpsBridge&&typeof GhostOpsBridge.requestNotificationPermission==="function"){ GhostOpsBridge.requestNotificationPermission(); return true; } if(("Notification" in window)){ Notification.requestPermission(); return true; } return false; }catch(e){ return false; } }
+function goAlarmRequestBattery(){ try{ if(window.GhostOpsBridge&&typeof GhostOpsBridge.requestBatteryOptimisationExemption==="function"){ GhostOpsBridge.requestBatteryOptimisationExemption(); return true; } return false; }catch(e){ return false; } }
+function goAlarmOpenNotifSettings(){ try{ if(window.GhostOpsBridge&&typeof GhostOpsBridge.openAppNotificationSettings==="function"){ GhostOpsBridge.openAppNotificationSettings(); return true; } return false; }catch(e){ return false; } }
+/* Point-of-first-scheduling ask (v10.4.49): the FIRST time in a session the
+   user schedules something while a gate is closed, say so plainly in a
+   modal instead of silently falling back to in-app-only. The modal never
+   opens Settings by itself — every Settings jump is a tap. Boot/resume
+   re-registration (goScheduleLocalNotifs / goScheduleAllAlarms) NEVER calls
+   this, so the app never modals on boot. */
+function goAlarmEnsureAtSchedule(kind){ try{ if(window.__go449Asked) return false; if(!window.GhostOpsBridge) return false; if(goCanScheduleExact()&&goNotifGranted()) return false; window.__go449Asked=true; var ex=!goCanScheduleExact(), nf=!goNotifGranted(), bt=goBatteryExempt(); openModal('<h3 style="margin-bottom:10px">'+TR('k6281','آلارم بیرون از برنامه')+'</h3>' +(ex?'<p class="small" style="margin:0 0 8px">'+TR('k6274','برای اینکه یادآوری و تایمر حتی وقتی برنامه بسته است زنگ بخورند، اجازه «آلارم دقیق» لازم است. بدون آن، یادآوری فقط وقتی برنامه باز است خبر می‌دهد.')+'</p>':'') +(nf?'<p class="small" style="margin:0 0 8px">'+TR('k6276','اعلان‌های گوشی خاموش است؛ حتی اگر آلارم دقیق فعال باشد، زنگ و اعلان بیرون از برنامه دیده نمی‌شود.')+'</p>':'') +(bt===false?'<p class="small" style="margin:0 0 8px">'+TR('k6278','بهینه‌سازی باتری برای این برنامه فعال است؛ در حالت خواب عمیق گوشی، آلارم ممکن است دیر برسد. معافیت را فعال کنید.')+'</p>':'') +'<p class="small" style="margin:0 0 12px">'+TR('k6282','یادآوری ثبت شد و همین که اجازه را بدهید، خودش به آلارم گوشی سپرده می‌شود؛ چیزی از دست نمی‌رود.')+'</p>' +'<div class="rowflex" style="flex-wrap:wrap">'+(ex?'<button class="btn" onclick="goAlarmRequestExact();closeModal()">'+TR('k6227','فعال‌سازی آلارم دقیق')+'</button>':'') +(nf?'<button class="btn" onclick="goAlarmRequestNotif();closeModal()">'+TR('k6277','فعال‌سازی اعلان‌ها')+'</button>':'') +(bt===false?'<button class="btn ghost" onclick="goAlarmRequestBattery();closeModal()">'+TR('k6279','معافیت از بهینه‌سازی باتری')+'</button>':'') +'<button class="btn ghost" onclick="closeModal()">'+TR('k6283','بعداً')+'</button></div>'); return true; }catch(e){ return false; } }
+/* Prominent in-app permission state (v10.4.49): a card at the TOP of the
+   Reminders view (not small print at the bottom) showing the three gates
+   — exact alarm, notifications, battery exemption — with a working
+   button for each missing one. When everything is granted it shows one
+   short green confirmation line instead, so the state stays visible. */
+function goAlarmPermCardHTML(){ try{ if(!window.GhostOpsBridge) return ''; var ex=goCanScheduleExact(), nf=goNotifGranted(), bt=goBatteryExempt(); var pend=goAlarmPendingCount(); if(ex&&nf&&(bt!==false)){ return '<div class="card" id="go449PermCard" style="margin-bottom:12px;border:1px solid var(--acc)"><div class="small">✓ '+TR('k6280','آلارم دقیق فعال است؛ یادآوری‌ها حتی با بسته‌بودن برنامه زنگ می‌خورند.')+(pend?' '+TR('k6294','یادآوری در انتظار ثبت است')+' ('+fa(pend)+')':'')+'</div></div>'; } var h='<div class="card" id="go449PermCard" style="margin-bottom:12px;border:2px solid var(--acc)"><h3 style="margin-bottom:8px">⏰ '+TR('k6273','آلارم بیرون از برنامه')+'</h3>'; if(!ex) h+='<div class="small" style="margin-bottom:6px">✗ '+TR('k6274','برای اینکه یادآوری و تایمر حتی وقتی برنامه بسته است زنگ بخورند، اجازه «آلارم دقیق» لازم است. بدون آن، یادآوری فقط وقتی برنامه باز است خبر می‌دهد.')+'</div>'; if(!nf) h+='<div class="small" style="margin-bottom:6px">✗ '+TR('k6276','اعلان‌های گوشی خاموش است؛ حتی اگر آلارم دقیق فعال باشد، زنگ و اعلان بیرون از برنامه دیده نمی‌شود.')+'</div>'; if(bt===false) h+='<div class="small" style="margin-bottom:6px">✗ '+TR('k6278','بهینه‌سازی باتری برای این برنامه فعال است؛ در حالت خواب عمیق گوشی، آلارم ممکن است دیر برسد. معافیت را فعال کنید.')+'</div>'; if(pend) h+='<div class="small" style="margin-bottom:6px">⏳ '+TR('k6295','یادآوری در انتظار اجازه آلارم دقیق است؛ همین که فعال شود، خودکار به آلارم گوشی سپرده می‌شود.')+' ('+fa(pend)+')</div>'; h+='<div class="rowflex" style="flex-wrap:wrap;margin-top:8px">'; if(!ex) h+='<button class="btn sm" onclick="goAlarmRequestExact()">'+TR('k6227','فعال‌سازی آلارم دقیق')+'</button>'; if(!nf) h+='<button class="btn sm" onclick="goAlarmRequestNotif()">'+TR('k6277','فعال‌سازی اعلان‌ها')+'</button>'; if(!nf) h+='<button class="btn ghost sm" onclick="goAlarmOpenNotifSettings()">'+TR('k6290','باز کردن تنظیمات اعلان‌ها')+'</button>'; if(bt===false) h+='<button class="btn ghost sm" onclick="goAlarmRequestBattery()">'+TR('k6279','معافیت از بهینه‌سازی باتری')+'</button>'; h+='</div></div>'; return h; }catch(e){ return ''; } }
 function goReminderEpoch(rm){
   try{
     var t=String(rm.time||'08:00').split(':'); var h=+t[0]||0, m=+t[1]||0;
@@ -10182,10 +10234,12 @@ function goReminderEpoch(rm){
 function goScheduleAlarm(rm){
   try{
     if(!rm||rm.fired) return false;
-    if(!goHasAlarmBridge()) return false;
-    var ep=goReminderEpoch(rm); if(!ep) return false;
-    GhostOpsBridge.scheduleAlarm(String(rm.id), ep, String(rm.title||''), String(rm.sound||S.alarmSound||'chime'), String(rm.repeat||''));
-    return true;
+    if(!goHasAlarmBridge()){ window.__go449LastSched='no-bridge'; return false; }
+    var ep=goReminderEpoch(rm); if(!ep){ window.__go449LastSched='no-epoch'; return false; }
+    if(!goCanScheduleExact()){ window.__go449LastSched='exact-denied'; goAlarmQueuePending('reminder',rm.id); return false; }
+    var ok=false; try{ ok=!!GhostOpsBridge.scheduleAlarm(String(rm.id), ep, String(rm.title||''), String(rm.sound||S.alarmSound||'chime'), String(rm.repeat||'')); }catch(e){ ok=false; }
+    if(!ok){ window.__go449LastSched='refused'; goAlarmQueuePending('reminder',rm.id); return false; }
+    window.__go449LastSched='ok'; return true;
   }catch(e){ return false; }
 }
 function goCancelAlarm(id){
@@ -10240,7 +10294,9 @@ function goScheduleNative(id,epoch,title,sound,repeat){
   try{
     if(!id||!epoch||epoch<=Date.now()) return false;
     if(!goHasAlarmBridge()) return false;
-    GhostOpsBridge.scheduleAlarm(String(id), epoch, String(title||''), String(sound||'chime'), String(repeat||''));
+    if(!goCanScheduleExact()){ goAlarmQueuePending('local',id); return false; }
+    var ok=false; try{ ok=!!GhostOpsBridge.scheduleAlarm(String(id), epoch, String(title||''), String(sound||'chime'), String(repeat||'')); }catch(e){ ok=false; }
+    if(!ok){ goAlarmQueuePending('local',id); return false; }
     return true;
   }catch(e){ return false; }
 }
@@ -10429,14 +10485,17 @@ function goApplyNativeFire441(id){
   }catch(e){ return false; }
 }
 function goAlarmSavedToast(){
-  if(goHasAlarmBridge()) return TR('k0624','یادآوری ثبت شد؛ سر ساعت با ساعت گوشی خبرتان می‌کنیم');
-  return TR('k6226','یادآوری ثبت شد؛ تا وقتی برنامه باز است سر ساعت با نوار آلارم خبرتان می‌کنیم');
+  if(!goHasAlarmBridge()) return TR('k6226','یادآوری ثبت شد؛ تا وقتی برنامه باز است سر ساعت با نوار آلارم خبرتان می‌کنیم');
+  if(window.__go449LastSched==='exact-denied') return TR('k6284','یادآوری ثبت شد، ولی آلارم دقیق خاموش است؛ تا وقتی برنامه باز است خبر می‌دهد. از بالای همین صفحه فعالش کنید');
+  if(window.__go449LastSched==='refused') return TR('k6285','آلارم گوشی قبول نکرد؛ از بالای همین صفحه «فعال‌سازی آلارم دقیق» را بزنید');
+  if(!goCanScheduleExact()) return TR('k6226','یادآوری ثبت شد؛ تا وقتی برنامه باز است سر ساعت با نوار آلارم خبرتان می‌کنیم');
+  return TR('k0624','یادآوری ثبت شد؛ سر ساعت با ساعت گوشی خبرتان می‌کنیم');
 }
 function goAlarmFooterExtra(){
   try{
     if(!window.GhostOpsBridge||typeof GhostOpsBridge.canScheduleExactAlarms!=='function') return '';
     if(GhostOpsBridge.canScheduleExactAlarms()) return '';
-    return ' <button class="btn sm" onclick="try{GhostOpsBridge.requestExactAlarmPermission()}catch(e){}">'+TR('k6227','فعال‌سازی آلارم دقیق')+'</button>';
+    return ' <button class="btn sm" onclick="goAlarmRequestExact()">'+TR('k6227','فعال‌سازی آلارم دقیق')+'</button>';
   }catch(e){ return ''; }
 }
 function snoozeAlarmFor(id){
@@ -12351,7 +12410,8 @@ function renderReminders(v){
   if(_preset){ rmJal=_preset.jal; rmHour=_preset.hour; rmMin=_preset.min; }
   else { rmJal=jalToday(); var _dt=rmDefaultTime(); rmHour=_dt.h; rmMin=_dt.m; }
   var h=vhead(TR('k0266','یادآوری و آلارم'),TR('k0609','یادآوری کاملاً آفلاین: بر اساس ساعت و تاریخ همین گوشی زنگ می‌خورد؛ بدون ایمیل و بدون سرور') + ".");
-  h+='<div class="grid g2"><div class="card"><h3 style="margin-bottom:12px">' + TR('k0617','یادآوری تازه') + '</h3><div class="field"><label>' + TR('k0613','عنوان یادآوری') + '</label><input class="inp" id="rmTitle" value="'+esc(_preset?_preset.title:"")+'" placeholder="' + TR('k0615','مثلاً: شروع مطالعه شیمی') + '"></div><div class="rowflex"><div class="field grow"><label>' + TR('k0162','تاریخ') + ' (' + TR('k2900','شمسی') + ')</label><button type="button" class="inp" id="rmDateBtn" onclick="openJalPicker()" style="text-align:start;width:100%">'+rmJalLabel()+'</button></div><div class="field grow"><label>' + TR('k0347','ساعت') + ' (' + TR('k2901','ساعت گوشی') + ')</label><div class="inp" style="text-align:center"><span id="rmClockLive" class="stat-num" style="font-size:20px">--:--:--</span></div></div></div><div class="field"><label>' + TR('k2902','ساعت آلارم') + '</label><div class="rowflex" style="align-items:center;justify-content:center;gap:4px"><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'h\',1)" aria-label="+">▲</button><span id="rmHourShow" class="stat-num" style="font-size:24px;min-width:52px;text-align:center"></span><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'h\',-1)" aria-label="-">▼</button><span style="align-self:center;font-size:22px">:</span><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'m\',1)" aria-label="+">▲</button><span id="rmMinShow" class="stat-num" style="font-size:24px;min-width:52px;text-align:center"></span><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'m\',-1)" aria-label="-">▼</button><button class="btn ghost sm" type="button" onclick="rmTimeNow()">'+TR('k2903','الان')+'</button></div></div><div class="field"><label>' + TR('k0611','تکرار یادآوری') + '</label><select class="inp" id="rmRepeat"><option value="">' + TR('k0614','فقط یک بار') + '</option><option value="daily">' + TR('k0494','هر روز') + '</option><option value="weekly">' + TR('k0616','هر هفته') + '</option></select></div><div class="field"><label>'+TR('k2462','صدای آلارم')+'</label><select class="inp" id="rmSound"><option value="chime">'+TR('k2463','زنگ ملایم')+'</option><option value="beep">'+TR('k2464','بوق کلاسیک')+'</option><option value="siren">'+TR('k2465','آژیر')+'</option><option value="reveille">'+TR('k2466','بوق بیدارباش')+'</option><option value="drum">'+TR('k2467','طبل')+'</option><option value="march">'+TR('k2468','مارش')+'</option><option value="custom">'+TR('k2514','موسیقی دلخواه من')+'</option></select><div class="rowflex" style="margin-top:8px"><button class="btn ghost sm" type="button" onclick="testAlarmSound(($(\'rmSound\')||{}).value||\'chime\')">▶ '+TR('k2311','تست صدا')+'</button><span class="small" style="align-self:center">'+TR('k3209','صدای انتخاب‌شده را پیش از ثبت بشنوید')+'</span></div>'+soundTestRowHTML()+'</div><button class="btn" onclick="addReminder()">' + TR('k0612','ثبت یادآوری') + '</button><p class="small" style="margin-top:10px">' + (goHasAlarmBridge()?TR('k0610','تا وقتی این صفحه باز است، ساعت گوشی هر چند ثانیه بررسی می‌شود و سر وقت، نوار آلارم بالای صفحه با صدا خبر می‌دهد. در نسخه اندروید همین یادآوری‌ها به آلارم سیستم گوشی سپرده می‌شوند تا حتی با بسته‌بودن برنامه هم زنگ بخورند'):TR('k6225','تا وقتی این صفحه باز است، ساعت گوشی هر چند ثانیه بررسی می‌شود و سر وقت، نوار آلارم بالای صفحه با صدا خبر می‌دهد. اگر برنامه بسته شود، این یادآوری زنگ نمی‌خورد — در نسخه اندروید، با اجازه آلارم دقیق، به آلارم سیستم گوشی سپرده می‌شود'))+goAlarmFooterExtra() + '.</p></div>'
+  h+=goAlarmPermCardHTML();
+  h+='<div class="grid g2"><div class="card"><h3 style="margin-bottom:12px">' + TR('k0617','یادآوری تازه') + '</h3><div class="field"><label>' + TR('k0613','عنوان یادآوری') + '</label><input class="inp" id="rmTitle" value="'+esc(_preset?_preset.title:"")+'" placeholder="' + TR('k0615','مثلاً: شروع مطالعه شیمی') + '"></div><div class="rowflex"><div class="field grow"><label>' + TR('k0162','تاریخ') + ' (' + TR('k2900','شمسی') + ')</label><button type="button" class="inp" id="rmDateBtn" onclick="openJalPicker()" style="text-align:start;width:100%">'+rmJalLabel()+'</button></div><div class="field grow"><label>' + TR('k0347','ساعت') + ' (' + TR('k2901','ساعت گوشی') + ')</label><div class="inp" style="text-align:center"><span id="rmClockLive" class="stat-num" style="font-size:20px">--:--:--</span></div></div></div><div class="field"><label>' + TR('k2902','ساعت آلارم') + '</label><div class="rowflex" style="align-items:center;justify-content:center;gap:4px"><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'h\',1)" aria-label="+">▲</button><span id="rmHourShow" class="stat-num" style="font-size:24px;min-width:52px;text-align:center"></span><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'h\',-1)" aria-label="-">▼</button><span style="align-self:center;font-size:22px">:</span><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'m\',1)" aria-label="+">▲</button><span id="rmMinShow" class="stat-num" style="font-size:24px;min-width:52px;text-align:center"></span><button class="btn ghost sm" type="button" onclick="rmTimeStep(\'m\',-1)" aria-label="-">▼</button><button class="btn ghost sm" type="button" onclick="rmTimeNow()">'+TR('k2903','الان')+'</button></div></div><div class="field"><label>' + TR('k0611','تکرار یادآوری') + '</label><select class="inp" id="rmRepeat"><option value="">' + TR('k0614','فقط یک بار') + '</option><option value="daily">' + TR('k0494','هر روز') + '</option><option value="weekly">' + TR('k0616','هر هفته') + '</option></select></div><div class="field"><label>'+TR('k2462','صدای آلارم')+'</label><select class="inp" id="rmSound"><option value="chime">'+TR('k2463','زنگ ملایم')+'</option><option value="beep">'+TR('k2464','بوق کلاسیک')+'</option><option value="siren">'+TR('k2465','آژیر')+'</option><option value="reveille">'+TR('k2466','بوق بیدارباش')+'</option><option value="drum">'+TR('k2467','طبل')+'</option><option value="march">'+TR('k2468','مارش')+'</option><option value="custom">'+TR('k2514','موسیقی دلخواه من')+'</option></select><div class="rowflex" style="margin-top:8px"><button class="btn ghost sm" type="button" onclick="testAlarmSound(($(\'rmSound\')||{}).value||\'chime\')">▶ '+TR('k2311','تست صدا')+'</button><span class="small" style="align-self:center">'+TR('k3209','صدای انتخاب‌شده را پیش از ثبت بشنوید')+'</span></div>'+soundTestRowHTML()+'</div><button class="btn" onclick="addReminder()">' + TR('k0612','ثبت یادآوری') + '</button><p class="small" style="margin-top:10px">' + (goCanScheduleExact()?TR('k0610','تا وقتی این صفحه باز است، ساعت گوشی هر چند ثانیه بررسی می‌شود و سر وقت، نوار آلارم بالای صفحه با صدا خبر می‌دهد. در نسخه اندروید همین یادآوری‌ها به آلارم سیستم گوشی سپرده می‌شوند تا حتی با بسته‌بودن برنامه هم زنگ بخورند'):TR('k6225','تا وقتی این صفحه باز است، ساعت گوشی هر چند ثانیه بررسی می‌شود و سر وقت، نوار آلارم بالای صفحه با صدا خبر می‌دهد. اگر برنامه بسته شود، این یادآوری زنگ نمی‌خورد — در نسخه اندروید، با اجازه آلارم دقیق، به آلارم سیستم گوشی سپرده می‌شود'))+goAlarmFooterExtra() + '.</p></div>'
   +'<div class="card"><h3 style="margin-bottom:10px">' + TR('k0622','یادآوری‌های من') + '</h3>'+(S.reminders.length?S.reminders.map(function(r){ return '<div class="listrow"><svg class="ic" viewBox="0 0 24 24" style="color:var(--acc)"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg><div class="grow"><b>'+esc(r.title)+'</b><div class="small">'+(r.date?faDateShort(new Date(r.date)):"")+' — ' + TR('k0347','ساعت') + ' '+fa(r.time)+'</div>'+(r.repeat?'<div class="small">'+(r.repeat==="daily"?TR('k0618','تکرار روزانه'):TR('k0619','تکرار هفتگی'))+'</div>':'')+'</div>'+(r.fired?'<span class="pill gray">' + TR('k0300','انجام شد') + '</span>':'<span class="pill">' + TR('k0620','فعال') + '</span>')+'<button class="del" onclick="delReminder('+r.id+')">' + TR('k0303','حذف') + '</button></div>'; }).join(""):'<div class="empty">' + TR('k0621','یادآوری ندارید') + '.</div>')+'</div></div>';
   v.innerHTML=h;
   rmPaintTime(); rmTickClock(); if(rmClockInt) clearInterval(rmClockInt); rmClockInt=setInterval(rmTickClock,1000);
@@ -12363,6 +12423,7 @@ function addReminder(){
   try{ goPushAlarmPending(); }catch(e){}
   try{ goScheduleAlarm(S.reminders[S.reminders.length-1]); }catch(e){}
   go("reminders"); toast(goAlarmSavedToast() + ".");
+  try{ goAlarmEnsureAtSchedule('reminder'); }catch(e){}
 }
 function delReminder(id){ var rm=(S.reminders||[]).filter(function(r){return r.id===id;})[0]; if(rm&&rm.title&&!confirm(TR('k0303','حذف')+' '+QO()+rm.title+QC()+QM())) return; S.reminders=S.reminders.filter(function(r){return r.id!==id;}); try{ recordTombstone("reminders",id); }catch(e){} /* v10.4.18 NEW BUG: delReminder never called save() — the deletion
      lived only in memory until the 4s autosave (or a pushAlarms that may
@@ -12637,7 +12698,7 @@ function startReminderClock(){
   setInterval(reminderClockTick,4000);
   if(!_reminderVisBound&&typeof document!=="undefined"&&document.addEventListener){
     _reminderVisBound=true;
-    document.addEventListener("visibilitychange",function(){ try{ if(!document.hidden){ goSyncNativeFired(); goScheduleAllAlarms(); goScheduleLocalNotifs(); reminderClockTick(); } }catch(e){} });
+    document.addEventListener("visibilitychange",function(){ try{ if(!document.hidden){ goSyncNativeFired(); goScheduleAllAlarms(); goScheduleLocalNotifs(); goAlarmFlushPending(false); reminderClockTick(); } }catch(e){} });
   }
 }
 function dismissAlarm(){ var _ca=curAlarm; $("alarmbar").classList.remove("show"); curAlarm=null; try{ SFX.alarmStop(); }catch(e){} try{ if(_ca!=null) goCancelAlarm(_ca); }catch(e){} try{ goPushAlarmPending(); }catch(e){} /* v10.4.33 (W6b D-B10): ring the next queued alarm, if any (snoozeAlarm delegates here, so it drains too). */ try{ while(pendingAlarms.length){ var _nid=pendingAlarms.shift(); if(ringReminder(_nid)) break; } }catch(e){} }
@@ -12826,6 +12887,7 @@ function togglePomo(){
   persistPomoState();
   pomoStartTick();
   try{ goPomoNativeSync(); }catch(e){}
+  try{ goAlarmEnsureAtSchedule('pomo'); }catch(e){}
 }
 /* v10.4.20 (M9/M10): the 1s wall-clock tick, shared by togglePomo and
    restorePomoState. Completion goes through pomoFinish() so a restored
@@ -14542,7 +14604,7 @@ Object.assign(I18N_EN,{"k4815":"Study tasks","k4816":"Personal tasks","k4817":"S
 Object.assign(I18N_EN,{"k9131":"App sounds are muted — unmute to hear the soundscape","k9133":"Sound events","k9134":"Effect events","k9135":"Delivery decisions","k9137":"No events recorded yet"});
 /* v10.4.35 (Y5): EN strings for the clock-skew banner (k3259–k3260). */
 Object.assign(I18N_EN,{"k3259":"Owner signature not verified, and the device clock differs from the server clock.","k3260":"This device's clock differs from the server clock by {n} minutes; fix the device clock. Password-based reset still works."});
-var APP_VERSION="10.4.48";
+var APP_VERSION="10.4.49";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
