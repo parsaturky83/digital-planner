@@ -2973,11 +2973,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
 .keyactions{ display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
 .subkey{ word-break:normal; }
 /* v10.4.9 — REAL map (Leaflet vendored, OSM tiles online) */
-.realmap{ width:100%; height:320px; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--surface2); z-index:0; }
+.realmap{ width:100%; height:320px; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--surface2); z-index:0; position:relative; }
 .map-stale{ filter:grayscale(1); opacity:.65; }
-.map-pin{ width:18px; height:18px; border-radius:50%; background:var(--acc); border:2px solid #fff; box-shadow:0 0 0 2px var(--acc); }
-.map-pin.me{ background:var(--acc2); box-shadow:0 0 0 2px var(--acc2); }
-.map-pin.stale{ background:#9a9a9a; box-shadow:0 0 0 2px #9a9a9a; }
 .map-label.stale{ opacity:.75; }
 .map-divicon{ background:transparent; border:none; }
 .map-label{ font-size:11px; font-weight:700; line-height:1.4; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:2px 6px; }
@@ -2985,36 +2982,112 @@ svg.leaflet-image-layer.leaflet-interactive path {
 .map-live-badge .dot{ width:8px; height:8px; border-radius:50%; background:#2e9e5b; }
 .map-live-badge.off .dot{ background:#b3352c; }
 .leaflet-container{ font-family:inherit; }
-/* v10.4.45 Scope B — map themes (GTA primary + Red Dead + Clash of Clans).
-   Paint-only CSS filter on the tile pane: markers, tooltips, popups, the
-   live badge and the group selector live in sibling panes / plain DOM and
-   are NOT filtered. Coordinates, tile URL, fitBounds, setLatLng and the
-   tileerror handler are untouched. Standard has NO filter (pixel-identical
-   to before). The theme is a body[data-maptheme] attribute, so it survives
-   map re-init (groupMapInitOne removes/recreates maps) with no JS change
-   in the map code. Values eyeballed headless at 390px (see SCOPE-BC-BUILD.md);
-   the phone check on Parsa's device is still owed. */
-body[data-maptheme="gta"] .leaflet-tile-pane{ filter:saturate(1.9) contrast(1.08) sepia(.28) hue-rotate(-12deg) brightness(.97); }
-body[data-maptheme="rdr"] .leaflet-tile-pane{ filter:sepia(.55) saturate(.75) contrast(.98) brightness(1.02); }
-body[data-maptheme="coc"] .leaflet-tile-pane{ filter:saturate(2.4) contrast(1.12) hue-rotate(8deg) brightness(1.03); }
+/* v10.4.48 — REAL map themes (replaces the v10.4.45 filter-only look).
+   Parsa 2026-11-23: the v10.4.45 themes had no GTA SA / CoC / RDR theme at
+   all — only the tile colours changed. Each theme is now a full visual
+   system: (1) its OWN tile layer (see MAPTILES in the v10.4.48 module),
+   (2) a themed tile-pane overlay (vignette/texture via ::after on
+   .leaflet-tile-pane — above the tiles, below the marker pane, so
+   streets, labels and markers are never hidden), (3) themed HUD chrome
+   (frame, compass, theme tag, zoom controls, labels, badges), (4)
+   game-specific place icons (see MAPICON_*). NO filter is applied to the
+   tile pane any more — the look comes from the tiles + overlay + chrome,
+   not from recolouring OSM. Standard is pixel-identical to before. The
+   theme is a body[data-maptheme] attribute, so it survives map re-init
+   with no JS change in the map code. All labels Persian; RTL correct.
+   Overlays are static (no animation), so prefers-reduced-motion needs no
+   extra rule here. */
 /* Minimap frame per theme. */
-body[data-maptheme="gta"] .realmap{ border:2px solid #f59e0b; border-radius:6px; }
-body[data-maptheme="rdr"] .realmap{ border:2px solid #7c2d12; border-radius:10px; box-shadow:inset 0 0 0 2px rgba(124,45,18,.25); }
-body[data-maptheme="coc"] .realmap{ border:3px solid #65a30d; border-radius:18px; box-shadow:0 0 0 2px #facc15; }
-/* Location label + live badge per theme (Persian HUD, plain DOM — unfiltered). */
+body[data-maptheme="gta"] .realmap{ border:2px solid #f59e0b; border-radius:6px; box-shadow:0 0 0 1px #111827, 0 0 14px rgba(245,158,11,.35); }
+body[data-maptheme="rdr"] .realmap{ border:2px solid #7c2d12; border-radius:10px; box-shadow:inset 0 0 0 2px rgba(124,45,18,.25), 0 0 0 1px #d6b98a; }
+body[data-maptheme="coc"] .realmap{ border:3px solid #65a30d; border-radius:18px; box-shadow:0 0 0 2px #facc15, 0 4px 14px rgba(101,163,13,.35); }
+/* Tile-pane overlays — ::after sits above the tiles (tile pane z-index
+   200) and below the marker pane (600). pointer-events:none; low opacity. */
+.leaflet-tile-pane::after{ content:""; position:absolute; inset:0; z-index:1; pointer-events:none; }
+body[data-maptheme="gta"] .leaflet-tile-pane::after{ background:radial-gradient(120% 120% at 50% 45%, transparent 55%, rgba(17,24,39,.38) 100%), linear-gradient(rgba(245,158,11,.05), rgba(245,158,11,.05)); }
+body[data-maptheme="rdr"] .leaflet-tile-pane::after{ background:radial-gradient(120% 120% at 50% 45%, rgba(245,230,200,0) 50%, rgba(120,72,20,.28) 100%), repeating-linear-gradient(0deg, rgba(120,72,20,.03) 0 2px, transparent 2px 5px), linear-gradient(rgba(214,185,138,.10), rgba(214,185,138,.10)); }
+body[data-maptheme="coc"] .leaflet-tile-pane::after{ background:radial-gradient(120% 120% at 50% 40%, transparent 60%, rgba(101,163,13,.16) 100%), linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06)); }
+/* Location label + live badge per theme (Persian HUD, plain DOM). */
 body[data-maptheme="gta"] .map-label{ background:#111827; color:#fbbf24; border-color:#f59e0b; }
 body[data-maptheme="gta"] .map-live-badge{ background:#111827; color:#fbbf24; border-color:#f59e0b; }
-body[data-maptheme="rdr"] .map-label{ background:#f5e6c8; color:#451a03; border-color:#7c2d12; }
+body[data-maptheme="rdr"] .map-label{ background:#f5e6c8; color:#451a03; border-color:#7c2d12; font-family:Georgia,"Times New Roman",Tahoma,serif; }
 body[data-maptheme="rdr"] .map-live-badge{ background:#f5e6c8; color:#451a03; border-color:#7c2d12; }
 body[data-maptheme="coc"] .map-label{ background:#ffffff; color:#15803d; border-color:#facc15; box-shadow:0 0 0 1px #facc15; }
 body[data-maptheme="coc"] .map-live-badge{ background:#ffffff; color:#15803d; border-color:#65a30d; }
-/* Daily-mission place marker (divIcon in the marker pane — unfiltered).
-   Base = amber diamond; GTA adds glow; Red Dead = red wax-seal circle;
-   Clash of Clans = gold star. Same 18x18 / anchor 9,9 contract as .map-pin. */
-.map-pin-mission{ width:18px; height:18px; background:#f59e0b; border:2px solid #111827; transform:rotate(45deg); border-radius:3px; box-shadow:0 0 0 2px rgba(255,255,255,.85); }
-body[data-maptheme="gta"] .map-pin-mission{ box-shadow:0 0 0 2px rgba(255,255,255,.85),0 0 10px 2px rgba(245,158,11,.9); }
-body[data-maptheme="rdr"] .map-pin-mission{ background:#b91c1c; border-color:#7f1d1d; border-radius:50%; transform:none; box-shadow:0 0 0 2px #fca5a5, inset 0 0 0 2px rgba(0,0,0,.25); }
-body[data-maptheme="coc"] .map-pin-mission{ background:#facc15; border:none; border-radius:0; transform:none; box-shadow:0 0 6px 1px rgba(250,204,21,.9); clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%); }
+/* HUD chrome injected into .realmap by groupMapPaintHud(): compass
+   (north-up, static — Leaflet has no rotation) + theme tag. Persian,
+   pointer-events:none so they never block panning or taps. */
+.map-hud{ position:absolute; z-index:500; pointer-events:none; }
+.map-compass{ top:10px; right:10px; width:38px; height:38px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; font-weight:800; line-height:1; background:var(--surface); color:var(--ink); border:1px solid var(--line); box-shadow:0 1px 6px rgba(0,0,0,.25); }
+.map-compass .cmp-arrow{ font-size:13px; line-height:1; }
+.map-compass .cmp-n{ font-size:11px; }
+/* v10.4.48 fix (N2): tag was bottom-left (bottom:36px) where the
+   floating «ثبت سریع» pill (fixed, bottom-left) covers its left end —
+   moved top-right below the compass (compass top:10px + 38px tall ends
+   at 48px), fully visible in all themes; nowrap + ellipsis so a long
+   theme name never wraps over the map. */
+.map-theme-tag{ top:58px; right:10px; white-space:nowrap; max-width:calc(100% - 20px); overflow:hidden; text-overflow:ellipsis; font-size:11px; font-weight:700; padding:3px 8px; border-radius:999px; background:var(--surface); color:var(--ink); border:1px solid var(--line); box-shadow:0 1px 6px rgba(0,0,0,.2); }
+body[data-maptheme="gta"] .map-compass{ background:#111827; color:#fbbf24; border:2px solid #f59e0b; border-radius:6px; }
+body[data-maptheme="gta"] .map-theme-tag{ background:#111827; color:#fbbf24; border:1px solid #f59e0b; }
+body[data-maptheme="rdr"] .map-compass{ background:#f5e6c8; color:#7c2d12; border:2px solid #7c2d12; font-family:Georgia,"Times New Roman",Tahoma,serif; }
+body[data-maptheme="rdr"] .map-theme-tag{ background:#f5e6c8; color:#451a03; border:1px solid #7c2d12; font-family:Georgia,"Times New Roman",Tahoma,serif; }
+body[data-maptheme="coc"] .map-compass{ background:#ffffff; color:#15803d; border:3px solid #65a30d; box-shadow:0 0 0 2px #facc15, 0 1px 6px rgba(0,0,0,.25); }
+body[data-maptheme="coc"] .map-theme-tag{ background:#ffffff; color:#15803d; border:2px solid #65a30d; box-shadow:0 0 0 1px #facc15; }
+/* Leaflet zoom + attribution controls per theme (same control, new skin). */
+body[data-maptheme="gta"] .leaflet-bar a{ background:#111827; color:#fbbf24; border-color:#f59e0b; }
+body[data-maptheme="gta"] .leaflet-control-attribution{ background:rgba(17,24,39,.85); color:#fbbf24; }
+body[data-maptheme="gta"] .leaflet-control-attribution a{ color:#fde68a; }
+body[data-maptheme="rdr"] .leaflet-bar a{ background:#f5e6c8; color:#7c2d12; border-color:#7c2d12; }
+body[data-maptheme="rdr"] .leaflet-control-attribution{ background:rgba(245,230,200,.9); color:#451a03; }
+body[data-maptheme="rdr"] .leaflet-control-attribution a{ color:#7c2d12; }
+body[data-maptheme="coc"] .leaflet-bar a{ background:#ffffff; color:#15803d; border-color:#65a30d; }
+body[data-maptheme="coc"] .leaflet-control-attribution{ background:rgba(255,255,255,.9); color:#15803d; }
+body[data-maptheme="coc"] .leaflet-control-attribution a{ color:#15803d; }
+/* Theme picker accent (outside the map card). */
+body[data-maptheme="gta"] #mapThemeSel{ border-color:#f59e0b; }
+body[data-maptheme="rdr"] #mapThemeSel{ border-color:#7c2d12; }
+body[data-maptheme="coc"] #mapThemeSel{ border-color:#65a30d; }
+/* v10.4.48 — game-specific place icons (place type x theme matrix).
+   One divIcon per marker: <div class="map-ic map-ic-<kind> [map-ic-mission]
+   [map-ic-place] [stale]"><svg …/></div>, 28x28, anchor 14,14 (nearby
+   place pins 24x24, anchor 12,12). SVG glyphs stay crisp at any zoom;
+   the theme only re-skins the badge via body[data-maptheme], so a theme
+   switch restyles every marker with no marker rebuild. Kinds: library
+   (book), park (tree), gym (dumbbell), mosque (dome+minaret), member
+   (person), me (person, viewer), mission (place-kind glyph + mission
+   ring). Full matrix is in BUILD-REPORT.md. */
+.map-ic{ width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#fff; border:2px solid #334155; color:#0f172a; box-shadow:0 1px 5px rgba(0,0,0,.35); }
+.map-ic svg{ width:18px; height:18px; }
+.map-ic-place{ width:24px; height:24px; }
+.map-ic-place svg{ width:15px; height:15px; }
+.map-ic-mission{ box-shadow:0 0 0 3px rgba(245,158,11,.9), 0 1px 5px rgba(0,0,0,.35); }
+.map-ic.stale{ filter:grayscale(1); opacity:.65; }
+.map-ic-library{ color:#1d4ed8; border-color:#1d4ed8; }
+.map-ic-park{ color:#15803d; border-color:#15803d; }
+.map-ic-gym{ color:#b91c1c; border-color:#b91c1c; }
+.map-ic-mosque{ color:#0f766e; border-color:#0f766e; }
+.map-ic-member{ color:#0f172a; border-color:#475569; }
+.map-ic-me{ color:#7c3aed; border-color:#7c3aed; }
+/* GTA SA — dark square blips, white rim, amber glyphs (SA radar feel). */
+body[data-maptheme="gta"] .map-ic{ background:#111827; border:2px solid #fff; border-radius:5px; color:#fbbf24; box-shadow:0 0 0 1px #111827, 0 1px 5px rgba(0,0,0,.5); }
+body[data-maptheme="gta"] .map-ic-library{ background:#1e3a8a; }
+body[data-maptheme="gta"] .map-ic-park{ background:#14532d; }
+body[data-maptheme="gta"] .map-ic-gym{ background:#7f1d1d; }
+body[data-maptheme="gta"] .map-ic-mosque{ background:#134e4a; }
+body[data-maptheme="gta"] .map-ic-member{ background:#334155; }
+body[data-maptheme="gta"] .map-ic-me{ background:#6d28d9; }
+body[data-maptheme="gta"] .map-ic-mission{ background:#f59e0b; color:#111827; box-shadow:0 0 0 3px rgba(255,255,255,.9), 0 0 12px 2px rgba(245,158,11,.9); }
+/* Red Dead — ink on parchment: wax-seal circle, brown ink glyphs. */
+body[data-maptheme="rdr"] .map-ic{ background:#f5e6c8; border:2px solid #7c2d12; border-radius:50%; color:#451a03; box-shadow:inset 0 0 0 2px rgba(124,45,18,.25), 0 1px 5px rgba(0,0,0,.35); }
+body[data-maptheme="rdr"] .map-ic-mission{ background:#b91c1c; color:#fef2f2; border-color:#7f1d1d; box-shadow:0 0 0 3px rgba(252,165,165,.9), inset 0 0 0 2px rgba(0,0,0,.25); }
+/* Clash of Clans — chunky round village badges, thick green/gold rims. */
+body[data-maptheme="coc"] .map-ic{ background:#fefce8; border:3px solid #65a30d; border-radius:50%; color:#166534; box-shadow:0 0 0 1px #facc15, 0 2px 6px rgba(0,0,0,.3); }
+body[data-maptheme="coc"] .map-ic-library{ border-color:#2563eb; color:#1e40af; }
+body[data-maptheme="coc"] .map-ic-park{ border-color:#16a34a; color:#166534; }
+body[data-maptheme="coc"] .map-ic-gym{ border-color:#dc2626; color:#991b1b; }
+body[data-maptheme="coc"] .map-ic-mosque{ border-color:#0d9488; color:#115e59; }
+body[data-maptheme="coc"] .map-ic-me{ border-color:#9333ea; color:#6b21a8; }
+body[data-maptheme="coc"] .map-ic-mission{ background:#facc15; border-color:#65a30d; color:#713f12; box-shadow:0 0 0 3px rgba(250,204,21,.9), 0 2px 6px rgba(0,0,0,.3); }
 .map-label-mission{ font-weight:800; }
 /* ================= X4 GAME-TOOLS EXPANSION (v10.4.34, Builder B) =================
    ALL new game CSS lives in this ONE block. No existing rule is modified.
@@ -14469,7 +14542,7 @@ Object.assign(I18N_EN,{"k4815":"Study tasks","k4816":"Personal tasks","k4817":"S
 Object.assign(I18N_EN,{"k9131":"App sounds are muted — unmute to hear the soundscape","k9133":"Sound events","k9134":"Effect events","k9135":"Delivery decisions","k9137":"No events recorded yet"});
 /* v10.4.35 (Y5): EN strings for the clock-skew banner (k3259–k3260). */
 Object.assign(I18N_EN,{"k3259":"Owner signature not verified, and the device clock differs from the server clock.","k3260":"This device's clock differs from the server clock by {n} minutes; fix the device clock. Password-based reset still works."});
-var APP_VERSION="10.4.47";
+var APP_VERSION="10.4.48";
 /* Owner-assigned usernames: Latin letters/digits/underscore only, start
    with a letter, 3–30 chars. (Self-chosen profile usernames keep the
    older isLatinUsername rule; this stricter one is for owner assignment.) */
@@ -14777,7 +14850,9 @@ function groupMapGroupHTML(g){
 }
 
 function groupMapAddMarker(entry, mk){
-  var icon=L.divIcon({className:'map-divicon',html:'<div class="map-pin'+(mk.isViewer?' me':'')+(mk.stale?' stale':'')+'"></div>',iconSize:[18,18],iconAnchor:[9,9]});
+  /* v10.4.48 — game-specific member icon (MAPICON matrix): viewer = me,
+     others = member; stale keeps the grey treatment via .stale. */
+  var icon=MAPICON_divIcon(mk.isViewer?'me':'member',{stale:!!mk.stale});
   var m=L.marker([mk.lat,mk.lng],{icon:icon});
   m.bindTooltip(groupMapLeafletLabel(mk),{permanent:true,direction:'top',offset:[0,-12],className:'map-label'+(mk.stale?' stale':'')});
   m._stale=!!mk.stale;
@@ -14826,10 +14901,16 @@ function groupMapInitOne(g){
   if(OG._leafletMaps[String(g.id)]){ try{ OG._leafletMaps[String(g.id)].map.remove(); }catch(e){} }
   var res=groupMapMarkersFor(g, groupMapMembersFor(g), (OG.mapLocations||{})[String(g.id)]||[]);
   var map=L.map(el,{scrollWheelZoom:true});
-  var tiles=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
-  tiles.on('tileerror',function(){ OG._tilesOk=false; groupMapPaintState(); });
+  var entry={map:map,tiles:null,markers:{},placeMarkers:[],name:g.name||""};
+  /* v10.4.48 — real theme tile layer (MAPTILES); a failing themed layer
+     falls back once to OSM standard so the map never goes blank. */
+  var _tc=MAPTILE_for(MAPTHEME_get());
+  var tiles=L.tileLayer(_tc.url,{maxZoom:_tc.maxZoom,subdomains:_tc.subdomains,attribution:_tc.attr});
+  tiles.on('tileerror',function(){ OG._tilesOk=false; groupMapPaintState(); if(!entry._tileFallback&&_tc.k!=="standard"){ try{ entry._tileFallback=true; var _fb=MAPTILE_for("standard"); map.removeLayer(tiles); entry.tiles=L.tileLayer(_fb.url,{maxZoom:_fb.maxZoom,attribution:_fb.attr}); entry.tiles.addTo(map); }catch(e){} } });
   tiles.addTo(map);
-  var entry={map:map,tiles:tiles,markers:{},name:g.name||""};
+  entry.tiles=tiles;
+  /* v10.4.48 — themed HUD chrome (compass + theme tag) over the map. */
+  try{ groupMapPaintHud(el); }catch(e){}
   OG._leafletMaps[String(g.id)]=entry;
   if(res.markers.length){
     res.markers.forEach(function(mk){ var key=String(mk.uid||mk.name); entry.markers[key]=groupMapAddMarker(entry,mk); });
@@ -14844,6 +14925,9 @@ function groupMapInitOne(g){
   /* v10.4.45 Scope B: today's mission place as a theme-styled marker
      (marker pane — unfiltered). fitBounds above is unchanged. */
   try{ groupMapAddMissionMarker(entry); }catch(e){}
+  /* v10.4.48 — nearby places of today's mission category, each with its
+     game-specific type x theme icon (Parsa 2026-11-23). */
+  try{ groupMapAddPlaceMarkers(entry); }catch(e){}
   /* v10.4.47 (B2): arrived from a mission / history "open in map" tap —
      centre on the requested place (zoom 16), open the mission marker
      popup when the focus is today's mission place. */
@@ -14870,6 +14954,8 @@ function groupMapRefreshMarkers(){
     /* v10.4.45 Scope B: re-add/refresh the mission marker (idempotent —
        groupMapAddMissionMarker removes the old one first). */
     try{ groupMapAddMissionMarker(entry); }catch(e){}
+    /* v10.4.48: refresh the nearby-place markers too (idempotent). */
+    try{ groupMapAddPlaceMarkers(entry); }catch(e){}
   });
   groupMapPaintState();
 }
@@ -42585,7 +42671,7 @@ var FM_CHECKIN_M=100, FM_RADIUS_M=2000, FM_BLOCK_S=25*60, FM_PLACES_TTL=24*3600*
 var FM_FIX_MAX_AGE_MS=90000, FM_FIX_POOR_M=100, FM_WATCH_MIN_MS=5000;
 var FM={day:null,rows:null,src:null,loading:false,places:{},sel:{},fix:null,fixAcc:null,fixAt:0,fixPoor:false,watchId:null,watchLast:0,watchNear:null,busy:{}};
 var FM_TIMER={key:null,leftSec:FM_BLOCK_S,run:false,int:null,endsAt:0};
-Object.assign(I18N_EN,{"k8000":"Field missions","k8001":"Three missions a day: one out in the field, the rest with your own focus and tasks.","k8002":"Today's missions","k8003":"Completed","k8004":"Active","k8005":"Check-in","k8006":"I am here","k8007":"Your distance","k8008":"Refresh distance","k8009":"Find nearby places","k8010":"Place list unavailable — check-in needs a place","k8011":"Study timer","k8012":"Start","k8013":"Pause","k8014":"Resume","k8015":"Stop","k8016":"Every 25 minutes is one full block; partial minutes are never recorded","k8017":"Full block recorded","k8018":"Check-in needs the internet","k8019":"away — move closer to the place","k8020":"Check-in done","k8021":"Mission completed","k8022":"Offline — today's saved copy","k8023":"Substitute mission","k8024":"In place of the location mission, because no place list is available","k8025":"Claim points","k8026":"Getting your location…","k8027":"Another timer is running","k8028":"Unsubmitted block","k8029":"Submit block","k8030":"Place","k8031":"Target","k8032":"min","k8033":"Loading missions…","k8034":"Missions are shown from the local copy","k8035":"Nearest place","k8036":"Open in map","k8037":"Saved list","k8038":"Points were not recorded; try again","k8039":"Go to this place","k8040":"Focus","k8041":"Do tasks","k8042":"Today's habit","k8043":"tasks done today","k8044":"Go to tasks","k8045":"Go to habits","k8046":"This habit is done today","k8047":"A mission timer is already running; stop it first","k8048":"Points were already earned for this slot today","k8049":"Recorded blocks","k8050":"Library","k8051":"Park","k8052":"Gym","k8053":"Mosque","k8054":"Market","k8055":"Location mission","k8056":"Focus mission","k8057":"Tasks mission","k8058":"Habit mission","k8059":"Check-in needs a place","k8060":"Name-based place search","k8061":"No place found","k8062":"The Pomodoro timer is running; stop it first","k8063":"Verifying location…","k8064":"Selected place","k8065":"Block completed but offline; it will be submitted when online","k8066":"tasks","k8067":"This habit is not done yet today","k8068":"Check-in is accepted only within 100 m of the place","k8079":"To do a location mission, first share your location on the group map","k8080":"Based on the location you shared on the group map","k8070":"Map theme","k8071":"Standard","k8072":"GTA","k8073":"Red Dead","k8074":"Clash of Clans","k8075":"Today's mission","k8076":"Map theme changed","k8077":"Today's mission place is marked on the map","k8078":"Today's mission place is not set yet","k8081":"The distance is stale; tap \u201cRefresh distance\u201d for a fresh one","k8083":"Location accuracy is low; the distance is approximate","k8087":"Open in OpenStreetMap"});
+Object.assign(I18N_EN,{"k8000":"Field missions","k8001":"Three missions a day: one out in the field, the rest with your own focus and tasks.","k8002":"Today's missions","k8003":"Completed","k8004":"Active","k8005":"Check-in","k8006":"I am here","k8007":"Your distance","k8008":"Refresh distance","k8009":"Find nearby places","k8010":"Place list unavailable — check-in needs a place","k8011":"Study timer","k8012":"Start","k8013":"Pause","k8014":"Resume","k8015":"Stop","k8016":"Every 25 minutes is one full block; partial minutes are never recorded","k8017":"Full block recorded","k8018":"Check-in needs the internet","k8019":"away — move closer to the place","k8020":"Check-in done","k8021":"Mission completed","k8022":"Offline — today's saved copy","k8023":"Substitute mission","k8024":"In place of the location mission, because no place list is available","k8025":"Claim points","k8026":"Getting your location…","k8027":"Another timer is running","k8028":"Unsubmitted block","k8029":"Submit block","k8030":"Place","k8031":"Target","k8032":"min","k8033":"Loading missions…","k8034":"Missions are shown from the local copy","k8035":"Nearest place","k8036":"Open in map","k8037":"Saved list","k8038":"Points were not recorded; try again","k8039":"Go to this place","k8040":"Focus","k8041":"Do tasks","k8042":"Today's habit","k8043":"tasks done today","k8044":"Go to tasks","k8045":"Go to habits","k8046":"This habit is done today","k8047":"A mission timer is already running; stop it first","k8048":"Points were already earned for this slot today","k8049":"Recorded blocks","k8050":"Library","k8051":"Park","k8052":"Gym","k8053":"Mosque","k8054":"Market","k8055":"Location mission","k8056":"Focus mission","k8057":"Tasks mission","k8058":"Habit mission","k8059":"Check-in needs a place","k8060":"Name-based place search","k8061":"No place found","k8062":"The Pomodoro timer is running; stop it first","k8063":"Verifying location…","k8064":"Selected place","k8065":"Block completed but offline; it will be submitted when online","k8066":"tasks","k8067":"This habit is not done yet today","k8068":"Check-in is accepted only within 100 m of the place","k8079":"To do a location mission, first share your location on the group map","k8080":"Based on the location you shared on the group map","k8070":"Map theme","k8071":"Standard","k8072":"GTA San Andreas","k8073":"Red Dead","k8074":"Clash of Clans","k8075":"Today's mission","k8076":"Map theme changed","k8077":"Today's mission place is marked on the map","k8078":"Today's mission place is not set yet","k8081":"The distance is stale; tap \u201cRefresh distance\u201d for a fresh one","k8083":"Location accuracy is low; the distance is approximate","k8087":"Open in OpenStreetMap","k8089":"North"});
 function FM_hash(s){ var h=5381,i; s=String(s||""); for(i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))>>>0; } return h>>>0; }
 function FM_uidSeed(){ try{ if(typeof SB!=="undefined"&&SB.uid) return String(SB.uid); }catch(e){} try{ var k=(typeof SB!=="undefined"&&typeof SB.keyForRpc==="function")?SB.keyForRpc():null; if(k) return "key:"+k; }catch(e){} try{ if(S&&S.user&&S.user.name) return "name:"+S.user.name; }catch(e){} return "local"; }
 function FM_keyForRpc(){ try{ return (typeof SB!=="undefined"&&typeof SB.keyForRpc==="function")?SB.keyForRpc():null; }catch(e){ return null; } }
@@ -43673,22 +43759,25 @@ function FM_submitPendingSlot(slot){ var m=FM_rowBySlot(slot); if(m) FM_submitPe
 function FM_retryAwardSlot(slot){ var m=FM_rowBySlot(slot); if(m) FM_retryAward(m); }
 
 /* ================= v10.4.45 Scope B — map themes + mission marker =========
-   GTA is PRIMARY (first in the picker). Red Dead + Clash of Clans beside
-   it; Standard keeps the map exactly as before (no filter). The look is
-   CSS-only (body[data-maptheme] + .leaflet-tile-pane filter — see the
-   stylesheet block near .realmap); this module only owns the state, the
-   picker and the mission marker. Persistence: S.mapTheme -> the existing
-   user_settings JSONB via SB._settingsSnapshot / pullUserSettings adopt
-   (mapTheme key, no new RPC). The theme is applied with a body attribute
-   so it survives map re-init with no JS change in the map code.
+   GTA SA is PRIMARY (first in the picker). Red Dead + Clash of Clans beside
+   it; Standard keeps the map exactly as before. v10.4.48 supersedes the
+   filter-only look: real tile layers per theme (MAPTILES), themed overlays
+   + HUD chrome (stylesheet block near .realmap) and the game-specific
+   place-icon matrix (MAPICON_* in the v10.4.48 module below); this module
+   still owns the state, the picker and the mission marker. Persistence:
+   S.mapTheme -> the existing user_settings JSONB via SB._settingsSnapshot /
+   pullUserSettings adopt (mapTheme key, no new RPC). The theme is applied
+   with a body attribute so it survives map re-init with no JS change in
+   the map code.
    Mission marker: today's checkin mission place from Scope A, read-only
    here — FM_missionPlace() prefers the user's selected place, else the
    nearest known place (in-memory list, else the 24h places cache). When
    no place is known it returns null and NO marker is drawn (never a fake
-   place). The marker is a divIcon in the marker pane (unfiltered) with
-   the same 18x18 / anchor 9,9 contract as groupMapAddMarker. */
+   place). The marker is a divIcon in the marker pane (unfiltered); since
+   v10.4.48 it carries the place-type glyph + mission ring (28x28 /
+   anchor 14,14, same contract as groupMapAddMarker). */
 var MAP_THEMES=[
-  {k:"gta",tk:"k8072",fa:"جی‌تی‌ای",en:"GTA"},
+  {k:"gta",tk:"k8072",fa:"جی‌تی‌ای سن آندرس",en:"GTA San Andreas"},
   {k:"rdr",tk:"k8073",fa:"رد دد",en:"Red Dead"},
   {k:"coc",tk:"k8074",fa:"کلش آف کلنز",en:"Clash of Clans"},
   {k:"standard",tk:"k8071",fa:"استاندارد",en:"Standard"}
@@ -43700,6 +43789,7 @@ function applyMapTheme(){
   var t=MAPTHEME_get();
   try{ document.body.setAttribute("data-maptheme",t); }catch(e){}
   try{ var sel=$("mapThemeSel"); if(sel) sel.value=t; }catch(e){}
+  try{ MAPTHEME_paintTags(); }catch(e){}
   return t;
 }
 /* v10.4.45 Scope B — boot application: the boot() IIFE (script block 9)
@@ -43713,6 +43803,8 @@ function setMapTheme(k){
   if(!MAPTHEME_valid(k)) return false;
   try{ S.mapTheme=k; save(); }catch(e){}
   applyMapTheme();
+  /* v10.4.48 — swap the live tile layer to the new theme (no re-init). */
+  try{ groupMapApplyThemeTiles(); }catch(e){}
   try{ if(typeof SB!=="undefined"&&SB.pushUserSettings) SB.pushUserSettings(); }catch(e){}
   try{ toast(TR("k8076","تم نقشه تغییر کرد")+": "+MAPTHEME_label(k)); }catch(e){}
   return true;
@@ -43758,7 +43850,10 @@ function groupMapAddMissionMarker(entry){
   try{ if(entry.missionMarker){ entry.map.removeLayer(entry.missionMarker); entry.missionMarker=null; } }catch(e){}
   var mp=null; try{ mp=FM_missionPlace(); }catch(e){ mp=null; }
   if(!mp) return null;
-  var icon=L.divIcon({className:"map-divicon",html:'<div class="map-pin-mission"></div>',iconSize:[18,18],iconAnchor:[9,9]});
+  /* v10.4.48 — mission marker carries the PLACE-TYPE glyph (library /
+     park / gym / mosque) inside the mission ring, so the mission place
+     icon varies by type AND by theme (MAPICON matrix). */
+  var icon=MAPICON_divIcon(mp.cat||"mission",{mission:true});
   var m=L.marker([mp.lat,mp.lng],{icon:icon});
   var label=esc(mp.name)+' — '+TR("k8075","مأموریت امروز");
   m.bindTooltip(label,{permanent:true,direction:"top",offset:[0,-12],className:"map-label map-label-mission"});
@@ -43766,6 +43861,126 @@ function groupMapAddMissionMarker(entry){
   m.addTo(entry.map);
   entry.missionMarker=m;
   return m;
+}
+
+/* ================= v10.4.48 — REAL map themes =================
+   Parsa 2026-11-23 08:48, verbatim: «یه اصلاح دیگه اصلا نقشه تم GTA SA
+   و clash of clans و red dead نداشت. فقط رنگ نقشه عوض میشد. تم و
+   جزئیات نداشت.» + «البته باید مکان ها رو هم با آیکون های مخصوص بازی
+   نشان بدهند.» The v10.4.45 themes were a CSS filter on OSM tiles only.
+   This module makes each theme a full visual system:
+   (1) MAPTILES — one real tile layer per theme (free, no key; CARTO
+   deliberately NOT used: reports from Sep 2026 say its keyless raster
+   tiles are watermarked "API KEY REQUIRED" — see BUILD-REPORT.md).
+   GTA SA = OSM.fr HOT (warm humanitarian style); Red Dead =
+   OpenTopoMap (topographic, aged-map feel, maxZoom 17); Clash of
+   Clans + Standard = OSM standard (brightest, most readable — a
+   different layer would hurt readability there).
+   (2) MAPICON_* — the place-type x theme icon matrix. Every place on
+   the map (library / park / gym / mosque / mission place / member /
+   viewer) gets a game-specific SVG icon; the badge is re-skinned per
+   theme by CSS (body[data-maptheme]), so a theme switch restyles all
+   markers with no rebuild. Icons are inline SVG (crisp at any zoom).
+   (3) groupMapPaintHud — compass (north-up, Persian «شمال») + theme
+   tag, injected into .realmap; groupMapApplyThemeTiles swaps the live
+   tile layer when the theme changes. Persistence unchanged: the same
+   mapTheme key in user_settings JSONB (values standard/gta/rdr/coc;
+   "gta" now means GTA SA — renamed label only, key kept). No SQL. */
+var MAPTILES={
+ standard:{k:"standard",url:"https://tile.openstreetmap.org/{z}/{x}/{y}.png",maxZoom:19,subdomains:"abc",attr:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'},
+ gta:{k:"gta",url:"https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",maxZoom:19,subdomains:"abc",attr:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank" rel="noopener">Humanitarian OpenStreetMap Team</a>'},
+ rdr:{k:"rdr",url:"https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",maxZoom:17,subdomains:"abc",attr:'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org/">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)'},
+ coc:{k:"coc",url:"https://tile.openstreetmap.org/{z}/{x}/{y}.png",maxZoom:19,subdomains:"abc",attr:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}
+};
+function MAPTILE_for(t){ var c=MAPTILES[t]; return c||MAPTILES.standard; }
+/* ---- place-type x theme icon matrix: SVG glyph per place type ---- */
+var MAPICON_GLYPHS={
+ library:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>',
+ park:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l4 6h-3l4 6H7l4-6H8z"/><path d="M12 15v6"/></svg>',
+ gym:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>',
+ mosque:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c2.5 1.8 4 3.6 4 5.5a4 4 0 0 1-8 0C8 6.6 9.5 4.8 12 3z"/><path d="M4 21h16M6 21v-8h12v8M12 12.5V10M3 13V6M21 13V6"/></svg>',
+ member:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/></svg>',
+ me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/><path d="M12 2l.7 1.6 1.6.7-1.6.7L12 6.6l-.7-1.6-1.6-.7 1.6-.7z" fill="currentColor" stroke="none"/></svg>',
+ mission:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.6 6.2L21 9.3l-4.8 4.4L17.5 20 12 16.7 6.5 20l1.3-6.3L3 9.3l6.4-1.1z"/></svg>'
+};
+function MAPICON_kind(cat){ if(cat==="library"||cat==="park"||cat==="gym"||cat==="mosque") return cat; return "mission"; }
+function MAPICON_html(kind,opts){
+ opts=opts||{};
+ var k=MAPICON_kind(kind);
+ if(kind==="member"||kind==="me") k=kind;
+ var g=MAPICON_GLYPHS[k]||MAPICON_GLYPHS.mission;
+ var cls="map-ic map-ic-"+k+(opts.mission?" map-ic-mission":"")+(opts.place?" map-ic-place":"")+(opts.stale?" stale":"");
+ return '<div class="'+cls+'">'+g+'</div>';
+}
+function MAPICON_divIcon(kind,opts){
+ var sz=(opts&&opts.place)?[24,24]:[28,28];
+ var an=(opts&&opts.place)?[12,12]:[14,14];
+ return L.divIcon({className:"map-divicon",html:MAPICON_html(kind,opts),iconSize:sz,iconAnchor:an});
+}
+/* ---- themed HUD chrome (compass + theme tag) inside .realmap ---- */
+function groupMapPaintHud(el){
+ if(!el) return;
+ try{ var old=el.querySelectorAll(".map-hud"); for(var i=0;i<old.length;i++){ old[i].remove(); } }catch(e){}
+ var cmp=document.createElement("div");
+ cmp.className="map-hud map-compass";
+ cmp.innerHTML='<span class="cmp-arrow">\u25b2</span><span class="cmp-n">\u0634</span>';
+ cmp.title=TR("k8089","شمال");
+ el.appendChild(cmp);
+ var tag=document.createElement("div");
+ tag.className="map-hud map-theme-tag";
+ tag.textContent=TR("k8070","تم نقشه")+": "+MAPTHEME_label(MAPTHEME_get());
+ el.appendChild(tag);
+}
+function MAPTHEME_paintTags(){
+ try{ var els=document.querySelectorAll(".map-theme-tag"); for(var i=0;i<els.length;i++){ els[i].textContent=TR("k8070","تم نقشه")+": "+MAPTHEME_label(MAPTHEME_get()); } }catch(e){}
+}
+/* ---- swap the live tile layer when the theme changes ---- */
+function groupMapApplyThemeTiles(){
+ try{
+  var tc=MAPTILE_for(MAPTHEME_get());
+  Object.keys(OG._leafletMaps||{}).forEach(function(gid){
+   var entry=OG._leafletMaps[gid]; if(!entry||!entry.map) return;
+   try{
+    if(entry.tiles) entry.map.removeLayer(entry.tiles);
+    entry._tileFallback=false;
+    entry.tiles=L.tileLayer(tc.url,{maxZoom:tc.maxZoom,subdomains:tc.subdomains,attribution:tc.attr});
+    var _lyr=entry.tiles;
+    /* v10.4.48 fix (F1): live-switch tileerror fallback, mirroring the
+       init path in groupMapInitOne — a failing themed layer swaps once
+       to OSM standard so the map never goes blank on a live switch.
+       entry.tiles===_lyr guards a stale layer's error from yanking a
+       newer layer after a second quick switch. */
+    _lyr.on('tileerror',function(){ OG._tilesOk=false; groupMapPaintState(); if(!entry._tileFallback&&tc.k!=="standard"&&entry.tiles===_lyr){ try{ entry._tileFallback=true; var _fb=MAPTILE_for("standard"); entry.map.removeLayer(_lyr); entry.tiles=L.tileLayer(_fb.url,{maxZoom:_fb.maxZoom,attribution:_fb.attr}); entry.tiles.addTo(entry.map); }catch(e){} } });
+    entry.tiles.addTo(entry.map);
+   }catch(e){}
+  });
+ }catch(e){}
+ try{ MAPTHEME_paintTags(); }catch(e){}
+}
+/* ---- nearby places of today's mission category, game-iconed ---- */
+function groupMapAddPlaceMarkers(entry){
+ if(!entry||!entry.map||typeof L==="undefined") return null;
+ try{ (entry.placeMarkers||[]).forEach(function(m){ try{ entry.map.removeLayer(m); }catch(e){} }); }catch(e){}
+ entry.placeMarkers=[];
+ var mp=null; try{ mp=FM_missionPlace(); }catch(e){ mp=null; }
+ if(!mp||!mp.cat) return null;
+ var list=null;
+ try{ var pst=(typeof FM!=="undefined"&&FM.places)?FM.places[mp.cat]:null; var _s=FM_placeListSorted(pst); if(_s&&_s.list&&_s.list.length) list=_s.list; }catch(e){ list=null; }
+ if(!list){ try{ list=FM_placesCacheRead(mp.cat); }catch(e){ list=null; } }
+ if(!list||!list.length) return null;
+ var cat=mp.cat, n=0;
+ for(var i=0;i<list.length&&n<12;i++){
+  var p=list[i]; if(!p||typeof p.lat!=="number"||typeof p.lng!=="number") continue;
+  if(mp&&Math.abs(p.lat-mp.lat)<1e-9&&Math.abs(p.lng-mp.lng)<1e-9) continue;
+  var icon=MAPICON_divIcon(cat,{place:true});
+  var m=L.marker([p.lat,p.lng],{icon:icon});
+  var nm=esc(p.name||FM_catLabel(cat));
+  m.bindTooltip(nm,{permanent:false,direction:"top",offset:[0,-10],className:"map-label"});
+  m.bindPopup(nm+" — "+esc(FM_catLabel(cat))+'<br><span dir="ltr">'+p.lat.toFixed(5)+", "+p.lng.toFixed(5)+"</span>");
+  m.addTo(entry.map);
+  entry.placeMarkers.push(m); n++;
+ }
+ return entry.placeMarkers;
 }
 
 /* ---------- G-E2 — Focus Outpost [researched: Forest mechanic, military reskin, report E5] ----------
